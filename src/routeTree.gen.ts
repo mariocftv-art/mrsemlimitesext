@@ -32,6 +32,7 @@ import { Route as ApiDocsRouteImport } from './routes/api-docs'
 import { Route as AnimationsRouteImport } from './routes/animations'
 import { Route as ActivationsRouteImport } from './routes/activations'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PreviewIdRouteImport } from './routes/preview.$id'
 
 const VersionsRoute = VersionsRouteImport.update({
   id: '/versions',
@@ -148,6 +149,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PreviewIdRoute = PreviewIdRouteImport.update({
+  id: '/preview/$id',
+  path: '/preview/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -173,6 +179,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof SettingsRoute
   '/tools': typeof ToolsRoute
   '/versions': typeof VersionsRoute
+  '/preview/$id': typeof PreviewIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -198,6 +205,7 @@ export interface FileRoutesByTo {
   '/settings': typeof SettingsRoute
   '/tools': typeof ToolsRoute
   '/versions': typeof VersionsRoute
+  '/preview/$id': typeof PreviewIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -224,6 +232,7 @@ export interface FileRoutesById {
   '/settings': typeof SettingsRoute
   '/tools': typeof ToolsRoute
   '/versions': typeof VersionsRoute
+  '/preview/$id': typeof PreviewIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -251,6 +260,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/tools'
     | '/versions'
+    | '/preview/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -276,6 +286,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/tools'
     | '/versions'
+    | '/preview/$id'
   id:
     | '__root__'
     | '/'
@@ -301,6 +312,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/tools'
     | '/versions'
+    | '/preview/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -327,6 +339,7 @@ export interface RootRouteChildren {
   SettingsRoute: typeof SettingsRoute
   ToolsRoute: typeof ToolsRoute
   VersionsRoute: typeof VersionsRoute
+  PreviewIdRoute: typeof PreviewIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -492,6 +505,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/preview/$id': {
+      id: '/preview/$id'
+      path: '/preview/$id'
+      fullPath: '/preview/$id'
+      preLoaderRoute: typeof PreviewIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -519,6 +539,7 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsRoute: SettingsRoute,
   ToolsRoute: ToolsRoute,
   VersionsRoute: VersionsRoute,
+  PreviewIdRoute: PreviewIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -29,7 +29,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { getExtensionById, type ExtensionRecord, type NeonTone } from "@/factory";
 
 export const Route = createFileRoute("/preview/$id")({
-  loader: ({ params }) => {
+  loader: ({ params }): { ext: ExtensionRecord } => {
     const ext = getExtensionById(params.id);
     if (!ext) throw notFound();
     return { ext };

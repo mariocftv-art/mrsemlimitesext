@@ -61,6 +61,7 @@ export interface ExtensionRecord {
   manifest: ExtensionManifestMeta;
   builds: BuildHistoryEntry[];
   versions: VersionHistoryEntry[];
+  notes?: string;
   createdAt: string;
   updatedAt: string;
 }

@@ -439,7 +439,7 @@
         case 'LOVABLE_PROMPT_ENHANCED':
           hideSpinner();
           flashBadge('ok', `+${data.duration}s`);
-          showIlSuccessToast('✅ Enviado via Ilimitado Lov');
+          showIlSuccessToast('✅ Enviado via Ilimitado MRSL');
           chrome.runtime.sendMessage({ type: 'LOG_PROMPT', duration: data.duration });
           break;
         case 'LOVABLE_PROMPT_ERROR':
@@ -2033,7 +2033,7 @@ Isso vai remover a marca d'água do Lovable. Aplique essa alteração agora.`,
       subMenuHtml += '</div>';
 
       floatBall.innerHTML = `
-        <img src="${iconUrl}" alt="Ilimitado Lov">
+        <img src="${iconUrl}" alt="Ilimitado MRSL">
         <div class="il-status-dot"></div>
         ${subMenuHtml}
       `;

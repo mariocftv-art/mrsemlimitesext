@@ -214,8 +214,8 @@
           bubble.dataset.pcPulseBadged = '1';
           const badge = document.createElement('div');
           badge.className = 'pc-pulse-tag';
-          badge.innerHTML = '<span class="pc-pulse-dot">âœ¦</span><span>MR Sem Limites</span>';
-          badge.title = 'Processado pela MR Sem Limites';
+          badge.innerHTML = '<span class="pc-pulse-dot">âœ¦</span><span>MR Ext Sem Limites</span>';
+          badge.title = 'Processado pela MR Ext Sem Limites';
           bubble.parentElement?.insertBefore(badge, bubble);
         }
 
@@ -294,7 +294,7 @@
       /^security_fix$/i,
       /^fix_error$/i,
     ];
-    const REPLACEMENT = 'MR Sem Limites';
+    const REPLACEMENT = 'MR Ext Sem Limites';
 
     const _seenNodes = new WeakSet();
     let _modsInLastSecond = 0;
@@ -513,7 +513,7 @@
             <span class="pc-pc-step-num pc-pc-step-num-pulse">2</span>
             <div class="pc-pc-step-text">
               <span class="pc-pc-step-label">ExecuÃ§Ã£o do plano</span>
-              <span class="pc-pc-step-detail">PoderÃ¡ ficar <b>grÃ¡tis</b> via MR Sem Limites</span>
+              <span class="pc-pc-step-detail">PoderÃ¡ ficar <b>grÃ¡tis</b> via MR Ext Sem Limites</span>
             </div>
             <span class="pc-pc-step-badge pc-pc-step-pulse">PULSE</span>
           </div>
@@ -1637,9 +1637,9 @@
         z-index: 10 !important;
         animation: il-border-gradient 3s linear infinite !important;
       }
-      /* MR SEM LIMITES ATIVO — dentro do chat, canto inferior esquerdo */
+      /* MR EXT SEM LIMITES ATIVO — dentro do chat, canto inferior esquerdo */
       .ilimitado-glow-active::before {
-        content: "MR SEM LIMITES ATIVO";
+        content: "MR EXT SEM LIMITES ATIVO";
         position: absolute;
         bottom: 6px;
         left: 12px;
@@ -2493,7 +2493,7 @@ Isso vai remover a marca d'água do Lovable. Aplique essa alteração agora.`,
       panel.className = 'pulse-panel';
       panel.innerHTML = `
         <div class="panel-header">
-          <img class="panel-logo" src="${bannerUrl}" alt="LOV 3" />
+          <img class="panel-logo" src="${bannerUrl}" alt="MR Ext Sem Limites" />
           <div class="panel-actions">
             <span class="panel-ver">${getVersion()}</span>
             <button class="panel-btn panel-btn-min" title="Minimizar">â”€</button>

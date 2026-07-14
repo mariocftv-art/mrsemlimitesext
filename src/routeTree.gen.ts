@@ -10,18 +10,26 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VersionsRouteImport } from './routes/versions'
+import { Route as ToolsRouteImport } from './routes/tools'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as SecurityRouteImport } from './routes/security'
+import { Route as PromptsRouteImport } from './routes/prompts'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ProductsRouteImport } from './routes/products'
 import { Route as LogsRouteImport } from './routes/logs'
 import { Route as LicensesRouteImport } from './routes/licenses'
 import { Route as ExtensionsRouteImport } from './routes/extensions'
+import { Route as EditorRouteImport } from './routes/editor'
 import { Route as DownloadsRouteImport } from './routes/downloads'
 import { Route as DevicesRouteImport } from './routes/devices'
 import { Route as CustomersRouteImport } from './routes/customers'
+import { Route as ComponentsRouteImport } from './routes/components'
+import { Route as BuildCenterRouteImport } from './routes/build-center'
 import { Route as BlocksRouteImport } from './routes/blocks'
 import { Route as BlacklistRouteImport } from './routes/blacklist'
+import { Route as AssetsRouteImport } from './routes/assets'
 import { Route as ApiDocsRouteImport } from './routes/api-docs'
+import { Route as AnimationsRouteImport } from './routes/animations'
 import { Route as ActivationsRouteImport } from './routes/activations'
 import { Route as IndexRouteImport } from './routes/index'
 
@@ -30,9 +38,24 @@ const VersionsRoute = VersionsRouteImport.update({
   path: '/versions',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ToolsRoute = ToolsRouteImport.update({
+  id: '/tools',
+  path: '/tools',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SecurityRoute = SecurityRouteImport.update({
+  id: '/security',
+  path: '/security',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PromptsRoute = PromptsRouteImport.update({
+  id: '/prompts',
+  path: '/prompts',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProfileRoute = ProfileRouteImport.update({
@@ -60,6 +83,11 @@ const ExtensionsRoute = ExtensionsRouteImport.update({
   path: '/extensions',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EditorRoute = EditorRouteImport.update({
+  id: '/editor',
+  path: '/editor',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DownloadsRoute = DownloadsRouteImport.update({
   id: '/downloads',
   path: '/downloads',
@@ -75,6 +103,16 @@ const CustomersRoute = CustomersRouteImport.update({
   path: '/customers',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ComponentsRoute = ComponentsRouteImport.update({
+  id: '/components',
+  path: '/components',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BuildCenterRoute = BuildCenterRouteImport.update({
+  id: '/build-center',
+  path: '/build-center',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BlocksRoute = BlocksRouteImport.update({
   id: '/blocks',
   path: '/blocks',
@@ -85,9 +123,19 @@ const BlacklistRoute = BlacklistRouteImport.update({
   path: '/blacklist',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AssetsRoute = AssetsRouteImport.update({
+  id: '/assets',
+  path: '/assets',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiDocsRoute = ApiDocsRouteImport.update({
   id: '/api-docs',
   path: '/api-docs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnimationsRoute = AnimationsRouteImport.update({
+  id: '/animations',
+  path: '/animations',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ActivationsRoute = ActivationsRouteImport.update({
@@ -104,53 +152,77 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/activations': typeof ActivationsRoute
+  '/animations': typeof AnimationsRoute
   '/api-docs': typeof ApiDocsRoute
+  '/assets': typeof AssetsRoute
   '/blacklist': typeof BlacklistRoute
   '/blocks': typeof BlocksRoute
+  '/build-center': typeof BuildCenterRoute
+  '/components': typeof ComponentsRoute
   '/customers': typeof CustomersRoute
   '/devices': typeof DevicesRoute
   '/downloads': typeof DownloadsRoute
+  '/editor': typeof EditorRoute
   '/extensions': typeof ExtensionsRoute
   '/licenses': typeof LicensesRoute
   '/logs': typeof LogsRoute
   '/products': typeof ProductsRoute
   '/profile': typeof ProfileRoute
+  '/prompts': typeof PromptsRoute
+  '/security': typeof SecurityRoute
   '/settings': typeof SettingsRoute
+  '/tools': typeof ToolsRoute
   '/versions': typeof VersionsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/activations': typeof ActivationsRoute
+  '/animations': typeof AnimationsRoute
   '/api-docs': typeof ApiDocsRoute
+  '/assets': typeof AssetsRoute
   '/blacklist': typeof BlacklistRoute
   '/blocks': typeof BlocksRoute
+  '/build-center': typeof BuildCenterRoute
+  '/components': typeof ComponentsRoute
   '/customers': typeof CustomersRoute
   '/devices': typeof DevicesRoute
   '/downloads': typeof DownloadsRoute
+  '/editor': typeof EditorRoute
   '/extensions': typeof ExtensionsRoute
   '/licenses': typeof LicensesRoute
   '/logs': typeof LogsRoute
   '/products': typeof ProductsRoute
   '/profile': typeof ProfileRoute
+  '/prompts': typeof PromptsRoute
+  '/security': typeof SecurityRoute
   '/settings': typeof SettingsRoute
+  '/tools': typeof ToolsRoute
   '/versions': typeof VersionsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/activations': typeof ActivationsRoute
+  '/animations': typeof AnimationsRoute
   '/api-docs': typeof ApiDocsRoute
+  '/assets': typeof AssetsRoute
   '/blacklist': typeof BlacklistRoute
   '/blocks': typeof BlocksRoute
+  '/build-center': typeof BuildCenterRoute
+  '/components': typeof ComponentsRoute
   '/customers': typeof CustomersRoute
   '/devices': typeof DevicesRoute
   '/downloads': typeof DownloadsRoute
+  '/editor': typeof EditorRoute
   '/extensions': typeof ExtensionsRoute
   '/licenses': typeof LicensesRoute
   '/logs': typeof LogsRoute
   '/products': typeof ProductsRoute
   '/profile': typeof ProfileRoute
+  '/prompts': typeof PromptsRoute
+  '/security': typeof SecurityRoute
   '/settings': typeof SettingsRoute
+  '/tools': typeof ToolsRoute
   '/versions': typeof VersionsRoute
 }
 export interface FileRouteTypes {
@@ -158,70 +230,102 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/activations'
+    | '/animations'
     | '/api-docs'
+    | '/assets'
     | '/blacklist'
     | '/blocks'
+    | '/build-center'
+    | '/components'
     | '/customers'
     | '/devices'
     | '/downloads'
+    | '/editor'
     | '/extensions'
     | '/licenses'
     | '/logs'
     | '/products'
     | '/profile'
+    | '/prompts'
+    | '/security'
     | '/settings'
+    | '/tools'
     | '/versions'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/activations'
+    | '/animations'
     | '/api-docs'
+    | '/assets'
     | '/blacklist'
     | '/blocks'
+    | '/build-center'
+    | '/components'
     | '/customers'
     | '/devices'
     | '/downloads'
+    | '/editor'
     | '/extensions'
     | '/licenses'
     | '/logs'
     | '/products'
     | '/profile'
+    | '/prompts'
+    | '/security'
     | '/settings'
+    | '/tools'
     | '/versions'
   id:
     | '__root__'
     | '/'
     | '/activations'
+    | '/animations'
     | '/api-docs'
+    | '/assets'
     | '/blacklist'
     | '/blocks'
+    | '/build-center'
+    | '/components'
     | '/customers'
     | '/devices'
     | '/downloads'
+    | '/editor'
     | '/extensions'
     | '/licenses'
     | '/logs'
     | '/products'
     | '/profile'
+    | '/prompts'
+    | '/security'
     | '/settings'
+    | '/tools'
     | '/versions'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ActivationsRoute: typeof ActivationsRoute
+  AnimationsRoute: typeof AnimationsRoute
   ApiDocsRoute: typeof ApiDocsRoute
+  AssetsRoute: typeof AssetsRoute
   BlacklistRoute: typeof BlacklistRoute
   BlocksRoute: typeof BlocksRoute
+  BuildCenterRoute: typeof BuildCenterRoute
+  ComponentsRoute: typeof ComponentsRoute
   CustomersRoute: typeof CustomersRoute
   DevicesRoute: typeof DevicesRoute
   DownloadsRoute: typeof DownloadsRoute
+  EditorRoute: typeof EditorRoute
   ExtensionsRoute: typeof ExtensionsRoute
   LicensesRoute: typeof LicensesRoute
   LogsRoute: typeof LogsRoute
   ProductsRoute: typeof ProductsRoute
   ProfileRoute: typeof ProfileRoute
+  PromptsRoute: typeof PromptsRoute
+  SecurityRoute: typeof SecurityRoute
   SettingsRoute: typeof SettingsRoute
+  ToolsRoute: typeof ToolsRoute
   VersionsRoute: typeof VersionsRoute
 }
 
@@ -234,11 +338,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VersionsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tools': {
+      id: '/tools'
+      path: '/tools'
+      fullPath: '/tools'
+      preLoaderRoute: typeof ToolsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/settings': {
       id: '/settings'
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/security': {
+      id: '/security'
+      path: '/security'
+      fullPath: '/security'
+      preLoaderRoute: typeof SecurityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/prompts': {
+      id: '/prompts'
+      path: '/prompts'
+      fullPath: '/prompts'
+      preLoaderRoute: typeof PromptsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/profile': {
@@ -276,6 +401,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExtensionsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/editor': {
+      id: '/editor'
+      path: '/editor'
+      fullPath: '/editor'
+      preLoaderRoute: typeof EditorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/downloads': {
       id: '/downloads'
       path: '/downloads'
@@ -297,6 +429,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CustomersRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/components': {
+      id: '/components'
+      path: '/components'
+      fullPath: '/components'
+      preLoaderRoute: typeof ComponentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/build-center': {
+      id: '/build-center'
+      path: '/build-center'
+      fullPath: '/build-center'
+      preLoaderRoute: typeof BuildCenterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/blocks': {
       id: '/blocks'
       path: '/blocks'
@@ -311,11 +457,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlacklistRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/assets': {
+      id: '/assets'
+      path: '/assets'
+      fullPath: '/assets'
+      preLoaderRoute: typeof AssetsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api-docs': {
       id: '/api-docs'
       path: '/api-docs'
       fullPath: '/api-docs'
       preLoaderRoute: typeof ApiDocsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/animations': {
+      id: '/animations'
+      path: '/animations'
+      fullPath: '/animations'
+      preLoaderRoute: typeof AnimationsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/activations': {
@@ -338,18 +498,26 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ActivationsRoute: ActivationsRoute,
+  AnimationsRoute: AnimationsRoute,
   ApiDocsRoute: ApiDocsRoute,
+  AssetsRoute: AssetsRoute,
   BlacklistRoute: BlacklistRoute,
   BlocksRoute: BlocksRoute,
+  BuildCenterRoute: BuildCenterRoute,
+  ComponentsRoute: ComponentsRoute,
   CustomersRoute: CustomersRoute,
   DevicesRoute: DevicesRoute,
   DownloadsRoute: DownloadsRoute,
+  EditorRoute: EditorRoute,
   ExtensionsRoute: ExtensionsRoute,
   LicensesRoute: LicensesRoute,
   LogsRoute: LogsRoute,
   ProductsRoute: ProductsRoute,
   ProfileRoute: ProfileRoute,
+  PromptsRoute: PromptsRoute,
+  SecurityRoute: SecurityRoute,
   SettingsRoute: SettingsRoute,
+  ToolsRoute: ToolsRoute,
   VersionsRoute: VersionsRoute,
 }
 export const routeTree = rootRouteImport

@@ -108,6 +108,16 @@ function BackendPage() {
     }
   };
 
+  useEffect(() => {
+    if (!autoProbed && cfg.API_BASE_URL && !running && !results) {
+      setAutoProbed(true);
+      void doProbe();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cfg.API_BASE_URL, autoProbed]);
+
+
+
   const summary = useMemo(() => {
     if (!results) return null;
     const responded = results.filter((r) => r.responded);

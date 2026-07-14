@@ -129,6 +129,19 @@ function RuntimeViewer() {
   const [tab, setTab] = useState<string>("popup");
   const [reloadKey, setReloadKey] = useState(0);
 
+  const [sim, setSim] = useState<SimState>(DEFAULT_SIM);
+  const updateSim = <K extends keyof SimState>(k: K, v: SimState[K]) => {
+    setSim((s) => ({ ...s, [k]: v }));
+    setReloadKey((r) => r + 1);
+  };
+  const resetSim = () => {
+    setSim(DEFAULT_SIM);
+    setConsoleLog([]);
+    setEvents([]);
+    setErrors([]);
+    setReloadKey((r) => r + 1);
+  };
+
   const [consoleLog, setConsoleLog] = useState<ConsoleEntry[]>([]);
   const [events, setEvents] = useState<EventEntry[]>([]);
   const [store, setStore] = useState<StoreState>({ local: {}, sync: {}, session: {}, managed: {} });

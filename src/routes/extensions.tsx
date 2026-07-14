@@ -93,7 +93,9 @@ function ExtensionsPage() {
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<Sort>("updated");
   const [wizardOpen, setWizardOpen] = useState(false);
+  const [importOpen, setImportOpen] = useState(false);
   const [editing, setEditing] = useState<ExtensionRecord | null>(null);
+
 
   const filtered = useMemo(() => {
     let list = extensions.slice();

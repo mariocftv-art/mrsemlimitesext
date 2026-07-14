@@ -42,18 +42,16 @@ function BackendPage() {
   const [running, setRunning] = useState(false);
   const [results, setResults] = useState<ProbeResult[] | null>(null);
 
+  const [autoProbed, setAutoProbed] = useState(false);
+
   useEffect(() => {
     const loaded = loadBackendConfig();
-    // Ensure defaults are persisted so the whole Factory sees them.
     if (!loaded.API_BASE_URL) {
       saveBackendConfig(DEFAULT_BACKEND_CONFIG);
       setCfg(DEFAULT_BACKEND_CONFIG);
     } else {
       setCfg(loaded);
     }
-    // Auto-run probe once on mount
-    setTimeout(() => { void doProbeAuto(); }, 100);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const run = useServerFn(probeBackend);

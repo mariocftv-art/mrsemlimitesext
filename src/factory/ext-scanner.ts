@@ -170,7 +170,7 @@ function makeEntry(key: string, rootKey: string): FileEntry {
  */
 export function scanExtension(sourceDir: string): ScanResult {
   const rootKey = keyOf(sourceDir);
-  const keys = Object.keys(URL_MODULES).filter(
+  const keys = Object.keys(FILE_KEYS).filter(
     (k) => k === rootKey || k.startsWith(rootKey + "/"),
   );
 

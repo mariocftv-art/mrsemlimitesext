@@ -4,6 +4,7 @@ import {
   ArrowLeft,
   Camera,
   FileJson,
+  FlaskConical,
   Home,
   ImageIcon,
   Info,
@@ -19,6 +20,8 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { toPng } from "html-to-image";
+import { LabWorkspace } from "@/factory/lab";
+
 
 import { AppShell } from "@/components/layout/app-shell";
 import { Badge } from "@/components/ui/badge";

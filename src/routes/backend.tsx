@@ -91,6 +91,7 @@ function BackendPage() {
         url: cfg.API_BASE_URL, method: "N/A",
         status: null, ok: false, responded: false, ms: 0,
         error: (e as Error).message,
+        tests: [], authRequired: null,
       }]);
     } finally {
       setRunning(false);
@@ -219,10 +220,35 @@ function BackendPage() {
                       </div>
                       <p className="mt-1 truncate font-mono text-[10px] text-muted-foreground">{url}</p>
                       {r?.error && <p className="mt-0.5 text-[10px] text-rose-300">{r.error}</p>}
+                      {r?.tests && r.tests.length > 0 && (
+                        <div className="mt-1.5 grid grid-cols-4 gap-1">
+                          {r.tests.map((t) => (
+                            <div key={t.test}
+                              className={`rounded border p-1 text-center text-[9px] ${
+                                t.responded
+                                  ? t.ok
+                                    ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-200"
+                                    : "border-amber-500/40 bg-amber-500/10 text-amber-200"
+                                  : "border-rose-500/40 bg-rose-500/10 text-rose-200"
+                              }`}
+                              title={t.error ?? ""}>
+                              <div className="font-semibold uppercase tracking-wider">{t.test}</div>
+                              <div className="font-mono">{t.status ?? "×"} · {t.ms}ms</div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      {r?.authRequired !== undefined && r?.authRequired !== null && (
+                        <p className="mt-1 text-[10px] text-muted-foreground">
+                          Autenticação: {r.authRequired
+                            ? <span className="text-amber-300">exigida (401/403 sem apikey)</span>
+                            : <span className="text-emerald-300">não exigida</span>}
+                        </p>
+                      )}
                       {r?.bodyPreview && (
                         <details className="mt-1">
-                          <summary className="cursor-pointer text-[10px] text-muted-foreground">resposta</summary>
-                          <pre className="mt-1 max-h-32 overflow-auto whitespace-pre-wrap break-all rounded bg-background/60 p-1.5 font-mono text-[10px]">
+                          <summary className="cursor-pointer text-[10px] text-muted-foreground">resposta JSON ({r.bodyPreview.length} chars)</summary>
+                          <pre className="mt-1 max-h-64 overflow-auto whitespace-pre-wrap break-all rounded bg-background/60 p-1.5 font-mono text-[10px]">
                             {r.bodyPreview}
                           </pre>
                         </details>

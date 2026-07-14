@@ -126,7 +126,7 @@ export function seedHeavy(): State {
         ? `${String(10 + i).padStart(2,"0")}.${String(100 + i).padStart(3,"0")}.${String(200 + i).padStart(3,"0")}/0001-${String(10 + (i % 89)).padStart(2,"0")}`
         : `${String(100 + i).padStart(3,"0")}.${String(200 + i).padStart(3,"0")}.${String(300 + i).padStart(3,"0")}-${String(10 + (i % 89)).padStart(2,"0")}`,
       notes: i % 7 === 0 ? "Cliente VIP" : i % 11 === 0 ? "Reembolso solicitado" : "",
-      status: (i % 12 === 11 ? "inactive" : "active") as const,
+      status: (i % 12 === 11 ? "inactive" : "active") as "active" | "inactive",
       createdAt: isoDaysAgo(200 - i * 3),
     };
   });

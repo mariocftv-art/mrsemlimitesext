@@ -778,9 +778,18 @@ function SidePanel({
           </div>
         )}
 
+        <div className="rounded border border-border/40 bg-background/40 p-2 text-[10px] leading-relaxed">
+          <p className="mb-1 uppercase tracking-widest text-muted-foreground">Simulação ativa</p>
+          <ul className="space-y-0.5 font-mono text-muted-foreground">
+            <li>licença: <span className="text-foreground">{LICENSE_LABEL[sim.license]}</span></li>
+            <li>lovable: <span className="text-foreground">{LOVABLE_LABEL[sim.lovable]}</span></li>
+            <li>google: <span className="text-foreground">{GOOGLE_LABEL[sim.google]}</span></li>
+            <li>versão: <span className="text-foreground">{sim.version}</span></li>
+          </ul>
+        </div>
+
         <p className="rounded border border-border/40 bg-background/40 p-2 text-[10px] leading-relaxed text-muted-foreground">
-          Runtime é apenas simulação visual. Nenhum arquivo da EXT1 é modificado. As
-          telas rodam em iframe com as APIs do Chrome mockadas pela Factory.
+          Runtime é apenas simulação visual. Nenhum arquivo da EXT1 é modificado.
         </p>
       </CardContent>
     </Card>

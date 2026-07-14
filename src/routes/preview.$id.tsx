@@ -83,6 +83,7 @@ const TABS = [
 function PreviewWorkspace() {
   const { ext } = Route.useLoaderData() as { ext: ExtensionRecord };
   const navigate = useNavigate();
+  const scan = useExtensionScan(ext);
   const [tab, setTab] = useState<(typeof TABS)[number]["value"]>("home");
   const [full, setFull] = useState(false);
   const [reloadKey, setReloadKey] = useState(0);
@@ -116,7 +117,7 @@ function PreviewWorkspace() {
       key={reloadKey}
       className={`grid gap-4 ${full ? "grid-cols-1" : "lg:grid-cols-[280px_1fr]"}`}
     >
-      {!full && <SidePanel ext={ext} />}
+      {!full && <SidePanel ext={ext} scan={scan} />}
 
       <div className="space-y-3">
         <div className="flex items-center justify-between gap-2 rounded-lg border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-xs text-amber-200">
@@ -167,9 +168,11 @@ function PreviewWorkspace() {
             <TabsContent value="popup"><PopupPreview ext={ext} /></TabsContent>
             <TabsContent value="sidepanel"><SidepanelPreview ext={ext} /></TabsContent>
             <TabsContent value="config"><ConfigPreview ext={ext} /></TabsContent>
-            <TabsContent value="assets"><AssetsPreview ext={ext} /></TabsContent>
-            <TabsContent value="manifest"><ManifestPreview ext={ext} /></TabsContent>
-            <TabsContent value="info"><InfoPreview ext={ext} /></TabsContent>
+            <TabsContent value="assets"><AssetsPreview ext={ext} scan={scan} /></TabsContent>
+            <TabsContent value="files"><FilesPreview ext={ext} scan={scan} /></TabsContent>
+            <TabsContent value="deps"><DepsPreview ext={ext} scan={scan} /></TabsContent>
+            <TabsContent value="manifest"><ManifestPreview ext={ext} scan={scan} /></TabsContent>
+            <TabsContent value="info"><InfoPreview ext={ext} scan={scan} /></TabsContent>
             <TabsContent value="lab"><LabWorkspace ext={ext} /></TabsContent>
           </div>
         </Tabs>

@@ -150,7 +150,7 @@ function makeEntry(key: string, rootKey: string): FileEntry {
   const name = parts[parts.length - 1] ?? "";
   const dir = parts.slice(0, -1).join("/");
   const ext = (name.split(".").pop() || "").toLowerCase();
-  const url = URL_MODULES[key] ?? symlinkUrl(key);
+  const url = symlinkUrl(key);
   return {
     key,
     path: relative,

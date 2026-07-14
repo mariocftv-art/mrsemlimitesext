@@ -723,6 +723,7 @@ function SidePanel({
   consoleCount,
   eventsCount,
   errors,
+  sim,
 }: {
   ext: ExtensionRecord;
   scan: ScanResult;
@@ -731,6 +732,7 @@ function SidePanel({
   consoleCount: number;
   eventsCount: number;
   errors: string[];
+  sim: SimState;
 }) {
   const iconPath =
     (manifest?.icons?.["128"] as string | undefined) ??

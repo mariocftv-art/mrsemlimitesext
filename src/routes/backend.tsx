@@ -91,6 +91,7 @@ function BackendPage() {
         url: cfg.API_BASE_URL, method: "N/A",
         status: null, ok: false, responded: false, ms: 0,
         error: (e as Error).message,
+        tests: [], authRequired: null,
       }]);
     } finally {
       setRunning(false);

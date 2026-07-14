@@ -333,11 +333,13 @@ function ChromeFrame({
   file,
   pageKey,
   label,
+  sim,
 }: {
   base: string;
   file: string;
   pageKey: string;
   label: string;
+  sim: SimState;
 }) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
@@ -356,11 +358,16 @@ function ChromeFrame({
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         const raw = await r.text();
         const absBase = new URL(base, window.location.origin).toString();
+        const simScript =
+          `<script>window.__mrSim=${JSON.stringify(sim)};</script>\n` +
+          `<script>${simBootstrap()}</script>\n`;
         const injection =
           `<base href="${absBase}">\n` +
+          simScript +
           `<script src="/factory-chrome-mock.js"></script>\n` +
           `<script src="/factory-runtime-mock.js"></script>\n` +
-          `<style>html,body{margin:0;background:#0b0b12;color:#eee;font-family:system-ui,sans-serif;}</style>\n`;
+          `<script>${simApplyAfterMock()}</script>\n` +
+          `<style>html,body{margin:0;background:#0b0b12;color:#eee;font-family:system-ui,sans-serif;}${simBanner(sim)}</style>\n`;
 
         let patched: string;
         if (/<head[^>]*>/i.test(raw)) {
@@ -386,7 +393,8 @@ function ChromeFrame({
       cancelled = true;
       if (created) URL.revokeObjectURL(created);
     };
-  }, [base, file]);
+  }, [base, file, sim]);
+
 
   // Dimensões similares às do Chrome
   const { width, height } = frameSize(pageKey);

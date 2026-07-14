@@ -78,6 +78,48 @@ type ConsoleEntry = { id: string; level: string; ts: number; args: unknown[] };
 type EventEntry = { id: string; ts: number; label: string; detail?: string };
 type StoreState = Record<string, Record<string, unknown>>;
 
+type LicenseState =
+  | "none"
+  | "trial"
+  | "premium"
+  | "expired"
+  | "revoked"
+  | "hwid_mismatch";
+type LovableState = "offline" | "online" | "timeout" | "slow" | "error500";
+type GoogleState =
+  | "page_open"
+  | "page_closed"
+  | "logged_in"
+  | "logged_out"
+  | "incompatible";
+type ChromeStorageState = "empty" | "filled";
+type ChromeCookiesState = "present" | "absent";
+type ChromePermissionState = "granted" | "denied";
+type ChromeAlarmState = "active" | "inactive";
+type VersionState = "2.1.0" | "2.2.0" | "2.2.7" | "dev";
+
+type SimState = {
+  license: LicenseState;
+  lovable: LovableState;
+  google: GoogleState;
+  storage: ChromeStorageState;
+  cookies: ChromeCookiesState;
+  permission: ChromePermissionState;
+  alarm: ChromeAlarmState;
+  version: VersionState;
+};
+
+const DEFAULT_SIM: SimState = {
+  license: "none",
+  lovable: "online",
+  google: "page_closed",
+  storage: "empty",
+  cookies: "absent",
+  permission: "granted",
+  alarm: "inactive",
+  version: "2.2.7",
+};
+
 function RuntimeViewer() {
   const { ext } = Route.useLoaderData() as { ext: ExtensionRecord };
   const base = useMemo(() => baseUrlFor(ext), [ext]);

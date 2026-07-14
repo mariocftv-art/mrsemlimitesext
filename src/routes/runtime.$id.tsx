@@ -2,14 +2,12 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowLeft,
-  Boxes,
   Bug,
   Database,
-  FileJson,
-  Image as ImageIcon,
   Info,
   Loader2,
   RefreshCcw,
+  Shield,
   Terminal,
   Trash2,
   Zap,
@@ -24,7 +22,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getExtensionById, type ExtensionRecord } from "@/factory";
 import {
   readManifest,
-  readRaw,
   scanExtension,
   type ExtensionManifest,
   type ScanResult,
@@ -67,6 +64,7 @@ const PAGES: PageDef[] = [
   { key: "sidepanel", label: "Sidepanel", file: "sidepanel.html" },
   { key: "permission", label: "Permission", file: "permission.html" },
   { key: "offscreen", label: "Offscreen", file: "offscreen.html" },
+  { key: "options", label: "Options", file: "options.html" },
 ];
 
 type ConsoleEntry = { id: string; level: string; ts: number; args: unknown[] };
@@ -88,9 +86,7 @@ function RuntimeViewer() {
   const [errors, setErrors] = useState<string[]>([]);
 
   const [manifest, setManifest] = useState<ExtensionManifest | null>(null);
-  const [manifestRaw, setManifestRaw] = useState<string>("");
 
-  // HEAD probes
   useEffect(() => {
     let cancel = false;
     PAGES.forEach(async (p) => {
@@ -107,22 +103,17 @@ function RuntimeViewer() {
     };
   }, [base]);
 
-  // Manifest cache
   useEffect(() => {
     let cancel = false;
     (async () => {
       const m = await readManifest(ext.sourceDir);
-      const raw = await readRaw(`/${ext.sourceDir}/manifest.json`);
-      if (cancel) return;
-      setManifest(m);
-      setManifestRaw(raw ?? "");
+      if (!cancel) setManifest(m);
     })();
     return () => {
       cancel = true;
     };
   }, [ext.sourceDir]);
 
-  // Message bus
   useEffect(() => {
     const onMsg = (e: MessageEvent) => {
       const d = e.data;
@@ -160,14 +151,12 @@ function RuntimeViewer() {
     setReloadKey((k) => k + 1);
   };
 
-  const backgroundFile = scan.files.find(
-    (f) => f.name === "background.js" || f.name === "service-worker.js",
-  );
+  const visiblePages = PAGES.filter((p) => availability[p.key] !== false);
 
   return (
     <AppShell
       title={`Runtime · ${ext.name}`}
-      subtitle="Ambiente de inspeção e desenvolvimento — leitura direta da pasta da EXT1."
+      subtitle="Simulação visual da extensão instalada — leitura direta da EXT1, sem alterações."
       actions={
         <div className="flex gap-2">
           <Button size="sm" variant="outline" onClick={refresh} className="gap-1.5">
@@ -190,65 +179,53 @@ function RuntimeViewer() {
         <div className="space-y-3">
           <div className="flex items-center gap-2 rounded-lg border border-violet-500/40 bg-violet-500/10 px-3 py-2 text-xs text-violet-200">
             <Bug className="h-4 w-4" />
-            Runtime Viewer — inspecionando <code className="font-mono">{base}</code>
-            <Badge variant="outline" className="ml-auto border-violet-400/40 text-violet-200">
-              {scan.files.length} arquivos
-            </Badge>
+            Runtime simulado — cada tela abre como se a extensão estivesse instalada no Chrome.
           </div>
 
           <Tabs value={tab} onValueChange={setTab}>
             <TabsList className="flex-wrap bg-background/40">
               {PAGES.map((p) => (
-                <TabsTrigger key={p.key} value={p.key} className="text-xs">
+                <TabsTrigger
+                  key={p.key}
+                  value={p.key}
+                  disabled={availability[p.key] === false}
+                  className="text-xs"
+                >
                   {p.label}
                   {availability[p.key] === "checking" && (
                     <Loader2 className="ml-1 h-3 w-3 animate-spin" />
                   )}
-                  {availability[p.key] === false && (
-                    <span className="ml-1 text-[10px] opacity-60">·</span>
-                  )}
                 </TabsTrigger>
               ))}
-              <TabsTrigger value="background" className="text-xs">Background</TabsTrigger>
               <TabsTrigger value="manifest" className="text-xs">Manifest</TabsTrigger>
-              <TabsTrigger value="assets" className="text-xs">Assets</TabsTrigger>
               <TabsTrigger value="storage" className="text-xs">Storage</TabsTrigger>
               <TabsTrigger value="console" className="text-xs">Console</TabsTrigger>
               <TabsTrigger value="events" className="text-xs">Eventos</TabsTrigger>
-              <TabsTrigger value="info" className="text-xs">Informações</TabsTrigger>
             </TabsList>
 
             {PAGES.map((p) => (
               <TabsContent key={p.key} value={p.key} className="mt-3">
                 {availability[p.key] === true ? (
-                  <IframeStage
+                  <ChromeFrame
                     key={`${p.key}-${reloadKey}`}
                     base={base}
                     file={p.file}
                     pageKey={p.key}
+                    label={p.label}
                   />
                 ) : availability[p.key] === "checking" ? (
-                  <PanelMsg icon={Loader2} spin text={`Verificando ${p.file}…`} />
+                  <PanelMsg icon={Loader2} spin text={`Verificando ${p.label}…`} />
                 ) : (
-                  <PanelMsg icon={Info} text={`Arquivo não encontrado: ${p.file}`} />
+                  <PanelMsg
+                    icon={Info}
+                    text={`Esta extensão não fornece a tela ${p.label}.`}
+                  />
                 )}
               </TabsContent>
             ))}
 
-            <TabsContent value="background" className="mt-3">
-              {backgroundFile ? (
-                <CodeView pathLabel={backgroundFile.path} url={backgroundFile.url} language="js" />
-              ) : (
-                <PanelMsg icon={Info} text="background.js / service-worker.js não encontrado" />
-              )}
-            </TabsContent>
-
             <TabsContent value="manifest" className="mt-3">
-              <ManifestPanel manifest={manifest} raw={manifestRaw} />
-            </TabsContent>
-
-            <TabsContent value="assets" className="mt-3">
-              <AssetsPanel scan={scan} />
+              <ManifestCard manifest={manifest} base={base} />
             </TabsContent>
 
             <TabsContent value="storage" className="mt-3">
@@ -262,16 +239,14 @@ function RuntimeViewer() {
             <TabsContent value="events" className="mt-3">
               <EventsPanel entries={events} clear={() => setEvents([])} />
             </TabsContent>
-
-            <TabsContent value="info" className="mt-3">
-              <InfoPanel ext={ext} scan={scan} manifest={manifest} />
-            </TabsContent>
           </Tabs>
         </div>
 
         <SidePanel
           ext={ext}
           scan={scan}
+          manifest={manifest}
+          pagesAvailable={visiblePages.length}
           consoleCount={consoleLog.length}
           eventsCount={events.length}
           errors={errors}
@@ -282,10 +257,20 @@ function RuntimeViewer() {
 }
 
 // ============================================================
-// Iframe stage (com mock estendido)
+// Chrome-like frame (popup / sidepanel / permission / offscreen / options)
 // ============================================================
 
-function IframeStage({ base, file, pageKey }: { base: string; file: string; pageKey: string }) {
+function ChromeFrame({
+  base,
+  file,
+  pageKey,
+  label,
+}: {
+  base: string;
+  file: string;
+  pageKey: string;
+  label: string;
+}) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
   const [error, setError] = useState<string | null>(null);
@@ -335,46 +320,176 @@ function IframeStage({ base, file, pageKey }: { base: string; file: string; page
     };
   }, [base, file]);
 
-  const width = pageKey === "popup" ? 380 : pageKey === "sidepanel" ? 420 : "100%";
-  const height = pageKey === "popup" ? 560 : 720;
+  // Dimensões similares às do Chrome
+  const { width, height } = frameSize(pageKey);
 
   return (
-    <div className="flex items-start justify-center rounded-xl border border-border/60 bg-background/40 p-4">
-      <div className="relative" style={{ width, maxWidth: "100%" }}>
-        {status === "loading" && !blobUrl && (
-          <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/60 text-xs text-muted-foreground">
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Carregando {file}…
+    <div className="flex items-start justify-center rounded-xl border border-border/60 bg-[#1a1a24] p-6">
+      <div style={{ width, maxWidth: "100%" }}>
+        {/* Barra estilo Chrome */}
+        <div className="flex items-center gap-2 rounded-t-lg border border-b-0 border-border/60 bg-[#2a2a35] px-3 py-1.5 text-[11px] text-muted-foreground">
+          <div className="flex gap-1">
+            <span className="h-2 w-2 rounded-full bg-rose-400/70" />
+            <span className="h-2 w-2 rounded-full bg-amber-400/70" />
+            <span className="h-2 w-2 rounded-full bg-emerald-400/70" />
           </div>
-        )}
-        {status === "error" && (
-          <div className="rounded-md border border-rose-500/40 bg-rose-500/10 p-4 text-xs text-rose-200">
-            Falha ao carregar: {error}
-          </div>
-        )}
-        {blobUrl && (
-          <iframe
-            ref={iframeRef}
-            title={file}
-            src={blobUrl}
-            onLoad={() => setStatus("ready")}
-            sandbox="allow-scripts allow-forms allow-popups allow-same-origin"
-            style={{
-              width: "100%",
-              height,
-              border: "1px solid hsl(var(--border) / 0.6)",
-              borderRadius: 12,
-              background: "#0b0b12",
-              display: "block",
-            }}
-          />
-        )}
+          <span className="ml-2 font-mono">chrome-extension://mr-factory/{file}</span>
+          <Badge variant="outline" className="ml-auto border-border/40 text-[9px]">
+            {label}
+          </Badge>
+        </div>
+        <div className="relative">
+          {status === "loading" && !blobUrl && (
+            <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/60 text-xs text-muted-foreground">
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Abrindo {label}…
+            </div>
+          )}
+          {status === "error" && (
+            <div className="rounded-b-lg border border-t-0 border-rose-500/40 bg-rose-500/10 p-4 text-xs text-rose-200">
+              Falha ao abrir: {error}
+            </div>
+          )}
+          {blobUrl && (
+            <iframe
+              ref={iframeRef}
+              title={label}
+              src={blobUrl}
+              onLoad={() => setStatus("ready")}
+              sandbox="allow-scripts allow-forms allow-popups allow-same-origin"
+              style={{
+                width: "100%",
+                height,
+                border: "1px solid hsl(var(--border) / 0.6)",
+                borderTop: "none",
+                borderRadius: "0 0 12px 12px",
+                background: "#0b0b12",
+                display: "block",
+              }}
+            />
+          )}
+        </div>
       </div>
     </div>
   );
 }
 
+function frameSize(pageKey: string): { width: number | string; height: number } {
+  switch (pageKey) {
+    case "popup":
+      return { width: 380, height: 560 };
+    case "sidepanel":
+      return { width: 420, height: 720 };
+    case "permission":
+      return { width: 560, height: 520 };
+    case "offscreen":
+      return { width: "100%", height: 200 };
+    case "options":
+      return { width: "100%", height: 720 };
+    default:
+      return { width: "100%", height: 640 };
+  }
+}
+
 // ============================================================
-// Panels
+// Manifest card (resumo)
+// ============================================================
+
+function ManifestCard({
+  manifest,
+  base,
+}: {
+  manifest: ExtensionManifest | null;
+  base: string;
+}) {
+  if (!manifest) {
+    return <PanelMsg icon={Info} text="Manifest indisponível." />;
+  }
+  const perms = manifest.permissions ?? [];
+  const hostPerms = manifest.host_permissions ?? [];
+  const iconEntries = Object.entries(manifest.icons ?? {}) as [string, string][];
+  const bg = manifest.background as { service_worker?: string; scripts?: string[] } | undefined;
+  const sw = bg?.service_worker ?? bg?.scripts?.[0] ?? "—";
+
+  return (
+    <Card className="border-border/60">
+      <CardContent className="space-y-5 p-5">
+        <div>
+          <p className="text-xs uppercase tracking-widest text-muted-foreground">Nome</p>
+          <p className="text-lg font-semibold">{manifest.name ?? "—"}</p>
+          {manifest.description && (
+            <p className="mt-1 text-xs text-muted-foreground">{manifest.description}</p>
+          )}
+        </div>
+
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <Field label="Versão" value={manifest.version ?? "—"} />
+          <Field label="Manifest" value={String(manifest.manifest_version ?? "—")} />
+          <Field label="Service Worker" value={sw} mono />
+          <Field label="Permissões" value={`${perms.length + hostPerms.length}`} />
+        </div>
+
+        {iconEntries.length > 0 && (
+          <div>
+            <p className="mb-2 text-[10px] uppercase tracking-widest text-muted-foreground">
+              Ícones
+            </p>
+            <div className="flex flex-wrap items-end gap-3">
+              {iconEntries
+                .sort((a, b) => Number(a[0]) - Number(b[0]))
+                .map(([size, path]) => (
+                  <div key={size} className="flex flex-col items-center gap-1">
+                    <img
+                      src={base + path}
+                      alt=""
+                      className="rounded border border-border/40 bg-background/40 object-contain"
+                      style={{ width: Math.min(64, Number(size)), height: Math.min(64, Number(size)) }}
+                    />
+                    <span className="text-[10px] text-muted-foreground">{size}px</span>
+                  </div>
+                ))}
+            </div>
+          </div>
+        )}
+
+        {(perms.length > 0 || hostPerms.length > 0) && (
+          <div>
+            <p className="mb-2 flex items-center gap-1.5 text-[10px] uppercase tracking-widest text-muted-foreground">
+              <Shield className="h-3 w-3" /> Permissões
+            </p>
+            <div className="flex flex-wrap gap-1.5">
+              {perms.map((p) => (
+                <Badge key={p} variant="outline" className="border-border/40 font-mono text-[10px]">
+                  {p}
+                </Badge>
+              ))}
+              {hostPerms.map((p) => (
+                <Badge
+                  key={p}
+                  variant="outline"
+                  className="border-cyan-500/40 font-mono text-[10px] text-cyan-200"
+                >
+                  {p}
+                </Badge>
+              ))}
+            </div>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
+function Field({ label, value, mono }: { label: string; value: string; mono?: boolean }) {
+  return (
+    <div className="rounded border border-border/40 bg-background/40 p-2">
+      <p className="text-[9px] uppercase tracking-widest text-muted-foreground">{label}</p>
+      <p className={`mt-0.5 truncate text-sm ${mono ? "font-mono text-[11px]" : ""}`}>{value}</p>
+    </div>
+  );
+}
+
+// ============================================================
+// Diagnostics
 // ============================================================
 
 function PanelMsg({
@@ -393,161 +508,6 @@ function PanelMsg({
         {text}
       </CardContent>
     </Card>
-  );
-}
-
-const rawCache = new Map<string, string>();
-
-function CodeView({ pathLabel, url, language }: { pathLabel: string; url: string; language: string }) {
-  const [text, setText] = useState<string | null>(rawCache.get(url) ?? null);
-  const [err, setErr] = useState<string | null>(null);
-  useEffect(() => {
-    if (rawCache.has(url)) return;
-    let cancel = false;
-    fetch(url)
-      .then((r) => (r.ok ? r.text() : Promise.reject(new Error(`HTTP ${r.status}`))))
-      .then((t) => {
-        if (cancel) return;
-        rawCache.set(url, t);
-        setText(t);
-      })
-      .catch((e) => !cancel && setErr((e as Error).message));
-    return () => {
-      cancel = true;
-    };
-  }, [url]);
-  return (
-    <Card className="border-border/60">
-      <CardContent className="p-0">
-        <div className="flex items-center justify-between border-b border-border/40 px-3 py-1.5 text-[10px] uppercase tracking-widest text-muted-foreground">
-          <span className="font-mono">{pathLabel}</span>
-          <Badge variant="outline" className="border-border/40 text-[9px]">{language}</Badge>
-        </div>
-        {err ? (
-          <p className="p-4 text-xs text-rose-300">Erro: {err}</p>
-        ) : text === null ? (
-          <p className="p-4 text-xs text-muted-foreground">Carregando…</p>
-        ) : (
-          <ScrollArea className="h-[520px]">
-            <pre className="whitespace-pre p-3 font-mono text-[11px] leading-relaxed">{text}</pre>
-          </ScrollArea>
-        )}
-      </CardContent>
-    </Card>
-  );
-}
-
-function ManifestPanel({ manifest, raw }: { manifest: ExtensionManifest | null; raw: string }) {
-  if (!manifest) {
-    return <PanelMsg icon={Info} text="manifest.json não encontrado ou inválido" />;
-  }
-  const rows: [string, unknown][] = [
-    ["name", manifest.name],
-    ["version", manifest.version],
-    ["manifest_version", manifest.manifest_version],
-    ["description", manifest.description],
-    ["permissions", manifest.permissions],
-    ["host_permissions", manifest.host_permissions],
-    ["action", manifest.action],
-    ["background", manifest.background],
-    ["content_scripts", manifest.content_scripts],
-    ["side_panel", manifest.side_panel],
-    ["commands", manifest.commands],
-    ["icons", manifest.icons],
-    ["web_accessible_resources", manifest.web_accessible_resources],
-  ];
-  return (
-    <div className="grid gap-3 lg:grid-cols-2">
-      <Card className="border-border/60">
-        <CardContent className="p-0">
-          <div className="border-b border-border/40 px-3 py-1.5 text-[10px] uppercase tracking-widest text-muted-foreground">
-            Campos
-          </div>
-          <ScrollArea className="h-[520px]">
-            <table className="w-full text-[11px]">
-              <tbody>
-                {rows.map(([k, v]) => (
-                  <tr key={k} className="border-b border-border/20 align-top">
-                    <td className="w-40 px-3 py-1.5 font-mono text-muted-foreground">{k}</td>
-                    <td className="px-3 py-1.5 font-mono">
-                      {v === undefined ? (
-                        <span className="text-muted-foreground">—</span>
-                      ) : (
-                        <pre className="whitespace-pre-wrap break-all">{JSON.stringify(v, null, 2)}</pre>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </ScrollArea>
-        </CardContent>
-      </Card>
-      <Card className="border-border/60">
-        <CardContent className="p-0">
-          <div className="border-b border-border/40 px-3 py-1.5 text-[10px] uppercase tracking-widest text-muted-foreground">
-            manifest.json (raw)
-          </div>
-          <ScrollArea className="h-[520px]">
-            <pre className="whitespace-pre p-3 font-mono text-[11px]">{raw}</pre>
-          </ScrollArea>
-        </CardContent>
-      </Card>
-    </div>
-  );
-}
-
-function AssetsPanel({ scan }: { scan: ScanResult }) {
-  const groups: [string, { name: string; url: string }[]][] = [
-    ["Icons", scan.assets.icons.map((f) => ({ name: f.path, url: f.url }))],
-    ["Imagens", scan.assets.images.map((f) => ({ name: f.path, url: f.url }))],
-    ["Sons", scan.assets.sounds.map((f) => ({ name: f.path, url: f.url }))],
-    ["Fontes", scan.assets.fonts.map((f) => ({ name: f.path, url: f.url }))],
-  ];
-  return (
-    <div className="space-y-4">
-      {groups.map(([label, items]) => (
-        <Card key={label} className="border-border/60">
-          <CardContent className="space-y-2 p-3">
-            <div className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-muted-foreground">
-              <ImageIcon className="h-3 w-3" /> {label} ({items.length})
-            </div>
-            {items.length === 0 ? (
-              <p className="text-xs text-muted-foreground">Nenhum arquivo.</p>
-            ) : (
-              <div className="grid grid-cols-2 gap-2 md:grid-cols-4 lg:grid-cols-6">
-                {items.map((it) => (
-                  <a
-                    key={it.name}
-                    href={it.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="group flex flex-col items-center gap-1 rounded border border-border/40 bg-background/40 p-2 text-[10px] hover:border-primary/60"
-                    title={it.name}
-                  >
-                    {label === "Sons" ? (
-                      <audio src={it.url} controls className="w-full" />
-                    ) : label === "Fontes" ? (
-                      <FileJson className="h-8 w-8 text-muted-foreground" />
-                    ) : (
-                      <img
-                        src={it.url}
-                        alt=""
-                        className="h-16 w-full object-contain"
-                        loading="lazy"
-                      />
-                    )}
-                    <span className="w-full truncate font-mono text-muted-foreground group-hover:text-foreground">
-                      {it.name.split("/").pop()}
-                    </span>
-                  </a>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      ))}
-    </div>
   );
 }
 
@@ -675,76 +635,60 @@ function EventsPanel({ entries, clear }: { entries: EventEntry[]; clear: () => v
   );
 }
 
-function InfoPanel({
-  ext,
-  scan,
-  manifest,
-}: {
-  ext: ExtensionRecord;
-  scan: ScanResult;
-  manifest: ExtensionManifest | null;
-}) {
-  const rows: [string, string][] = [
-    ["ID", ext.id],
-    ["Código", ext.code],
-    ["Registry version", ext.version],
-    ["Manifest version", manifest?.version ?? "—"],
-    ["Manifest name", manifest?.name ?? "—"],
-    ["Source dir", ext.sourceDir],
-    ["Arquivos", String(scan.files.length)],
-    ["Popup", scan.hasPopup ? "sim" : "não"],
-    ["Sidepanel", scan.hasSidepanel ? "sim" : "não"],
-    ["Background", scan.hasBackground ? "sim" : "não"],
-    ["Content scripts", scan.hasContentScripts ? "sim" : "não"],
-    ["Package.json", scan.hasPackageJson ? "sim" : "não"],
-    ["Build script", scan.hasBuildScript ? "sim" : "não"],
-  ];
-  return (
-    <Card className="border-border/60">
-      <CardContent className="p-0">
-        <table className="w-full text-xs">
-          <tbody>
-            {rows.map(([k, v]) => (
-              <tr key={k} className="border-b border-border/20">
-                <td className="w-48 px-3 py-1.5 text-muted-foreground">{k}</td>
-                <td className="px-3 py-1.5 font-mono">{v}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </CardContent>
-    </Card>
-  );
-}
+// ============================================================
+// Side info panel
+// ============================================================
 
 function SidePanel({
   ext,
   scan,
+  manifest,
+  pagesAvailable,
   consoleCount,
   eventsCount,
   errors,
 }: {
   ext: ExtensionRecord;
   scan: ScanResult;
+  manifest: ExtensionManifest | null;
+  pagesAvailable: number;
   consoleCount: number;
   eventsCount: number;
   errors: string[];
 }) {
+  const iconPath =
+    (manifest?.icons?.["128"] as string | undefined) ??
+    (manifest?.icons?.["48"] as string | undefined) ??
+    undefined;
+  const iconUrl = iconPath ? baseUrlFor(ext) + iconPath : scan.assets.icon128 ?? scan.assets.icon48;
+
   return (
     <Card className="glass h-fit border-border/60">
       <CardContent className="space-y-3 p-4 text-xs">
-        <div>
-          <p className="text-sm font-semibold">{ext.name}</p>
-          <p className="text-[10px] uppercase tracking-widest text-muted-foreground">
-            {ext.code} · v{ext.version}
-          </p>
+        <div className="flex items-center gap-3">
+          {iconUrl ? (
+            <img
+              src={iconUrl}
+              alt=""
+              className="h-12 w-12 rounded-xl border border-border/40 bg-background/40 object-contain"
+            />
+          ) : (
+            <div className="h-12 w-12 rounded-xl border border-border/40 bg-background/40" />
+          )}
+          <div className="min-w-0">
+            <p className="truncate text-sm font-semibold">{manifest?.name ?? ext.name}</p>
+            <p className="text-[10px] uppercase tracking-widest text-muted-foreground">
+              v{manifest?.version ?? ext.version}
+            </p>
+          </div>
         </div>
-        <div className="grid grid-cols-2 gap-2">
-          <Stat icon={Boxes} label="Arquivos" value={scan.files.length} />
-          <Stat icon={ImageIcon} label="Assets" value={scan.assets.icons.length + scan.assets.images.length + scan.assets.sounds.length} />
-          <Stat icon={Terminal} label="Console" value={consoleCount} />
-          <Stat icon={Zap} label="Eventos" value={eventsCount} />
+
+        <div className="grid grid-cols-3 gap-2">
+          <Stat label="Telas" value={pagesAvailable} />
+          <Stat label="Console" value={consoleCount} />
+          <Stat label="Eventos" value={eventsCount} />
         </div>
+
         {errors.length > 0 && (
           <div className="rounded border border-rose-500/40 bg-rose-500/10 p-2 text-[11px] text-rose-200">
             <p className="mb-1 font-semibold">Erros ({errors.length})</p>
@@ -755,22 +699,20 @@ function SidePanel({
             </ul>
           </div>
         )}
+
         <p className="rounded border border-border/40 bg-background/40 p-2 text-[10px] leading-relaxed text-muted-foreground">
-          Runtime é apenas visualizador. Nenhum arquivo da EXT1 é modificado. Storage é
-          mockado em sessionStorage e reflete somente o que o UI da extensão gravar
-          durante esta sessão.
+          Runtime é apenas simulação visual. Nenhum arquivo da EXT1 é modificado. As
+          telas rodam em iframe com as APIs do Chrome mockadas pela Factory.
         </p>
       </CardContent>
     </Card>
   );
 }
 
-function Stat({ icon: Icon, label, value }: { icon: typeof Info; label: string; value: number }) {
+function Stat({ label, value }: { label: string; value: number }) {
   return (
-    <div className="rounded border border-border/40 bg-background/40 p-2">
-      <p className="flex items-center gap-1 text-[9px] uppercase tracking-widest text-muted-foreground">
-        <Icon className="h-3 w-3" /> {label}
-      </p>
+    <div className="rounded border border-border/40 bg-background/40 p-2 text-center">
+      <p className="text-[9px] uppercase tracking-widest text-muted-foreground">{label}</p>
       <p className="mt-0.5 text-sm font-semibold">{value}</p>
     </div>
   );

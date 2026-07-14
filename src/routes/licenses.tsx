@@ -376,8 +376,8 @@ function CreateLicenseDialog({ open, onOpenChange }: { open: boolean; onOpenChan
     if (!ms || ms <= 0) return toast.error("Duração inválida.");
     const created: string[] = [];
     for (let i = 0; i < n; i++) {
-      const base = licenseActions.generateKey();
-      const key = isTrial ? `TRIAL-${base}` : base;
+      const key = licenseActions.generateKey();
+
       const l = licenseActions.create({
         key,
         product: isTrial ? `${product} (TESTE)` : product,

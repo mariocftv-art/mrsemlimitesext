@@ -50,6 +50,15 @@
         "content/content.css"
       ],
       "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "https://lovable.dev/*"
+      ],
+      "js": [
+        "content/sound-detector.js"
+      ],
+      "run_at": "document_idle"
     }
   ],
   "action": {
@@ -73,12 +82,14 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "remote-ui.js",
+        "assets/sounds/alert.mp3",
+        "assets/sounds/coin.mp3",
+        "icons/*",
         "jszip.min.js",
+        "logo.png",
         "popup.html",
         "popup.js",
-        "icons/*",
-        "logo.png"
+        "remote-ui.js"
       ],
       "matches": [
         "<all_urls>"

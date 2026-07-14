@@ -7,18 +7,20 @@
 // /extensions/**/* no build. Cada arquivo é servido em runtime pelo
 // symlink public/ext-src -> ../extensions.
 
-// URLs físicas (via Vite) — usadas quando o consumidor precisa
-// carregar o binário processado (ex.: <img src>).
-const URL_MODULES = import.meta.glob("/extensions/**/*", {
-  query: "?url",
-  import: "default",
-  eager: true,
-}) as Record<string, string>;
+// Enumeração de arquivos apenas — SEM passar pelos transformadores do
+// Vite (CSS/JS). Todo binário é servido em runtime pelo symlink
+// public/ext-src -> ../extensions. Isso evita, por exemplo, que
+// lightningcss tente resolver `@import url(https://…)` dentro do CSS
+// da EXT1.
+const FILE_KEYS: Record<string, unknown> = import.meta.glob(
+  "/extensions/**/*",
+  { query: "?raw", import: "default" },
+);
 
 // Conteúdo textual sob demanda. Só para arquivos que fazem sentido
 // exibir como texto (manifest, config, docs, código-fonte pequeno).
 const RAW_MODULES = import.meta.glob(
-  "/extensions/**/*.{json,md,txt,html,css,js,mjs,ts,tsx}",
+  "/extensions/**/*.{json,md,txt,html,js,mjs,ts,tsx}",
   { query: "?raw", import: "default" },
 ) as Record<string, () => Promise<string>>;
 

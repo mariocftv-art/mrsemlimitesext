@@ -1,6 +1,6 @@
 /**
  * ╔══════════════════════════════════════════════════════════════════════════════╗
- * ║  ⛔  PROPRIETARY SOFTWARE — ALL RIGHTS RESERVED — LOV 3.1 NEON NOIR  ⛔    ║
+ * ║  ⛔  PROPRIETARY SOFTWARE — ALL RIGHTS RESERVED — MR Sem Limites 2026 Brasil  ⛔    ║
  * ╠══════════════════════════════════════════════════════════════════════════════╣
  * ║                                                                            ║
  * ║  THIS CODE IS PROTECTED BY INTERNATIONAL INTELLECTUAL PROPERTY LAW.        ║
@@ -352,10 +352,10 @@ logoutBtn?.addEventListener('click', () => bridge.license.logout());
 
     if (inputParent.contains(enhanceBtn)) {
       
-      let enhanceRow = document.getElementById('lov3-enhance-row');
+      let enhanceRow = document.getElementById('mrsl-enhance-row');
       if (!enhanceRow) {
         enhanceRow = document.createElement('div');
-        enhanceRow.id = 'lov3-enhance-row';
+        enhanceRow.id = 'mrsl-enhance-row';
         enhanceRow.style.cssText = 'display:flex;justify-content:flex-end;padding:0 4px 4px 4px;';
         inputParent.parentElement.insertBefore(enhanceRow, inputParent);
       }
@@ -409,7 +409,7 @@ logoutBtn?.addEventListener('click', () => bridge.license.logout());
     inputParent.style.setProperty('gap', '6px', 'important');
     inputParent.style.setProperty('width', '100%', 'important');
 
-    console.log('[NEON NOIR] Chat layout fix aplicado');
+    console.log('[MRSL] Chat layout fix aplicado');
     return true;
   }
 

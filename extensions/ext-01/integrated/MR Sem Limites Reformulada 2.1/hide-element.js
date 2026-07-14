@@ -1,6 +1,6 @@
 /**
  * ╔══════════════════════════════════════════════════════════════════════════════╗
- * ║  ⛔  PROPRIETARY SOFTWARE — ALL RIGHTS RESERVED — LOV 3.1 NEON NOIR  ⛔    ║
+ * ║  ⛔  PROPRIETARY SOFTWARE — ALL RIGHTS RESERVED — MR Sem Limites 2026 Brasil  ⛔    ║
  * ╠══════════════════════════════════════════════════════════════════════════════╣
  * ║                                                                            ║
  * ║  THIS CODE IS PROTECTED BY INTERNATIONAL INTELLECTUAL PROPERTY LAW.        ║

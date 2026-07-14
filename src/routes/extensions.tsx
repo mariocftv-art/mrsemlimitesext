@@ -51,6 +51,7 @@ import {
   duplicateExtension,
   getAllExtensions,
   restoreExtension,
+  scanExtension,
   subscribe,
   updateExtension,
   type ExtensionRecord,
@@ -242,7 +243,16 @@ function ExtensionsPage() {
 function ExtensionCard({ ext, onEdit }: { ext: ExtensionRecord; onEdit: () => void }) {
   const isSeed = ext.id === "ext-01";
   const status = statusMeta[ext.status];
+  const scan = useMemo(() => scanExtension(ext.sourceDir), [ext.sourceDir]);
+  const logo = ext.assets.logo ?? scan.assets.logo ?? scan.assets.icon128 ?? scan.assets.icon48;
+  const banner = ext.assets.banner ?? scan.assets.banner ?? scan.assets.chatBg;
   const lastBuild = ext.builds[ext.builds.length - 1];
+  const scannedBuild = scan.builds[scan.builds.length - 1];
+  const buildLabel = lastBuild
+    ? `v${lastBuild.version}`
+    : scannedBuild
+      ? scannedBuild.filename
+      : "—";
 
   const handleArchive = () => {
     if (ext.status === "archived") {
@@ -273,10 +283,10 @@ function ExtensionCard({ ext, onEdit }: { ext: ExtensionRecord; onEdit: () => vo
       className="glass relative overflow-hidden border-border/60"
       style={{ boxShadow: `0 0 40px -28px ${glow[ext.tone]}` }}
     >
-      {ext.assets.banner && (
+      {banner && (
         <div
           className="h-20 w-full bg-cover bg-center opacity-70"
-          style={{ backgroundImage: `url(${ext.assets.banner})` }}
+          style={{ backgroundImage: `url(${banner})` }}
         />
       )}
       <CardContent className="relative space-y-4 p-5">
@@ -286,8 +296,8 @@ function ExtensionCard({ ext, onEdit }: { ext: ExtensionRecord; onEdit: () => vo
               className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-border/60"
               style={{ background: "var(--gradient-surface)" }}
             >
-              {ext.assets.logo ? (
-                <img src={ext.assets.logo} alt="" className="h-full w-full object-cover" />
+              {logo ? (
+                <img src={logo} alt="" className="h-full w-full object-cover" />
               ) : (
                 <Puzzle className="h-5 w-5" style={{ color: glow[ext.tone] }} />
               )}
@@ -311,9 +321,9 @@ function ExtensionCard({ ext, onEdit }: { ext: ExtensionRecord; onEdit: () => vo
         <p className="line-clamp-2 text-xs text-muted-foreground">{ext.description}</p>
 
         <div className="grid grid-cols-2 gap-2 text-[11px]">
-          <InfoRow k="Última Build" v={lastBuild ? `v${lastBuild.version}` : "—"} />
+          <InfoRow k="Última Build" v={buildLabel} />
+          <InfoRow k="Arquivos" v={String(scan.files.length)} />
           <InfoRow k="Atualizada em" v={ext.updatedAt} />
-          <InfoRow k="Criada em" v={ext.createdAt} />
           <InfoRow k="Pasta" v={ext.id} mono />
         </div>
 

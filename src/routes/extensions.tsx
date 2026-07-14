@@ -15,7 +15,10 @@ import {
   Puzzle,
   Search,
   Trash2,
+  Upload,
 } from "lucide-react";
+import { ImportExtensionDialog } from "@/factory/importer-dialog";
+
 import { toast } from "sonner";
 
 import { AppShell } from "@/components/layout/app-shell";

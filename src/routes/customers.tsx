@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { useMemo, useState } from "react";
 import { Edit, Plus, Trash2, Users } from "lucide-react";
 import { toast } from "sonner";
@@ -160,7 +161,7 @@ function CustomerForm({
   open, onOpenChange, customer,
 }: { open: boolean; onOpenChange: (o: boolean) => void; customer: Customer | null }) {
   const [form, setForm] = useState<Partial<Customer>>({});
-  useMemo(() => setForm(customer || { status: "active" }), [customer]);
+  useEffect(() => setForm(customer || { status: "active" }), [customer]);
   const update = (k: keyof Customer, v: string) => setForm({ ...form, [k]: v });
 
   const submit = () => {

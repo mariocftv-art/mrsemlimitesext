@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Edit, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -144,7 +144,7 @@ function BlacklistForm({
   const [type, setType] = useState<BlacklistType>("hwid");
   const [value, setValue] = useState("");
   const [reason, setReason] = useState("");
-  useMemo(() => {
+  useEffect(() => {
     setType((entry?.type as BlacklistType) || "hwid");
     setValue(entry?.value || "");
     setReason(entry?.reason || "");

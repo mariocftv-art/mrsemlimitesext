@@ -33,6 +33,7 @@ import { Route as ApiDocsRouteImport } from './routes/api-docs'
 import { Route as AnimationsRouteImport } from './routes/animations'
 import { Route as ActivationsRouteImport } from './routes/activations'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as RuntimeIdRouteImport } from './routes/runtime.$id'
 import { Route as PreviewIdRouteImport } from './routes/preview.$id'
 import { Route as LiveIdRouteImport } from './routes/live.$id'
 
@@ -156,6 +157,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RuntimeIdRoute = RuntimeIdRouteImport.update({
+  id: '/runtime/$id',
+  path: '/runtime/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PreviewIdRoute = PreviewIdRouteImport.update({
   id: '/preview/$id',
   path: '/preview/$id',
@@ -194,6 +200,7 @@ export interface FileRoutesByFullPath {
   '/versions': typeof VersionsRoute
   '/live/$id': typeof LiveIdRoute
   '/preview/$id': typeof PreviewIdRoute
+  '/runtime/$id': typeof RuntimeIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -222,6 +229,7 @@ export interface FileRoutesByTo {
   '/versions': typeof VersionsRoute
   '/live/$id': typeof LiveIdRoute
   '/preview/$id': typeof PreviewIdRoute
+  '/runtime/$id': typeof RuntimeIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -251,6 +259,7 @@ export interface FileRoutesById {
   '/versions': typeof VersionsRoute
   '/live/$id': typeof LiveIdRoute
   '/preview/$id': typeof PreviewIdRoute
+  '/runtime/$id': typeof RuntimeIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -281,6 +290,7 @@ export interface FileRouteTypes {
     | '/versions'
     | '/live/$id'
     | '/preview/$id'
+    | '/runtime/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -309,6 +319,7 @@ export interface FileRouteTypes {
     | '/versions'
     | '/live/$id'
     | '/preview/$id'
+    | '/runtime/$id'
   id:
     | '__root__'
     | '/'
@@ -337,6 +348,7 @@ export interface FileRouteTypes {
     | '/versions'
     | '/live/$id'
     | '/preview/$id'
+    | '/runtime/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -366,6 +378,7 @@ export interface RootRouteChildren {
   VersionsRoute: typeof VersionsRoute
   LiveIdRoute: typeof LiveIdRoute
   PreviewIdRoute: typeof PreviewIdRoute
+  RuntimeIdRoute: typeof RuntimeIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -538,6 +551,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/runtime/$id': {
+      id: '/runtime/$id'
+      path: '/runtime/$id'
+      fullPath: '/runtime/$id'
+      preLoaderRoute: typeof RuntimeIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/preview/$id': {
       id: '/preview/$id'
       path: '/preview/$id'
@@ -582,6 +602,7 @@ const rootRouteChildren: RootRouteChildren = {
   VersionsRoute: VersionsRoute,
   LiveIdRoute: LiveIdRoute,
   PreviewIdRoute: PreviewIdRoute,
+  RuntimeIdRoute: RuntimeIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

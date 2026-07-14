@@ -97,3 +97,123 @@ export function seed(): State {
 
   return { customers, licenses, devices, activations, blacklist, logs };
 }
+
+// Massive dataset for "MODO TESTE" — 50 clientes, 120 licenças, 90 dispositivos,
+// 300 ativações, 12 blacklist, 40 logs. Determinístico o suficiente para testar
+// paginação, filtros, busca, seleção múltipla e exportação em escala.
+export function seedHeavy(): State {
+  const first = ["Ana","Bruno","Carla","Diego","Eduardo","Fernanda","Gabriel","Helena","Igor","Julia","Kaio","Larissa","Marcos","Natália","Otávio","Paula","Quésia","Rafael","Sofia","Tiago","Ulisses","Vitória","Wagner","Xavier","Yasmin","Zeca"];
+  const last = ["Alves","Barbosa","Cardoso","Duarte","Esteves","Ferreira","Gomes","Henriques","Ibanez","Justino","Klein","Lima","Moreira","Nunes","Oliveira","Peixoto","Queiroz","Rocha","Santos","Teixeira"];
+  const companies = ["MR Máxima","Estúdio AB","DevCM","FluxLabs","Torres Studio","Rocha Design","SatoCode","NeoNoir Labs","Pixel Forge","Nova Cria","Máxima OPS","Studio 42","BR Softworks","AlphaLoop","Cyan Ventures"];
+  const products = ["MR Sem Limites","MR Sem Limites Pro","MR Ext Sem Limites","MR Sem Limites (TESTE)"];
+  const oss = ["Windows 11","Windows 10","macOS 15","macOS 14","Ubuntu 24.04","Fedora 40"];
+  const browsers = ["Chrome 141","Edge 141","Brave 1.79","Arc 1.8","Firefox 129","Opera 114"];
+  const ips = ["189.44.12.10","177.53.98.6","201.10.44.19","45.180.220.7","191.5.223.44","138.204.11.9","187.19.55.101","201.44.78.9","152.245.66.7","179.108.203.14"];
+
+  const pick = <T,>(arr: T[], i: number) => arr[i % arr.length];
+  const seg = (i: number) => Math.abs((i * 2654435761) >>> 0).toString(36).slice(0, 4).toUpperCase();
+  const key = (i: number) => `MRSL-${seg(i)}-${seg(i * 7)}-${seg(i * 13)}-${seg(i * 19)}`;
+
+  const customers = Array.from({ length: 50 }).map((_, i) => {
+    const name = `${pick(first, i)} ${pick(last, i * 3)}`;
+    return {
+      id: `c${String(i + 1).padStart(3, "0")}`,
+      name,
+      email: `${name.toLowerCase().replace(/\s+/g, ".")}@${pick(companies, i).toLowerCase().replace(/[^a-z]/g, "")}.com`,
+      phone: `+55 ${11 + (i % 80)} 9${String(10000000 + i * 137).slice(0, 8)}`,
+      company: pick(companies, i),
+      document: i % 2 === 0
+        ? `${String(10 + i).padStart(2,"0")}.${String(100 + i).padStart(3,"0")}.${String(200 + i).padStart(3,"0")}/0001-${String(10 + (i % 89)).padStart(2,"0")}`
+        : `${String(100 + i).padStart(3,"0")}.${String(200 + i).padStart(3,"0")}.${String(300 + i).padStart(3,"0")}-${String(10 + (i % 89)).padStart(2,"0")}`,
+      notes: i % 7 === 0 ? "Cliente VIP" : i % 11 === 0 ? "Reembolso solicitado" : "",
+      status: (i % 12 === 11 ? "inactive" : "active") as "active" | "inactive",
+      createdAt: isoDaysAgo(200 - i * 3),
+    };
+  });
+
+  const licenses = Array.from({ length: 120 }).map((_, i) => {
+    const cust = customers[i % customers.length];
+    const isTrial = i % 15 === 0;
+    const status = (i % 20 === 0 ? "blocked" : i % 17 === 0 ? "expired" : i % 23 === 0 ? "pending" : "active") as any;
+    const k = isTrial ? `TRIAL-${key(i)}` : key(i);
+    return {
+      id: `l${String(i + 1).padStart(3, "0")}`,
+      key: k,
+      product: isTrial ? "MR Sem Limites (TESTE)" : pick(products, i),
+      customerId: cust.id,
+      status,
+      createdAt: isoDaysAgo(180 - (i % 180)),
+      expiresAt: isTrial
+        ? new Date(Date.now() + (30 + (i % 6) * 30) * 60_000).toISOString()
+        : (status === "expired" ? isoDaysAgo(5 + (i % 30)) : isoDaysAhead(30 + (i % 300))),
+      hwid: i % 4 === 0 ? null : `HWID-${seg(i)}${seg(i * 5)}`,
+      deviceIds: [],
+      history: [
+        { ts: isoDaysAgo(180 - (i % 180)), action: "created", by: "sistema" },
+        ...(i % 8 === 0 ? [{ ts: isoDaysAgo(20), action: "renewed +60d", by: "rogeriocftv.mr@gmail.com" }] : []),
+        ...(status === "blocked" ? [{ ts: isoDaysAgo(3), action: "blocked", by: "mariocftv@gmail.com", note: "suspeita" }] : []),
+      ],
+    };
+  });
+
+  const devices = Array.from({ length: 90 }).map((_, i) => {
+    const lic = licenses[i % licenses.length];
+    return {
+      id: `d${String(i + 1).padStart(3, "0")}`,
+      hwid: lic.hwid || `HWID-${seg(i)}${seg(i * 11)}`,
+      os: pick(oss, i),
+      browser: pick(browsers, i * 2),
+      firstSeen: isoDaysAgo(150 - (i % 150)),
+      lastSeen: isoDaysAgo((i % 15)),
+      licenseId: lic.id,
+      customerId: lic.customerId,
+      status: (i % 18 === 0 ? "blocked" : "active") as any,
+    };
+  });
+
+  const activations = Array.from({ length: 300 }).map((_, i) => {
+    const lic = licenses[i % licenses.length];
+    const dev = devices[i % devices.length];
+    const result = i % 11 === 0 ? "fail" : i % 19 === 0 ? "blocked" : "success";
+    return {
+      id: `a${String(i + 1).padStart(4, "0")}`,
+      ts: isoDaysAgo(i / 6),
+      customerId: lic.customerId,
+      licenseId: lic.id,
+      hwid: dev.hwid,
+      ip: pick(ips, i),
+      os: dev.os,
+      version: i % 3 === 0 ? "2.1.0" : i % 5 === 0 ? "2.0.9" : "2.0.4",
+      result: result as any,
+    };
+  });
+
+  const blacklist = Array.from({ length: 12 }).map((_, i) => {
+    const types = ["hwid","ip","license","customer"] as const;
+    const type = types[i % types.length];
+    const value = type === "hwid" ? `HWID-${seg(i * 3)}${seg(i * 5)}`
+      : type === "ip" ? pick(ips, i)
+      : type === "license" ? licenses[i % licenses.length].key
+      : customers[i % customers.length].id;
+    return {
+      id: `b${String(i + 1).padStart(3, "0")}`,
+      type,
+      value,
+      reason: pick(["Chave pirata","Chargeback","Força bruta","Revenda","Uso indevido","Fraude confirmada"], i),
+      adminId: i % 2 === 0 ? "rogeriocftv.mr@gmail.com" : "mariocftv@gmail.com",
+      createdAt: isoDaysAgo(50 - i * 3),
+    };
+  });
+
+  const logActions = ["license.create","license.renew","license.block","license.unblock","license.reset_hwid","license.transfer","customer.create","customer.update","device.block","activation.record","blacklist.create"];
+  const logs = Array.from({ length: 40 }).map((_, i) => ({
+    id: `lg${String(i + 1).padStart(3, "0")}`,
+    ts: isoDaysAgo(i / 4),
+    action: pick(logActions, i),
+    adminId: i % 2 === 0 ? "rogeriocftv.mr@gmail.com" : "mariocftv@gmail.com",
+    target: pick(licenses, i).key,
+    note: i % 6 === 0 ? "modo teste" : undefined,
+  }));
+
+  return { customers, licenses, devices, activations, blacklist, logs };
+}

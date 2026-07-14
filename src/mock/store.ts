@@ -69,6 +69,22 @@ export function resetStore() {
   listeners.forEach((l) => l());
 }
 
+export function loadStateInto(next: State) {
+  try {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+  } catch {}
+  state = next;
+  listeners.forEach((l) => l());
+}
+
+export function clearStore() {
+  const empty: State = {
+    licenses: [], customers: [], devices: [], activations: [], blacklist: [], logs: [],
+  };
+  loadStateInto(empty);
+}
+
+
 const rid = () => Math.random().toString(36).slice(2, 10);
 const now = () => new Date().toISOString();
 const admin = () => getSessionEmail() ?? "sistema";

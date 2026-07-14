@@ -81,7 +81,7 @@ function formatTimeRemaining(days) {
 
 async function validateLicense(licenseKey) {
   try {
-    console.log('[LOV] Validando licença via background:', licenseKey?.substring(0, 8) + '***');
+    console.log('[MRSL] Validando licença via background:', licenseKey?.substring(0, 8) + '***');
     return new Promise((resolve) => {
       chrome.runtime.sendMessage({ type: 'VALIDATE_LICENSE', key: licenseKey }, (state) => {
         void chrome.runtime.lastError;
@@ -105,7 +105,7 @@ async function validateLicense(licenseKey) {
       });
     });
   } catch (error) {
-    console.error('[LOV] Erro ao validar licença:', error);
+    console.error('[MRSL] Erro ao validar licença:', error);
     return { status: 'error', message: error.message };
   }
 }
@@ -167,7 +167,7 @@ async function sendChatMessage(sessionToken, message, projectId) {
       });
     });
   } catch (error) {
-    console.error('[LOV] Erro ao enviar mensagem:', error);
+    console.error('[MRSL] Erro ao enviar mensagem:', error);
     return { status: 'error', message: error.message };
   }
 }

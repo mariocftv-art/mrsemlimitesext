@@ -704,7 +704,7 @@ chrome.runtime.onInstalled.addListener(async () => {
   if (!s.deviceId) {
     const deviceId = crypto.randomUUID();
     await setSettings({ deviceId });
-    console.log('[LOV] HWID gerado:', deviceId);
+    console.log('[MRSL] HWID gerado:', deviceId);
   }
 
   chrome.alarms?.create('license-revalidate', { periodInMinutes: 5 });
@@ -758,14 +758,14 @@ chrome.alarms?.onAlarm.addListener(async (alarm) => {
   }
 
   if (state.status === 'transient' || state.status === 'device_mismatch') {
-    console.warn('[LOV] polling não-conclusivo (' + state.status + ') — mantendo licença:', state.error);
+    console.warn('[MRSL] polling não-conclusivo (' + state.status + ') — mantendo licença:', state.error);
     return;
   }
 
   const updated = await setSettings({ enabled: false, licenseState: state });
   updateBadge(updated);
   broadcastLicenseRevoked();
-  console.log('[LOV] licença revogada/expirada no polling:', state.status, state.error);
+  console.log('[MRSL] licença revogada/expirada no polling:', state.status, state.error);
 });
 
 function broadcastLicenseRevoked() {
@@ -783,9 +783,9 @@ async function doLicenseLogout(errMsg) {
     const updated = await setSettings({ enabled: false, licenseState: invalidState });
     updateBadge(updated);
     broadcastLicenseRevoked();
-    console.log('[LOV] logout forçado pelo servidor (licença inválida):', errMsg);
+    console.log('[MRSL] logout forçado pelo servidor (licença inválida):', errMsg);
   } catch (e) {
-    console.warn('[LOV] falha ao deslogar após rejeição do servidor:', e?.message || e);
+    console.warn('[MRSL] falha ao deslogar após rejeição do servidor:', e?.message || e);
   }
 }
 
@@ -817,14 +817,14 @@ try {
         const dataToStore = { lovable_api_token: apiToken, lovable_api_token_ts: Date.now() };
         if (gitSha) dataToStore.lovable_git_sha = gitSha;
         chrome.storage.local.set(dataToStore);
-        console.log('[LOV bg] token capturado via webRequest');
+        console.log('[MRSL bg] token capturado via webRequest');
       }
     },
     { urls: ['https://api.lovable.dev/*'] },
     ['requestHeaders']
   );
 } catch (e) {
-  console.warn('[LOV bg] onSendHeaders indisponível:', e?.message);
+  console.warn('[MRSL bg] onSendHeaders indisponível:', e?.message);
 }
 
 try {
@@ -854,7 +854,7 @@ try {
     { urls: ['https://api.lovable.dev/projects/*/chat'] },
     ['requestBody']
   );
-  console.log('[LOV bg] onBeforeRequest ativo — captura payload nativo do chat');
+  console.log('[MRSL bg] onBeforeRequest ativo — captura payload nativo do chat');
 } catch (e) {
-  console.warn('[LOV bg] onBeforeRequest indisponível:', e?.message);
+  console.warn('[MRSL bg] onBeforeRequest indisponível:', e?.message);
 }

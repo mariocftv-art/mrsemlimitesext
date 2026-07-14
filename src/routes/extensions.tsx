@@ -3,6 +3,8 @@ import { useMemo, useState, useSyncExternalStore } from "react";
 import {
   Archive,
   ArchiveRestore,
+  Bug,
+  ArchiveRestore,
   Copy,
   Download,
   Eye,

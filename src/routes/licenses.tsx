@@ -6,7 +6,7 @@ import {
   Copy,
   Download,
   History,
-  KeyRound,
+  
   MoreHorizontal,
   Plus,
   RefreshCw,
@@ -323,63 +323,182 @@ function LicensesPage() {
   );
 }
 
+const PAID_PRESETS = [
+  { label: "30 dias", days: 30 },
+  { label: "60 dias", days: 60 },
+  { label: "90 dias", days: 90 },
+  { label: "180 dias", days: 180 },
+  { label: "365 dias", days: 365 },
+];
+
+const TRIAL_PRESETS = [
+  { label: "30 minutos", minutes: 30 },
+  { label: "1 hora", minutes: 60 },
+  { label: "2 horas", minutes: 120 },
+  { label: "6 horas", minutes: 360 },
+  { label: "24 horas", minutes: 1440 },
+];
+
 function CreateLicenseDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (o: boolean) => void }) {
   const customers = useStore((s) => s.customers);
-  const [key, setKey] = useState("");
+  const [tab, setTab] = useState<"paid" | "trial">("paid");
   const [product, setProduct] = useState("MR Sem Limites");
   const [customerId, setCustomerId] = useState("");
-  const [days, setDays] = useState("365");
+  const [qty, setQty] = useState("1");
+  const [days, setDays] = useState("30");
+  const [minutes, setMinutes] = useState("60");
+  const [lastBatch, setLastBatch] = useState<string[]>([]);
 
-  const generate = () => setKey(licenseActions.generateKey());
+  const reset = () => {
+    setQty("1"); setDays("30"); setMinutes("60"); setCustomerId(""); setLastBatch([]);
+  };
 
   const submit = () => {
-    const expiresAt = new Date(Date.now() + Number(days) * 86400_000).toISOString();
-    licenseActions.create({
-      key: key || licenseActions.generateKey(),
-      product,
-      customerId: customerId || null,
-      expiresAt,
-    });
-    toast.success("Licença criada");
-    onOpenChange(false);
-    setKey(""); setCustomerId(""); setDays("365");
+    const n = Math.max(1, Math.min(100, Number(qty) || 1));
+    const isTrial = tab === "trial";
+    const ms = isTrial ? Number(minutes) * 60_000 : Number(days) * 86400_000;
+    if (!ms || ms <= 0) return toast.error("Duração inválida.");
+    const created: string[] = [];
+    for (let i = 0; i < n; i++) {
+      const base = licenseActions.generateKey();
+      const key = isTrial ? `TRIAL-${base}` : base;
+      const l = licenseActions.create({
+        key,
+        product: isTrial ? `${product} (TESTE)` : product,
+        customerId: customerId || null,
+        expiresAt: new Date(Date.now() + ms).toISOString(),
+      });
+      created.push(l.key);
+    }
+    setLastBatch(created);
+    toast.success(
+      isTrial
+        ? `${n} teste(s) grátis gerado(s) (${minutes} min cada)`
+        : `${n} licença(s) criada(s) (${days} dias cada)`,
+    );
+  };
+
+  const copyBatch = () => {
+    if (!lastBatch.length) return;
+    navigator.clipboard.writeText(lastBatch.join("\n"));
+    toast.success("Chaves copiadas");
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
-        <DialogHeader><DialogTitle>Nova licença</DialogTitle></DialogHeader>
+    <Dialog open={open} onOpenChange={(o) => { onOpenChange(o); if (!o) reset(); }}>
+      <DialogContent className="max-w-lg">
+        <DialogHeader>
+          <DialogTitle>Nova licença · geração em lote</DialogTitle>
+        </DialogHeader>
+
+        <div className="flex gap-1 rounded-lg border border-border/60 p-1">
+          <button
+            type="button"
+            onClick={() => setTab("paid")}
+            className={`flex-1 rounded-md px-3 py-1.5 text-sm transition ${tab === "paid" ? "bg-primary/20 text-foreground" : "text-muted-foreground hover:bg-muted/40"}`}
+          >
+            Licença paga
+          </button>
+          <button
+            type="button"
+            onClick={() => setTab("trial")}
+            className={`flex-1 rounded-md px-3 py-1.5 text-sm transition ${tab === "trial" ? "bg-primary/20 text-foreground" : "text-muted-foreground hover:bg-muted/40"}`}
+          >
+            Teste grátis (admin)
+          </button>
+        </div>
+
         <div className="space-y-3">
-          <div className="space-y-1">
-            <Label className="text-xs">Chave</Label>
-            <div className="flex gap-2">
-              <Input value={key} onChange={(e) => setKey(e.target.value)} placeholder="Auto se vazio" className="font-mono" />
-              <Button variant="outline" size="sm" onClick={generate}>
-                <KeyRound className="mr-1 h-4 w-4" /> Gerar
-              </Button>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-1">
+              <Label className="text-xs">Quantidade (1–100)</Label>
+              <Input type="number" min={1} max={100} value={qty} onChange={(e) => setQty(e.target.value)} />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs">Cliente (opcional)</Label>
+              <Select value={customerId} onValueChange={setCustomerId}>
+                <SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger>
+                <SelectContent>
+                  {customers.map((c) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}
+                </SelectContent>
+              </Select>
             </div>
           </div>
+
           <div className="space-y-1">
             <Label className="text-xs">Produto</Label>
             <Input value={product} onChange={(e) => setProduct(e.target.value)} />
           </div>
-          <div className="space-y-1">
-            <Label className="text-xs">Cliente (opcional)</Label>
-            <Select value={customerId} onValueChange={setCustomerId}>
-              <SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger>
-              <SelectContent>
-                {customers.map((c) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="space-y-1">
-            <Label className="text-xs">Validade (dias)</Label>
-            <Input type="number" value={days} onChange={(e) => setDays(e.target.value)} />
-          </div>
+
+          {tab === "paid" ? (
+            <div className="space-y-2">
+              <Label className="text-xs">Validade</Label>
+              <div className="flex flex-wrap gap-2">
+                {PAID_PRESETS.map((p) => (
+                  <Button
+                    key={p.days}
+                    type="button"
+                    size="sm"
+                    variant={days === String(p.days) ? "default" : "outline"}
+                    onClick={() => setDays(String(p.days))}
+                  >
+                    {p.label}
+                  </Button>
+                ))}
+              </div>
+              <Input type="number" min={1} value={days} onChange={(e) => setDays(e.target.value)} placeholder="dias personalizados" />
+            </div>
+          ) : (
+            <div className="space-y-2">
+              <Label className="text-xs">Duração do teste</Label>
+              <div className="flex flex-wrap gap-2">
+                {TRIAL_PRESETS.map((p) => (
+                  <Button
+                    key={p.minutes}
+                    type="button"
+                    size="sm"
+                    variant={minutes === String(p.minutes) ? "default" : "outline"}
+                    onClick={() => setMinutes(String(p.minutes))}
+                  >
+                    {p.label}
+                  </Button>
+                ))}
+              </div>
+              <Input type="number" min={1} value={minutes} onChange={(e) => setMinutes(e.target.value)} placeholder="minutos personalizados" />
+              <p className="text-[11px] text-muted-foreground">
+                Chaves de teste têm prefixo <span className="font-mono">TRIAL-</span> e só podem ser geradas pelo admin.
+              </p>
+            </div>
+          )}
+
+          {lastBatch.length > 0 && (
+            <div className="space-y-2 rounded-lg border border-border/60 bg-background/40 p-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">
+                  {lastBatch.length} chave(s) geradas nesta sessão
+                </span>
+                <Button size="sm" variant="outline" onClick={copyBatch}>
+                  <Copy className="mr-1 h-3.5 w-3.5" /> Copiar todas
+                </Button>
+              </div>
+              <ScrollArea className="max-h-32">
+                <ul className="space-y-1 font-mono text-[11px]">
+                  {lastBatch.map((k) => <li key={k}>{k}</li>)}
+                </ul>
+              </ScrollArea>
+            </div>
+          )}
         </div>
+
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>Cancelar</Button>
-          <Button onClick={submit}>Criar</Button>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>Fechar</Button>
+          <Button
+            onClick={submit}
+            style={{ background: "var(--gradient-neon)", color: "var(--primary-foreground)" }}
+          >
+            <Plus className="mr-1 h-4 w-4" />
+            {tab === "trial" ? "Gerar testes" : "Gerar licenças"}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

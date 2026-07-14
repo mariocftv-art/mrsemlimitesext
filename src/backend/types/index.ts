@@ -1,9 +1,6 @@
-/**
- * Tipos compartilhados usados pelo BackendAdapter.
- *
- * Espelham os contratos documentados em
- * `extensions/ext-01/integrated/*/docs/API_CONTRACTS.md`.
- */
+// Tipos compartilhados usados pelo BackendAdapter.
+// Espelham os contratos documentados em
+// extensions/ext-01/integrated/<pasta>/docs/API_CONTRACTS.md.
 
 export type ISO = string;
 

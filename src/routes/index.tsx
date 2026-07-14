@@ -1,199 +1,201 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import {
-  Puzzle,
-  KeyRound,
-  Users,
-  MonitorSmartphone,
-  Zap,
-  Ban,
-  Clock,
-  GitBranch,
-  Download,
   Activity,
+  Boxes,
+  GitBranch,
+  Hammer,
+  Package,
+  Plus,
+  Puzzle,
+  Sparkles,
 } from "lucide-react";
-import {
-  Area,
-  AreaChart,
-  CartesianGrid,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
 
 import { AppShell } from "@/components/layout/app-shell";
 import { KpiCard } from "@/components/layout/kpi-card";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { factoryStats, listSummaries, type NeonTone } from "@/factory";
 
-export const Route = createFileRoute("/")({
-  component: Dashboard,
-});
+export const Route = createFileRoute("/")({ component: FactoryDashboard });
 
-const activationData = Array.from({ length: 14 }).map((_, i) => ({
-  day: `D${i + 1}`,
-  ativacoes: Math.round(40 + Math.sin(i / 2) * 20 + Math.random() * 30),
-  downloads: Math.round(20 + Math.cos(i / 3) * 15 + Math.random() * 20),
-}));
+const glow: Record<NeonTone, string> = {
+  cyan: "var(--neon-cyan)",
+  violet: "var(--neon-violet)",
+  magenta: "var(--neon-magenta)",
+  lime: "var(--neon-lime)",
+};
 
-const liveLogs = [
-  { t: "agora", type: "ativação", msg: "Device WIN-4A2 ativou LIC-000123", tone: "cyan" },
-  { t: "12s", type: "heartbeat", msg: "Device MAC-9B1 sincronizou", tone: "lime" },
-  { t: "48s", type: "bloqueio", msg: "Chave LIC-000091 bloqueada por admin", tone: "magenta" },
-  { t: "1m", type: "renovação", msg: "LIC-000042 renovada por +365d", tone: "violet" },
-  { t: "2m", type: "ativação", msg: "Device WIN-77C ativou LIC-000110", tone: "cyan" },
-  { t: "3m", type: "download", msg: "Ext-01 v1.2.0 baixada por cliente #42", tone: "lime" },
-];
+const statusLabel: Record<string, string> = {
+  draft: "Rascunho",
+  "in-development": "Em desenvolvimento",
+  ready: "Pronta",
+  building: "Compilando",
+  published: "Publicada",
+  archived: "Arquivada",
+};
 
-function Dashboard() {
+function FactoryDashboard() {
+  const stats = factoryStats();
+  const extensions = listSummaries();
+
   return (
     <AppShell
-      title="Dashboard"
-      subtitle="Visão geral em tempo real da plataforma MR Máxima Extensions"
+      title="MR Extension Factory"
+      subtitle="Fábrica profissional de extensões Chrome — visão geral"
       actions={
         <Button
           size="sm"
-          className="hidden gap-1.5 md:inline-flex"
+          className="gap-1.5"
           style={{ background: "var(--gradient-neon)", color: "var(--primary-foreground)" }}
         >
-          <Activity className="h-4 w-4" /> Ao vivo
+          <Plus className="h-4 w-4" /> Nova Extensão
         </Button>
       }
     >
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-5">
-        <KpiCard label="Extensões" value={3} delta="1 ativa" icon={Puzzle} tone="cyan" />
-        <KpiCard label="Licenças" value={0} delta="aguardando cadastros" icon={KeyRound} tone="violet" />
-        <KpiCard label="Clientes" value={0} delta="—" icon={Users} tone="magenta" />
-        <KpiCard label="Dispositivos" value={0} delta="0 online" icon={MonitorSmartphone} tone="lime" />
-        <KpiCard label="Ativações hoje" value={0} delta="—" icon={Zap} tone="cyan" />
-        <KpiCard label="Bloqueios" value={0} delta="0 hoje" icon={Ban} tone="magenta" />
-        <KpiCard label="Licenças expirando" value={0} delta="próximos 7d" icon={Clock} tone="violet" />
-        <KpiCard label="Versões publicadas" value={0} delta="—" icon={GitBranch} tone="lime" />
-        <KpiCard label="Downloads" value={0} delta="—" icon={Download} tone="cyan" />
-        <KpiCard label="Uptime API" value="100%" delta="24h" icon={Activity} tone="lime" />
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+        <KpiCard label="Extensões" value={stats.total} delta={`${stats.byStatus.ready ?? 0} prontas`} icon={Puzzle} tone="cyan" />
+        <KpiCard
+          label="Última Build"
+          value={stats.lastBuild ? stats.lastBuild.version : "—"}
+          delta={stats.lastBuild ? stats.lastBuild.builtAt : "sem builds"}
+          icon={Hammer}
+          tone="violet"
+        />
+        <KpiCard
+          label="Última Atualização"
+          value={stats.lastUpdated ? stats.lastUpdated.name : "—"}
+          delta={stats.lastUpdated ? stats.lastUpdated.updatedAt : "—"}
+          icon={GitBranch}
+          tone="magenta"
+        />
+        <KpiCard label="Módulos" value={13} delta="Factory ativa" icon={Boxes} tone="lime" />
       </div>
 
       <div className="mt-6 grid gap-4 lg:grid-cols-3">
         <Card className="glass border-border/60 lg:col-span-2">
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
-              <CardTitle className="text-base">Ativações & Downloads · últimos 14 dias</CardTitle>
+              <CardTitle className="text-base">Minhas Extensões</CardTitle>
               <p className="mt-1 text-xs text-muted-foreground">
-                Dados de demonstração — conectados ao backend após ativação da Cloud
+                Cada extensão é isolada — arquivos, assets e builds separados.
               </p>
             </div>
-            <Badge variant="outline" className="border-primary/40 text-primary">
-              demo
-            </Badge>
+            <Button variant="ghost" size="sm" asChild>
+              <Link to="/extensions">Ver todas</Link>
+            </Button>
           </CardHeader>
-          <CardContent className="h-72">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={activationData}>
-                <defs>
-                  <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="var(--neon-cyan)" stopOpacity={0.6} />
-                    <stop offset="100%" stopColor="var(--neon-cyan)" stopOpacity={0} />
-                  </linearGradient>
-                  <linearGradient id="g2" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="var(--neon-violet)" stopOpacity={0.5} />
-                    <stop offset="100%" stopColor="var(--neon-violet)" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
-                <XAxis dataKey="day" stroke="var(--color-muted-foreground)" fontSize={11} />
-                <YAxis stroke="var(--color-muted-foreground)" fontSize={11} />
-                <Tooltip
-                  contentStyle={{
-                    background: "var(--color-popover)",
-                    border: "1px solid var(--color-border)",
-                    borderRadius: 8,
-                    fontSize: 12,
-                  }}
-                />
-                <Area
-                  type="monotone"
-                  dataKey="ativacoes"
-                  stroke="var(--neon-cyan)"
-                  fill="url(#g1)"
-                  strokeWidth={2}
-                />
-                <Area
-                  type="monotone"
-                  dataKey="downloads"
-                  stroke="var(--neon-violet)"
-                  fill="url(#g2)"
-                  strokeWidth={2}
-                />
-              </AreaChart>
-            </ResponsiveContainer>
+          <CardContent className="grid gap-3 sm:grid-cols-2">
+            {extensions.map((e) => (
+              <div
+                key={e.id}
+                className="rounded-lg border border-border/60 bg-background/40 p-4"
+                style={{ boxShadow: `0 0 40px -28px ${glow[e.tone]}` }}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div
+                      className="flex h-9 w-9 items-center justify-center rounded-lg border border-border/60"
+                      style={{ background: "var(--gradient-surface)" }}
+                    >
+                      <Puzzle className="h-4 w-4" style={{ color: glow[e.tone] }} />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-semibold">{e.name}</p>
+                      <p className="text-[11px] uppercase tracking-widest text-muted-foreground">
+                        {e.code} · v{e.version}
+                      </p>
+                    </div>
+                  </div>
+                  <Badge variant="outline" className="border-border/60 text-[10px] uppercase tracking-widest">
+                    {statusLabel[e.status] ?? e.status}
+                  </Badge>
+                </div>
+                <p className="mt-3 text-xs text-muted-foreground line-clamp-2">{e.description}</p>
+              </div>
+            ))}
+            <Link
+              to="/extensions"
+              className="flex min-h-[104px] items-center justify-center rounded-lg border border-dashed border-border/60 bg-background/20 text-xs text-muted-foreground transition hover:border-primary/60 hover:text-primary"
+            >
+              <span className="flex items-center gap-2">
+                <Plus className="h-4 w-4" /> Adicionar nova extensão
+              </span>
+            </Link>
           </CardContent>
         </Card>
 
         <Card className="glass border-border/60">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-base">
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
-              </span>
-              Logs em tempo real
+              <Sparkles className="h-4 w-4 text-primary" /> Módulos da Factory
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-2">
-            {liveLogs.map((log, i) => {
-              const colors: Record<string, string> = {
-                cyan: "var(--neon-cyan)",
-                violet: "var(--neon-violet)",
-                magenta: "var(--neon-magenta)",
-                lime: "var(--neon-lime)",
-              };
-              return (
-                <div
-                  key={i}
-                  className="flex items-start gap-3 rounded-md border border-border/40 bg-background/40 p-2.5 text-xs"
-                >
-                  <span
-                    className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full"
-                    style={{
-                      background: colors[log.tone],
-                      boxShadow: `0 0 8px ${colors[log.tone]}`,
-                    }}
-                  />
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate">{log.msg}</p>
-                    <p className="mt-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">
-                      {log.type} · {log.t}
-                    </p>
-                  </div>
-                </div>
-              );
-            })}
+          <CardContent className="space-y-1.5 text-xs">
+            {[
+              ["Minhas Extensões", "/extensions"],
+              ["Editor", "/editor"],
+              ["Build Center", "/build-center"],
+              ["Downloads", "/downloads"],
+              ["Versões", "/versions"],
+              ["Assets", "/assets"],
+              ["Animações", "/animations"],
+              ["Componentes", "/components"],
+              ["Prompts Premium", "/prompts"],
+              ["Ferramentas", "/tools"],
+              ["Segurança", "/security"],
+              ["Configurações", "/settings"],
+            ].map(([label, url]) => (
+              <Link
+                key={url}
+                to={url}
+                className="flex items-center justify-between rounded-md border border-border/40 bg-background/40 px-3 py-2 transition hover:border-primary/60 hover:text-primary"
+              >
+                <span>{label}</span>
+                <span className="text-muted-foreground">→</span>
+              </Link>
+            ))}
           </CardContent>
         </Card>
       </div>
 
       <Card className="glass mt-6 border-border/60">
         <CardHeader>
-          <CardTitle className="text-base">Status da plataforma</CardTitle>
+          <CardTitle className="flex items-center gap-2 text-base">
+            <Activity className="h-4 w-4 text-primary" /> Status da Factory
+          </CardTitle>
         </CardHeader>
         <CardContent className="grid gap-3 text-sm md:grid-cols-3">
-          <div className="rounded-md border border-border/40 bg-background/40 p-3">
-            <p className="text-xs uppercase tracking-wider text-muted-foreground">Backend</p>
-            <p className="mt-1 font-medium text-yellow-400">
-              Aguardando ativação do Lovable Cloud
-            </p>
-          </div>
-          <div className="rounded-md border border-border/40 bg-background/40 p-3">
-            <p className="text-xs uppercase tracking-wider text-muted-foreground">Extensões</p>
-            <p className="mt-1 font-medium">3 slots preparados (ext-01, ext-02, ext-03)</p>
-          </div>
-          <div className="rounded-md border border-border/40 bg-background/40 p-3">
-            <p className="text-xs uppercase tracking-wider text-muted-foreground">Próximo passo</p>
-            <p className="mt-1 font-medium neon-text">Envio do ZIP da Extensão 1</p>
-          </div>
+          <StatusTile label="Backend" value="Desconectado (modo Factory)" tone="muted" />
+          <StatusTile label="Extensões isoladas" value={`${stats.total} slot(s) ativo(s)`} tone="ok" />
+          <StatusTile label="Documentação" value="FACTORY_MASTER.md" tone="ok" icon={Package} />
         </CardContent>
       </Card>
     </AppShell>
+  );
+}
+
+function StatusTile({
+  label,
+  value,
+  tone,
+  icon: Icon,
+}: {
+  label: string;
+  value: string;
+  tone: "ok" | "muted";
+  icon?: typeof Package;
+}) {
+  return (
+    <div className="rounded-md border border-border/40 bg-background/40 p-3">
+      <p className="text-xs uppercase tracking-wider text-muted-foreground">{label}</p>
+      <p
+        className={`mt-1 flex items-center gap-2 font-medium ${
+          tone === "ok" ? "text-primary" : "text-muted-foreground"
+        }`}
+      >
+        {Icon && <Icon className="h-4 w-4" />} {value}
+      </p>
+    </div>
   );
 }

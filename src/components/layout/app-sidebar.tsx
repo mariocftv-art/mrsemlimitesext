@@ -2,17 +2,16 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard,
   Puzzle,
-  Package,
-  KeyRound,
-  Users,
-  MonitorSmartphone,
-  Zap,
-  ScrollText,
-  Ban,
-  ShieldOff,
-  GitBranch,
+  Pencil,
+  Hammer,
   Download,
-  Cable,
+  GitBranch,
+  ImageIcon,
+  Sparkles,
+  Component,
+  MessageSquareCode,
+  Wrench,
+  ShieldCheck,
   Settings,
   UserCircle,
 } from "lucide-react";
@@ -36,40 +35,29 @@ const groups = [
     items: [{ title: "Dashboard", url: "/", icon: LayoutDashboard }],
   },
   {
-    label: "Catálogo",
+    label: "Fábrica",
     items: [
-      { title: "Extensões", url: "/extensions", icon: Puzzle },
-      { title: "Produtos", url: "/products", icon: Package },
-      { title: "Versões", url: "/versions", icon: GitBranch },
+      { title: "Minhas Extensões", url: "/extensions", icon: Puzzle },
+      { title: "Editor", url: "/editor", icon: Pencil },
+      { title: "Build Center", url: "/build-center", icon: Hammer },
       { title: "Downloads", url: "/downloads", icon: Download },
+      { title: "Versões", url: "/versions", icon: GitBranch },
     ],
   },
   {
-    label: "Comercial",
+    label: "Biblioteca",
     items: [
-      { title: "Licenças", url: "/licenses", icon: KeyRound },
-      { title: "Clientes", url: "/customers", icon: Users },
-    ],
-  },
-  {
-    label: "Operação",
-    items: [
-      { title: "Dispositivos", url: "/devices", icon: MonitorSmartphone },
-      { title: "Ativações", url: "/activations", icon: Zap },
-      { title: "Logs", url: "/logs", icon: ScrollText },
-    ],
-  },
-  {
-    label: "Segurança",
-    items: [
-      { title: "Bloqueios", url: "/blocks", icon: Ban },
-      { title: "Blacklist", url: "/blacklist", icon: ShieldOff },
+      { title: "Assets", url: "/assets", icon: ImageIcon },
+      { title: "Animações", url: "/animations", icon: Sparkles },
+      { title: "Componentes", url: "/components", icon: Component },
+      { title: "Prompts Premium", url: "/prompts", icon: MessageSquareCode },
     ],
   },
   {
     label: "Sistema",
     items: [
-      { title: "API", url: "/api-docs", icon: Cable },
+      { title: "Ferramentas", url: "/tools", icon: Wrench },
+      { title: "Segurança", url: "/security", icon: ShieldCheck },
       { title: "Configurações", url: "/settings", icon: Settings },
       { title: "Perfil", url: "/profile", icon: UserCircle },
     ],
@@ -96,7 +84,7 @@ export function AppSidebar() {
               <span className="text-[11px] font-medium tracking-[0.2em] text-muted-foreground">
                 MR MÁXIMA
               </span>
-              <span className="neon-text text-sm font-bold tracking-wide">EXTENSIONS</span>
+              <span className="neon-text text-sm font-bold tracking-wide">EXTENSION FACTORY</span>
             </div>
           )}
         </Link>

@@ -29,10 +29,11 @@ export function seed(): State {
   const licenses = Array.from({ length: 15 }).map((_, i) => {
     const cust = customers[i % customers.length];
     const active = i % 6 !== 5;
-    const seg = () => Math.random().toString(36).slice(2, 6).toUpperCase();
+    const ALPH = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    const seg = () => Array.from({ length: 5 }, () => ALPH[Math.floor(Math.random() * ALPH.length)]).join("");
     return {
       id: `l${String(i + 1).padStart(2, "0")}`,
-      key: `MRSL-${seg()}-${seg()}-${seg()}-${seg()}`,
+      key: `${seg()}-${seg()}-${seg()}-${seg()}`,
       product: products[i % products.length],
       customerId: cust.id,
       status: (i === 4 ? "blocked" : i === 9 ? "expired" : i === 12 ? "pending" : "active") as any,
@@ -111,8 +112,14 @@ export function seedHeavy(): State {
   const ips = ["189.44.12.10","177.53.98.6","201.10.44.19","45.180.220.7","191.5.223.44","138.204.11.9","187.19.55.101","201.44.78.9","152.245.66.7","179.108.203.14"];
 
   const pick = <T,>(arr: T[], i: number) => arr[i % arr.length];
-  const seg = (i: number) => Math.abs((i * 2654435761) >>> 0).toString(36).slice(0, 4).toUpperCase();
-  const key = (i: number) => `MRSL-${seg(i)}-${seg(i * 7)}-${seg(i * 13)}-${seg(i * 19)}`;
+  const ALPH = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  const seg = (i: number) => {
+    let x = Math.abs((i * 2654435761) >>> 0);
+    let out = "";
+    for (let k = 0; k < 5; k++) { out += ALPH[x % ALPH.length]; x = Math.floor(x / ALPH.length) + (i + k) * 131; }
+    return out;
+  };
+  const key = (i: number) => `${seg(i)}-${seg(i * 7)}-${seg(i * 13)}-${seg(i * 19)}`;
 
   const customers = Array.from({ length: 50 }).map((_, i) => {
     const name = `${pick(first, i)} ${pick(last, i * 3)}`;

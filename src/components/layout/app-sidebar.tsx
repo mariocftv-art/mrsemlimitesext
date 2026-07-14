@@ -13,6 +13,7 @@ import {
   Wrench,
   ShieldCheck,
   ShieldQuestion,
+  ServerCog,
   Settings,
   UserCircle,
 } from "lucide-react";
@@ -59,6 +60,7 @@ const groups = [
     label: "Sistema",
     items: [
       { title: "Ferramentas", url: "/tools", icon: Wrench },
+      { title: "Backend Oficial", url: "/backend", icon: ServerCog },
       { title: "Segurança", url: "/security", icon: ShieldCheck },
       { title: "Configurações", url: "/settings", icon: Settings },
       { title: "Perfil", url: "/profile", icon: UserCircle },

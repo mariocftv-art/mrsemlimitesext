@@ -15,7 +15,10 @@ import {
   Puzzle,
   Search,
   Trash2,
+  Upload,
 } from "lucide-react";
+import { ImportExtensionDialog } from "@/factory/importer-dialog";
+
 import { toast } from "sonner";
 
 import { AppShell } from "@/components/layout/app-shell";
@@ -90,7 +93,9 @@ function ExtensionsPage() {
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<Sort>("updated");
   const [wizardOpen, setWizardOpen] = useState(false);
+  const [importOpen, setImportOpen] = useState(false);
   const [editing, setEditing] = useState<ExtensionRecord | null>(null);
+
 
   const filtered = useMemo(() => {
     let list = extensions.slice();
@@ -136,15 +141,26 @@ function ExtensionsPage() {
       title="Minhas Extensões"
       subtitle="Cadastro isolado de cada extensão. Crie, edite, duplique e arquive."
       actions={
-        <Button
-          size="sm"
-          className="gap-1.5"
-          style={{ background: "var(--gradient-neon)", color: "var(--primary-foreground)" }}
-          onClick={() => setWizardOpen(true)}
-        >
-          <Plus className="h-4 w-4" /> Nova Extensão
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            size="sm"
+            variant="outline"
+            className="gap-1.5"
+            onClick={() => setImportOpen(true)}
+          >
+            <Upload className="h-4 w-4" /> Importar Extensão
+          </Button>
+          <Button
+            size="sm"
+            className="gap-1.5"
+            style={{ background: "var(--gradient-neon)", color: "var(--primary-foreground)" }}
+            onClick={() => setWizardOpen(true)}
+          >
+            <Plus className="h-4 w-4" /> Nova Extensão
+          </Button>
+        </div>
       }
+
     >
       <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex flex-wrap gap-1.5">
@@ -211,6 +227,8 @@ function ExtensionsPage() {
       )}
 
       <NewExtensionWizard open={wizardOpen} onOpenChange={setWizardOpen} />
+      <ImportExtensionDialog open={importOpen} onOpenChange={setImportOpen} />
+
       {editing && (
         <EditExtensionDialog
           ext={editing}

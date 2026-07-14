@@ -9,12 +9,90 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VersionsRouteImport } from './routes/versions'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as ProductsRouteImport } from './routes/products'
+import { Route as LogsRouteImport } from './routes/logs'
+import { Route as LicensesRouteImport } from './routes/licenses'
 import { Route as ExtensionsRouteImport } from './routes/extensions'
+import { Route as DownloadsRouteImport } from './routes/downloads'
+import { Route as DevicesRouteImport } from './routes/devices'
+import { Route as CustomersRouteImport } from './routes/customers'
+import { Route as BlocksRouteImport } from './routes/blocks'
+import { Route as BlacklistRouteImport } from './routes/blacklist'
+import { Route as ApiDocsRouteImport } from './routes/api-docs'
+import { Route as ActivationsRouteImport } from './routes/activations'
 import { Route as IndexRouteImport } from './routes/index'
 
+const VersionsRoute = VersionsRouteImport.update({
+  id: '/versions',
+  path: '/versions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProductsRoute = ProductsRouteImport.update({
+  id: '/products',
+  path: '/products',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LogsRoute = LogsRouteImport.update({
+  id: '/logs',
+  path: '/logs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LicensesRoute = LicensesRouteImport.update({
+  id: '/licenses',
+  path: '/licenses',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ExtensionsRoute = ExtensionsRouteImport.update({
   id: '/extensions',
   path: '/extensions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DownloadsRoute = DownloadsRouteImport.update({
+  id: '/downloads',
+  path: '/downloads',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DevicesRoute = DevicesRouteImport.update({
+  id: '/devices',
+  path: '/devices',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CustomersRoute = CustomersRouteImport.update({
+  id: '/customers',
+  path: '/customers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlocksRoute = BlocksRouteImport.update({
+  id: '/blocks',
+  path: '/blocks',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlacklistRoute = BlacklistRouteImport.update({
+  id: '/blacklist',
+  path: '/blacklist',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiDocsRoute = ApiDocsRouteImport.update({
+  id: '/api-docs',
+  path: '/api-docs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ActivationsRoute = ActivationsRouteImport.update({
+  id: '/activations',
+  path: '/activations',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -25,37 +103,226 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/activations': typeof ActivationsRoute
+  '/api-docs': typeof ApiDocsRoute
+  '/blacklist': typeof BlacklistRoute
+  '/blocks': typeof BlocksRoute
+  '/customers': typeof CustomersRoute
+  '/devices': typeof DevicesRoute
+  '/downloads': typeof DownloadsRoute
   '/extensions': typeof ExtensionsRoute
+  '/licenses': typeof LicensesRoute
+  '/logs': typeof LogsRoute
+  '/products': typeof ProductsRoute
+  '/profile': typeof ProfileRoute
+  '/settings': typeof SettingsRoute
+  '/versions': typeof VersionsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/activations': typeof ActivationsRoute
+  '/api-docs': typeof ApiDocsRoute
+  '/blacklist': typeof BlacklistRoute
+  '/blocks': typeof BlocksRoute
+  '/customers': typeof CustomersRoute
+  '/devices': typeof DevicesRoute
+  '/downloads': typeof DownloadsRoute
   '/extensions': typeof ExtensionsRoute
+  '/licenses': typeof LicensesRoute
+  '/logs': typeof LogsRoute
+  '/products': typeof ProductsRoute
+  '/profile': typeof ProfileRoute
+  '/settings': typeof SettingsRoute
+  '/versions': typeof VersionsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/activations': typeof ActivationsRoute
+  '/api-docs': typeof ApiDocsRoute
+  '/blacklist': typeof BlacklistRoute
+  '/blocks': typeof BlocksRoute
+  '/customers': typeof CustomersRoute
+  '/devices': typeof DevicesRoute
+  '/downloads': typeof DownloadsRoute
   '/extensions': typeof ExtensionsRoute
+  '/licenses': typeof LicensesRoute
+  '/logs': typeof LogsRoute
+  '/products': typeof ProductsRoute
+  '/profile': typeof ProfileRoute
+  '/settings': typeof SettingsRoute
+  '/versions': typeof VersionsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/extensions'
+  fullPaths:
+    | '/'
+    | '/activations'
+    | '/api-docs'
+    | '/blacklist'
+    | '/blocks'
+    | '/customers'
+    | '/devices'
+    | '/downloads'
+    | '/extensions'
+    | '/licenses'
+    | '/logs'
+    | '/products'
+    | '/profile'
+    | '/settings'
+    | '/versions'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/extensions'
-  id: '__root__' | '/' | '/extensions'
+  to:
+    | '/'
+    | '/activations'
+    | '/api-docs'
+    | '/blacklist'
+    | '/blocks'
+    | '/customers'
+    | '/devices'
+    | '/downloads'
+    | '/extensions'
+    | '/licenses'
+    | '/logs'
+    | '/products'
+    | '/profile'
+    | '/settings'
+    | '/versions'
+  id:
+    | '__root__'
+    | '/'
+    | '/activations'
+    | '/api-docs'
+    | '/blacklist'
+    | '/blocks'
+    | '/customers'
+    | '/devices'
+    | '/downloads'
+    | '/extensions'
+    | '/licenses'
+    | '/logs'
+    | '/products'
+    | '/profile'
+    | '/settings'
+    | '/versions'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ActivationsRoute: typeof ActivationsRoute
+  ApiDocsRoute: typeof ApiDocsRoute
+  BlacklistRoute: typeof BlacklistRoute
+  BlocksRoute: typeof BlocksRoute
+  CustomersRoute: typeof CustomersRoute
+  DevicesRoute: typeof DevicesRoute
+  DownloadsRoute: typeof DownloadsRoute
   ExtensionsRoute: typeof ExtensionsRoute
+  LicensesRoute: typeof LicensesRoute
+  LogsRoute: typeof LogsRoute
+  ProductsRoute: typeof ProductsRoute
+  ProfileRoute: typeof ProfileRoute
+  SettingsRoute: typeof SettingsRoute
+  VersionsRoute: typeof VersionsRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/versions': {
+      id: '/versions'
+      path: '/versions'
+      fullPath: '/versions'
+      preLoaderRoute: typeof VersionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/products': {
+      id: '/products'
+      path: '/products'
+      fullPath: '/products'
+      preLoaderRoute: typeof ProductsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/logs': {
+      id: '/logs'
+      path: '/logs'
+      fullPath: '/logs'
+      preLoaderRoute: typeof LogsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/licenses': {
+      id: '/licenses'
+      path: '/licenses'
+      fullPath: '/licenses'
+      preLoaderRoute: typeof LicensesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/extensions': {
       id: '/extensions'
       path: '/extensions'
       fullPath: '/extensions'
       preLoaderRoute: typeof ExtensionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/downloads': {
+      id: '/downloads'
+      path: '/downloads'
+      fullPath: '/downloads'
+      preLoaderRoute: typeof DownloadsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/devices': {
+      id: '/devices'
+      path: '/devices'
+      fullPath: '/devices'
+      preLoaderRoute: typeof DevicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/customers': {
+      id: '/customers'
+      path: '/customers'
+      fullPath: '/customers'
+      preLoaderRoute: typeof CustomersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blocks': {
+      id: '/blocks'
+      path: '/blocks'
+      fullPath: '/blocks'
+      preLoaderRoute: typeof BlocksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blacklist': {
+      id: '/blacklist'
+      path: '/blacklist'
+      fullPath: '/blacklist'
+      preLoaderRoute: typeof BlacklistRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api-docs': {
+      id: '/api-docs'
+      path: '/api-docs'
+      fullPath: '/api-docs'
+      preLoaderRoute: typeof ApiDocsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/activations': {
+      id: '/activations'
+      path: '/activations'
+      fullPath: '/activations'
+      preLoaderRoute: typeof ActivationsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -70,7 +337,20 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ActivationsRoute: ActivationsRoute,
+  ApiDocsRoute: ApiDocsRoute,
+  BlacklistRoute: BlacklistRoute,
+  BlocksRoute: BlocksRoute,
+  CustomersRoute: CustomersRoute,
+  DevicesRoute: DevicesRoute,
+  DownloadsRoute: DownloadsRoute,
   ExtensionsRoute: ExtensionsRoute,
+  LicensesRoute: LicensesRoute,
+  LogsRoute: LogsRoute,
+  ProductsRoute: ProductsRoute,
+  ProfileRoute: ProfileRoute,
+  SettingsRoute: SettingsRoute,
+  VersionsRoute: VersionsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

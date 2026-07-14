@@ -200,9 +200,21 @@ function PreviewWorkspace() {
 // Sidebar (metadados)
 // ============================================================
 
-function SidePanel({ ext }: { ext: ExtensionRecord }) {
+function SidePanel({
+  ext,
+  scan,
+}: {
+  ext: ExtensionRecord;
+  scan: import("@/factory").ExtensionScanBundle;
+}) {
   const status = statusMeta[ext.status];
   const lastBuild = ext.builds[ext.builds.length - 1];
+  const scannedBuild = scan.builds[scan.builds.length - 1];
+  const logo =
+    ext.assets.logo ??
+    scan.assets.logo ??
+    scan.assets.icon128 ??
+    scan.assets.icon48;
   return (
     <Card
       className="glass h-fit border-border/60"
@@ -214,8 +226,8 @@ function SidePanel({ ext }: { ext: ExtensionRecord }) {
             className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-border/60"
             style={{ background: "var(--gradient-surface)" }}
           >
-            {ext.assets.logo ? (
-              <img src={ext.assets.logo} alt="" className="h-full w-full object-cover" />
+            {logo ? (
+              <img src={logo} alt="" className="h-full w-full object-cover" />
             ) : (
               <Puzzle className="h-5 w-5" style={{ color: glow[ext.tone] }} />
             )}
@@ -232,8 +244,23 @@ function SidePanel({ ext }: { ext: ExtensionRecord }) {
 
         <div className="space-y-2 text-xs">
           <Row k="Status" v={`${status.dot} ${status.label}`} />
-          <Row k="Versão" v={ext.version} />
-          <Row k="Última Build" v={lastBuild ? `v${lastBuild.version}` : "—"} />
+          <Row k="Versão manifest" v={scan.manifestVersion ?? "—"} />
+          <Row k="Versão app.config" v={scan.appConfigVersion ?? "—"} />
+          <Row
+            k="Sincronismo"
+            v={
+              scan.versionStatus === "match"
+                ? "🟢 iguais"
+                : scan.versionStatus === "diverge"
+                  ? "🔴 divergentes"
+                  : "—"
+            }
+          />
+          <Row
+            k="Última Build"
+            v={lastBuild ? `v${lastBuild.version}` : scannedBuild?.filename ?? "Nenhuma"}
+          />
+          <Row k="Arquivos" v={String(scan.files.length)} />
           <Row k="Slug" v={ext.slug} mono />
           <Row k="Código" v={ext.code} mono />
           <Row k="Pasta" v={ext.id} mono />

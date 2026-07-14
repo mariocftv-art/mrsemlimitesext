@@ -199,7 +199,23 @@ function LicensesPage() {
                     <TableCell>
                       <Checkbox checked={t.selected.has(i)} onCheckedChange={() => t.toggleRow(i)} />
                     </TableCell>
-                    <TableCell className="font-mono text-xs">{l.key}</TableCell>
+                    <TableCell className="font-mono text-xs">
+                      <div className="flex items-center gap-1.5">
+                        <span className="select-all">{l.key}</span>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          className="h-6 w-6 shrink-0 opacity-60 hover:opacity-100"
+                          onClick={() => {
+                            navigator.clipboard.writeText(l.key);
+                            toast.success("Chave copiada");
+                          }}
+                          title="Copiar chave"
+                        >
+                          <Copy className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    </TableCell>
                     <TableCell className="text-sm">{l.product}</TableCell>
                     <TableCell className="text-sm">
                       {customerMap[l.customerId || ""]?.name || <span className="text-muted-foreground">—</span>}

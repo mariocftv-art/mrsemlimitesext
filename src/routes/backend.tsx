@@ -42,7 +42,17 @@ function BackendPage() {
   const [running, setRunning] = useState(false);
   const [results, setResults] = useState<ProbeResult[] | null>(null);
 
-  useEffect(() => { setCfg(loadBackendConfig()); }, []);
+  const [autoProbed, setAutoProbed] = useState(false);
+
+  useEffect(() => {
+    const loaded = loadBackendConfig();
+    if (!loaded.API_BASE_URL) {
+      saveBackendConfig(DEFAULT_BACKEND_CONFIG);
+      setCfg(DEFAULT_BACKEND_CONFIG);
+    } else {
+      setCfg(loaded);
+    }
+  }, []);
 
   const run = useServerFn(probeBackend);
 
@@ -97,6 +107,16 @@ function BackendPage() {
       setRunning(false);
     }
   };
+
+  useEffect(() => {
+    if (!autoProbed && cfg.API_BASE_URL && !running && !results) {
+      setAutoProbed(true);
+      void doProbe();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cfg.API_BASE_URL, autoProbed]);
+
+
 
   const summary = useMemo(() => {
     if (!results) return null;

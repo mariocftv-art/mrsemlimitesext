@@ -157,8 +157,10 @@ function PreviewWorkspace() {
             <TabsContent value="assets"><AssetsPreview ext={ext} /></TabsContent>
             <TabsContent value="manifest"><ManifestPreview ext={ext} /></TabsContent>
             <TabsContent value="info"><InfoPreview ext={ext} /></TabsContent>
+            <TabsContent value="lab"><LabWorkspace ext={ext} /></TabsContent>
           </div>
         </Tabs>
+
       </div>
     </div>
   );

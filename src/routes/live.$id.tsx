@@ -108,13 +108,22 @@ function LivePreview() {
     toast.success("Preview recarregado.");
   };
 
-  const availablePages = KNOWN_PAGES.filter((p) => availability[p.key] === true);
-  const unavailablePages = KNOWN_PAGES.filter((p) => availability[p.key] === false);
+  const availablePages = useMemo(
+    () => KNOWN_PAGES.filter((p) => availability[p.key] === true),
+    [availability],
+  );
+  const unavailablePages = useMemo(
+    () => KNOWN_PAGES.filter((p) => availability[p.key] === false),
+    [availability],
+  );
 
   // Se a aba selecionada não existe, cai na primeira disponível
   useEffect(() => {
-    if (availability[tab] === false && availablePages[0]) setTab(availablePages[0].key);
-  }, [availability, tab, availablePages]);
+    if (availability[tab] === false) {
+      const first = KNOWN_PAGES.find((p) => availability[p.key] === true);
+      if (first && first.key !== tab) setTab(first.key);
+    }
+  }, [availability, tab]);
 
   return (
     <AppShell

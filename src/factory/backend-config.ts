@@ -38,12 +38,12 @@ export interface BackendConfig {
 export const DEFAULT_BACKEND_CONFIG: BackendConfig = {
   enabled: false,
   testMode: false,
-  API_BASE_URL: "",
-  PUBLIC_API_URL: "",
-  EXTENSION_ID: "",
+  API_BASE_URL: "https://mrsemlimites.lovable.app/api/public/ext",
+  PUBLIC_API_URL: "https://mrsemlimites.lovable.app/api/public",
+  EXTENSION_ID: "mr-sem-limites",
   CLIENT_VERSION: "2.2.7",
   PRODUCT_SLUG: "mr-sem-limites",
-  API_KEY: "",
+  API_KEY: "mrlov",
 };
 
 const STORAGE_KEY = "mr-factory:backend-config";

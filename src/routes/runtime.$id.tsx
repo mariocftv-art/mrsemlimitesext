@@ -3,11 +3,18 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowLeft,
   Bug,
+  Chrome,
+  Cloud,
   Database,
+  FlaskConical,
+  Globe,
   Info,
+  KeyRound,
   Loader2,
   RefreshCcw,
+  RotateCcw,
   Shield,
+  Tag,
   Terminal,
   Trash2,
   Zap,
@@ -71,6 +78,48 @@ type ConsoleEntry = { id: string; level: string; ts: number; args: unknown[] };
 type EventEntry = { id: string; ts: number; label: string; detail?: string };
 type StoreState = Record<string, Record<string, unknown>>;
 
+type LicenseState =
+  | "none"
+  | "trial"
+  | "premium"
+  | "expired"
+  | "revoked"
+  | "hwid_mismatch";
+type LovableState = "offline" | "online" | "timeout" | "slow" | "error500";
+type GoogleState =
+  | "page_open"
+  | "page_closed"
+  | "logged_in"
+  | "logged_out"
+  | "incompatible";
+type ChromeStorageState = "empty" | "filled";
+type ChromeCookiesState = "present" | "absent";
+type ChromePermissionState = "granted" | "denied";
+type ChromeAlarmState = "active" | "inactive";
+type VersionState = "2.1.0" | "2.2.0" | "2.2.7" | "dev";
+
+type SimState = {
+  license: LicenseState;
+  lovable: LovableState;
+  google: GoogleState;
+  storage: ChromeStorageState;
+  cookies: ChromeCookiesState;
+  permission: ChromePermissionState;
+  alarm: ChromeAlarmState;
+  version: VersionState;
+};
+
+const DEFAULT_SIM: SimState = {
+  license: "none",
+  lovable: "online",
+  google: "page_closed",
+  storage: "empty",
+  cookies: "absent",
+  permission: "granted",
+  alarm: "inactive",
+  version: "2.2.7",
+};
+
 function RuntimeViewer() {
   const { ext } = Route.useLoaderData() as { ext: ExtensionRecord };
   const base = useMemo(() => baseUrlFor(ext), [ext]);
@@ -79,6 +128,19 @@ function RuntimeViewer() {
   const [availability, setAvailability] = useState<Record<string, boolean | "checking">>({});
   const [tab, setTab] = useState<string>("popup");
   const [reloadKey, setReloadKey] = useState(0);
+
+  const [sim, setSim] = useState<SimState>(DEFAULT_SIM);
+  const updateSim = <K extends keyof SimState>(k: K, v: SimState[K]) => {
+    setSim((s) => ({ ...s, [k]: v }));
+    setReloadKey((r) => r + 1);
+  };
+  const resetSim = () => {
+    setSim(DEFAULT_SIM);
+    setConsoleLog([]);
+    setEvents([]);
+    setErrors([]);
+    setReloadKey((r) => r + 1);
+  };
 
   const [consoleLog, setConsoleLog] = useState<ConsoleEntry[]>([]);
   const [events, setEvents] = useState<EventEntry[]>([]);
@@ -175,11 +237,14 @@ function RuntimeViewer() {
         </div>
       }
     >
-      <div className="grid gap-4 lg:grid-cols-[1fr_360px]">
+      <div className="grid gap-4 lg:grid-cols-[260px_1fr_340px]">
+        <SimulationsPanel sim={sim} update={updateSim} reset={resetSim} />
+
         <div className="space-y-3">
-          <div className="flex items-center gap-2 rounded-lg border border-violet-500/40 bg-violet-500/10 px-3 py-2 text-xs text-violet-200">
+          <div className="flex flex-wrap items-center gap-2 rounded-lg border border-violet-500/40 bg-violet-500/10 px-3 py-2 text-xs text-violet-200">
             <Bug className="h-4 w-4" />
             Runtime simulado — cada tela abre como se a extensão estivesse instalada no Chrome.
+            <SimBadges sim={sim} />
           </div>
 
           <Tabs value={tab} onValueChange={setTab}>
@@ -212,6 +277,7 @@ function RuntimeViewer() {
                     file={p.file}
                     pageKey={p.key}
                     label={p.label}
+                    sim={sim}
                   />
                 ) : availability[p.key] === "checking" ? (
                   <PanelMsg icon={Loader2} spin text={`Verificando ${p.label}…`} />
@@ -250,11 +316,13 @@ function RuntimeViewer() {
           consoleCount={consoleLog.length}
           eventsCount={events.length}
           errors={errors}
+          sim={sim}
         />
       </div>
     </AppShell>
   );
 }
+
 
 // ============================================================
 // Chrome-like frame (popup / sidepanel / permission / offscreen / options)
@@ -265,11 +333,13 @@ function ChromeFrame({
   file,
   pageKey,
   label,
+  sim,
 }: {
   base: string;
   file: string;
   pageKey: string;
   label: string;
+  sim: SimState;
 }) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
@@ -288,11 +358,16 @@ function ChromeFrame({
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         const raw = await r.text();
         const absBase = new URL(base, window.location.origin).toString();
+        const simScript =
+          `<script>window.__mrSim=${JSON.stringify(sim)};</script>\n` +
+          `<script>${simBootstrap()}</script>\n`;
         const injection =
           `<base href="${absBase}">\n` +
+          simScript +
           `<script src="/factory-chrome-mock.js"></script>\n` +
           `<script src="/factory-runtime-mock.js"></script>\n` +
-          `<style>html,body{margin:0;background:#0b0b12;color:#eee;font-family:system-ui,sans-serif;}</style>\n`;
+          `<script>${simApplyAfterMock()}</script>\n` +
+          `<style>html,body{margin:0;background:#0b0b12;color:#eee;font-family:system-ui,sans-serif;}${simBanner(sim)}</style>\n`;
 
         let patched: string;
         if (/<head[^>]*>/i.test(raw)) {
@@ -318,7 +393,8 @@ function ChromeFrame({
       cancelled = true;
       if (created) URL.revokeObjectURL(created);
     };
-  }, [base, file]);
+  }, [base, file, sim]);
+
 
   // Dimensões similares às do Chrome
   const { width, height } = frameSize(pageKey);
@@ -647,6 +723,7 @@ function SidePanel({
   consoleCount,
   eventsCount,
   errors,
+  sim,
 }: {
   ext: ExtensionRecord;
   scan: ScanResult;
@@ -655,6 +732,7 @@ function SidePanel({
   consoleCount: number;
   eventsCount: number;
   errors: string[];
+  sim: SimState;
 }) {
   const iconPath =
     (manifest?.icons?.["128"] as string | undefined) ??
@@ -700,9 +778,18 @@ function SidePanel({
           </div>
         )}
 
+        <div className="rounded border border-border/40 bg-background/40 p-2 text-[10px] leading-relaxed">
+          <p className="mb-1 uppercase tracking-widest text-muted-foreground">Simulação ativa</p>
+          <ul className="space-y-0.5 font-mono text-muted-foreground">
+            <li>licença: <span className="text-foreground">{LICENSE_LABEL[sim.license]}</span></li>
+            <li>lovable: <span className="text-foreground">{LOVABLE_LABEL[sim.lovable]}</span></li>
+            <li>google: <span className="text-foreground">{GOOGLE_LABEL[sim.google]}</span></li>
+            <li>versão: <span className="text-foreground">{sim.version}</span></li>
+          </ul>
+        </div>
+
         <p className="rounded border border-border/40 bg-background/40 p-2 text-[10px] leading-relaxed text-muted-foreground">
-          Runtime é apenas simulação visual. Nenhum arquivo da EXT1 é modificado. As
-          telas rodam em iframe com as APIs do Chrome mockadas pela Factory.
+          Runtime é apenas simulação visual. Nenhum arquivo da EXT1 é modificado.
         </p>
       </CardContent>
     </Card>
@@ -727,3 +814,330 @@ function safeJson(v: unknown): string | undefined {
     return String(v);
   }
 }
+
+// ============================================================
+// Simulations panel
+// ============================================================
+
+const LICENSE_LABEL: Record<LicenseState, string> = {
+  none: "Não ativada",
+  trial: "Trial",
+  premium: "Premium",
+  expired: "Expirada",
+  revoked: "Revogada",
+  hwid_mismatch: "HWID incompatível",
+};
+const LOVABLE_LABEL: Record<LovableState, string> = {
+  offline: "Offline",
+  online: "Online",
+  timeout: "Timeout",
+  slow: "API lenta",
+  error500: "Erro 500",
+};
+const GOOGLE_LABEL: Record<GoogleState, string> = {
+  page_open: "Página aberta",
+  page_closed: "Página fechada",
+  logged_in: "Usuário logado",
+  logged_out: "Usuário deslogado",
+  incompatible: "Página incompatível",
+};
+
+function SimulationsPanel({
+  sim,
+  update,
+  reset,
+}: {
+  sim: SimState;
+  update: <K extends keyof SimState>(k: K, v: SimState[K]) => void;
+  reset: () => void;
+}) {
+  return (
+    <Card className="glass h-fit border-border/60">
+      <CardContent className="space-y-3 p-3 text-xs">
+        <div className="flex items-center gap-2 border-b border-border/40 pb-2">
+          <FlaskConical className="h-4 w-4 text-violet-300" />
+          <p className="text-sm font-semibold">Simulações</p>
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={reset}
+            className="ml-auto h-6 gap-1 px-2 text-[10px]"
+          >
+            <RotateCcw className="h-3 w-3" /> reset
+          </Button>
+        </div>
+
+        <SimGroup icon={KeyRound} title="Licença">
+          <SimSelect
+            value={sim.license}
+            onChange={(v) => update("license", v as LicenseState)}
+            options={[
+              ["none", LICENSE_LABEL.none],
+              ["trial", LICENSE_LABEL.trial],
+              ["premium", LICENSE_LABEL.premium],
+              ["expired", LICENSE_LABEL.expired],
+              ["revoked", LICENSE_LABEL.revoked],
+              ["hwid_mismatch", LICENSE_LABEL.hwid_mismatch],
+            ]}
+          />
+        </SimGroup>
+
+        <SimGroup icon={Cloud} title="Lovable">
+          <SimSelect
+            value={sim.lovable}
+            onChange={(v) => update("lovable", v as LovableState)}
+            options={[
+              ["offline", LOVABLE_LABEL.offline],
+              ["online", LOVABLE_LABEL.online],
+              ["timeout", LOVABLE_LABEL.timeout],
+              ["slow", LOVABLE_LABEL.slow],
+              ["error500", LOVABLE_LABEL.error500],
+            ]}
+          />
+        </SimGroup>
+
+        <SimGroup icon={Globe} title="Google">
+          <SimSelect
+            value={sim.google}
+            onChange={(v) => update("google", v as GoogleState)}
+            options={[
+              ["page_open", GOOGLE_LABEL.page_open],
+              ["page_closed", GOOGLE_LABEL.page_closed],
+              ["logged_in", GOOGLE_LABEL.logged_in],
+              ["logged_out", GOOGLE_LABEL.logged_out],
+              ["incompatible", GOOGLE_LABEL.incompatible],
+            ]}
+          />
+        </SimGroup>
+
+        <SimGroup icon={Chrome} title="Chrome">
+          <SimSelect
+            label="Storage"
+            value={sim.storage}
+            onChange={(v) => update("storage", v as ChromeStorageState)}
+            options={[["empty", "Vazio"], ["filled", "Preenchido"]]}
+          />
+          <SimSelect
+            label="Cookies"
+            value={sim.cookies}
+            onChange={(v) => update("cookies", v as ChromeCookiesState)}
+            options={[["absent", "Ausentes"], ["present", "Presentes"]]}
+          />
+          <SimSelect
+            label="Permissão"
+            value={sim.permission}
+            onChange={(v) => update("permission", v as ChromePermissionState)}
+            options={[["granted", "Concedida"], ["denied", "Negada"]]}
+          />
+          <SimSelect
+            label="Alarm"
+            value={sim.alarm}
+            onChange={(v) => update("alarm", v as ChromeAlarmState)}
+            options={[["inactive", "Inativo"], ["active", "Ativo"]]}
+          />
+        </SimGroup>
+
+        <SimGroup icon={Tag} title="Versão">
+          <SimSelect
+            value={sim.version}
+            onChange={(v) => update("version", v as VersionState)}
+            options={[
+              ["2.1.0", "2.1.0"],
+              ["2.2.0", "2.2.0"],
+              ["2.2.7", "2.2.7"],
+              ["dev", "Desenvolvimento"],
+            ]}
+          />
+        </SimGroup>
+
+        <p className="rounded border border-border/40 bg-background/40 p-2 text-[10px] leading-relaxed text-muted-foreground">
+          Estados aplicados somente no iframe do Runtime. Nada é enviado ao
+          backend nem gravado na EXT1.
+        </p>
+      </CardContent>
+    </Card>
+  );
+}
+
+function SimGroup({
+  icon: Icon,
+  title,
+  children,
+}: {
+  icon: typeof Info;
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="space-y-1.5 rounded border border-border/40 bg-background/40 p-2">
+      <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-widest text-muted-foreground">
+        <Icon className="h-3 w-3" /> {title}
+      </div>
+      <div className="space-y-1.5">{children}</div>
+    </div>
+  );
+}
+
+function SimSelect({
+  label,
+  value,
+  onChange,
+  options,
+}: {
+  label?: string;
+  value: string;
+  onChange: (v: string) => void;
+  options: [string, string][];
+}) {
+  return (
+    <label className="flex items-center gap-2 text-[11px]">
+      {label && (
+        <span className="w-16 shrink-0 text-muted-foreground">{label}</span>
+      )}
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="w-full rounded border border-border/40 bg-background/60 px-1.5 py-1 text-[11px] outline-none focus:border-violet-400/60"
+      >
+        {options.map(([v, l]) => (
+          <option key={v} value={v}>
+            {l}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
+function SimBadges({ sim }: { sim: SimState }) {
+  return (
+    <div className="ml-auto flex flex-wrap gap-1">
+      <Badge variant="outline" className="border-violet-400/40 text-[9px]">
+        {LICENSE_LABEL[sim.license]}
+      </Badge>
+      <Badge variant="outline" className="border-sky-400/40 text-[9px]">
+        Lovable · {LOVABLE_LABEL[sim.lovable]}
+      </Badge>
+      <Badge variant="outline" className="border-emerald-400/40 text-[9px]">
+        v{sim.version}
+      </Badge>
+    </div>
+  );
+}
+
+// ============================================================
+// Iframe-side sim bootstrap (runs BEFORE the chrome mock loads)
+// ============================================================
+
+function simBootstrap(): string {
+  return `
+    (function(){
+      var sim = window.__mrSim || {};
+      // Pre-seed sessionStorage that factory-chrome-mock uses.
+      var store = { local:{}, sync:{}, session:{}, managed:{} };
+      if (sim.storage === 'filled') {
+        store.local = {
+          mr_license_key: 'SIM-XXXX-XXXX-XXXX',
+          mr_license_status: sim.license || 'none',
+          mr_version: sim.version || '2.2.7',
+          mr_last_sync: Date.now(),
+          mr_settings: { theme: 'dark', sound: true, language: 'pt-BR' }
+        };
+        store.sync = { mr_prefs: { notifications: true } };
+      } else {
+        // Ainda assim expõe o status de licença para o UI reagir.
+        store.local = { mr_license_status: sim.license || 'none', mr_version: sim.version || '2.2.7' };
+      }
+      try { sessionStorage.setItem('__mr_factory_chrome_storage__', JSON.stringify(store)); } catch(_){}
+    })();
+  `;
+}
+
+function simApplyAfterMock(): string {
+  return `
+    (function(){
+      var sim = window.__mrSim || {};
+      if (!window.chrome) return;
+
+      // Permissões
+      if (chrome.permissions) {
+        chrome.permissions.contains = function(_p, cb){
+          var ok = sim.permission !== 'denied';
+          if (cb) cb(ok);
+          return Promise.resolve(ok);
+        };
+      }
+
+      // Cookies
+      if (chrome.cookies) {
+        var cookies = sim.cookies === 'present'
+          ? [{ name:'SID', value:'sim', domain:'.google.com', path:'/' },
+             { name:'HSID', value:'sim', domain:'.google.com', path:'/' }]
+          : [];
+        chrome.cookies.getAll = function(_d, cb){ if(cb) cb(cookies); return Promise.resolve(cookies); };
+        chrome.cookies.get = function(_d, cb){ var c = cookies[0] || null; if(cb) cb(c); return Promise.resolve(c); };
+      }
+
+      // Alarms
+      if (chrome.alarms) {
+        var alarm = sim.alarm === 'active'
+          ? { name:'mr-heartbeat', scheduledTime: Date.now()+60000, periodInMinutes: 1 }
+          : null;
+        chrome.alarms.get = function(_n, cb){ if(cb) cb(alarm); return Promise.resolve(alarm); };
+        chrome.alarms.getAll = function(cb){ var a = alarm?[alarm]:[]; if(cb) cb(a); return Promise.resolve(a); };
+      }
+
+      // Google page simulation
+      if (chrome.tabs) {
+        var url = 'about:blank';
+        if (sim.google === 'page_open' || sim.google === 'logged_in' || sim.google === 'logged_out') {
+          url = 'https://www.google.com/';
+        } else if (sim.google === 'incompatible') {
+          url = 'chrome://newtab';
+        }
+        var origQuery = chrome.tabs.query.bind(chrome.tabs);
+        chrome.tabs.query = function(q, cb){
+          var t = [{ id:1, url:url, active:true, windowId:1, title:'Simulated' }];
+          if (sim.google === 'page_closed') t = [];
+          if (cb) cb(t);
+          return Promise.resolve(t);
+        };
+        void origQuery;
+      }
+
+      // Lovable network simulation
+      var lovable = sim.lovable || 'online';
+      var origFetch = window.fetch ? window.fetch.bind(window) : null;
+      window.fetch = function(input, init){
+        var url = typeof input === 'string' ? input : (input && input.url) || '';
+        var isLovable = /lovable|supabase|functions\\/v1/i.test(url);
+        if (isLovable) {
+          if (lovable === 'offline') return Promise.reject(new TypeError('NetworkError: offline (sim)'));
+          if (lovable === 'timeout') return new Promise(function(){ /* nunca resolve */ });
+          if (lovable === 'error500') return Promise.resolve(new Response('Simulated 500', { status:500 }));
+          var delay = lovable === 'slow' ? 4000 : 30;
+          return new Promise(function(resolve){
+            setTimeout(function(){
+              resolve(new Response(JSON.stringify({ ok:true, simulated:true, lovable:lovable }), {
+                status:200, headers:{ 'content-type':'application/json' }
+              }));
+            }, delay);
+          });
+        }
+        return origFetch ? origFetch(input, init) : Promise.reject(new Error('no fetch'));
+      };
+
+      // Broadcast state to Factory as an event trail.
+      try {
+        parent.postMessage({ type:'mr-factory:call', label:'sim.apply', payload: sim }, '*');
+      } catch(_){}
+    })();
+  `;
+}
+
+function simBanner(sim: SimState): string {
+  // Small on-page corner label showing simulated modes.
+  const label = `${LICENSE_LABEL[sim.license]} · ${LOVABLE_LABEL[sim.lovable]} · v${sim.version}`;
+  return `body::before{content:"SIM · ${label.replace(/"/g, "'")}";position:fixed;right:6px;bottom:6px;z-index:99999;font:10px/1.2 system-ui,sans-serif;background:rgba(139,92,246,.85);color:#fff;padding:3px 7px;border-radius:6px;pointer-events:none;}`;
+}
+

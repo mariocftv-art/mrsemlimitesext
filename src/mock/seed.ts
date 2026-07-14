@@ -29,10 +29,11 @@ export function seed(): State {
   const licenses = Array.from({ length: 15 }).map((_, i) => {
     const cust = customers[i % customers.length];
     const active = i % 6 !== 5;
-    const seg = () => Math.random().toString(36).slice(2, 6).toUpperCase();
+    const ALPH = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    const seg = () => Array.from({ length: 5 }, () => ALPH[Math.floor(Math.random() * ALPH.length)]).join("");
     return {
       id: `l${String(i + 1).padStart(2, "0")}`,
-      key: `MRSL-${seg()}-${seg()}-${seg()}-${seg()}`,
+      key: `${seg()}-${seg()}-${seg()}-${seg()}`,
       product: products[i % products.length],
       customerId: cust.id,
       status: (i === 4 ? "blocked" : i === 9 ? "expired" : i === 12 ? "pending" : "active") as any,

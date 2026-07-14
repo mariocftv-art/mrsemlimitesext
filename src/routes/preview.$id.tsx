@@ -3,20 +3,24 @@ import { useRef, useState } from "react";
 import {
   ArrowLeft,
   Camera,
+  FileCode,
   FileJson,
   FlaskConical,
+  FolderTree,
   Home,
   ImageIcon,
   Info,
   Layout,
   Maximize2,
-  MessageSquare,
   Minimize2,
+  MessageSquare,
+  Package,
   Puzzle,
   RefreshCcw,
   Settings2,
   ShieldAlert,
   SquareStack,
+  Volume2,
 } from "lucide-react";
 import { toast } from "sonner";
 import { toPng } from "html-to-image";
@@ -27,9 +31,16 @@ import { AppShell } from "@/components/layout/app-shell";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { getExtensionById, type ExtensionRecord, type NeonTone } from "@/factory";
+import {
+  getExtensionById,
+  useExtensionScan,
+  type ExtensionRecord,
+  type FileEntry,
+  type NeonTone,
+} from "@/factory";
 
 export const Route = createFileRoute("/preview/$id")({
   loader: ({ params }): { ext: ExtensionRecord } => {
@@ -61,6 +72,8 @@ const TABS = [
   { value: "sidepanel", label: "Sidepanel", icon: SquareStack },
   { value: "config", label: "Configuração", icon: Settings2 },
   { value: "assets", label: "Assets", icon: ImageIcon },
+  { value: "files", label: "Arquivos", icon: FolderTree },
+  { value: "deps", label: "Dependências", icon: Package },
   { value: "manifest", label: "Manifest", icon: FileJson },
   { value: "info", label: "Informações", icon: Info },
   { value: "lab", label: "Laboratório", icon: FlaskConical },

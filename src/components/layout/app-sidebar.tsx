@@ -12,6 +12,7 @@ import {
   MessageSquareCode,
   Wrench,
   ShieldCheck,
+  ShieldQuestion,
   Settings,
   UserCircle,
 } from "lucide-react";

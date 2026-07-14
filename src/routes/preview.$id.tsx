@@ -63,7 +63,7 @@ const TABS = [
 ] as const;
 
 function PreviewWorkspace() {
-  const { ext } = Route.useLoaderData();
+  const { ext } = Route.useLoaderData() as { ext: ExtensionRecord };
   const navigate = useNavigate();
   const [tab, setTab] = useState<(typeof TABS)[number]["value"]>("home");
   const [full, setFull] = useState(false);

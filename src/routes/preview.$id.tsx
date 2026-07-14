@@ -4,6 +4,7 @@ import {
   ArrowLeft,
   Camera,
   FileJson,
+  FlaskConical,
   Home,
   ImageIcon,
   Info,
@@ -19,6 +20,8 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { toPng } from "html-to-image";
+import { LabWorkspace } from "@/factory/lab";
+
 
 import { AppShell } from "@/components/layout/app-shell";
 import { Badge } from "@/components/ui/badge";
@@ -60,7 +63,9 @@ const TABS = [
   { value: "assets", label: "Assets", icon: ImageIcon },
   { value: "manifest", label: "Manifest", icon: FileJson },
   { value: "info", label: "Informações", icon: Info },
+  { value: "lab", label: "Laboratório", icon: FlaskConical },
 ] as const;
+
 
 function PreviewWorkspace() {
   const { ext } = Route.useLoaderData() as { ext: ExtensionRecord };
@@ -152,8 +157,10 @@ function PreviewWorkspace() {
             <TabsContent value="assets"><AssetsPreview ext={ext} /></TabsContent>
             <TabsContent value="manifest"><ManifestPreview ext={ext} /></TabsContent>
             <TabsContent value="info"><InfoPreview ext={ext} /></TabsContent>
+            <TabsContent value="lab"><LabWorkspace ext={ext} /></TabsContent>
           </div>
         </Tabs>
+
       </div>
     </div>
   );

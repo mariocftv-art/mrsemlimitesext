@@ -63,7 +63,9 @@ const TABS = [
   { value: "assets", label: "Assets", icon: ImageIcon },
   { value: "manifest", label: "Manifest", icon: FileJson },
   { value: "info", label: "Informações", icon: Info },
+  { value: "lab", label: "Laboratório", icon: FlaskConical },
 ] as const;
+
 
 function PreviewWorkspace() {
   const { ext } = Route.useLoaderData() as { ext: ExtensionRecord };

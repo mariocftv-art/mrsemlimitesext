@@ -6,7 +6,7 @@ import {
   Copy,
   Download,
   History,
-  KeyRound,
+  
   MoreHorizontal,
   Plus,
   RefreshCw,

@@ -212,12 +212,7 @@ export function scanExtension(sourceDir: string): ScanResult {
   const hasFile = (rel: string) => byName.has(rel.toLowerCase());
 
   const builds: ScannedBuild[] = files
-    .filter(
-      (f) =>
-        f.category === "archive" ||
-        (f.dir.startsWith("dist") && f.category === "archive") ||
-        (f.dir.startsWith("build") && f.category === "archive"),
-    )
+    .filter((f) => f.category === "archive")
     .map((f) => ({ filename: f.name, url: f.url, path: f.path }));
 
   return {

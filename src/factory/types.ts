@@ -3,18 +3,16 @@
 // que descreve cada extensão gerenciada pela Factory.
 
 export type ExtensionStatus =
-  | "draft"
-  | "in-development"
-  | "ready"
-  | "building"
-  | "published"
+  | "production"
+  | "development"
+  | "testing"
   | "archived";
 
 export type NeonTone = "cyan" | "violet" | "magenta" | "lime";
 
 export interface ExtensionAssets {
-  logo?: string;
-  banner?: string;
+  logo?: string;      // dataURL ou URL
+  banner?: string;    // dataURL ou URL
   icon16?: string;
   icon48?: string;
   icon128?: string;

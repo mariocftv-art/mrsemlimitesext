@@ -28,6 +28,7 @@ import { Route as CompatibilityRouteImport } from './routes/compatibility'
 import { Route as BuildCenterRouteImport } from './routes/build-center'
 import { Route as BlocksRouteImport } from './routes/blocks'
 import { Route as BlacklistRouteImport } from './routes/blacklist'
+import { Route as BackendRouteImport } from './routes/backend'
 import { Route as AssetsRouteImport } from './routes/assets'
 import { Route as ApiDocsRouteImport } from './routes/api-docs'
 import { Route as AnimationsRouteImport } from './routes/animations'
@@ -132,6 +133,11 @@ const BlacklistRoute = BlacklistRouteImport.update({
   path: '/blacklist',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BackendRoute = BackendRouteImport.update({
+  id: '/backend',
+  path: '/backend',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AssetsRoute = AssetsRouteImport.update({
   id: '/assets',
   path: '/assets',
@@ -179,6 +185,7 @@ export interface FileRoutesByFullPath {
   '/animations': typeof AnimationsRoute
   '/api-docs': typeof ApiDocsRoute
   '/assets': typeof AssetsRoute
+  '/backend': typeof BackendRoute
   '/blacklist': typeof BlacklistRoute
   '/blocks': typeof BlocksRoute
   '/build-center': typeof BuildCenterRoute
@@ -208,6 +215,7 @@ export interface FileRoutesByTo {
   '/animations': typeof AnimationsRoute
   '/api-docs': typeof ApiDocsRoute
   '/assets': typeof AssetsRoute
+  '/backend': typeof BackendRoute
   '/blacklist': typeof BlacklistRoute
   '/blocks': typeof BlocksRoute
   '/build-center': typeof BuildCenterRoute
@@ -238,6 +246,7 @@ export interface FileRoutesById {
   '/animations': typeof AnimationsRoute
   '/api-docs': typeof ApiDocsRoute
   '/assets': typeof AssetsRoute
+  '/backend': typeof BackendRoute
   '/blacklist': typeof BlacklistRoute
   '/blocks': typeof BlocksRoute
   '/build-center': typeof BuildCenterRoute
@@ -269,6 +278,7 @@ export interface FileRouteTypes {
     | '/animations'
     | '/api-docs'
     | '/assets'
+    | '/backend'
     | '/blacklist'
     | '/blocks'
     | '/build-center'
@@ -298,6 +308,7 @@ export interface FileRouteTypes {
     | '/animations'
     | '/api-docs'
     | '/assets'
+    | '/backend'
     | '/blacklist'
     | '/blocks'
     | '/build-center'
@@ -327,6 +338,7 @@ export interface FileRouteTypes {
     | '/animations'
     | '/api-docs'
     | '/assets'
+    | '/backend'
     | '/blacklist'
     | '/blocks'
     | '/build-center'
@@ -357,6 +369,7 @@ export interface RootRouteChildren {
   AnimationsRoute: typeof AnimationsRoute
   ApiDocsRoute: typeof ApiDocsRoute
   AssetsRoute: typeof AssetsRoute
+  BackendRoute: typeof BackendRoute
   BlacklistRoute: typeof BlacklistRoute
   BlocksRoute: typeof BlocksRoute
   BuildCenterRoute: typeof BuildCenterRoute
@@ -516,6 +529,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlacklistRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/backend': {
+      id: '/backend'
+      path: '/backend'
+      fullPath: '/backend'
+      preLoaderRoute: typeof BackendRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/assets': {
       id: '/assets'
       path: '/assets'
@@ -581,6 +601,7 @@ const rootRouteChildren: RootRouteChildren = {
   AnimationsRoute: AnimationsRoute,
   ApiDocsRoute: ApiDocsRoute,
   AssetsRoute: AssetsRoute,
+  BackendRoute: BackendRoute,
   BlacklistRoute: BlacklistRoute,
   BlocksRoute: BlocksRoute,
   BuildCenterRoute: BuildCenterRoute,

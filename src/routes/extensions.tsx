@@ -318,6 +318,9 @@ function ExtensionCard({ ext, onEdit }: { ext: ExtensionRecord; onEdit: () => vo
         </div>
 
         <div className="grid grid-cols-3 gap-1.5">
+          <ActionBtn icon={Eye} label="Live" asChild>
+            <Link to="/live/$id" params={{ id: ext.id }}>Live</Link>
+          </ActionBtn>
           <ActionBtn icon={Eye} label="Preview" asChild>
             <Link to="/preview/$id" params={{ id: ext.id }}>Preview</Link>
           </ActionBtn>

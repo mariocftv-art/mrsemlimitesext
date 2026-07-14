@@ -34,6 +34,7 @@ import { Route as AnimationsRouteImport } from './routes/animations'
 import { Route as ActivationsRouteImport } from './routes/activations'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PreviewIdRouteImport } from './routes/preview.$id'
+import { Route as LiveIdRouteImport } from './routes/live.$id'
 
 const VersionsRoute = VersionsRouteImport.update({
   id: '/versions',
@@ -160,6 +161,11 @@ const PreviewIdRoute = PreviewIdRouteImport.update({
   path: '/preview/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LiveIdRoute = LiveIdRouteImport.update({
+  id: '/live/$id',
+  path: '/live/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -186,6 +192,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof SettingsRoute
   '/tools': typeof ToolsRoute
   '/versions': typeof VersionsRoute
+  '/live/$id': typeof LiveIdRoute
   '/preview/$id': typeof PreviewIdRoute
 }
 export interface FileRoutesByTo {
@@ -213,6 +220,7 @@ export interface FileRoutesByTo {
   '/settings': typeof SettingsRoute
   '/tools': typeof ToolsRoute
   '/versions': typeof VersionsRoute
+  '/live/$id': typeof LiveIdRoute
   '/preview/$id': typeof PreviewIdRoute
 }
 export interface FileRoutesById {
@@ -241,6 +249,7 @@ export interface FileRoutesById {
   '/settings': typeof SettingsRoute
   '/tools': typeof ToolsRoute
   '/versions': typeof VersionsRoute
+  '/live/$id': typeof LiveIdRoute
   '/preview/$id': typeof PreviewIdRoute
 }
 export interface FileRouteTypes {
@@ -270,6 +279,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/tools'
     | '/versions'
+    | '/live/$id'
     | '/preview/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -297,6 +307,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/tools'
     | '/versions'
+    | '/live/$id'
     | '/preview/$id'
   id:
     | '__root__'
@@ -324,6 +335,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/tools'
     | '/versions'
+    | '/live/$id'
     | '/preview/$id'
   fileRoutesById: FileRoutesById
 }
@@ -352,6 +364,7 @@ export interface RootRouteChildren {
   SettingsRoute: typeof SettingsRoute
   ToolsRoute: typeof ToolsRoute
   VersionsRoute: typeof VersionsRoute
+  LiveIdRoute: typeof LiveIdRoute
   PreviewIdRoute: typeof PreviewIdRoute
 }
 
@@ -532,6 +545,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PreviewIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/live/$id': {
+      id: '/live/$id'
+      path: '/live/$id'
+      fullPath: '/live/$id'
+      preLoaderRoute: typeof LiveIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -560,6 +580,7 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsRoute: SettingsRoute,
   ToolsRoute: ToolsRoute,
   VersionsRoute: VersionsRoute,
+  LiveIdRoute: LiveIdRoute,
   PreviewIdRoute: PreviewIdRoute,
 }
 export const routeTree = rootRouteImport

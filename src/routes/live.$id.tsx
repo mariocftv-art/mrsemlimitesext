@@ -90,12 +90,12 @@ function LivePreview() {
       const d = e.data;
       if (!d || typeof d !== "object" || !("type" in d)) return;
       if (d.type === "mr-factory:call") {
-        setLogs((l) => [{ id: crypto.randomUUID(), ts: Date.now(), kind: "call", label: d.label, detail: safeJson(d.payload) }, ...l].slice(0, 300));
+        setLogs((l) => [{ id: crypto.randomUUID(), ts: Date.now(), kind: "call" as const, label: d.label, detail: safeJson(d.payload) }, ...l].slice(0, 300));
       } else if (d.type === "mr-factory:unsupported") {
-        setLogs((l) => [{ id: crypto.randomUUID(), ts: Date.now(), kind: "unsupported", label: d.label }, ...l].slice(0, 300));
+        setLogs((l) => [{ id: crypto.randomUUID(), ts: Date.now(), kind: "unsupported" as const, label: d.label }, ...l].slice(0, 300));
         setWarnings((w) => (w.includes(d.label) ? w : [d.label, ...w].slice(0, 8)));
       } else if (d.type === "mr-factory:error") {
-        setLogs((l) => [{ id: crypto.randomUUID(), ts: Date.now(), kind: "error", label: d.message, detail: d.source }, ...l].slice(0, 300));
+        setLogs((l) => [{ id: crypto.randomUUID(), ts: Date.now(), kind: "error" as const, label: d.message, detail: d.source }, ...l].slice(0, 300));
       }
     };
     window.addEventListener("message", onMsg);

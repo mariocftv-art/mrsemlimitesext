@@ -39,6 +39,7 @@ const groups = [
     label: "Fábrica",
     items: [
       { title: "Minhas Extensões", url: "/extensions", icon: Puzzle },
+      { title: "Compatibilidade", url: "/compatibility", icon: ShieldQuestion },
       { title: "Editor", url: "/editor", icon: Pencil },
       { title: "Build Center", url: "/build-center", icon: Hammer },
       { title: "Downloads", url: "/downloads", icon: Download },

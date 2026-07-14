@@ -27,11 +27,9 @@ const glow: Record<NeonTone, string> = {
 };
 
 const statusLabel: Record<string, string> = {
-  draft: "Rascunho",
-  "in-development": "Em desenvolvimento",
-  ready: "Pronta",
-  building: "Compilando",
-  published: "Publicada",
+  production: "Produção",
+  development: "Desenvolvimento",
+  testing: "Testes",
   archived: "Arquivada",
 };
 
@@ -54,7 +52,7 @@ function FactoryDashboard() {
       }
     >
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-        <KpiCard label="Extensões" value={stats.total} delta={`${stats.byStatus.ready ?? 0} prontas`} icon={Puzzle} tone="cyan" />
+        <KpiCard label="Extensões" value={stats.total} delta={`${stats.byStatus.production ?? 0} em produção`} icon={Puzzle} tone="cyan" />
         <KpiCard
           label="Última Build"
           value={stats.lastBuild ? stats.lastBuild.version : "—"}

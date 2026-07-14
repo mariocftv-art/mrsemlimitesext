@@ -4,7 +4,6 @@ import {
   Archive,
   ArchiveRestore,
   Bug,
-  ArchiveRestore,
   Copy,
   Download,
   Eye,

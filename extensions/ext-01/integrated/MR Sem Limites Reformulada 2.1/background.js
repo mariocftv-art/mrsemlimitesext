@@ -45,13 +45,18 @@ const _PULSE_RUNTIME_OK = (() => {
     if (typeof chrome === 'undefined' || !chrome.runtime || !chrome.runtime.id) return false;
     const m = chrome.runtime.getManifest?.();
     if (!m) return false;
-    if (!['LOV 3', 'MR LOV 2.2', 'MR Sem Limites 2.2', 'MR Ext Sem Limites 2.2', 'MR Sem Limites'].includes(m.name)) return false;
     if (m.manifest_version !== 3) return false;
+    // Identidade própria da extensão (independente do nome exibido):
+    // exige extension_id válido + namespace MRSL declarado no manifest.
+    if (!chrome.runtime.id || typeof chrome.runtime.id !== 'string') return false;
+    const ns = m.mrsl_namespace || m.short_name || m.name;
+    if (!ns) return false;
     return true;
   } catch (_) {
     return false;
   }
 })();
+
 
 function generateUlid() {
   const ALPHABET = '0123456789abcdefghjkmnpqrstvwxyz';

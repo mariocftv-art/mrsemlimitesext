@@ -27,11 +27,9 @@ const glow: Record<NeonTone, string> = {
 };
 
 const statusLabel: Record<string, string> = {
-  draft: "Rascunho",
-  "in-development": "Em desenvolvimento",
-  ready: "Pronta",
-  building: "Compilando",
-  published: "Publicada",
+  production: "Produção",
+  development: "Desenvolvimento",
+  testing: "Testes",
   archived: "Arquivada",
 };
 

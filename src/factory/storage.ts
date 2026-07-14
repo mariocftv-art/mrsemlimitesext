@@ -32,25 +32,32 @@ function writeCustom(list: ExtensionRecord[]) {
   emit();
 }
 
+let cachedSnapshot: ExtensionRecord[] | null = null;
+
 function emit() {
+  cachedSnapshot = null;
   listeners.forEach((l) => l());
 }
 
 export function subscribe(l: Listener): () => void {
   listeners.add(l);
-  return () => listeners.delete(l);
+  return () => {
+    listeners.delete(l);
+  };
 }
 
-/** Todas as extensões (seed + custom). */
+/** Todas as extensões (seed + custom). Snapshot estável entre emits. */
 export function getAllExtensions(): ExtensionRecord[] {
+  if (cachedSnapshot) return cachedSnapshot;
   const seedIds = new Set(SEED_EXTENSIONS.map((s) => s.id));
-  const custom = readCustom().filter((c) => !seedIds.has(c.id));
-  // seed pode ser sobreescrita por overlay salvo (edições em EXT1)
+  const customAll = readCustom();
+  const custom = customAll.filter((c) => !seedIds.has(c.id));
   const overrides = new Map(
-    readCustom().filter((c) => seedIds.has(c.id)).map((c) => [c.id, c] as const),
+    customAll.filter((c) => seedIds.has(c.id)).map((c) => [c.id, c] as const),
   );
   const seedWithOverrides = SEED_EXTENSIONS.map((s) => overrides.get(s.id) ?? s);
-  return [...seedWithOverrides, ...custom];
+  cachedSnapshot = [...seedWithOverrides, ...custom];
+  return cachedSnapshot;
 }
 
 export function getExtensionById(id: string): ExtensionRecord | undefined {

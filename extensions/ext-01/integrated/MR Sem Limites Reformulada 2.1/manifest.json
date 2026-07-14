@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "MR Ext Sem Limites 2.2",
-  "version": "2.2.7",
-  "description": "MR Ext Sem Limites 2.2 — Powered by MRExtSemLimites",
+  "name": "MR Sem Limites",
+  "version": "2.1.0",
+  "description": "MR Sem Limites Reformulada 2.1 — Central premium de produtividade, animações, componentes, prompts e ferramentas.",
   "permissions": [
     "storage",
     "cookies",
@@ -53,7 +53,7 @@
     }
   ],
   "action": {
-    "default_title": "MR Ext Sem Limites",
+    "default_title": "MR Sem Limites",
     "default_icon": {
       "16": "icons/icon16.png",
       "32": "icons/icon32.png",
@@ -94,7 +94,7 @@
         "default": "Ctrl+Shift+L",
         "mac": "Command+Shift+L"
       },
-      "description": "Alternar MR Ext Sem Limites"
+      "description": "MR Sem Limites Reformulada 2.1 — Central premium de produtividade, animações, componentes, prompts e ferramentas."
     }
   }
 }

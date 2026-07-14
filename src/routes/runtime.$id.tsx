@@ -237,11 +237,14 @@ function RuntimeViewer() {
         </div>
       }
     >
-      <div className="grid gap-4 lg:grid-cols-[1fr_360px]">
+      <div className="grid gap-4 lg:grid-cols-[260px_1fr_340px]">
+        <SimulationsPanel sim={sim} update={updateSim} reset={resetSim} />
+
         <div className="space-y-3">
-          <div className="flex items-center gap-2 rounded-lg border border-violet-500/40 bg-violet-500/10 px-3 py-2 text-xs text-violet-200">
+          <div className="flex flex-wrap items-center gap-2 rounded-lg border border-violet-500/40 bg-violet-500/10 px-3 py-2 text-xs text-violet-200">
             <Bug className="h-4 w-4" />
             Runtime simulado — cada tela abre como se a extensão estivesse instalada no Chrome.
+            <SimBadges sim={sim} />
           </div>
 
           <Tabs value={tab} onValueChange={setTab}>
@@ -274,6 +277,7 @@ function RuntimeViewer() {
                     file={p.file}
                     pageKey={p.key}
                     label={p.label}
+                    sim={sim}
                   />
                 ) : availability[p.key] === "checking" ? (
                   <PanelMsg icon={Loader2} spin text={`Verificando ${p.label}…`} />
@@ -312,11 +316,13 @@ function RuntimeViewer() {
           consoleCount={consoleLog.length}
           eventsCount={events.length}
           errors={errors}
+          sim={sim}
         />
       </div>
     </AppShell>
   );
 }
+
 
 // ============================================================
 // Chrome-like frame (popup / sidepanel / permission / offscreen / options)

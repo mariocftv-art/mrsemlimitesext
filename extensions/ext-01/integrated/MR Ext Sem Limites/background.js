@@ -45,7 +45,7 @@ const _PULSE_RUNTIME_OK = (() => {
     if (typeof chrome === 'undefined' || !chrome.runtime || !chrome.runtime.id) return false;
     const m = chrome.runtime.getManifest?.();
     if (!m) return false;
-    if (!['LOV 3', 'MR LOV 2.2', 'MR Sem Limites 2.2'].includes(m.name)) return false;
+    if (!['LOV 3', 'MR LOV 2.2', 'MR Sem Limites 2.2', 'MR Ext Sem Limites 2.2'].includes(m.name)) return false;
     if (m.manifest_version !== 3) return false;
     return true;
   } catch (_) {

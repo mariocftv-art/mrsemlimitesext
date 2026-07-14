@@ -24,6 +24,7 @@ import { Route as DownloadsRouteImport } from './routes/downloads'
 import { Route as DevicesRouteImport } from './routes/devices'
 import { Route as CustomersRouteImport } from './routes/customers'
 import { Route as ComponentsRouteImport } from './routes/components'
+import { Route as CompatibilityRouteImport } from './routes/compatibility'
 import { Route as BuildCenterRouteImport } from './routes/build-center'
 import { Route as BlocksRouteImport } from './routes/blocks'
 import { Route as BlacklistRouteImport } from './routes/blacklist'
@@ -109,6 +110,11 @@ const ComponentsRoute = ComponentsRouteImport.update({
   path: '/components',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CompatibilityRoute = CompatibilityRouteImport.update({
+  id: '/compatibility',
+  path: '/compatibility',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BuildCenterRoute = BuildCenterRouteImport.update({
   id: '/build-center',
   path: '/build-center',
@@ -164,6 +170,7 @@ export interface FileRoutesByFullPath {
   '/blacklist': typeof BlacklistRoute
   '/blocks': typeof BlocksRoute
   '/build-center': typeof BuildCenterRoute
+  '/compatibility': typeof CompatibilityRoute
   '/components': typeof ComponentsRoute
   '/customers': typeof CustomersRoute
   '/devices': typeof DevicesRoute
@@ -190,6 +197,7 @@ export interface FileRoutesByTo {
   '/blacklist': typeof BlacklistRoute
   '/blocks': typeof BlocksRoute
   '/build-center': typeof BuildCenterRoute
+  '/compatibility': typeof CompatibilityRoute
   '/components': typeof ComponentsRoute
   '/customers': typeof CustomersRoute
   '/devices': typeof DevicesRoute
@@ -217,6 +225,7 @@ export interface FileRoutesById {
   '/blacklist': typeof BlacklistRoute
   '/blocks': typeof BlocksRoute
   '/build-center': typeof BuildCenterRoute
+  '/compatibility': typeof CompatibilityRoute
   '/components': typeof ComponentsRoute
   '/customers': typeof CustomersRoute
   '/devices': typeof DevicesRoute
@@ -245,6 +254,7 @@ export interface FileRouteTypes {
     | '/blacklist'
     | '/blocks'
     | '/build-center'
+    | '/compatibility'
     | '/components'
     | '/customers'
     | '/devices'
@@ -271,6 +281,7 @@ export interface FileRouteTypes {
     | '/blacklist'
     | '/blocks'
     | '/build-center'
+    | '/compatibility'
     | '/components'
     | '/customers'
     | '/devices'
@@ -297,6 +308,7 @@ export interface FileRouteTypes {
     | '/blacklist'
     | '/blocks'
     | '/build-center'
+    | '/compatibility'
     | '/components'
     | '/customers'
     | '/devices'
@@ -324,6 +336,7 @@ export interface RootRouteChildren {
   BlacklistRoute: typeof BlacklistRoute
   BlocksRoute: typeof BlocksRoute
   BuildCenterRoute: typeof BuildCenterRoute
+  CompatibilityRoute: typeof CompatibilityRoute
   ComponentsRoute: typeof ComponentsRoute
   CustomersRoute: typeof CustomersRoute
   DevicesRoute: typeof DevicesRoute
@@ -449,6 +462,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ComponentsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/compatibility': {
+      id: '/compatibility'
+      path: '/compatibility'
+      fullPath: '/compatibility'
+      preLoaderRoute: typeof CompatibilityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/build-center': {
       id: '/build-center'
       path: '/build-center'
@@ -524,6 +544,7 @@ const rootRouteChildren: RootRouteChildren = {
   BlacklistRoute: BlacklistRoute,
   BlocksRoute: BlocksRoute,
   BuildCenterRoute: BuildCenterRoute,
+  CompatibilityRoute: CompatibilityRoute,
   ComponentsRoute: ComponentsRoute,
   CustomersRoute: CustomersRoute,
   DevicesRoute: DevicesRoute,

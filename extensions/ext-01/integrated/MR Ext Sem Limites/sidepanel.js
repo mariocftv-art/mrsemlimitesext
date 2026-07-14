@@ -34,7 +34,7 @@
 
 const EXTENSION_VERSION = '5.1.0-NEON-NOIR'; 
 const EXTENSION_API_VERSION = '5.1.0';      
-console.log(`🚀 Ilimitado Lov Extension v${EXTENSION_VERSION} (NEON NOIR) iniciando...`);
+console.log(`🚀 MR Ext Sem Limites v${EXTENSION_VERSION} (NEON NOIR) iniciando...`);
 
 
 const SUPABASE_URL = "https://mrsemlimites.lovable.app/api/public/ext";
@@ -516,7 +516,7 @@ function setupBridge(iframe) {
         if (!check.valid) { error = check.message || 'Licença inválida'; break; }
         const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
         if (!tab?.id || !/lovable\.dev|lovableproject\.com/.test(tab.url || '')) {
-          error = 'Abra a aba do Lovable com o projeto antes de enviar.'; break;
+          error = 'Abra a aba da plataforma com o projeto antes de enviar.'; break;
         }
         const injected = await new Promise((resolve) => {
           chrome.tabs.sendMessage(tab.id, { type: 'TYPE_AND_SEND_IN_LOVABLE', text: msgText }, (resp) => {
@@ -525,20 +525,20 @@ function setupBridge(iframe) {
           });
         });
         if (injected.ok) {
-          result = { message: '✅ Mensagem enviada no chat do Lovable!' };
+          result = { message: '✅ Mensagem enviada no chat!' };
         } else {
-          error = injected.error || 'Falha ao digitar no Lovable';
+          error = injected.error || 'Falha ao digitar no chat';
         }
         break;
       }
       case 'lovable.publish': {
           const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
           if (!tab?.url?.includes('lovable.dev')) {
-            error = 'Você precisa estar no Lovable.dev!';
+            error = 'Você precisa abrir a plataforma!';
             break;
           }
           const pId2 = await getProjectFromActiveTab();
-          if (!pId2) { error = 'Abra um projeto no Lovable.dev primeiro'; break; }
+          if (!pId2) { error = 'Abra um projeto na plataforma primeiro'; break; }
           const auth2 = await getAuthData();
 
           result = await new Promise((resolve) => {
@@ -646,8 +646,8 @@ function setupBridge(iframe) {
           const auth = await getAuthData();
           const pId3 = payload?.projectId || await getProjectFromActiveTab();
 
-          if (!auth.token) { error = 'Token não encontrado. Faça login no Lovable.dev'; break; }
-          if (!pId3) { error = 'Abra um projeto no Lovable.dev primeiro'; break; }
+          if (!auth.token) { error = 'Token não encontrado. Faça login na plataforma'; break; }
+          if (!pId3) { error = 'Abra um projeto na plataforma primeiro'; break; }
 
           const check3 = await revalidateLicense();
           if (!check3.valid) { error = check3.message || 'Licença inválida'; break; }
@@ -1033,7 +1033,7 @@ async function callCommand(command, payload) {
         const hasFiles = rawFiles.length > 0;
         const msgText = payload?.message || '';
 
-        if (!pId) { error = 'Abra um projeto no Lovable.dev primeiro'; break; }
+        if (!pId) { error = 'Abra um projeto na plataforma primeiro'; break; }
         if (!msgText && !hasFiles) { error = 'Mensagem ou arquivo obrigatório'; break; }
 
         const check = await revalidateLicense();
@@ -1067,7 +1067,7 @@ async function callCommand(command, payload) {
         try {
           const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
           if (!tab?.id || !tab?.url || !/lovable\.dev|lovableproject\.com/.test(tab.url)) {
-            error = 'Abra um projeto do Lovable na aba ativa primeiro.';
+            error = 'Abra um projeto na aba ativa primeiro.';
             break;
           }
           const resp = await new Promise((resolve) => {
@@ -1078,9 +1078,9 @@ async function callCommand(command, payload) {
             );
           });
           if (resp?.ok) {
-            result = { message: hasFiles ? '✅ Mensagem + anexo enviados no chat do Lovable!' : '✅ Mensagem enviada no chat do Lovable!' };
+            result = { message: hasFiles ? '✅ Mensagem + anexo enviados no chat!' : '✅ Mensagem enviada no chat!' };
           } else {
-            error = resp?.error || 'Falha ao enviar no chat do Lovable';
+            error = resp?.error || 'Falha ao enviar no chat';
           }
         } catch (e) {
           error = e?.message || String(e);
@@ -1089,9 +1089,9 @@ async function callCommand(command, payload) {
       }
       case 'lovable.publish': {
         const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-        if (!tab?.url?.includes('lovable.dev')) { error = 'Você precisa estar no Lovable.dev!'; break; }
+        if (!tab?.url?.includes('lovable.dev')) { error = 'Você precisa abrir a plataforma!'; break; }
         const pId2 = await getProjectFromActiveTab();
-        if (!pId2) { error = 'Abra um projeto no Lovable.dev primeiro'; break; }
+        if (!pId2) { error = 'Abra um projeto na plataforma primeiro'; break; }
         const auth2 = await getAuthData();
         result = await new Promise((resolve) => {
           chrome.tabs.sendMessage(tab.id, {
@@ -1804,7 +1804,7 @@ async function sendDirectLovableMessage(messageText) {
 
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   if (!tab?.id || !tab?.url || !/lovable\.dev|lovableproject\.com/.test(tab.url)) {
-    throw new Error('Abra um projeto do Lovable na aba ativa primeiro.');
+    throw new Error('Abra um projeto na aba ativa primeiro.');
   }
 
   // Segue exatamente o mesmo caminho da bolinha verde: manda o content script

@@ -238,7 +238,7 @@ function _PULSE_handler(msg, _sender, sendResponse) {
             pingOk = !!pong?.ok;
           } catch (_) { pingOk = false; }
           if (!pingOk) {
-            sendResponse({ ...cur, error: 'Recarregue a aba do Lovable (F5) e tente novamente.' });
+            sendResponse({ ...cur, error: 'Recarregue a aba da plataforma (F5) e tente novamente.' });
             break;
           }
           const updated = await setSettings({ enabled: true });

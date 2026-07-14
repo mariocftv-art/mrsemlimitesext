@@ -162,7 +162,7 @@ async function sendChatMessage(sessionToken, message, projectId) {
       }, (result) => {
         void chrome.runtime.lastError;
         if (!result) resolve({ status: 'error', message: 'Background não respondeu' });
-        else if (result.ok) resolve({ reply: '✅ Mensagem enviada! O Lovable está processando...' });
+        else if (result.ok) resolve({ reply: '✅ Mensagem enviada! Processando...' });
         else resolve({ status: 'error', message: result.error || `HTTP ${result.status}` });
       });
     });
@@ -242,7 +242,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     projectId = await getProjectFromActiveTab();
     if (projectId && statusEl) updateStatus('status', `Projeto: ${projectId.slice(0, 8)}...`);
-    else if (statusEl) updateStatus('status', 'Abra um projeto no Lovable.dev');
+    else if (statusEl) updateStatus('status', 'Abra um projeto na plataforma');
   } else {
     showScreen('licenseScreen');
     const errorMessages = {
@@ -309,7 +309,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       if (!projectId) {
         projectId = await getProjectFromActiveTab();
-        if (!projectId) { updateStatus('status', 'Abra uma aba do Lovable!', true); return; }
+        if (!projectId) { updateStatus('status', 'Abra uma aba da plataforma!', true); return; }
       }
       if (!sessionToken) { updateStatus('status', 'Sessão expirada, reative a licença', true); return; }
 

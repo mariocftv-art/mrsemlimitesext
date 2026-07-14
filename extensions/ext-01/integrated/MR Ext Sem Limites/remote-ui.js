@@ -650,7 +650,7 @@ function useTemplate(template) {
 
     const { projectId } = await bridge.project.getActive();
     if (projectId) updateStatus('✅ Projeto: ' + projectId.slice(0, 8) + '...');
-    else updateStatus('⚠️ Abra um projeto no Lovable.dev');
+    else updateStatus('⚠️ Abra um projeto na plataforma');
   } catch (err) {
     updateStatus('⚠️ Inicializando...');
     console.warn('Init error:', err);

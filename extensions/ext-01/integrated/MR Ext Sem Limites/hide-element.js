@@ -32,7 +32,7 @@
  * ╚══════════════════════════════════════════════════════════════════════════════╝
  */
 
-console.log("🔥 Ilimitado Lov: Sniper iniciado...");
+console.log("🔥 MR Ext Sem Limites: Sniper iniciado...");
 
 const style = document.createElement('style');
 style.textContent = `

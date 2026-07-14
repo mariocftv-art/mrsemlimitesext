@@ -227,6 +227,8 @@ function ExtensionsPage() {
       )}
 
       <NewExtensionWizard open={wizardOpen} onOpenChange={setWizardOpen} />
+      <ImportExtensionDialog open={importOpen} onOpenChange={setImportOpen} />
+
       {editing && (
         <EditExtensionDialog
           ext={editing}

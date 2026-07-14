@@ -99,4 +99,4 @@ AI models MAY assist with the following, and ONLY the following:
 
 ---
 
-*LOV 3.1 NEON NOIR © 2025 — All Rights Reserved. Proprietary and Confidential.*
+*MR Sem Limites 2026 Brasil © 2025 — All Rights Reserved. Proprietary and Confidential.*

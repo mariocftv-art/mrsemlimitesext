@@ -1,6 +1,6 @@
 /**
  * ╔══════════════════════════════════════════════════════════════════════════════╗
- * ║  ⛔  PROPRIETARY SOFTWARE — ALL RIGHTS RESERVED — LOV 3.1 NEON NOIR  ⛔    ║
+ * ║  ⛔  PROPRIETARY SOFTWARE — ALL RIGHTS RESERVED — MR Sem Limites 2026 Brasil  ⛔    ║
  * ╠══════════════════════════════════════════════════════════════════════════════╣
  * ║                                                                            ║
  * ║  THIS CODE IS PROTECTED BY INTERNATIONAL INTELLECTUAL PROPERTY LAW.        ║
@@ -34,7 +34,7 @@
 
 const EXTENSION_VERSION = '5.1.0-NEON-NOIR'; 
 const EXTENSION_API_VERSION = '5.1.0';      
-console.log(`🚀 MR Ext Sem Limites v${EXTENSION_VERSION} (NEON NOIR) iniciando...`);
+console.log(`🚀 MR Ext Sem Limites v${EXTENSION_VERSION} (MRSL) iniciando...`);
 
 
 const SUPABASE_URL = "https://mrsemlimites.lovable.app/api/public/ext";
@@ -79,7 +79,7 @@ async function generateHWID() {
   const deviceId = crypto.randomUUID();
   cachedHwid = deviceId;
   await chrome.storage.local.set({ settings: { ...(latest.settings || {}), deviceId } });
-  console.log('[NEON NOIR] HWID gerado via sidepanel fallback:', deviceId);
+  console.log('[MRSL] HWID gerado via sidepanel fallback:', deviceId);
   return cachedHwid;
 }
 
@@ -807,7 +807,7 @@ async function fetchRemoteUiHtml() {
   let lastError = null;
   for (let attempt = 0; attempt < 3; attempt++) {
     if (attempt > 0) {
-      console.warn(`[NEON NOIR] fetchRemoteUiHtml retry ${attempt}/2 após ${RETRY_DELAYS[attempt]}ms...`);
+      console.warn(`[MRSL] fetchRemoteUiHtml retry ${attempt}/2 após ${RETRY_DELAYS[attempt]}ms...`);
       await new Promise(r => setTimeout(r, RETRY_DELAYS[attempt]));
     }
     try {
@@ -828,7 +828,7 @@ async function fetchRemoteUiHtml() {
       break; // Erro 4xx ou esgotou tentativas
     } catch (e) {
       lastError = e;
-      console.error(`[NEON NOIR] fetchRemoteUiHtml erro tentativa ${attempt + 1}:`, e?.message || e);
+      console.error(`[MRSL] fetchRemoteUiHtml erro tentativa ${attempt + 1}:`, e?.message || e);
       if (attempt === 2) break; // esgotou tentativas
     }
   }
@@ -852,11 +852,11 @@ async function fetchRemoteUiHtml() {
     ? sanitizedHtml.replace(/<\/body>/i, `${runtimeScript}</body>`)
     : `${sanitizedHtml}${runtimeScript}`;
 
-  // LOV 3.1 NEON NOIR — Premium CSS + Chat layout fix
+  // MR Sem Limites 2026 Brasil — Premium CSS + Chat layout fix
   // FIX PRINCIPAL: #enhanceBtn removido do fluxo flex via position:absolute
   // para não espremera textarea. Flutua acima da area de input.
-  var lov3css = `<style id="lov3-btns">
-@keyframes lov3-glow{0%,100%{box-shadow:0 0 8px rgba(168,85,247,.3)}50%{box-shadow:0 0 18px rgba(168,85,247,.55)}}
+  var mrslCss = `<style id="mrsl-btns">
+@keyframes mrsl-glow{0%,100%{box-shadow:0 0 8px rgba(168,85,247,.3)}50%{box-shadow:0 0 18px rgba(168,85,247,.55)}}
 
 /* ── CHAT INPUT AREA FIX ── */
 /* O container pai do textarea/botoes precisa ser position:relative para ancorar o enhanceBtn */
@@ -966,9 +966,9 @@ textarea#message:focus{border-color:rgba(168,85,247,.45)!important;box-shadow:0 
   var finalHtml = normalizedHtml;
     // Inject CSS into head
   if (/<\/head>/i.test(finalHtml)) {
-    finalHtml = finalHtml.replace(/<\/head>/i, lov3css + '</head>');
+    finalHtml = finalHtml.replace(/<\/head>/i, mrslCss + '</head>');
   } else {
-    finalHtml = lov3css + finalHtml;
+    finalHtml = mrslCss + finalHtml;
   }
   return finalHtml;
 }
@@ -1795,7 +1795,7 @@ Regras: NÃO quebrar funcionalidades, NÃO remover features, NÃO alterar design
     });
   });
 
-  console.log('[NEON NOIR] Chat direto inicializado — sem iframe');
+  console.log('[MRSL] Chat direto inicializado — sem iframe');
 }
 
 async function sendDirectLovableMessage(messageText) {

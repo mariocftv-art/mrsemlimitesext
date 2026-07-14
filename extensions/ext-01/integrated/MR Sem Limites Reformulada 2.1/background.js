@@ -1,6 +1,6 @@
 /**
  * ╔══════════════════════════════════════════════════════════════════════════════╗
- * ║  ⛔  PROPRIETARY SOFTWARE — ALL RIGHTS RESERVED — LOV 3.1 NEON NOIR  ⛔    ║
+ * ║  ⛔  PROPRIETARY SOFTWARE — ALL RIGHTS RESERVED — MR Sem Limites 2026 Brasil  ⛔    ║
  * ╠══════════════════════════════════════════════════════════════════════════════╣
  * ║                                                                            ║
  * ║  THIS CODE IS PROTECTED BY INTERNATIONAL INTELLECTUAL PROPERTY LAW.        ║
@@ -715,7 +715,7 @@ chrome.runtime.onStartup?.addListener(async () => {
   if (!s.deviceId) {
     const deviceId = crypto.randomUUID();
     await setSettings({ deviceId });
-    console.log('[LOV NEON NOIR] HWID gerado no startup:', deviceId);
+    console.log('[MRSL] HWID gerado no startup:', deviceId);
   }
 });
 
@@ -742,7 +742,7 @@ chrome.alarms?.onAlarm.addListener(async (alarm) => {
     state = await validateLicense(cur.licenseKey, cur.userEmail, cur.deviceId);
   } catch (e) {
     
-    console.warn('[LOV NEON NOIR] Erro transitório no polling de licença:', e?.message || e);
+    console.warn('[MRSL] Erro transitório no polling de licença:', e?.message || e);
     return;
   }
   if (!state) return;

@@ -60,3 +60,9 @@ export const FEATURE_FLAGS = Object.freeze({
   enableAudit:   true,
   enableProxy:   true,
 });
+
+// ============================================================================
+// FASE 3.1 — camada de proteção (DORMENTE)
+// Re-exports para que outros módulos leiam de um único config.
+// ============================================================================
+export { PROTECTION_MODE, CRITICAL_FILES, TAMPER_REPORT_ENDPOINT } from '../security/protection.js';

@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "MR Sem Limites 2.2",
+  "name": "MR Ext Sem Limites 2.2",
   "version": "2.2.7",
-  "description": "MR Sem Limites 2.2 — Powered by MR Sem Limites",
+  "description": "MR Ext Sem Limites 2.2 — Powered by MRExtSemLimites",
   "permissions": [
     "storage",
     "cookies",

@@ -51,12 +51,38 @@ const RECIPES = {
   'img-realista': 'Gerar foto hiper-realista com DOF cinematográfico, textura crível, luz natural, sem "look de IA".',
 };
 
+// Pacote de publicação social — quando a imagem é para redes sociais, gerar títulos/legendas/hashtags prontos.
+const SOCIAL_PACK = `📱 PACOTE DE PUBLICAÇÃO SOCIAL (obrigatório para imagens sociais/marketing):
+
+▶ INSTAGRAM FEED (1:1 / 4:5)
+- Legenda longa (storytelling + CTA + pergunta para engajar)
+- 20-30 hashtags (mix virais + nicho + marca)
+- Sugestão de primeiro comentário
+
+▶ INSTAGRAM STORIES (9:16)
+- Copy curta para stickers (enquete/pergunta/link)
+- CTA visual
+
+▶ TIKTOK (post/carrossel 9:16)
+- Título com gancho
+- Legenda curta + 8-12 hashtags
+- Sugestão de áudio de tendência
+
+▶ FACEBOOK FEED (1200×630 / 1:1)
+- Título chamativo
+- Descrição longa (história + CTA)
+- 3-6 hashtags
+
+Entregar em markdown, um bloco por plataforma, texto FINAL pronto para copiar/colar. Sem placeholders.`;
+
 export function buildImageAIPrompt(item) {
+  const isSocial = item.category === 'Social' || item.category === 'Marketing';
   return `Gerar imagem — categoria **${item.name}** (${item.category}).
 
 ${RECIPES[item.id] || item.desc}
 
 ${COMMON}
 
-Descreva o assunto exato na próxima mensagem (produto, cena, cor dominante, mood). Vou usar esta imagem no projeto atual.`;
+${isSocial ? SOCIAL_PACK + '\n\n' : ''}Descreva o assunto exato na próxima mensagem (produto, cena, cor dominante, mood). Vou usar esta imagem no projeto atual.${isSocial ? '\nSempre entregar a imagem + o PACOTE DE PUBLICAÇÃO SOCIAL (TikTok, Instagram Feed/Stories, Facebook) com títulos, descrições e hashtags PRONTOS para publicar.' : ''}`;
 }
+

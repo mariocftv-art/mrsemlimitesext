@@ -78,6 +78,8 @@ const statusMeta: Record<ExtensionStatus, { label: string; dot: string; color: s
   archived: { label: "Arquivada", dot: "⚪", color: "#94a3b8" },
 };
 
+const EXT1_ZIP_URL = "/MR%20Sem%20Limites%20EXT1.zip";
+
 type Filter = "all" | ExtensionStatus;
 type Sort = "name" | "version" | "updated" | "status";
 
@@ -91,7 +93,8 @@ function useFactoryExtensions() {
 
 function ExtensionsPage() {
   const extensions = useFactoryExtensions();
-  const ext1 = extensions.find((e) => e.code === "EXT1" && e.packagedZip);
+  const ext1 = extensions.find((e) => e.code === "EXT1");
+  const ext1Zip = ext1?.packagedZip ?? EXT1_ZIP_URL;
   const [filter, setFilter] = useState<Filter>("all");
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<Sort>("updated");
@@ -140,8 +143,7 @@ function ExtensionsPage() {
   }, [extensions]);
 
   const downloadExt1 = () => {
-    if (!ext1?.packagedZip) return;
-    downloadZip(ext1.packagedZip, "MR Sem Limites EXT1.zip");
+    downloadZip(ext1Zip, "MR Sem Limites EXT1.zip");
   };
 
   return (
@@ -170,13 +172,12 @@ function ExtensionsPage() {
       }
 
     >
-      {ext1?.packagedZip && (
-        <Card className="glass mb-4 border-primary/40">
+      <Card className="glass mb-4 border-primary/40">
           <CardContent className="flex flex-col gap-3 p-4 md:flex-row md:items-center md:justify-between">
             <div className="space-y-1">
               <p className="text-sm font-semibold">EXT1 Download</p>
               <p className="text-xs text-muted-foreground">
-                Baixe o ZIP, descompacte e no Chrome use “Carregar sem compactação” selecionando a pasta onde está o manifest.json.
+                Baixe o ZIP, descompacte e no Chrome use “Carregar sem compactação” na pasta interna “MR Sem Limites EXT1”, onde está o manifest.json.
               </p>
             </div>
             <Button className="gap-1.5 md:w-auto" onClick={downloadExt1}>
@@ -184,7 +185,6 @@ function ExtensionsPage() {
             </Button>
           </CardContent>
         </Card>
-      )}
 
       <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex flex-wrap gap-1.5">

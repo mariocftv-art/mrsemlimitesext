@@ -440,7 +440,7 @@ function RealTests({ cfg }: { cfg: BackendConfig }) {
   });
   const [licenseJson, setLicenseJson] = useState<Record<string, unknown> | null>(null);
 
-  const run = async (slot: Slot, req: Parameters<typeof call>[0]["data"]) => {
+  const run = async (slot: Slot, req: CallRawInput) => {
     setBusy(slot);
     try {
       const r = (await call({ data: req })) as CallRawResult;

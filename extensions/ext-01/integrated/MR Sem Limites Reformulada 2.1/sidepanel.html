@@ -503,6 +503,13 @@
     .mr-ia-chip.show{display:inline-flex}
     .mr-ia-chip .mr-ia-chip-x{background:none;border:none;color:rgba(255,255,255,.7);cursor:pointer;font-size:14px;line-height:1;padding:0 0 0 4px}
     .mr-ia-chip .mr-ia-chip-x:hover{color:#fff}
+    .mr-ia-quick{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:4px 0 10px}
+    .mr-ia-qbtn{position:relative;display:flex;align-items:center;gap:8px;padding:11px 12px;border-radius:12px;border:1px solid rgba(236,72,153,.35);background:linear-gradient(135deg,rgba(236,72,153,.18),rgba(59,130,246,.18));color:#fff;font-size:12px;font-weight:800;cursor:pointer;transition:.22s;text-align:left;overflow:hidden;box-shadow:0 6px 18px -10px rgba(236,72,153,.5)}
+    .mr-ia-qbtn:hover{transform:translateY(-2px);border-color:rgba(236,72,153,.7);box-shadow:0 12px 28px -10px rgba(236,72,153,.75)}
+    .mr-ia-qbtn.selected{border-color:#ec4899;background:linear-gradient(135deg,rgba(236,72,153,.4),rgba(59,130,246,.35));box-shadow:0 0 0 1px rgba(236,72,153,.6),0 0 22px rgba(236,72,153,.55);animation:mrTabGlow 3s ease-in-out infinite}
+    .mr-ia-qbtn .qemj{font-size:18px}
+    .mr-ia-qbtn .qttl{flex:1;line-height:1.1;min-width:0}
+    .mr-ia-qbtn .qsub{display:block;font-size:9.5px;font-weight:600;color:rgba(255,255,255,.7);margin-top:2px;letter-spacing:.03em}
   </style>
 
 
@@ -688,6 +695,9 @@
             <button class="mr-btn" id="mrIaClear" style="margin-left:auto;flex:0 0 auto;padding:5px 10px;font-size:10.5px">Limpar seleção</button>
           </div>
         </div>
+
+        <div class="mr-section-title">⚡ Acesso rápido — toque e use</div>
+        <div class="mr-ia-quick" id="mrIaQuick"></div>
 
         <div class="mr-section-title">Modelos de texto (raciocínio, código, chat)</div>
         <div class="mr-grid" id="mrIaGridText"></div>
@@ -897,8 +907,25 @@
       var pick = null;
       try { pick = JSON.parse(localStorage.getItem(KEY)||'null'); } catch(e){}
       var groups = {text:document.getElementById('mrIaGridText'), img:document.getElementById('mrIaGridImg'), vid:document.getElementById('mrIaGridVid')};
+      var quick = document.getElementById('mrIaQuick');
       if (!groups.text) return;
       Object.keys(groups).forEach(function(k){ groups[k].innerHTML=''; });
+      if (quick) quick.innerHTML='';
+
+      // Acesso rápido — 6 botões grandes destacados
+      var quickPicks = ['sonnet','gpt5','gempro','nano','veo3','flux'];
+      if (quick){
+        quickPicks.forEach(function(id){
+          var ia = IAS.find(function(x){return x.id===id;}); if(!ia) return;
+          var b = document.createElement('button');
+          b.type='button';
+          b.className='mr-ia-qbtn'+(pick&&pick.id===ia.id?' selected':'');
+          b.dataset.iaId=ia.id;
+          b.innerHTML='<span class="qemj">'+ia.emoji+'</span><span class="qttl">'+ia.title+'<span class="qsub">'+ia.tag+' · '+ia.score+'/10</span></span>';
+          b.addEventListener('click', function(){ setPick(ia); goChat(true); });
+          quick.appendChild(b);
+        });
+      }
 
       IAS.forEach(function(ia){
         var el = document.createElement('div');
@@ -914,7 +941,7 @@
           '<div class="mr-ia-power">'+ia.power+'</div>' +
           '<span class="mr-ia-tag">'+ia.tag+'</span>' +
           '<div style="display:flex;gap:6px;margin-top:6px">' +
-            '<button class="mr-btn primary" data-act="use">Selecionar e usar no Chat</button>' +
+            '<button class="mr-btn primary" data-act="use" style="flex:1">✅ Usar '+ia.emoji+'</button>' +
           '</div>';
         el.querySelector('[data-act="use"]').addEventListener('click', function(ev){
           ev.stopPropagation();
@@ -929,8 +956,7 @@
 
     function setPick(ia){
       localStorage.setItem(KEY, JSON.stringify({id:ia.id, title:ia.title, emoji:ia.emoji, directive:ia.directive}));
-      // atualizar visual
-      document.querySelectorAll('.mr-ia-card').forEach(function(c){
+      document.querySelectorAll('.mr-ia-card,.mr-ia-qbtn').forEach(function(c){
         c.classList.toggle('selected', c.dataset.iaId===ia.id);
       });
       updateBadge();
@@ -938,7 +964,7 @@
 
     function clearPick(){
       localStorage.removeItem(KEY);
-      document.querySelectorAll('.mr-ia-card').forEach(function(c){ c.classList.remove('selected'); });
+      document.querySelectorAll('.mr-ia-card,.mr-ia-qbtn').forEach(function(c){ c.classList.remove('selected'); });
       updateBadge();
     }
 

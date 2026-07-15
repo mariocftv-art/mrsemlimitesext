@@ -32,6 +32,47 @@ Integração no projeto:
 - Adicionar poster (frame de fallback) e lazy-loading.
 - Respeitar prefers-reduced-motion (fallback estático com o áudio opcional).`;
 
+// Pacote de publicação social — SEMPRE gerar para TikTok, Instagram (Reels/Feed/Stories) e Facebook (Feed/Reels).
+const SOCIAL_PACK = `📱 PACOTE DE PUBLICAÇÃO SOCIAL (obrigatório — gerar para TODAS as plataformas abaixo):
+
+Para CADA plataforma, entregar bloco pronto para copiar/colar:
+
+▶ TIKTOK (9:16, até 60s)
+- Título curto (máx 100 caracteres, com gancho)
+- Legenda/Descrição pronta (2-4 linhas + CTA)
+- 8-12 hashtags virais + de nicho
+- Áudio sugerido (tendência ou original)
+- Hook falado nos primeiros 2s
+
+▶ INSTAGRAM REELS (9:16, 15-30s)
+- Título/primeira linha com gancho
+- Legenda completa (3-6 linhas, storytelling + CTA)
+- 15-25 hashtags (mix: virais, nicho, marca)
+- Sugestão de trilha punchy
+- Texto on-screen sugerido
+
+▶ INSTAGRAM FEED (1:1 ou 4:5)
+- Legenda longa (storytelling + CTA + pergunta para engajar)
+- 20-30 hashtags
+- Sugestão de carrossel/complemento
+
+▶ INSTAGRAM STORIES (9:16)
+- Copy curta para stickers (enquete, pergunta, link)
+- CTA e sugestão de figurinhas
+
+▶ FACEBOOK FEED (1:1 ou 4:5)
+- Título chamativo
+- Descrição longa (contar história + CTA)
+- 3-6 hashtags
+- Sugestão de link e call-to-action do post
+
+▶ FACEBOOK REELS (9:16)
+- Legenda curta com CTA
+- Hashtags principais
+- Trilha sugerida
+
+Formato de entrega: markdown com cabeçalho por plataforma. Nada de placeholders — texto FINAL pronto para publicar.`;
+
 const RECIPES = {
   'vid-hero':      'Vídeo hero de fundo (10-15s em loop) com trilha cinematográfica suave, movimento de câmera fluido, mix sonoro discreto.',
   'vid-bg':        'Loop ambient 15-30s com trilha atmosférica leve, ritmo lento, sem elementos que roubem atenção da UI sobreposta.',
@@ -57,5 +98,10 @@ ${RECIPES[item.id] || item.desc}
 
 ${COMMON}
 
-Descreva o roteiro/assunto exato na próxima mensagem (cena, tom, duração, locução, trilha). O vídeo final deve entregar ÁUDIO sempre — trilha, locução ou som ambiente — para todas as categorias, inclusive backgrounds.`;
+${SOCIAL_PACK}
+
+Descreva o roteiro/assunto exato na próxima mensagem (cena, tom, duração, locução, trilha).
+O vídeo final deve entregar ÁUDIO sempre — trilha, locução ou som ambiente — para todas as categorias, inclusive backgrounds.
+Sempre entregar o vídeo + o PACOTE DE PUBLICAÇÃO SOCIAL completo (TikTok, Instagram Reels/Feed/Stories, Facebook Feed/Reels) com títulos, descrições e hashtags PRONTOS para publicar.`;
 }
+

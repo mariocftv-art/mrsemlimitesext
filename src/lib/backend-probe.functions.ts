@@ -176,3 +176,74 @@ async function probeOne(
     authRequired,
   };
 }
+
+// ─────────────────────────────────────────────────────────────
+// callBackendRaw — chamada única (usada pelos botões de teste)
+// ─────────────────────────────────────────────────────────────
+export type CallRawInput = {
+  url: string;
+  method: string;
+  headers?: Record<string, string>;
+  body?: unknown; // JSON serializable
+  timeoutMs?: number;
+};
+export type CallRawResult = {
+  url: string;
+  method: string;
+  status: number | null;
+  ok: boolean;
+  ms: number;
+  contentType: string | null;
+  headers: Record<string, string>;
+  body: string; // texto bruto (JSON ou HTML)
+  error?: string;
+};
+
+export const callBackendRaw = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown): CallRawInput => {
+    const d = data as Partial<CallRawInput>;
+    if (typeof d?.url !== "string" || !/^https?:\/\//i.test(d.url)) {
+      throw new Error("URL inválida");
+    }
+    return {
+      url: d.url,
+      method: typeof d.method === "string" ? d.method : "GET",
+      headers: (d.headers && typeof d.headers === "object") ? d.headers as Record<string, string> : {},
+      body: d.body,
+      timeoutMs: typeof d.timeoutMs === "number" ? d.timeoutMs : 30000,
+    };
+  })
+  .handler(async ({ data }): Promise<CallRawResult> => {
+    const t0 = Date.now();
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), data.timeoutMs);
+    try {
+      const M = (data.method || "GET").toUpperCase();
+      const init: RequestInit = { method: M, headers: data.headers, signal: controller.signal };
+      if (M !== "GET" && M !== "HEAD" && data.body !== undefined) {
+        init.body = typeof data.body === "string" ? data.body : JSON.stringify(data.body);
+      }
+      const res = await fetch(data.url, init);
+      const ms = Date.now() - t0;
+      const text = await res.text();
+      const headers: Record<string, string> = {};
+      res.headers.forEach((v, k) => { headers[k] = v; });
+      return {
+        url: data.url, method: M,
+        status: res.status, ok: res.ok, ms,
+        contentType: res.headers.get("content-type"),
+        headers,
+        body: text.length > 200_000 ? text.slice(0, 200_000) + "…[truncado]" : text,
+      };
+    } catch (e) {
+      const err = e as Error;
+      return {
+        url: data.url, method: data.method || "GET",
+        status: null, ok: false, ms: Date.now() - t0,
+        contentType: null, headers: {}, body: "",
+        error: err.name === "AbortError" ? `Timeout (${data.timeoutMs}ms)` : err.message,
+      };
+    } finally {
+      clearTimeout(timer);
+    }
+  });

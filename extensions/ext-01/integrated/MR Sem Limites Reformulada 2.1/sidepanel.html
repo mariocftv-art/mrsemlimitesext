@@ -480,7 +480,31 @@
       .mr-tabs{padding:6px 4px;gap:4px}
       .mr-tab{min-height:46px;font-size:8.5px;padding:5px 2px}
     }
+
+    /* ============================================================
+       V5 — Painel de escolha de IA
+       ============================================================ */
+    .mr-ia-card{position:relative;padding:12px;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid var(--border);cursor:pointer;transition:.22s;overflow:hidden;display:flex;flex-direction:column;gap:6px}
+    .mr-ia-card:hover{transform:translateY(-2px);border-color:rgba(236,72,153,.4);box-shadow:0 10px 26px -14px rgba(236,72,153,.5)}
+    .mr-ia-card.selected{border-color:rgba(236,72,153,.65);background:linear-gradient(135deg,rgba(236,72,153,.18),rgba(59,130,246,.16));box-shadow:0 0 0 1px rgba(236,72,153,.4),0 10px 30px -12px rgba(236,72,153,.55);animation:mrTabGlow 3.4s ease-in-out infinite}
+    .mr-ia-head{display:flex;align-items:center;gap:8px}
+    .mr-ia-emoji{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;background:linear-gradient(135deg,rgba(236,72,153,.28),rgba(59,130,246,.28));flex-shrink:0}
+    .mr-ia-title{font-size:12.5px;font-weight:800;color:#fff;line-height:1.15;flex:1;min-width:0}
+    .mr-ia-score{font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;background:rgba(59,130,246,.18);color:#93c5fd;border:1px solid rgba(59,130,246,.32);white-space:nowrap}
+    .mr-ia-score.hi{background:rgba(34,197,94,.15);color:#4ade80;border-color:rgba(34,197,94,.35)}
+    .mr-ia-score.mid{background:rgba(250,204,21,.12);color:#facc15;border-color:rgba(250,204,21,.3)}
+    .mr-ia-power{font-size:10.5px;color:rgba(255,255,255,.7);line-height:1.35}
+    .mr-ia-tag{display:inline-block;font-size:9px;font-weight:700;padding:2px 6px;border-radius:999px;background:rgba(236,72,153,.14);color:#f472b6;border:1px solid rgba(236,72,153,.28);letter-spacing:.04em;text-transform:uppercase;margin-top:2px;align-self:flex-start}
+    .mr-ia-check{position:absolute;top:8px;right:8px;width:18px;height:18px;border-radius:50%;background:linear-gradient(135deg,#ec4899,#3b82f6);color:#fff;font-size:11px;font-weight:900;display:none;align-items:center;justify-content:center;box-shadow:0 0 10px rgba(236,72,153,.6)}
+    .mr-ia-card.selected .mr-ia-check{display:flex}
+
+    /* Badge no topo do chat mostrando IA escolhida */
+    .mr-ia-chip{display:none;align-items:center;gap:6px;margin:6px 12px 0;padding:5px 10px;border-radius:999px;background:linear-gradient(135deg,rgba(236,72,153,.18),rgba(59,130,246,.18));border:1px solid rgba(236,72,153,.4);color:#fff;font-size:11px;font-weight:700;width:fit-content;box-shadow:0 0 12px rgba(236,72,153,.25)}
+    .mr-ia-chip.show{display:inline-flex}
+    .mr-ia-chip .mr-ia-chip-x{background:none;border:none;color:rgba(255,255,255,.7);cursor:pointer;font-size:14px;line-height:1;padding:0 0 0 4px}
+    .mr-ia-chip .mr-ia-chip-x:hover{color:#fff}
   </style>
+
 
 </head>
 <body>

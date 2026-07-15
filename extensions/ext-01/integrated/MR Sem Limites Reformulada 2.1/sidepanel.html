@@ -513,26 +513,30 @@
         <img src="logo.png" class="app-header-logo" alt=""><span class="app-header-title">MR Sem Limites</span>
       </div>
       <div class="app-header-right">
+        <button id="mrPowerToggle" class="mr-power" title="Ativar/Desativar extensão"><span class="mr-power-dot"></span><span id="mrPowerLabel">ATIVA</span></button>
         <span id="licenseInfo">--</span>
         <button id="publishBtn" class="action-btn">Publish</button>
         <div class="app-header-brand" title="MR Sem Limites"><img src="logo.png" alt="MR Sem Limites"></div>
       </div>
     </div>
 
-    <!-- Reformulada 2.1 — tab bar -->
+    <!-- Reformulada 2.1 — tab bar (Chat como padrão) -->
     <nav class="mr-tabs" id="mrTabs" role="tablist">
-      <button class="mr-tab active" data-mrtab="home" role="tab">🏠 Home</button>
-      <button class="mr-tab" data-mrtab="chat" role="tab">💬 Chat</button>
-      <button class="mr-tab" data-mrtab="anim" role="tab">✨ Animações</button>
+      <button class="mr-tab active" data-mrtab="chat" role="tab">💬 Chat</button>
       <button class="mr-tab" data-mrtab="comp" role="tab">🧩 Componentes</button>
-      <button class="mr-tab" data-mrtab="prompts" role="tab">🚀 Prompts</button>
+      <button class="mr-tab" data-mrtab="anim" role="tab">✨ Animações</button>
+      <button class="mr-tab" data-mrtab="img" role="tab">🎨 Imagens IA</button>
+      <button class="mr-tab" data-mrtab="vid" role="tab">🎬 Vídeos IA</button>
+      <button class="mr-tab" data-mrtab="tpl" role="tab">📦 Templates SaaS</button>
+      <button class="mr-tab" data-mrtab="prompts" role="tab">📋 Prompts</button>
       <button class="mr-tab" data-mrtab="tools" role="tab">🛠 Ferramentas</button>
-      <button class="mr-tab" data-mrtab="config" role="tab">⚙️ Config</button>
-
+      <button class="mr-tab" data-mrtab="fav" role="tab">⭐ Favoritos</button>
+      <button class="mr-tab" data-mrtab="config" role="tab">⚙ Configurações</button>
+      <button class="mr-tab" data-mrtab="home" role="tab">🏠 Início</button>
     </nav>
 
     <!-- Home -->
-    <section class="mr-panel active" data-mrpanel="home">
+    <section class="mr-panel" data-mrpanel="home">
       <div class="mr-panel-scroll">
         <div class="mr-home-hero">
           <h2>Bem-vindo à MR Sem Limites</h2>
@@ -569,7 +573,7 @@
     </section>
 
     <!-- Chat (existente — IDs preservados) -->
-    <section class="mr-panel" data-mrpanel="chat">
+    <section class="mr-panel active" data-mrpanel="chat">
       <div class="action-bar">
         <button id="downloadBtn" class="action-btn">&#11015; Download</button>
         <button id="removeWatermarkBtn" class="action-btn">&#10005; TIRAR MARCA D'AGUA</button>

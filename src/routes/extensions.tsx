@@ -78,6 +78,8 @@ const statusMeta: Record<ExtensionStatus, { label: string; dot: string; color: s
   archived: { label: "Arquivada", dot: "⚪", color: "#94a3b8" },
 };
 
+const EXT1_ZIP_URL = "/MR%20Sem%20Limites%20EXT1.zip";
+
 type Filter = "all" | ExtensionStatus;
 type Sort = "name" | "version" | "updated" | "status";
 
@@ -91,6 +93,8 @@ function useFactoryExtensions() {
 
 function ExtensionsPage() {
   const extensions = useFactoryExtensions();
+  const ext1 = extensions.find((e) => e.code === "EXT1");
+  const ext1Zip = ext1?.packagedZip ?? EXT1_ZIP_URL;
   const [filter, setFilter] = useState<Filter>("all");
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<Sort>("updated");
@@ -138,6 +142,10 @@ function ExtensionsPage() {
     return c;
   }, [extensions]);
 
+  const downloadExt1 = () => {
+    downloadZip(ext1Zip, "MR Sem Limites EXT1.zip");
+  };
+
   return (
     <AppShell
       title="Minhas Extensões"
@@ -164,6 +172,20 @@ function ExtensionsPage() {
       }
 
     >
+      <Card className="glass mb-4 border-primary/40">
+          <CardContent className="flex flex-col gap-3 p-4 md:flex-row md:items-center md:justify-between">
+            <div className="space-y-1">
+              <p className="text-sm font-semibold">EXT1 Download</p>
+              <p className="text-xs text-muted-foreground">
+                Baixe o ZIP, descompacte e no Chrome use “Carregar sem compactação” na pasta interna “MR Sem Limites EXT1”, onde está o manifest.json.
+              </p>
+            </div>
+            <Button className="gap-1.5 md:w-auto" onClick={downloadExt1}>
+              <Download className="h-4 w-4" /> EXT1 Download
+            </Button>
+          </CardContent>
+        </Card>
+
       <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex flex-wrap gap-1.5">
           {(["all", "production", "development", "testing", "archived"] as Filter[]).map((f) => (
@@ -239,6 +261,23 @@ function ExtensionsPage() {
       )}
     </AppShell>
   );
+}
+
+function downloadZip(url: string, filename: string) {
+  fetch(url)
+    .then((res) => {
+      if (!res.ok) throw new Error(`Falha no download: ${res.status}`);
+      return res.blob();
+    })
+    .then((blob) => {
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(a.href);
+      toast.success("Download da EXT1 iniciado.");
+    })
+    .catch((err) => toast.error(err instanceof Error ? err.message : "Falha no download."));
 }
 
 function ExtensionCard({ ext, onEdit }: { ext: ExtensionRecord; onEdit: () => void }) {
@@ -319,6 +358,12 @@ function ExtensionCard({ ext, onEdit }: { ext: ExtensionRecord; onEdit: () => vo
           </Badge>
         </div>
 
+        {ext.code === "EXT1" && ext.packagedZip && (
+          <Button className="w-full gap-1.5" onClick={() => downloadZip(ext.packagedZip!, "MR Sem Limites EXT1.zip")}>
+            <Download className="h-4 w-4" /> EXT1 Download
+          </Button>
+        )}
+
         <p className="line-clamp-2 text-xs text-muted-foreground">{ext.description}</p>
 
         <div className="grid grid-cols-2 gap-2 text-[11px]">
@@ -358,9 +403,7 @@ function ExtensionCard({ ext, onEdit }: { ext: ExtensionRecord; onEdit: () => vo
             onClick={handleArchive}
           />
           {ext.packagedZip && (
-            <ActionBtn icon={Download} label="ZIP" asChild>
-              <a href={ext.packagedZip} download>ZIP</a>
-            </ActionBtn>
+            <ActionBtn icon={Download} label="ZIP" onClick={() => downloadZip(ext.packagedZip!, `${ext.code}.zip`)} />
           )}
           {!isSeed && (
             <ActionBtn icon={Trash2} label="Excluir" onClick={handleDelete} destructive />

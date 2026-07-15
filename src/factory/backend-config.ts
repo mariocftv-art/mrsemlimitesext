@@ -8,11 +8,12 @@
 export type EndpointRequirement = "required" | "optional";
 
 export type BackendEndpointKey =
-  | "validate"
-  | "heartbeat"
-  | "config"
-  | "download"
-  | "update";
+  | "validate-license-v2"
+  | "get-support-info"
+  | "get-templates"
+  | "serve-extension-ui"
+  | "lov4"
+  | "storage";
 
 export interface BackendEndpointDef {
   key: BackendEndpointKey;

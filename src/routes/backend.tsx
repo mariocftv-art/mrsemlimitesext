@@ -31,7 +31,9 @@ import {
   saveBackendConfig,
   type BackendConfig,
 } from "@/factory/backend-config";
-import { probeBackend, type ProbeResult } from "@/lib/backend-probe.functions";
+import { probeBackend, callBackendRaw, type ProbeResult, type CallRawResult, type CallRawInput } from "@/lib/backend-probe.functions";
+import { Textarea } from "@/components/ui/textarea";
+import { KeyRound, Layers, LifeBuoy, MonitorPlay, Send } from "lucide-react";
 
 export const Route = createFileRoute("/backend")({ component: BackendPage });
 
@@ -332,6 +334,8 @@ function BackendPage() {
               )}
             </CardContent>
           </Card>
+
+          <RealTests cfg={cfg} />
         </div>
       </div>
     </AppShell>
@@ -406,5 +410,276 @@ function Stat({ label, value, tone }: { label: string; value: number; tone?: "ok
       <p className="text-[9px] uppercase tracking-widest text-muted-foreground">{label}</p>
       <p className={`mt-0.5 text-lg font-semibold ${color}`}>{value}</p>
     </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Testes REAIS — 5 botões que replicam exatamente as chamadas EXT1
+// Fontes lidas:
+//  · validate-license-v2:  sidepanel.js:140
+//  · get-support-info:     sidepanel.js:207 (GET)
+//  · get-templates:        sidepanel.js:559 (GET + x-session-token)
+//  · serve-extension-ui:   sidepanel.js:802 (GET ?sessionToken&extVersion)
+//  · lov4:                 content/content.js:85 (POST { action, ... })
+// ═══════════════════════════════════════════════════════════════
+function RealTests({ cfg }: { cfg: BackendConfig }) {
+  const call = useServerFn(callBackendRaw);
+  const base = (cfg.API_BASE_URL || "").replace(/\/+$/, "");
+  const key = cfg.API_KEY || "";
+  const authHeaders = { apikey: key, authorization: `Bearer ${key}` };
+
+  const [email, setEmail] = useState("");
+  const [licenseKey, setLicenseKey] = useState("");
+  const [lovMsg, setLovMsg] = useState("ping");
+  const [sessionToken, setSessionToken] = useState("");
+
+  type Slot = "license" | "ui" | "templates" | "support" | "lov4";
+  const [busy, setBusy] = useState<Slot | null>(null);
+  const [out, setOut] = useState<Record<Slot, CallRawResult | null>>({
+    license: null, ui: null, templates: null, support: null, lov4: null,
+  });
+  const [licenseJson, setLicenseJson] = useState<Record<string, unknown> | null>(null);
+
+  const run = async (slot: Slot, req: CallRawInput) => {
+    setBusy(slot);
+    try {
+      const r = (await call({ data: req })) as CallRawResult;
+      setOut((s) => ({ ...s, [slot]: r }));
+      return r;
+    } finally { setBusy(null); }
+  };
+
+  const testLicense = async () => {
+    if (!licenseKey.trim()) { alert("Informe a chave de licença."); return; }
+    // Payload IDÊNTICO ao sidepanel.js:145 — device_info reduzido (não temos navigator no server).
+    const body = {
+      license_key: licenseKey.trim(),
+      hwid: `factory-probe-${email || "no-email"}`,
+      device_info: { platform: "factory-probe", cores: 0, email: email || undefined },
+    };
+    const r = await run("license", {
+      url: `${base}/functions/v1/validate-license-v2`,
+      method: "POST",
+      headers: { "content-type": "application/json", ...authHeaders },
+      body,
+    });
+    try { setLicenseJson(r.body ? JSON.parse(r.body) : null); }
+    catch { setLicenseJson(null); }
+  };
+
+  const testUi = () => run("ui", {
+    url: `${base}/functions/v1/serve-extension-ui?sessionToken=${encodeURIComponent(sessionToken || "__probe__")}&extVersion=${encodeURIComponent(cfg.CLIENT_VERSION)}`,
+    method: "GET",
+    headers: authHeaders,
+  });
+  const testTemplates = () => run("templates", {
+    url: `${base}/functions/v1/get-templates`,
+    method: "GET",
+    headers: { ...authHeaders, "x-session-token": sessionToken || "__probe__" },
+  });
+  const testSupport = () => run("support", {
+    url: `${base}/functions/v1/get-support-info`,
+    method: "GET",
+    headers: authHeaders,
+  });
+  const testLov4 = () => run("lov4", {
+    url: `${base}/functions/v1/lov4`,
+    method: "POST",
+    headers: { "content-type": "application/json", ...authHeaders },
+    body: { action: "ping", message: lovMsg },
+  });
+
+  return (
+    <Card className="glass border-border/60">
+      <CardHeader className="pb-3">
+        <CardTitle className="flex items-center gap-2 text-sm">
+          <Send className="h-4 w-4 text-primary" /> Testes REAIS (payloads idênticos à EXT1)
+        </CardTitle>
+        <p className="text-[11px] text-muted-foreground">
+          Somente leitura — nada é gravado, ativado ou revogado. Payloads espelhados de sidepanel.js e content/content.js.
+        </p>
+      </CardHeader>
+      <CardContent className="space-y-4 text-xs">
+        {/* ───── Licença REAL ───── */}
+        <section className="rounded border border-border/40 bg-background/40 p-3 space-y-2">
+          <div className="flex items-center gap-2">
+            <KeyRound className="h-4 w-4 text-emerald-300" />
+            <span className="font-semibold">Testar licença REAL</span>
+            <Badge variant="outline" className="ml-auto text-[9px]">validate-license-v2</Badge>
+          </div>
+          <div className="grid gap-2 sm:grid-cols-2">
+            <div>
+              <Label className="text-[10px] uppercase tracking-widest text-muted-foreground">Email</Label>
+              <Input value={email} onChange={(e) => setEmail(e.target.value)}
+                placeholder="cliente@exemplo.com" className="h-8 font-mono text-[11px]" />
+            </div>
+            <div>
+              <Label className="text-[10px] uppercase tracking-widest text-muted-foreground">License key</Label>
+              <Input value={licenseKey} onChange={(e) => setLicenseKey(e.target.value)}
+                placeholder="MRSL-XXXX-XXXX-XXXX" className="h-8 font-mono text-[11px]" />
+            </div>
+          </div>
+          <Button size="sm" onClick={testLicense} disabled={busy === "license"} className="gap-1.5">
+            {busy === "license" ? <Loader2 className="h-4 w-4 animate-spin" /> : <KeyRound className="h-4 w-4" />}
+            Validar (leitura)
+          </Button>
+          {out.license && (
+            <>
+              <ResultLine r={out.license} />
+              {licenseJson && (
+                <div className="grid grid-cols-2 gap-2 rounded border border-border/40 bg-background/60 p-2 text-[11px] sm:grid-cols-3">
+                  <Field k="status" v={licenseJson.status} tone />
+                  <Field k="produto" v={licenseJson.product_slug ?? licenseJson.product} />
+                  <Field k="plano" v={licenseJson.plan ?? licenseJson.plan_name} />
+                  <Field k="dias restantes" v={licenseJson.days_remaining} />
+                  <Field k="hwid" v={licenseJson.hwid} />
+                  <Field k="mensagem" v={licenseJson.message} />
+                </div>
+              )}
+              <JsonBlock text={out.license.body} />
+            </>
+          )}
+        </section>
+
+        {/* ───── Session token (compartilhado por UI + templates) ───── */}
+        <section className="rounded border border-border/40 bg-background/40 p-3 space-y-2">
+          <div className="flex items-center gap-2">
+            <Layers className="h-4 w-4 text-cyan-300" />
+            <span className="font-semibold">Session token (opcional)</span>
+          </div>
+          <Input value={sessionToken} onChange={(e) => setSessionToken(e.target.value)}
+            placeholder="colar session_token retornado pela validação (senão vai __probe__)"
+            className="h-8 font-mono text-[11px]" />
+          <p className="text-[10px] text-muted-foreground">
+            Usado por <code className="font-mono">serve-extension-ui</code> e <code className="font-mono">get-templates</code>.
+          </p>
+        </section>
+
+        {/* ───── UI remota ───── */}
+        <section className="rounded border border-border/40 bg-background/40 p-3 space-y-2">
+          <div className="flex items-center gap-2">
+            <MonitorPlay className="h-4 w-4 text-violet-300" />
+            <span className="font-semibold">Testar UI</span>
+            <Badge variant="outline" className="ml-auto text-[9px]">serve-extension-ui</Badge>
+          </div>
+          <Button size="sm" onClick={testUi} disabled={busy === "ui"} className="gap-1.5">
+            {busy === "ui" ? <Loader2 className="h-4 w-4 animate-spin" /> : <MonitorPlay className="h-4 w-4" />}
+            Buscar HTML e renderizar
+          </Button>
+          {out.ui && (
+            <>
+              <ResultLine r={out.ui} />
+              {out.ui.ok && out.ui.body && (
+                <iframe
+                  title="serve-extension-ui"
+                  sandbox="allow-scripts"
+                  srcDoc={out.ui.body}
+                  className="h-96 w-full rounded border border-border/40 bg-background"
+                />
+              )}
+              {!out.ui.ok && <JsonBlock text={out.ui.body} />}
+            </>
+          )}
+        </section>
+
+        {/* ───── Templates ───── */}
+        <section className="rounded border border-border/40 bg-background/40 p-3 space-y-2">
+          <div className="flex items-center gap-2">
+            <Layers className="h-4 w-4 text-amber-300" />
+            <span className="font-semibold">Testar Templates</span>
+            <Badge variant="outline" className="ml-auto text-[9px]">get-templates</Badge>
+          </div>
+          <Button size="sm" onClick={testTemplates} disabled={busy === "templates"} className="gap-1.5">
+            {busy === "templates" ? <Loader2 className="h-4 w-4 animate-spin" /> : <Layers className="h-4 w-4" />}
+            Listar templates
+          </Button>
+          {out.templates && (<>
+            <ResultLine r={out.templates} />
+            <JsonBlock text={out.templates.body} />
+          </>)}
+        </section>
+
+        {/* ───── Support ───── */}
+        <section className="rounded border border-border/40 bg-background/40 p-3 space-y-2">
+          <div className="flex items-center gap-2">
+            <LifeBuoy className="h-4 w-4 text-rose-300" />
+            <span className="font-semibold">Testar Support</span>
+            <Badge variant="outline" className="ml-auto text-[9px]">get-support-info</Badge>
+          </div>
+          <Button size="sm" onClick={testSupport} disabled={busy === "support"} className="gap-1.5">
+            {busy === "support" ? <Loader2 className="h-4 w-4 animate-spin" /> : <LifeBuoy className="h-4 w-4" />}
+            Carregar info de suporte
+          </Button>
+          {out.support && (<>
+            <ResultLine r={out.support} />
+            <JsonBlock text={out.support.body} />
+          </>)}
+        </section>
+
+        {/* ───── Lov4 ───── */}
+        <section className="rounded border border-border/40 bg-background/40 p-3 space-y-2">
+          <div className="flex items-center gap-2">
+            <Send className="h-4 w-4 text-emerald-300" />
+            <span className="font-semibold">Testar Lov4</span>
+            <Badge variant="outline" className="ml-auto text-[9px]">lov4</Badge>
+          </div>
+          <Textarea value={lovMsg} onChange={(e) => setLovMsg(e.target.value)}
+            rows={2} className="font-mono text-[11px]" placeholder="mensagem" />
+          <Button size="sm" onClick={testLov4} disabled={busy === "lov4"} className="gap-1.5">
+            {busy === "lov4" ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+            Enviar ping
+          </Button>
+          {out.lov4 && (<>
+            <ResultLine r={out.lov4} />
+            <JsonBlock text={out.lov4.body} />
+          </>)}
+        </section>
+      </CardContent>
+    </Card>
+  );
+}
+
+function ResultLine({ r }: { r: CallRawResult }) {
+  const good = r.ok;
+  return (
+    <div className={`flex flex-wrap items-center gap-2 rounded border p-1.5 text-[10px] font-mono ${
+      good ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-200"
+           : "border-rose-500/40 bg-rose-500/10 text-rose-200"
+    }`}>
+      <span className="font-semibold">{r.method}</span>
+      <span className="truncate">{r.url}</span>
+      <span className="ml-auto">{r.status ?? "×"} · {r.ms}ms</span>
+      <span>{r.contentType ?? "—"}</span>
+      {r.error && <span className="w-full">{r.error}</span>}
+    </div>
+  );
+}
+
+function Field({ k, v, tone }: { k: string; v: unknown; tone?: boolean }) {
+  const s = v === undefined || v === null || v === "" ? "—" : String(v);
+  const color = tone
+    ? (s === "valid" ? "text-emerald-300"
+      : s === "invalid" || s === "expired" || s === "revoked" ? "text-rose-300"
+      : "text-amber-300")
+    : "text-foreground";
+  return (
+    <div>
+      <p className="text-[9px] uppercase tracking-widest text-muted-foreground">{k}</p>
+      <p className={`font-mono ${color}`}>{s}</p>
+    </div>
+  );
+}
+
+function JsonBlock({ text }: { text: string }) {
+  if (!text) return null;
+  return (
+    <details>
+      <summary className="cursor-pointer text-[10px] text-muted-foreground">
+        resposta completa ({text.length} chars)
+      </summary>
+      <pre className="mt-1 max-h-72 overflow-auto whitespace-pre-wrap break-all rounded bg-background/60 p-2 font-mono text-[10px]">
+        {text}
+      </pre>
+    </details>
   );
 }

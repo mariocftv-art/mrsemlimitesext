@@ -8,11 +8,12 @@
 export type EndpointRequirement = "required" | "optional";
 
 export type BackendEndpointKey =
-  | "validate"
-  | "heartbeat"
-  | "config"
-  | "download"
-  | "update";
+  | "validate-license-v2"
+  | "get-support-info"
+  | "get-templates"
+  | "serve-extension-ui"
+  | "lov4"
+  | "storage";
 
 export interface BackendEndpointDef {
   key: BackendEndpointKey;
@@ -69,51 +70,60 @@ export function saveBackendConfig(cfg: BackendConfig): void {
 }
 
 /**
- * Endpoints oficiais conhecidos (contrato canônico documentado em
- * docs/API_CONTRACTS.md da EXT1). A Factory NÃO cria nenhum endpoint.
+ * Endpoints REAIS utilizados pela EXT1 hoje.
+ * Origem: leitura direta de sidepanel.js, content/content.js e background.js.
+ * A Factory NÃO cria nem altera nenhum endpoint — apenas os visita.
  */
 export const OFFICIAL_ENDPOINTS: BackendEndpointDef[] = [
   {
-    key: "validate",
-    label: "Validação de licença",
+    key: "validate-license-v2",
+    label: "Validação de licença (v2)",
     method: "POST",
-    path: "/functions/v1/validate-license",
+    path: "/functions/v1/validate-license-v2",
     requirement: "required",
-    probeBody: { license_key: "PROBE-0000", hwid: "probe", product_slug: "__probe__" },
-    description: "Retorna status da licença. Obrigatório para a EXT1 funcionar.",
+    probeBody: { license_key: "__PROBE__", hwid: "probe", device_info: { platform: "probe", cores: 0 } },
+    description: "sidepanel.js:140 — POST { license_key, hwid, device_info }.",
   },
   {
-    key: "heartbeat",
-    label: "Heartbeat de sessão",
+    key: "get-support-info",
+    label: "Suporte (WhatsApp)",
+    method: "GET",
+    path: "/functions/v1/get-support-info",
+    requirement: "optional",
+    description: "sidepanel.js:207 — GET sem body.",
+  },
+  {
+    key: "get-templates",
+    label: "Templates",
+    method: "GET",
+    path: "/functions/v1/get-templates",
+    requirement: "optional",
+    description: "sidepanel.js:559 — GET com header x-session-token.",
+  },
+  {
+    key: "serve-extension-ui",
+    label: "UI remota (HTML)",
+    method: "GET",
+    path: "/functions/v1/serve-extension-ui",
+    requirement: "required",
+    description: "sidepanel.js:802 — GET ?sessionToken=&extVersion=.",
+  },
+  {
+    key: "lov4",
+    label: "Proxy universal (lov4)",
     method: "POST",
-    path: "/functions/v1/heartbeat",
-    requirement: "optional",
-    probeBody: { session_token: "__probe__", hwid: "probe" },
-    description: "Marca a sessão como viva. Opcional.",
+    path: "/functions/v1/lov4",
+    requirement: "required",
+    probeBody: { action: "ping" },
+    description: "content/content.js:85 / background.js:488 — POST { action, ... }.",
   },
   {
-    key: "config",
-    label: "Injeção de configuração",
+    key: "storage",
+    label: "Storage (disponibilidade)",
     method: "GET",
-    path: "/functions/v1/inject-config",
+    path: "/storage/v1/object",
     requirement: "optional",
-    description: "Feature flags e limites remotos. Opcional.",
-  },
-  {
-    key: "download",
-    label: "Download do pacote",
-    method: "GET",
-    path: "/functions/v1/download-latest",
-    requirement: "optional",
-    description: "Retorna URL do ZIP mais recente. Opcional.",
-  },
-  {
-    key: "update",
-    label: "Verificação de versão",
-    method: "GET",
-    path: "/functions/v1/version",
-    requirement: "optional",
-    description: "Retorna versão atual publicada. Opcional.",
+    description: "content/inject.js:278 — /storage/v1/object/{bucket}/{path}. Só verifica se o host responde.",
   },
 ];
 
@@ -122,11 +132,8 @@ export function endpointUrl(cfg: BackendConfig, ep: BackendEndpointDef): string 
   const base = (cfg.API_BASE_URL || "").replace(/\/+$/, "");
   if (!base) return ep.path;
   let path = ep.path;
-  if (ep.key === "update" && cfg.PRODUCT_SLUG) {
-    path += `?product=${encodeURIComponent(cfg.PRODUCT_SLUG)}`;
-  }
-  if (ep.key === "download" && cfg.PRODUCT_SLUG) {
-    path += `?product=${encodeURIComponent(cfg.PRODUCT_SLUG)}`;
+  if (ep.key === "serve-extension-ui") {
+    path += `?sessionToken=__probe__&extVersion=${encodeURIComponent(cfg.CLIENT_VERSION)}`;
   }
   return base + path;
 }

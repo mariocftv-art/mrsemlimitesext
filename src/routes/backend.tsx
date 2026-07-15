@@ -335,6 +335,7 @@ function BackendPage() {
             </CardContent>
           </Card>
 
+          <FullDiagnostic cfg={cfg} />
           <RealTests cfg={cfg} />
         </div>
       </div>
@@ -682,4 +683,270 @@ function JsonBlock({ text }: { text: string }) {
       </pre>
     </details>
   );
+}
+
+// ═══════════════════════════════════════════════════════════════
+// FASE 16 — Diagnóstico Completo (End-to-End)
+// Executa em sequência: validate-license-v2 → serve-extension-ui →
+// get-templates → get-support-info → lov4. Reaproveita session_token
+// retornado pelo passo 1. Somente leitura — não grava, não altera.
+// ═══════════════════════════════════════════════════════════════
+type StepKey = "license" | "ui" | "templates" | "support" | "lov4";
+interface StepState {
+  key: StepKey;
+  label: string;
+  endpoint: string;
+  status: "idle" | "running" | "ok" | "fail" | "skipped";
+  request?: { url: string; method: string; body?: unknown };
+  response?: CallRawResult;
+  parsed?: Record<string, unknown> | null;
+  note?: string;
+}
+
+const STEP_DEFS: Array<Pick<StepState, "key" | "label" | "endpoint">> = [
+  { key: "license",   label: "1. Validar licença",       endpoint: "validate-license-v2" },
+  { key: "ui",        label: "2. Carregar UI remota",    endpoint: "serve-extension-ui" },
+  { key: "templates", label: "3. Listar templates",      endpoint: "get-templates" },
+  { key: "support",   label: "4. Info de suporte",       endpoint: "get-support-info" },
+  { key: "lov4",      label: "5. Ping proxy universal",  endpoint: "lov4" },
+];
+
+function FullDiagnostic({ cfg }: { cfg: BackendConfig }) {
+  const call = useServerFn(callBackendRaw);
+  const base = (cfg.API_BASE_URL || "").replace(/\/+$/, "");
+  const key = cfg.API_KEY || "";
+  const authHeaders = { apikey: key, authorization: `Bearer ${key}` };
+
+  const [email, setEmail] = useState("");
+  const [licenseKey, setLicenseKey] = useState("");
+  const [running, setRunning] = useState(false);
+  const [totalMs, setTotalMs] = useState<number | null>(null);
+  const [sessionToken, setSessionToken] = useState<string>("");
+  const [steps, setSteps] = useState<StepState[]>(() =>
+    STEP_DEFS.map((s) => ({ ...s, status: "idle" })),
+  );
+
+  const updateStep = (k: StepKey, patch: Partial<StepState>) => {
+    setSteps((prev) => prev.map((s) => (s.key === k ? { ...s, ...patch } : s)));
+  };
+
+  const runAll = async () => {
+    if (!licenseKey.trim()) { alert("Informe a chave de licença."); return; }
+    if (!base) { alert("API_BASE_URL não configurada."); return; }
+    setRunning(true);
+    setTotalMs(null);
+    setSessionToken("");
+    setSteps(STEP_DEFS.map((s) => ({ ...s, status: "idle" })));
+    const t0 = Date.now();
+    let token = "";
+
+    // ── PASSO 1 — validate-license-v2 ────────────────────────
+    {
+      const url = `${base}/functions/v1/validate-license-v2`;
+      const body = {
+        license_key: licenseKey.trim(),
+        hwid: `factory-diag-${email || "no-email"}`,
+        device_info: { platform: "factory-diag", cores: 0, email: email || undefined },
+      };
+      updateStep("license", { status: "running", request: { url, method: "POST", body } });
+      const r = await call({ data: {
+        url, method: "POST",
+        headers: { "content-type": "application/json", ...authHeaders },
+        body,
+      } }) as CallRawResult;
+      let parsed: Record<string, unknown> | null = null;
+      try { parsed = r.body ? JSON.parse(r.body) : null; } catch { /* ignore */ }
+      const valid = r.ok && parsed?.status === "valid";
+      token = (parsed?.session_token as string) || (parsed?.sessionToken as string) || "";
+      if (token) setSessionToken(token);
+      updateStep("license", {
+        status: valid ? "ok" : "fail",
+        request: { url, method: "POST", body },
+        response: r, parsed,
+        note: valid ? `session_token: ${token ? "recebido" : "AUSENTE"}` : `status=${parsed?.status ?? "?"}`,
+      });
+      if (!valid) {
+        // marca demais como skipped
+        (["ui","templates","support","lov4"] as StepKey[]).forEach((k) =>
+          updateStep(k, { status: "skipped", note: "pulou: licença inválida" }));
+        setTotalMs(Date.now() - t0);
+        setRunning(false);
+        return;
+      }
+    }
+
+    // ── PASSO 2 — serve-extension-ui ────────────────────────
+    {
+      const url = `${base}/functions/v1/serve-extension-ui?sessionToken=${encodeURIComponent(token || "__probe__")}&extVersion=${encodeURIComponent(cfg.CLIENT_VERSION)}`;
+      updateStep("ui", { status: "running", request: { url, method: "GET" } });
+      const r = await call({ data: { url, method: "GET", headers: authHeaders } }) as CallRawResult;
+      updateStep("ui", { status: r.ok ? "ok" : "fail", response: r, note: `${r.body?.length ?? 0} chars` });
+    }
+
+    // ── PASSO 3 — get-templates ─────────────────────────────
+    {
+      const url = `${base}/functions/v1/get-templates`;
+      updateStep("templates", { status: "running", request: { url, method: "GET" } });
+      const r = await call({ data: {
+        url, method: "GET",
+        headers: { ...authHeaders, "x-session-token": token || "__probe__" },
+      } }) as CallRawResult;
+      let parsed: Record<string, unknown> | null = null;
+      try { parsed = r.body ? JSON.parse(r.body) : null; } catch { /* ignore */ }
+      const arr = Array.isArray(parsed) ? parsed : (parsed?.templates as unknown[] | undefined);
+      updateStep("templates", {
+        status: r.ok ? "ok" : "fail",
+        response: r, parsed,
+        note: Array.isArray(arr) ? `${arr.length} templates` : "sem lista",
+      });
+    }
+
+    // ── PASSO 4 — get-support-info ──────────────────────────
+    {
+      const url = `${base}/functions/v1/get-support-info`;
+      updateStep("support", { status: "running", request: { url, method: "GET" } });
+      const r = await call({ data: { url, method: "GET", headers: authHeaders } }) as CallRawResult;
+      let parsed: Record<string, unknown> | null = null;
+      try { parsed = r.body ? JSON.parse(r.body) : null; } catch { /* ignore */ }
+      updateStep("support", {
+        status: r.ok ? "ok" : "fail",
+        response: r, parsed,
+        note: parsed?.whatsapp ? `whatsapp: ${String(parsed.whatsapp)}` : "sem whatsapp",
+      });
+    }
+
+    // ── PASSO 5 — lov4 ping ─────────────────────────────────
+    {
+      const url = `${base}/functions/v1/lov4`;
+      const body = { action: "ping" };
+      updateStep("lov4", { status: "running", request: { url, method: "POST", body } });
+      const r = await call({ data: {
+        url, method: "POST",
+        headers: { "content-type": "application/json", ...authHeaders },
+        body,
+      } }) as CallRawResult;
+      updateStep("lov4", { status: r.ok ? "ok" : "fail", response: r, request: { url, method: "POST", body } });
+    }
+
+    setTotalMs(Date.now() - t0);
+    setRunning(false);
+  };
+
+  const allOk = steps.every((s) => s.status === "ok");
+  const anyFail = steps.some((s) => s.status === "fail");
+  const done = totalMs !== null && !running;
+
+  return (
+    <Card className="glass border-primary/40">
+      <CardHeader className="pb-3">
+        <CardTitle className="flex items-center gap-2 text-sm">
+          <FlaskConical className="h-4 w-4 text-primary" /> Diagnóstico Completo (End-to-End)
+        </CardTitle>
+        <p className="text-[11px] text-muted-foreground">
+          Executa os 5 passos em sequência com o mesmo <code className="font-mono">session_token</code>.
+          Somente leitura — nada é gravado.
+        </p>
+      </CardHeader>
+      <CardContent className="space-y-3 text-xs">
+        <div className="grid gap-2 sm:grid-cols-2">
+          <div>
+            <Label className="text-[10px] uppercase tracking-widest text-muted-foreground">Email</Label>
+            <Input value={email} onChange={(e) => setEmail(e.target.value)}
+              placeholder="cliente@exemplo.com" className="h-8 font-mono text-[11px]" />
+          </div>
+          <div>
+            <Label className="text-[10px] uppercase tracking-widest text-muted-foreground">License key</Label>
+            <Input value={licenseKey} onChange={(e) => setLicenseKey(e.target.value)}
+              placeholder="MRSL-XXXX-XXXX-XXXX" className="h-8 font-mono text-[11px]" />
+          </div>
+        </div>
+
+        <Button size="sm" onClick={runAll} disabled={running} className="w-full gap-1.5">
+          {running ? <Loader2 className="h-4 w-4 animate-spin" /> : <FlaskConical className="h-4 w-4" />}
+          {running ? "Executando…" : "Executar teste completo"}
+        </Button>
+
+        {sessionToken && (
+          <div className="rounded border border-emerald-500/40 bg-emerald-500/10 p-2 font-mono text-[10px] text-emerald-200 break-all">
+            session_token: {sessionToken}
+          </div>
+        )}
+
+        <ul className="space-y-2">
+          {steps.map((s) => (
+            <li key={s.key} className="rounded border border-border/40 bg-background/40 p-2 space-y-1">
+              <div className="flex items-center gap-2">
+                <StepDot status={s.status} />
+                <span className="font-semibold">{s.label}</span>
+                <Badge variant="outline" className="ml-1 text-[9px]">{s.endpoint}</Badge>
+                <span className="ml-auto font-mono text-[10px] text-muted-foreground">
+                  {s.response ? `${s.response.status ?? "×"} · ${s.response.ms}ms` : s.status}
+                </span>
+              </div>
+              {s.note && <p className="text-[10px] text-muted-foreground">{s.note}</p>}
+              {s.key === "license" && s.parsed && (
+                <div className="grid grid-cols-2 gap-2 rounded border border-border/40 bg-background/60 p-2 text-[11px] sm:grid-cols-3">
+                  <Field k="status" v={s.parsed.status} tone />
+                  <Field k="produto" v={s.parsed.product_slug ?? s.parsed.product} />
+                  <Field k="plano" v={s.parsed.plan ?? s.parsed.plan_name} />
+                  <Field k="dias restantes" v={s.parsed.days_remaining} />
+                  <Field k="hwid" v={s.parsed.hwid} />
+                  <Field k="session_token" v={s.parsed.session_token ?? s.parsed.sessionToken} />
+                </div>
+              )}
+              {s.key === "ui" && s.response?.ok && s.response.body && (
+                <iframe title="ui-diag" sandbox="allow-scripts" srcDoc={s.response.body}
+                  className="h-72 w-full rounded border border-border/40 bg-background" />
+              )}
+              {s.response?.body && (
+                <details>
+                  <summary className="cursor-pointer text-[10px] text-muted-foreground">
+                    resposta ({s.response.body.length} chars)
+                  </summary>
+                  <pre className="mt-1 max-h-56 overflow-auto whitespace-pre-wrap break-all rounded bg-background/60 p-2 font-mono text-[10px]">
+                    {s.response.body}
+                  </pre>
+                </details>
+              )}
+            </li>
+          ))}
+        </ul>
+
+        {done && (
+          <div className={`space-y-2 rounded border p-3 ${
+            allOk ? "border-emerald-500/40 bg-emerald-500/10"
+                  : "border-rose-500/40 bg-rose-500/10"
+          }`}>
+            <p className="text-[11px] font-semibold">
+              STATUS GERAL {allOk ? "🟢" : "🔴"} · tempo total {totalMs}ms
+            </p>
+            <ul className="space-y-0.5 text-[11px] font-mono">
+              {steps.map((s) => (
+                <li key={s.key}>
+                  {s.status === "ok" ? "🟢" : s.status === "fail" ? "🔴" : s.status === "skipped" ? "⚪" : "·"}{" "}
+                  {s.label} {s.note ? `— ${s.note}` : ""}
+                </li>
+              ))}
+            </ul>
+            <p className={`text-[12px] font-bold ${allOk ? "text-emerald-200" : "text-rose-200"}`}>
+              EXT1 pronta para produção: {allOk ? "SIM" : "NÃO"}
+            </p>
+            {anyFail && (
+              <p className="text-[10px] text-rose-200">
+                Falhou: {steps.filter((s) => s.status === "fail").map((s) => s.endpoint).join(", ")}
+              </p>
+            )}
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
+function StepDot({ status }: { status: StepState["status"] }) {
+  if (status === "running") return <Loader2 className="h-3 w-3 animate-spin text-primary" />;
+  if (status === "ok")      return <span className="h-2.5 w-2.5 rounded-full bg-emerald-400 shadow-[0_0_6px_theme(colors.emerald.400)]" />;
+  if (status === "fail")    return <span className="h-2.5 w-2.5 rounded-full bg-rose-400 shadow-[0_0_6px_theme(colors.rose.400)]" />;
+  if (status === "skipped") return <span className="h-2.5 w-2.5 rounded-full bg-muted" />;
+  return <span className="h-2.5 w-2.5 rounded-full border border-border/60" />;
 }

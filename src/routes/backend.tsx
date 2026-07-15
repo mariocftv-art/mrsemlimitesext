@@ -332,6 +332,8 @@ function BackendPage() {
               )}
             </CardContent>
           </Card>
+
+          <RealTests cfg={cfg} />
         </div>
       </div>
     </AppShell>

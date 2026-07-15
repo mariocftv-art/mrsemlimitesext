@@ -423,8 +423,38 @@
     .mr-input,.mr-output{width:100%;padding:8px 10px;border-radius:9px;background:rgba(0,0,0,.35);border:1px solid var(--border);color:#fff;font-size:11.5px;font-family:'JetBrains Mono',monospace;outline:none;resize:vertical;min-height:60px}
     .mr-input:focus{border-color:rgba(236,72,153,.5)}
     .mr-empty{text-align:center;padding:40px 20px;color:rgba(255,255,255,.4);font-size:12px}
-    .mr-fav{position:absolute;top:8px;right:8px;background:none;border:none;color:rgba(255,255,255,.35);cursor:pointer;font-size:14px;padding:2px}
+    .mr-fav{position:absolute;top:8px;right:8px;background:none;border:none;color:rgba(255,255,255,.35);cursor:pointer;font-size:14px;padding:2px;z-index:2}
     .mr-fav.on{color:#f472b6;text-shadow:0 0 6px #ec4899}
+
+    /* Preview extras */
+    .prev-warm{background:linear-gradient(120deg,#f97316,#ec4899,#a855f7);background-size:300% 300%;animation:prevGrad 5s ease infinite}
+    .prev-cool{background:linear-gradient(120deg,#0ea5e9,#6366f1,#8b5cf6);background-size:300% 300%;animation:prevGrad 5s ease infinite}
+    .prev-pink{background:linear-gradient(120deg,#ec4899,#f472b6,#a855f7);background-size:300% 300%;animation:prevGrad 5s ease infinite}
+    .prev-blue{background:linear-gradient(120deg,#1d4ed8,#3b82f6,#22d3ee);background-size:300% 300%;animation:prevGrad 5s ease infinite}
+    .prev-mono{background:linear-gradient(120deg,#111827,#1f2937,#374151);background-size:300% 300%;animation:prevGrad 6s ease infinite}
+    .prev-cyber{background:linear-gradient(120deg,#0f172a,#7c3aed,#ec4899,#22d3ee);background-size:400% 400%;animation:prevGrad 4s ease infinite}
+    .mr-preview-icon{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:22px;filter:drop-shadow(0 0 8px rgba(0,0,0,.6))}
+
+    /* Header ON/OFF toggle */
+    .mr-power{display:inline-flex;align-items:center;gap:6px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.32);color:#4ade80;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;cursor:pointer;transition:.2s;letter-spacing:.02em}
+    .mr-power:hover{filter:brightness(1.15)}
+    .mr-power .mr-power-dot{width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 8px #22c55e}
+    .mr-power.off{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.32);color:#f87171}
+    .mr-power.off .mr-power-dot{background:#ef4444;box-shadow:0 0 8px #ef4444}
+
+    /* Pro quick actions (nova linha explícita) */
+    .qa-pro{display:flex;gap:6px;padding:8px 12px;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid var(--border);background:linear-gradient(180deg,rgba(59,130,246,.05),transparent)}
+    .qa-pro::-webkit-scrollbar{display:none}
+    .qa-pro-btn{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid rgba(236,72,153,.22);color:#f0e8ff;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;transition:.2s;letter-spacing:.02em}
+    .qa-pro-btn:hover{background:linear-gradient(135deg,rgba(236,72,153,.2),rgba(59,130,246,.2));border-color:rgba(236,72,153,.5);transform:translateY(-1px)}
+    .qa-pro-btn:active{transform:scale(.97)}
+    .qa-pro-btn .qa-pro-ico{font-size:13px}
+
+    /* Ref hint (imagem como referência) */
+    .mr-ref-hint{display:none;align-items:center;gap:8px;padding:6px 12px;background:rgba(59,130,246,.08);border-top:1px solid rgba(59,130,246,.2);border-bottom:1px solid rgba(59,130,246,.2);color:#93c5fd;font-size:11px}
+    .mr-ref-hint.show{display:flex}
+    .mr-ref-hint label{display:inline-flex;align-items:center;gap:5px;cursor:pointer;font-weight:600}
+    .mr-ref-hint input{accent-color:#3b82f6}
   </style>
 
 </head>
@@ -483,26 +513,30 @@
         <img src="logo.png" class="app-header-logo" alt=""><span class="app-header-title">MR Sem Limites</span>
       </div>
       <div class="app-header-right">
+        <button id="mrPowerToggle" class="mr-power" title="Ativar/Desativar extensão"><span class="mr-power-dot"></span><span id="mrPowerLabel">ATIVA</span></button>
         <span id="licenseInfo">--</span>
         <button id="publishBtn" class="action-btn">Publish</button>
         <div class="app-header-brand" title="MR Sem Limites"><img src="logo.png" alt="MR Sem Limites"></div>
       </div>
     </div>
 
-    <!-- Reformulada 2.1 — tab bar -->
+    <!-- Reformulada 2.1 — tab bar (Chat como padrão) -->
     <nav class="mr-tabs" id="mrTabs" role="tablist">
-      <button class="mr-tab active" data-mrtab="home" role="tab">🏠 Home</button>
-      <button class="mr-tab" data-mrtab="chat" role="tab">💬 Chat</button>
-      <button class="mr-tab" data-mrtab="anim" role="tab">✨ Animações</button>
+      <button class="mr-tab active" data-mrtab="chat" role="tab">💬 Chat</button>
       <button class="mr-tab" data-mrtab="comp" role="tab">🧩 Componentes</button>
-      <button class="mr-tab" data-mrtab="prompts" role="tab">🚀 Prompts</button>
+      <button class="mr-tab" data-mrtab="anim" role="tab">✨ Animações</button>
+      <button class="mr-tab" data-mrtab="img" role="tab">🎨 Imagens IA</button>
+      <button class="mr-tab" data-mrtab="vid" role="tab">🎬 Vídeos IA</button>
+      <button class="mr-tab" data-mrtab="tpl" role="tab">📦 Templates SaaS</button>
+      <button class="mr-tab" data-mrtab="prompts" role="tab">📋 Prompts</button>
       <button class="mr-tab" data-mrtab="tools" role="tab">🛠 Ferramentas</button>
-      <button class="mr-tab" data-mrtab="config" role="tab">⚙️ Config</button>
-
+      <button class="mr-tab" data-mrtab="fav" role="tab">⭐ Favoritos</button>
+      <button class="mr-tab" data-mrtab="config" role="tab">⚙ Configurações</button>
+      <button class="mr-tab" data-mrtab="home" role="tab">🏠 Início</button>
     </nav>
 
     <!-- Home -->
-    <section class="mr-panel active" data-mrpanel="home">
+    <section class="mr-panel" data-mrpanel="home">
       <div class="mr-panel-scroll">
         <div class="mr-home-hero">
           <h2>Bem-vindo à MR Sem Limites</h2>
@@ -539,7 +573,7 @@
     </section>
 
     <!-- Chat (existente — IDs preservados) -->
-    <section class="mr-panel" data-mrpanel="chat">
+    <section class="mr-panel active" data-mrpanel="chat">
       <div class="action-bar">
         <button id="downloadBtn" class="action-btn">&#11015; Download</button>
         <button id="removeWatermarkBtn" class="action-btn">&#10005; TIRAR MARCA D'AGUA</button>
@@ -555,6 +589,8 @@
         <button class="qa-btn" data-action="seguranca"><span class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></span>SEGURAN&Ccedil;A</button>
         <button class="qa-btn" data-action="responsivo"><span class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg></span>RESPONSIVO</button>
       </div>
+      <!-- Botões rápidos Pro (ações explícitas, roteadas via UI module) -->
+      <div class="qa-pro" id="mrQaPro"></div>
       <div id="chatPanel">
         <div id="history">
           <div class="empty-state">
@@ -565,6 +601,9 @@
         <div id="quickSuggestions"></div>
         <div id="status"></div>
         <div id="filePreview"></div>
+        <div class="mr-ref-hint" id="mrRefHint">
+          <label><input type="checkbox" id="mrRefOnly" checked> Imagem apenas como <b>referência visual</b> — gerar código, não imagem</label>
+        </div>
         <div class="input-area">
           <div class="input-enhance-row">
             <button id="enhanceBtn">&#10024; <span>Otimizar com IA</span></button>
@@ -619,7 +658,50 @@
       </div>
     </section>
 
+    <!-- Imagens IA -->
+    <section class="mr-panel" data-mrpanel="img">
+      <div class="mr-panel-scroll">
+        <div class="mr-toolbar">
+          <input class="mr-search" id="mrImgSearch" placeholder="🔍 Buscar categoria de imagem...">
+        </div>
+        <div class="mr-toolbar" id="mrImgCats"></div>
+        <div class="mr-grid" id="mrImgGrid"></div>
+      </div>
+    </section>
+
+    <!-- Vídeos IA -->
+    <section class="mr-panel" data-mrpanel="vid">
+      <div class="mr-panel-scroll">
+        <div class="mr-toolbar">
+          <input class="mr-search" id="mrVidSearch" placeholder="🔍 Buscar categoria de vídeo...">
+        </div>
+        <div class="mr-toolbar" id="mrVidCats"></div>
+        <div class="mr-grid" id="mrVidGrid"></div>
+      </div>
+    </section>
+
+    <!-- Templates SaaS -->
+    <section class="mr-panel" data-mrpanel="tpl">
+      <div class="mr-panel-scroll">
+        <div class="mr-toolbar">
+          <input class="mr-search" id="mrTplSearch" placeholder="🔍 Buscar template SaaS...">
+        </div>
+        <div class="mr-toolbar" id="mrTplCats"></div>
+        <div class="mr-grid" id="mrTplGrid"></div>
+      </div>
+    </section>
+
+    <!-- Favoritos -->
+    <section class="mr-panel" data-mrpanel="fav">
+      <div class="mr-panel-scroll">
+        <div class="mr-section-title">⭐ Seus favoritos</div>
+        <div class="mr-toolbar" id="mrFavCats"></div>
+        <div class="mr-grid" id="mrFavGrid"></div>
+      </div>
+    </section>
+
     <!-- Ferramentas -->
+
     <section class="mr-panel" data-mrpanel="tools">
       <div class="mr-panel-scroll">
         <div class="mr-tool-block">

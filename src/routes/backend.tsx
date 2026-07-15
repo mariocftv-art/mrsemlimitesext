@@ -335,6 +335,7 @@ function BackendPage() {
             </CardContent>
           </Card>
 
+          <FullDiagnostic cfg={cfg} />
           <RealTests cfg={cfg} />
         </div>
       </div>

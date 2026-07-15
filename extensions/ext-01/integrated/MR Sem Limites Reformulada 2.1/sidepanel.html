@@ -964,7 +964,7 @@
 
     function clearPick(){
       localStorage.removeItem(KEY);
-      document.querySelectorAll('.mr-ia-card').forEach(function(c){ c.classList.remove('selected'); });
+      document.querySelectorAll('.mr-ia-card,.mr-ia-qbtn').forEach(function(c){ c.classList.remove('selected'); });
       updateBadge();
     }
 

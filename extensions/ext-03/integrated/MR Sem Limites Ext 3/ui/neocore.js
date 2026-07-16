@@ -386,7 +386,7 @@
       const reply = 'Estou ouvindo. Pode falar.';
       logMsg('a', reply);
       setOrbState('listen', 'OUVINDO', 'Fale agora');
-      setTimeout(() => { if (orb?.dataset.mode === 'on') startRecognition(false); }, 350);
+      setTimeout(() => { if (orb?.dataset.mode === "on") startRecognition(false); }, 100);
       return;
     }
 
@@ -567,7 +567,7 @@
       }
       if (err === 'no-speech' || err === 'aborted') {
         if (!intoInput && orb?.dataset.mode === 'on') {
-          setTimeout(() => { if (orb?.dataset.mode === 'on') startRecognition(false); }, 300);
+          setTimeout(() => { if (orb?.dataset.mode === "on") startRecognition(false); }, 80);
           return;
         }
       }
@@ -589,7 +589,7 @@
       }
       if (!intoInput && orb?.dataset.mode === 'on') {
         // Auto-reinicia enquanto o modo conversa estiver ativo
-        setTimeout(() => { if (orb?.dataset.mode === 'on') startRecognition(false); }, 250);
+        setTimeout(() => { if (orb?.dataset.mode === "on") startRecognition(false); }, 80);
       }
     };
     recognition.onresult = (ev) => {
@@ -621,7 +621,7 @@
           recognizing = false;
           if (voiceMode === 'orb' && orb?.dataset.mode === 'on' && !voiceText.trim()) {
             setOrbState('listen', 'OUVINDO', 'Fale agora');
-            setTimeout(() => { if (orb?.dataset.mode === 'on' && !recognizing) startRecognition(false); }, 450);
+            setTimeout(() => { if (orb?.dataset.mode === "on" && !recognizing) startRecognition(false); }, 120);
           }
         }
         return;
@@ -654,7 +654,7 @@
         if (!currentMode || currentMode === 'input') return;
         if (canRetry && orb?.dataset.mode === 'on') {
           setOrbState('listen', 'OUVINDO', 'Fale agora');
-          setTimeout(() => { if (orb?.dataset.mode === 'on') startRecognition(false); }, 650);
+          setTimeout(() => { if (orb?.dataset.mode === "on") startRecognition(false); }, 150);
           return;
         }
         if (/Abra o lovable|primeiro/i.test(err)) {

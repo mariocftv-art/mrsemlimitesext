@@ -214,8 +214,18 @@
     } catch (_) { setTimeout(finish, 400); }
   }
 
-  const TRIGGERS = ['enviar para o lovable','manda pro lovable','manda para o lovable','envia pro lovable','executa','executar','pode enviar','manda ai','manda aí','envia agora','responde','responder','manda','enviar'];
-  const hasTrigger = (t) => TRIGGERS.some((k) => String(t || '').toLowerCase().includes(k));
+  // Gatilhos EXPLÍCITOS de envio — só envia para o Lovable quando o usuário
+  // pedir claramente. Frases genéricas como "manda" ou "enviar" foram removidas
+  // para evitar envios acidentais durante a conversa.
+  const TRIGGERS = [
+    'pode enviar','pode mandar','envia agora','envia pro lovable','envia para o lovable',
+    'manda pro lovable','manda para o lovable','enviar para o lovable','manda o plano',
+    'executa o plano','executar o plano','manda agora','mandar agora'
+  ];
+  const CLEAR_CMDS = ['limpar conversa','apagar conversa','novo plano','recomeçar','recomecar','esquece tudo','zerar conversa'];
+  const SUMMARY_CMDS = ['resumo','resumir','qual o plano','me mostra o plano','mostrar o plano'];
+  const hasAny = (t, list) => list.some((k) => String(t || '').toLowerCase().includes(k));
+  const hasTrigger = (t) => hasAny(t, TRIGGERS);
   const WAKE_WORDS = ['standby', 'stand by', 'ativar ia', 'ativa ia', 'orbe', 'mr'];
   const hasWakeWord = (t) => WAKE_WORDS.some((k) => String(t || '').toLowerCase().includes(k));
   const stripWakeWords = (t) => {
@@ -329,23 +339,69 @@
 
     const finalText = cleanText || rawText;
     logMsg('u', finalText);
-    conversation.push({ who: 'u', text: finalText });
+
+    // 1) Comando de LIMPAR conversa
+    if (hasAny(finalText, CLEAR_CMDS)) {
+      conversation.length = 0;
+      const msg = 'Conversa zerada. Pode começar de novo — me conte o que você quer construir.';
+      logMsg('a', msg); speak(msg);
+      if (orb?.dataset.mode === 'on') setTimeout(() => { if (!recognizing) startRecognition(false); }, 1600);
+      return;
+    }
+
+    // 2) Comando de RESUMO — repete o plano acumulado
+    if (hasAny(finalText, SUMMARY_CMDS)) {
+      const pontos = conversation.filter((c) => c.who === 'u' && !hasTrigger(c.text) && !hasAny(c.text, CLEAR_CMDS) && !hasAny(c.text, SUMMARY_CMDS)).map((c) => c.text.trim()).filter(Boolean);
+      const msg = pontos.length
+        ? `Plano atual com ${pontos.length} ${pontos.length === 1 ? 'ponto' : 'pontos'}: ${pontos.join('. ')}. Diga "pode enviar" quando quiser mandar para o Lovable.`
+        : 'Ainda não temos nada no plano. Me conte o que você quer fazer.';
+      logMsg('a', msg); speak(msg);
+      if (orb?.dataset.mode === 'on') setTimeout(() => { if (!recognizing) startRecognition(false); }, 1600);
+      return;
+    }
+
+    // 3) Gatilho EXPLÍCITO de envio
     if (hasTrigger(finalText)) {
+      const pontos = conversation.filter((c) => c.who === 'u' && !hasTrigger(c.text) && !hasAny(c.text, CLEAR_CMDS) && !hasAny(c.text, SUMMARY_CMDS)).map((c) => c.text.trim()).filter(Boolean);
+      if (!pontos.length) {
+        const msg = 'Ainda não temos nada para enviar. Me conte primeiro o que você quer construir.';
+        logMsg('a', msg); speak(msg);
+        if (orb?.dataset.mode === 'on') setTimeout(() => { if (!recognizing) startRecognition(false); }, 1600);
+        return;
+      }
       const msg = 'Perfeito, enviando o plano para o Lovable agora.';
       setOrbState('think', 'WORKING', 'Sending command');
-      logMsg('a', msg);
-      speak(msg);
+      logMsg('a', msg); speak(msg);
       setTimeout(sendToLovableFromVoice, 400);
       return;
     }
-    const reply = 'Comando recebido. Enviando para o Lovable.';
+
+    // 4) CONVERSA — acumula no plano e responde como assistente,
+    //    SEM mandar nada para o Lovable até o usuário dizer "pode enviar".
+    conversation.push({ who: 'u', text: finalText });
+    const totalPontos = conversation.filter((c) => c.who === 'u' && !hasTrigger(c.text) && !hasAny(c.text, CLEAR_CMDS) && !hasAny(c.text, SUMMARY_CMDS)).length;
+    const reply = buildConversationalReply(finalText, totalPontos);
     logMsg('a', reply);
-    speak(reply);
-    sendPromptRaw(`${getIaDirective()}${finalText}`).finally(() => {
-      if (orb?.dataset.mode === 'on') {
-        setTimeout(() => { if (orb?.dataset.mode === 'on' && !recognizing) startRecognition(false); }, 1600);
-      }
+    speak(reply, () => {
+      if (orb?.dataset.mode === 'on' && !recognizing) startRecognition(false);
     });
+  }
+
+  // Gera uma resposta curta de assistente para manter a conversa fluindo
+  // até o usuário dizer "pode enviar". Não chama backend — usa heurística
+  // leve para variar tom e sempre lembrar o comando de envio.
+  function buildConversationalReply(userText, pontos) {
+    const t = String(userText || '').toLowerCase().trim();
+    const isQuestion = /\?$/.test(userText) || /^(o que|como|por que|porque|quando|onde|qual|quais|posso|dá pra|da pra|consegue|você|voce)\b/.test(t);
+    const acks = ['Entendi.', 'Anotado.', 'Perfeito.', 'Certo.', 'Beleza.', 'Ok.'];
+    const ack = acks[Math.floor(Math.random() * acks.length)];
+    const lembrete = pontos >= 3
+      ? `Já temos ${pontos} pontos no plano. Quer adicionar mais alguma coisa ou digo "pode enviar"?`
+      : 'Quer detalhar mais alguma coisa antes de eu mandar para o Lovable? Quando estiver pronto, é só dizer "pode enviar".';
+    if (isQuestion) {
+      return `${ack} Boa pergunta. Vou considerar isso no plano. ${lembrete}`;
+    }
+    return `${ack} Adicionei ao plano. ${lembrete}`;
   }
 
   function startRecognition(intoInput) {
@@ -356,6 +412,7 @@
     if (startBridgeRecognition(intoInput)) return;
     startLocalRecognition(intoInput);
   }
+
 
   function startLocalRecognition(intoInput) {
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;

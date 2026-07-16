@@ -1427,7 +1427,7 @@
     }
     .nc-card.blue{border-color:rgba(34,193,255,.4); box-shadow:0 0 22px rgba(34,193,255,.22), inset 0 0 24px rgba(34,193,255,.10);}
     .nc-card-title{display:flex; align-items:center; gap:8px; font-size:11px; letter-spacing:.22em; color:#d8def5; margin-bottom:6px; text-transform:uppercase;}
-    .nc-card .big{font-family:'Orbitron',sans-serif; font-weight:800; font-size:30px; letter-spacing:.02em; color:#fff; text-shadow:0 0 14px rgba(255,255,255,.35);}
+    .nc-card .big{font-family:'Orbitron',sans-serif; font-weight:800; font-size:clamp(21px,7vw,30px); letter-spacing:.02em; color:#fff; text-shadow:0 0 14px rgba(255,255,255,.35);}
     .nc-card.blue .big{color:#7ad9ff; text-shadow:0 0 14px rgba(34,193,255,.7);}
     .nc-card .sub{font-size:11px; color:var(--nc-mute); margin-top:4px;}
     .nc-card .sub b{color:#c9d3ff; font-weight:600;}
@@ -1448,16 +1448,19 @@
     .nc-timer-actions button.go{background:linear-gradient(135deg,#22c1ff,#8a3bff); border:none;}
     .nc-timer-actions button.stop{background:rgba(255,61,92,.15); border-color:rgba(255,61,92,.4); color:#ffb6c1;}
 
-    .nc-main{display:grid; grid-template-columns:170px 1fr; gap:12px; margin-top:6px;}
+    .nc-main{display:grid; grid-template-columns:minmax(92px,34%) minmax(0,1fr); gap:8px; margin-top:6px;}
     .nc-sidebar{display:flex; flex-direction:column; gap:6px;
-      padding:10px 8px; border-radius:16px;
+      padding:10px 8px; border-radius:16px; min-width:0;
       background:linear-gradient(180deg,rgba(15,8,35,.9),rgba(8,4,20,.9));
       border:1px solid rgba(138,59,255,.28);
       box-shadow:inset 0 0 20px rgba(138,59,255,.12);
     }
+    .nc-menu-group{display:flex;flex-direction:column;gap:5px;min-width:0;}
+    .nc-menu-title{font-size:8.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:rgba(201,211,255,.48);padding:8px 8px 2px;border-top:1px solid rgba(138,59,255,.22);}
+    .nc-menu-group:first-child .nc-menu-title{border-top:none;padding-top:0;}
     .nc-nav{
       display:flex; align-items:center; gap:10px; padding:9px 10px; border-radius:10px;
-      cursor:pointer; color:#c9d3ff; font-size:13px; font-weight:500; transition:.15s;
+      cursor:pointer; color:#c9d3ff; font-size:12px; font-weight:600; transition:.15s;
       border:1px solid transparent;
     }
     .nc-nav:hover{background:rgba(255,61,246,.08); color:#fff;}
@@ -1467,17 +1470,23 @@
       color:#fff; box-shadow:0 0 16px rgba(255,61,246,.4);
     }
     .nc-nav svg{width:16px;height:16px;flex-shrink:0;}
+    .nc-open-home{
+      position:fixed;left:10px;top:10px;z-index:49;width:36px;height:36px;border-radius:10px;
+      display:none;place-items:center;cursor:pointer;color:#fff;background:rgba(7,10,24,.82);
+      border:1px solid rgba(34,193,255,.45);box-shadow:0 0 18px rgba(34,193,255,.28);
+    }
+    #ext3-home.hidden + .nc-open-home{display:grid;}
 
     .nc-orb-wrap{
       position:relative; border-radius:16px; padding:16px 12px 20px;
       background:linear-gradient(180deg,rgba(10,6,25,.7),rgba(4,2,12,.7));
       border:1px solid rgba(34,193,255,.28);
       display:flex; flex-direction:column; align-items:center; justify-content:center;
-      min-height:340px;
+      min-height:300px; min-width:0; overflow:hidden;
     }
     .nc-orb-title{font-size:11px; letter-spacing:.5em; color:#8fb7d9; margin-bottom:12px;}
     .nc-orb{
-      position:relative; width:230px; height:230px; border-radius:50%;
+      position:relative; width:clamp(136px,52vw,230px); height:clamp(136px,52vw,230px); border-radius:50%;
       background:
         radial-gradient(circle at 30% 30%, rgba(255,255,255,.35), transparent 40%),
         radial-gradient(circle at 70% 65%, var(--nc-blue) 0%, var(--nc-violet) 45%, #1a0530 75%, #05030d 100%);
@@ -1496,7 +1505,7 @@
       filter:blur(8px); z-index:-1; animation:nc-spin 8s linear infinite;
     }
     .nc-orb .mr{
-      font-family:'Orbitron',sans-serif; font-weight:900; font-size:64px;
+      font-family:'Orbitron',sans-serif; font-weight:900; font-size:clamp(40px,15vw,64px);
       color:transparent; -webkit-text-stroke:2px #ff8ffb;
       text-shadow:0 0 22px rgba(255,61,246,.9);
       pointer-events:none;
@@ -1542,6 +1551,21 @@
     .nc-footer{margin-top:14px; text-align:center; font-size:11px; color:var(--nc-mute);}
     .nc-footer b{color:#ff3df6; font-family:'Orbitron',sans-serif;}
     .nc-footer .lov{color:#22c1ff; font-weight:700; letter-spacing:.14em;}
+    @media (max-width:360px){
+      #ext3-home{padding:12px 10px 18px;}
+      .nc-logo{font-size:44px;margin-bottom:10px;}
+      .nc-cards{gap:8px;}
+      .nc-card{padding:10px 9px;border-radius:14px;}
+      .nc-card-title{font-size:9px;letter-spacing:.12em;}
+      .nc-preset{font-size:10px;padding:6px 3px;}
+      .nc-main{grid-template-columns:92px minmax(0,1fr);gap:7px;}
+      .nc-sidebar{padding:8px 6px;border-radius:14px;}
+      .nc-nav{font-size:10.5px;gap:6px;padding:8px 7px;}
+      .nc-orb-wrap{padding:12px 8px 16px;min-height:270px;}
+      .nc-orb-title{font-size:9px;letter-spacing:.32em;}
+      .nc-orb-caption h3{font-size:13px;}
+      .nc-orb-caption p{font-size:10.5px;}
+    }
   </style>
 
   <div id="ext3-home">

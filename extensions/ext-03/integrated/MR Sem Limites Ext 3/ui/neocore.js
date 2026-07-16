@@ -776,9 +776,10 @@
   cmdInput?.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') { e.preventDefault(); cmdSend?.click(); }
   });
-  cmdMic?.addEventListener('click', () => {
-    // Se já está gravando, para. Senão, dispara reconhecimento no input.
+  cmdMic?.addEventListener('click', async () => {
     if (recognizing) { stopRecognition(true); return; }
+    const ok = await ensureMicPermission();
+    if (!ok) return;
     startRecognition(true);
   });
 

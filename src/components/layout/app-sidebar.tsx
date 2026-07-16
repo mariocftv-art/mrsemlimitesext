@@ -77,21 +77,22 @@ export function AppSidebar() {
     <Sidebar collapsible="icon" className="border-r border-sidebar-border">
       <SidebarHeader className="border-b border-sidebar-border">
         <Link to="/" className="flex items-center gap-3 px-2 py-2">
-          <div
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
-            style={{ background: "var(--gradient-neon)", boxShadow: "var(--shadow-neon)" }}
-          >
-            <Puzzle className="h-5 w-5 text-primary-foreground" />
-          </div>
+          <img
+            src="/__l5e/assets-v1/e7dadf5e-f374-4f6c-9a3b-9864d015e210/mr-logo.png"
+            alt="MR Sem Limites Lovable"
+            className="h-9 w-9 shrink-0 rounded-lg object-cover"
+            style={{ boxShadow: "var(--shadow-neon)" }}
+          />
           {!collapsed && (
             <div className="flex flex-col leading-tight">
               <span className="text-[11px] font-medium tracking-[0.2em] text-muted-foreground">
-                MR MÁXIMA
+                MR SEM LIMITES
               </span>
-              <span className="neon-text text-sm font-bold tracking-wide">EXTENSION FACTORY</span>
+              <span className="neon-text text-sm font-bold tracking-wide">LOVABLE FACTORY</span>
             </div>
           )}
         </Link>
+
       </SidebarHeader>
 
       <SidebarContent>

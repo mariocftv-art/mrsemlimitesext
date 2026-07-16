@@ -730,7 +730,7 @@
   // Clique na Orbe: ativa/desativa modo conversa
   // IMPORTANTE: startRecognition() DEVE ser chamado SÍNCRONO neste handler
   // para preservar o contexto de gesto do usuário (senão o browser bloqueia).
-  orb?.addEventListener('click', () => {
+  orb?.addEventListener('click', async () => {
     if (orb.dataset.mode === 'on') {
       orb.dataset.mode = 'off';
       stopRecognition(true);

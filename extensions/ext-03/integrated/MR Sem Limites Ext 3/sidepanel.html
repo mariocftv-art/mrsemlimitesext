@@ -43,6 +43,12 @@
     body::before{content:'';position:fixed;inset:0;background-image:var(--neo-bg);background-size:cover;background-position:center top;background-repeat:no-repeat;opacity:.32;z-index:0;pointer-events:none;filter:saturate(1.1)}
     body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(34,211,238,.12),transparent 55%),radial-gradient(ellipse at 50% 100%,rgba(236,72,153,.14),transparent 55%),linear-gradient(180deg,rgba(5,6,15,.55) 0%,rgba(5,6,15,.35) 40%,rgba(5,6,15,.75) 100%);z-index:0;pointer-events:none}
     #licenseScreen,#mainApp{position:relative;z-index:1;background:transparent!important}
+    /* Antes de ativar a licença, esconde toda a UI extra (home neocore, menu ⋮, cmdbar, histórico, botão flutuante). */
+    body.mr-locked #ext3-home,
+    body.mr-locked #ext3OpenHome,
+    body.mr-locked #ncMenuPanel,
+    body.mr-locked .nc-open-home{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important}
+
     .app-header,.action-bar,.tabs-bar,.mr-tabs,.input-area,.app-footer,.quick-actions{background:linear-gradient(180deg,rgba(10,12,28,.72),rgba(10,12,28,.55))!important;backdrop-filter:blur(14px) saturate(140%);-webkit-backdrop-filter:blur(14px) saturate(140%);border-color:rgba(34,211,238,.16)!important}
     .app-header-title{background:linear-gradient(135deg,#67e8f9,#f472b6,#22d3ee)!important;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
     .tab-btn.active,.mr-tab.active{color:var(--cyan2)!important;border-bottom-color:var(--cyan)!important}
@@ -989,7 +995,7 @@
 
 
 </head>
-<body>
+<body class="mr-locked">
   <div class="neo-grid" aria-hidden="true"></div>
 
   <!-- LICENSE SCREEN -->

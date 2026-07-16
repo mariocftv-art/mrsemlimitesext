@@ -79,8 +79,10 @@ const statusMeta: Record<ExtensionStatus, { label: string; dot: string; color: s
 };
 
 import ext2ZipAsset from "../../public/MR Sem Limites EXT2.zip.asset.json";
+import ext3ZipAsset from "../../public/MR Sem Limites EXT3.zip.asset.json";
 const EXT1_ZIP_URL = "/MR%20Sem%20Limites%20EXT1.zip";
 const EXT2_ZIP_URL = (ext2ZipAsset as { url: string }).url;
+const EXT3_ZIP_URL = (ext3ZipAsset as { url: string }).url;
 
 type Filter = "all" | ExtensionStatus;
 type Sort = "name" | "version" | "updated" | "status";
@@ -208,9 +210,30 @@ function ExtensionsPage() {
           </CardContent>
         </Card>
 
+      <Card className="glass mb-4 border-primary/40">
+          <CardContent className="flex flex-col gap-3 p-4 md:flex-row md:items-center md:justify-between">
+            <div className="space-y-1">
+              <p className="text-sm font-semibold">EXT3 Download — Neo-Core Orbe IA</p>
+              <p className="text-xs text-muted-foreground">
+                Cópia da EXT2 com novo painel Neo-Core: relógio, timer de trabalho decrescente, Orbe IA interativa por voz. Mesma licença da EXT2.
+              </p>
+            </div>
+            <Button
+              className="gap-1.5 md:w-auto"
+              onClick={() => {
+                downloadZip(EXT3_ZIP_URL, "MR Sem Limites EXT3.zip");
+                toast.success("Download da EXT3 iniciado.");
+              }}
+            >
+              <Download className="h-4 w-4" /> EXT3 Download
+            </Button>
+          </CardContent>
+        </Card>
+
 
       <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex flex-wrap gap-1.5">
+
           {(["all", "production", "development", "testing", "archived"] as Filter[]).map((f) => (
             <Button
               key={f}

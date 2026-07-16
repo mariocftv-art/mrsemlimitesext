@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "MR Sem Limites",
+  "name": "Mr Sem Limite Ext 2",
   "version": "2.1.0",
-  "description": "MR Sem Limites Reformulada 2.1 — Central premium de produtividade, animações, componentes, prompts e ferramentas.",
+  "description": "Mr Sem Limite Ext 2 — Painel neon com todos os recursos: Chat, IAs, Componentes, Animações, Templates, Prompts, Ferramentas e comando de voz.",
   "permissions": [
     "storage",
     "cookies",
@@ -62,7 +62,7 @@
     }
   ],
   "action": {
-    "default_title": "MR Sem Limites",
+    "default_title": "Mr Sem Limite Ext 2",
     "default_icon": {
       "16": "icons/icon16.png",
       "32": "icons/icon32.png",

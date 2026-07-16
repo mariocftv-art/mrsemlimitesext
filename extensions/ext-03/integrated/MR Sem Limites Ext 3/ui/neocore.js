@@ -292,17 +292,31 @@
       else setOrbState('listen', 'LISTENING', 'Fale seu comando');
       beep(660, 0.12);
     };
-    recognition.onerror = (ev) => {
+    recognition.onerror = async (ev) => {
       recognizing = false;
       cmdMic?.classList.remove('active');
       const err = ev?.error || '';
       if (err === 'not-allowed' || err === 'service-not-allowed') {
+        // Verifica de verdade se o navegador permite antes de bloquear
+        let granted = false;
+        try {
+          const p = await navigator.permissions.query({ name: 'microphone' });
+          granted = p.state === 'granted';
+        } catch (_) {}
+        if (granted) {
+          // Falso positivo — tenta reiniciar sem bloquear
+          if (!intoInput && orb?.dataset.mode === 'on') {
+            setTimeout(() => { if (orb?.dataset.mode === 'on') startRecognition(false); }, 400);
+            return;
+          }
+          if (!intoInput) setOrbState('listen', 'LISTENING', 'Fale seu comando');
+          return;
+        }
         setOrbState('idle', 'MIC BLOQUEADO', 'Permita o microfone e tente novamente');
         if (orb) orb.dataset.mode = 'off';
         return;
       }
       if (err === 'no-speech' || err === 'aborted') {
-        // Continua ouvindo se estiver em modo conversa
         if (!intoInput && orb?.dataset.mode === 'on') {
           setTimeout(() => { if (orb?.dataset.mode === 'on') startRecognition(false); }, 300);
           return;

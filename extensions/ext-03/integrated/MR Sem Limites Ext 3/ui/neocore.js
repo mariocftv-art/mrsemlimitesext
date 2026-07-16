@@ -377,7 +377,7 @@
 
   const sendToLovableFromVoice = () => sendPromptRaw(buildPromptFromConversation());
 
-  function handleSpokenText(text) {
+  async function handleSpokenText(text) {
     const rawText = String(text || '').trim();
     const cleanText = normalizeSpeechText(stripWakeWords(rawText));
     if (!cleanText && hasWakeWord(rawText)) {
@@ -427,20 +427,23 @@
       return;
     }
 
-    // 4) CONVERSA — resposta local imediata. O Lovable só recebe algo quando
-    //    o usuário disser explicitamente "pode enviar".
+    // 4) CONVERSA — manda a pergunta pro Lovable em modo conversa (usando a IA
+    //    selecionada: Claude/GPT/Gemini) e lê a resposta. Nada é executado
+    //    no painel até o usuário dizer "pode enviar".
     conversation.push({ who: 'u', text: finalText });
-    setOrbState('think', 'PENSANDO', 'Já respondo');
-    setTimeout(() => {
+    setOrbState('think', 'PENSANDO', 'Consultando a IA');
+    try {
+      await startConversationTurn(finalText);
+    } catch (e) {
       const pontos = conversation.filter((c) => c.who === 'u' && !hasTrigger(c.text) && !hasAny(c.text, CLEAR_CMDS) && !hasAny(c.text, SUMMARY_CMDS)).length;
-      const reply = buildConversationalReply(finalText, pontos);
-      conversation.push({ who: 'a', text: reply });
-      logMsg('a', reply);
+      const fallback = buildConversationalReply(finalText, pontos);
+      conversation.push({ who: 'a', text: fallback });
+      logMsg('a', fallback);
       setOrbState('speak', 'RESPONDENDO', 'Falando com você');
-      speak(reply, () => {
+      speak(fallback, () => {
         if (orb?.dataset.mode === 'on' && !recognizing) startRecognition(false);
       });
-    }, 450);
+    }
   }
 
   async function startConversationTurn(userText) {

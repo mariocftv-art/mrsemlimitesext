@@ -91,12 +91,32 @@ async function ensureVoiceOffscreen() {
   }
 }
 
+async function startVoiceInLovableTab(msg) {
+  try {
+    const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+    const tab = tabs?.[0];
+    if (!tab?.id || !/^https:\/\/lovable\.dev\//i.test(tab.url || '')) return false;
+    const response = await chrome.tabs.sendMessage(tab.id, {
+      type: 'VOICE_START_TAB',
+      lang: msg.lang || 'pt-BR',
+      existingText: msg.existingText || ''
+    });
+    return !!response?.ok;
+  } catch (e) {
+    console.warn('[MRSL] Voz pela aba Lovable indisponível:', e?.message || e);
+    return false;
+  }
+}
+
 chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
   if (msg?.target === 'offscreen') return false;
   
   if (msg.type === 'VOICE_START') {
     (async () => {
       try {
+        const tabStarted = await startVoiceInLovableTab(msg);
+        if (tabStarted) return;
+
         const ok = await ensureVoiceOffscreen();
         if (!ok) {
           chrome.runtime.sendMessage({ type: 'VOICE_ERROR', error: 'not-supported' }).catch(() => {});

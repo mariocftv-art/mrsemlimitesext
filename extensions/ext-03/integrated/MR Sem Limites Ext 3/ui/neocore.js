@@ -269,6 +269,12 @@
     if (!silent && orb?.dataset.mode !== 'on') setOrbState('idle', 'STANDBY', 'Clique na Orbe para ativar');
   }
 
+  function listenAfterSpeech() {
+    speak('Modo conversa ativo. Pode falar agora.', () => {
+      if (orb?.dataset.mode === 'on') startRecognition(false);
+    });
+  }
+
   function getIaDirective() {
     try {
       const pick = JSON.parse(localStorage.getItem(IA_PICK_KEY) || 'null');
@@ -334,9 +340,10 @@
     }
     const reply = 'Comando recebido. Enviando para o Lovable.';
     logMsg('a', reply);
+    speak(reply);
     sendPromptRaw(`${getIaDirective()}${finalText}`).finally(() => {
       if (orb?.dataset.mode === 'on') {
-        setTimeout(() => { if (orb?.dataset.mode === 'on' && !recognizing) startRecognition(false); }, 900);
+        setTimeout(() => { if (orb?.dataset.mode === 'on' && !recognizing) startRecognition(false); }, 1600);
       }
     });
   }
@@ -514,11 +521,10 @@
     orb.dataset.mode = 'on';
     conversation = [];
     if (voiceLog) { voiceLog.innerHTML = ''; voiceLog.classList.remove('show'); }
-    const msg = 'Modo conversa ativo. Pode falar.';
+    const msg = 'Modo conversa ativo. Pode falar agora.';
     logMsg('a', msg);
     setOrbState('listen', 'LISTENING', 'Fale seu comando');
-    // Não fala por cima do microfone: mostra o status e já começa a ouvir.
-    startRecognition(false);
+    listenAfterSpeech();
   });
 
   // Command bar

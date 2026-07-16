@@ -1910,6 +1910,40 @@ async function sendDirectLovableMessage(messageText) {
 
 window.sendDirectLovableMessage = sendDirectLovableMessage;
 
+// Envia uma mensagem para o Lovable e aguarda a resposta do assistente
+// aparecer no chat. Usado pela Orbe no MODO CONVERSA para trocar ideias
+// com a IA escolhida no ia-picker antes de mandar o prompt final.
+async function sendAndReadLovableReply(messageText, opts = {}) {
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  if (!tab?.id || !/lovable\.dev|lovableproject\.com/.test(tab.url || '')) {
+    throw new Error('Abra um projeto Lovable na aba ativa primeiro.');
+  }
+  const sendResp = await new Promise((resolve) => {
+    try {
+      chrome.tabs.sendMessage(tab.id, { type: 'TYPE_AND_SEND_IN_LOVABLE', text: messageText }, (r) => {
+        void chrome.runtime.lastError;
+        resolve(r || { ok: false, error: 'sem resposta do content script' });
+      });
+    } catch (e) { resolve({ ok: false, error: e?.message || String(e) }); }
+  });
+  if (!sendResp?.ok) throw new Error(sendResp?.error || 'Falha ao enviar mensagem.');
+
+  const marker = String(messageText).trim().slice(0, 60);
+  const readResp = await new Promise((resolve) => {
+    try {
+      chrome.tabs.sendMessage(tab.id, {
+        type: 'READ_LOVABLE_LAST_REPLY',
+        sentText: marker,
+        timeoutMs: opts.timeoutMs || 90000,
+        stableMs: opts.stableMs || 3000,
+      }, (r) => { void chrome.runtime.lastError; resolve(r || { ok: false, error: 'sem resposta' }); });
+    } catch (e) { resolve({ ok: false, error: e?.message || String(e) }); }
+  });
+  if (!readResp?.ok && !readResp?.reply) throw new Error(readResp?.error || 'Não consegui ler a resposta.');
+  return String(readResp.reply || '').trim();
+}
+window.sendAndReadLovableReply = sendAndReadLovableReply;
+
 document.addEventListener('DOMContentLoaded', async () => {
   const activateBtn = document.getElementById('activateBtn');
   const licenseInput = document.getElementById('licenseKey');

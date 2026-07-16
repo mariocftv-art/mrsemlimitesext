@@ -275,22 +275,29 @@
   });
 
   // ---------------- Microfone ----------------
-  let rec = null, recActive = false;
-  micBtn.addEventListener('click', () => {
+  let rec = null, recActive = false, micGranted = false;
+
+  function openMicPermissionTab() {
+    try {
+      const url = chrome?.runtime?.getURL ? chrome.runtime.getURL('permission.html') : 'permission.html';
+      if (chrome?.tabs?.create) chrome.tabs.create({ url });
+      else window.open(url, '_blank');
+    } catch (_) {}
+  }
+
+  function startSR() {
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SR) { alert('Reconhecimento de voz indisponível neste navegador.'); return; }
-    if (recActive) { try { rec.stop(); } catch (_) {} return; }
+    try { rec && rec.abort(); } catch (_) {}
     rec = new SR();
     rec.lang = 'pt-BR'; rec.interimResults = false; rec.continuous = false;
     rec.onstart = () => { recActive = true; micBtn.classList.add('active'); };
     rec.onend = () => { recActive = false; micBtn.classList.remove('active'); };
-    rec.onerror = async (ev) => {
+    rec.onerror = (ev) => {
       recActive = false; micBtn.classList.remove('active');
       if (ev?.error === 'not-allowed' || ev?.error === 'service-not-allowed') {
-        try {
-          const p = await navigator.permissions.query({ name: 'microphone' });
-          if (p.state !== 'granted') alert('Permita o microfone para o site em: chrome://settings/content/microphone');
-        } catch (_) {}
+        micGranted = false;
+        openMicPermissionTab();
       }
     };
     rec.onresult = (ev) => {
@@ -300,6 +307,25 @@
       input.focus();
     };
     try { rec.start(); } catch (_) {}
+  }
+
+  micBtn.addEventListener('click', async () => {
+    if (recActive) { try { rec.stop(); } catch (_) {} return; }
+    // Garante permissão de mic no ORIGEM da extensão (sidepanel).
+    // Sem isso, o SpeechRecognition dispara "not-allowed" mesmo com o mic
+    // liberado no sistema operacional.
+    if (!micGranted) {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        stream.getTracks().forEach(t => t.stop());
+        micGranted = true;
+      } catch (err) {
+        micGranted = false;
+        openMicPermissionTab();
+        return;
+      }
+    }
+    startSR();
   });
 
   // ---------------- Visibilidade: some quando a home overlay está visível ----------------

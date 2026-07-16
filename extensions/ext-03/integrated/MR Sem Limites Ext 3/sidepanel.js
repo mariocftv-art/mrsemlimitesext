@@ -1450,25 +1450,87 @@ function initDirectChat() {
   // Logout
   logoutBtn?.addEventListener('click', () => callCommand('license.logout', {}));
 
-  // ========== VOICE TO TEXT (via Offscreen Document) ==========
+  // ========== VOICE TO TEXT (direto no clique, sem bridge assíncrono) ==========
   const micBtn = document.getElementById('micBtn');
   if (micBtn) {
     let _voiceRecording = false;
+    let _voiceRecognition = null;
+    let _voiceBaseText = '';
+
+    const stopNativeVoice = () => {
+      try { _voiceRecognition && _voiceRecognition.stop(); } catch (_) {}
+      _voiceRecognition = null;
+      _voiceRecording = false;
+      micBtn.classList.remove('recording');
+    };
+
+    const writeVoiceText = (text) => {
+      if (!messageEl) return;
+      messageEl.value = text || '';
+      messageEl.dispatchEvent(new Event('input', { bubbles: true }));
+      messageEl.style.height = 'auto';
+      messageEl.style.height = Math.min(messageEl.scrollHeight, 300) + 'px';
+    };
 
     micBtn.addEventListener('click', () => {
       if (_voiceRecording) {
-        chrome.runtime.sendMessage({ type: 'VOICE_STOP' }, () => void chrome.runtime.lastError);
-        _voiceRecording = false;
-        micBtn.classList.remove('recording');
+        stopNativeVoice();
         updateStatus('');
       } else {
+        const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SR) {
+          updateStatus('❌ Navegador não suporta reconhecimento de voz');
+          return;
+        }
+
+        try { _voiceRecognition && _voiceRecognition.abort(); } catch (_) {}
+        _voiceBaseText = (messageEl?.value || '').trim();
+        _voiceRecognition = new SR();
+        _voiceRecognition.lang = 'pt-BR';
+        _voiceRecognition.continuous = false;
+        _voiceRecognition.interimResults = true;
+
+        _voiceRecognition.onstart = () => {
+          _voiceRecording = true;
+          micBtn.classList.add('recording');
+          updateStatus('🎤 Ouvindo... fale agora');
+        };
+
+        _voiceRecognition.onresult = (event) => {
+          let transcript = '';
+          for (let i = 0; i < event.results.length; i++) {
+            transcript += event.results[i][0].transcript;
+          }
+          const nextText = [_voiceBaseText, transcript.trim()].filter(Boolean).join(' ');
+          writeVoiceText(nextText);
+          messageEl?.focus();
+        };
+
+        _voiceRecognition.onerror = (event) => {
+          stopNativeVoice();
+          const errMap = {
+            'not-allowed': '🎤 Microfone sem acesso. Permita no Chrome e tente novamente.',
+            'service-not-allowed': '🎤 Microfone bloqueado pelo Chrome. Permita no site/extensão.',
+            'no-speech': '⚠️ Nenhuma fala detectada. Tente novamente.',
+            'audio-capture': '❌ Microfone não encontrado',
+            'not-supported': '❌ Navegador não suporta reconhecimento de voz',
+          };
+          updateStatus(errMap[event?.error] || '❌ Erro: ' + (event?.error || 'voz'));
+        };
+
+        _voiceRecognition.onend = () => {
+          _voiceRecording = false;
+          micBtn.classList.remove('recording');
+          updateStatus(messageEl?.value?.trim() ? '✅ Texto transcrito' : '');
+          messageEl?.focus();
+        };
+
         updateStatus('🎤 Iniciando...');
         micBtn.classList.add('recording');
-        chrome.runtime.sendMessage({
-          type: 'VOICE_START',
-          lang: 'pt-BR',
-          existingText: messageEl?.value || ''
-        }, () => void chrome.runtime.lastError);
+        try { _voiceRecognition.start(); } catch (e) {
+          stopNativeVoice();
+          updateStatus('❌ Erro ao iniciar microfone');
+        }
       }
     });
 

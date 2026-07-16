@@ -124,6 +124,14 @@
       display:inline-flex; align-items:center; gap:6px; font-weight:600; }
     .mr-neon-hist-item .time::after { content:""; width:6px; height:6px; border-radius:50%;
       background:#4bd6ff; box-shadow:0 0 6px #4bd6ff; }
+
+    /* Remove os ícones antigos/colunas laterais do vídeo antigo */
+    #mainApp .mr-tabs { display:none !important; }
+    #mainApp .mr-body { display:flex !important; }
+    #mainApp .mr-panel.active { flex:1 1 auto !important; min-width:0 !important; }
+    #mainApp .mr-panel[data-mrpanel="chat"] { flex-direction:column !important; }
+    #mainApp .mr-left-tree { display:none !important; }
+    #mainApp .mr-chat-right { flex:1 1 auto !important; height:100% !important; }
   `;
 
   const style = document.createElement('style');
@@ -217,37 +225,12 @@
   setInterval(syncBadges, 3000);
 
   /* ==============================
-   *  Fix STANDBY: garantir permissão do microfone antes do reconhecimento
+   *  Fix STANDBY: sem getUserMedia assíncrono antes do reconhecimento.
+   *  O neocore inicia SpeechRecognition direto no clique do usuário.
    * ============================== */
   const orb = document.getElementById('ncOrb');
   if (orb) {
     orb.style.pointerEvents = 'auto';
-    // Handler em CAPTURA para pedir mic ANTES do neocore iniciar o reconhecimento.
-    // Se falhar, avisa o usuário claramente em vez de "bloquear silencioso".
-    let micRequested = false;
-    orb.addEventListener('click', async () => {
-      if (micRequested) return;
-      if (orb.dataset.mode === 'on') return; // já ativa
-      micRequested = true;
-      try {
-        if (navigator.mediaDevices?.getUserMedia) {
-          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-          stream.getTracks().forEach(t => t.stop());
-        }
-      } catch (err) {
-        const name = err?.name || '';
-        const status = document.getElementById('ncOrbStatus');
-        if (status) {
-          if (name === 'NotAllowedError') status.textContent = 'Permita o microfone no navegador e toque de novo';
-          else if (name === 'NotFoundError') status.textContent = 'Nenhum microfone encontrado';
-          else if (name === 'NotReadableError') status.textContent = 'Microfone em uso por outro app';
-          else status.textContent = 'Falha ao acessar microfone';
-        }
-      } finally {
-        // Permite pedir de novo se o usuário desligar e reativar
-        setTimeout(() => { micRequested = false; }, 3000);
-      }
-    }, true);
   }
 
   /* ==============================

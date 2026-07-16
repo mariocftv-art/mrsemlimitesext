@@ -759,10 +759,16 @@
             // Encontrar textarea do chat do Lovable
             const findInput = () => {
               const sels = [
+                '[data-testid*="chat" i] textarea',
+                '[data-testid*="composer" i] textarea',
                 'textarea[placeholder*="adorável" i]',
                 'textarea[placeholder*="Pergunte" i]',
+                'textarea[placeholder*="Ask" i]',
+                'textarea[placeholder*="message" i]',
                 'form textarea',
                 'textarea',
+                'div[role="textbox"]',
+                '[contenteditable="plaintext-only"]',
                 '[contenteditable="true"]',
               ];
               for (const s of sels) {
@@ -833,9 +839,22 @@
                 el.dispatchEvent(new Event('input', { bubbles: true }));
                 el.dispatchEvent(new Event('change', { bubbles: true }));
               } else {
-                // contenteditable
-                el.innerText = text;
+                // contenteditable / ProseMirror: inserir como digitação real para o React perceber.
+                try {
+                  const sel = window.getSelection();
+                  const range = document.createRange();
+                  range.selectNodeContents(el);
+                  range.collapse(false);
+                  sel.removeAllRanges();
+                  sel.addRange(range);
+                  document.execCommand('selectAll', false, null);
+                  document.execCommand('insertText', false, text);
+                } catch (_) {
+                  el.textContent = text;
+                }
+                el.dispatchEvent(new InputEvent('beforeinput', { bubbles: true, cancelable: true, inputType: 'insertText', data: text }));
                 el.dispatchEvent(new InputEvent('input', { bubbles: true, inputType: 'insertText', data: text }));
+                el.dispatchEvent(new Event('change', { bubbles: true }));
               }
             }
 
@@ -851,6 +870,9 @@
               if (cand) return cand;
               // 2) aria-label enviar/send
               cand = btns.find(b => /enviar|send/i.test((b.getAttribute('aria-label') || '') + ' ' + (b.textContent || '')));
+              if (cand) return cand;
+              // 2.5) botões próximos ao composer com title/data-testid de envio
+              cand = btns.find(b => /send|submit|enviar|arrow/i.test((b.getAttribute('title') || '') + ' ' + (b.getAttribute('data-testid') || '') + ' ' + (b.className || '')));
               if (cand) return cand;
               // 3) botão que contém svg de "arrow-up" / "send"
               cand = btns.find(b => {
@@ -895,6 +917,12 @@
             const stillHasText = (el.value ?? el.innerText ?? '').trim().length > 0;
             if (stillHasText) {
               if (!tryRequestSubmit()) tryEnter();
+            }
+            await new Promise(r => setTimeout(r, 500));
+            const textAfterRetry = (el.value ?? el.innerText ?? el.textContent ?? '').trim();
+            if (textAfterRetry.length > 0 && (!btn || btn.disabled || btn.getAttribute('aria-disabled') === 'true')) {
+              sendResponse({ ok: false, error: 'texto digitado, mas botão Enviar não habilitou no Lovable' });
+              return;
             }
             sendResponse({ ok: true, via });
           } catch (e) {

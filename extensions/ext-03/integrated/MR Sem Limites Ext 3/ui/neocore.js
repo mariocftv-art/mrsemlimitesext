@@ -214,8 +214,17 @@
     } catch (_) { setTimeout(finish, 400); }
   }
 
-  const TRIGGERS = ['enviar para o lovable','manda pro lovable','manda para o lovable','envia pro lovable','executa','executar','pode enviar','manda ai','manda aí','envia agora'];
+  const TRIGGERS = ['enviar para o lovable','manda pro lovable','manda para o lovable','envia pro lovable','executa','executar','pode enviar','manda ai','manda aí','envia agora','responde','responder','manda','enviar'];
   const hasTrigger = (t) => TRIGGERS.some((k) => String(t || '').toLowerCase().includes(k));
+  const WAKE_WORDS = ['standby', 'stand by', 'ativar ia', 'ativa ia', 'orbe', 'mr'];
+  const hasWakeWord = (t) => WAKE_WORDS.some((k) => String(t || '').toLowerCase().includes(k));
+  const stripWakeWords = (t) => {
+    let out = String(t || '').trim();
+    WAKE_WORDS.forEach((k) => {
+      out = out.replace(new RegExp(`(^|\\s)${k.replace(/\s+/g, '\\s+')}(?=\\s|,|:|-|$)`, 'ig'), ' ');
+    });
+    return out.replace(/^[\s,.:;-]+|[\s,.:;-]+$/g, '').replace(/\s{2,}/g, ' ').trim();
+  };
 
   function canUseExtensionVoiceBridge() {
     return !!(window.chrome?.runtime?.sendMessage);
@@ -274,9 +283,20 @@
   const sendToLovableFromVoice = () => sendPromptRaw(buildPromptFromConversation());
 
   function handleSpokenText(text) {
-    logMsg('u', text);
-    conversation.push({ who: 'u', text });
-    if (hasTrigger(text)) {
+    const rawText = String(text || '').trim();
+    const cleanText = stripWakeWords(rawText);
+    if (!cleanText && hasWakeWord(rawText)) {
+      const reply = 'Estou ouvindo. Fale o comando agora.';
+      logMsg('a', reply);
+      setOrbState('listen', 'LISTENING', 'Fale seu comando');
+      setTimeout(() => { if (orb?.dataset.mode === 'on') startRecognition(false); }, 350);
+      return;
+    }
+
+    const finalText = cleanText || rawText;
+    logMsg('u', finalText);
+    conversation.push({ who: 'u', text: finalText });
+    if (hasTrigger(finalText)) {
       const msg = 'Perfeito, enviando o plano para o Lovable agora.';
       setOrbState('think', 'WORKING', 'Sending command');
       logMsg('a', msg);
@@ -284,43 +304,20 @@
       setTimeout(sendToLovableFromVoice, 400);
       return;
     }
-    const reply = 'Anotado. Pode continuar falando, ou diga "enviar para o Lovable" quando estiver pronto.';
-    setOrbState('listen', 'LISTENING', 'Fale seu comando');
+    const reply = 'Comando recebido. Enviando para o Lovable.';
     logMsg('a', reply);
-    if (orb?.dataset.mode === 'on') {
-      setTimeout(() => { if (orb?.dataset.mode === 'on') startRecognition(false); }, 450);
-    }
+    sendPromptRaw(`${getIaDirective()}${finalText}`).finally(() => {
+      if (orb?.dataset.mode === 'on') {
+        setTimeout(() => { if (orb?.dataset.mode === 'on' && !recognizing) startRecognition(false); }, 900);
+      }
+    });
   }
 
   function startRecognition(intoInput) {
     if (recognizing) { stopRecognition(true); return; }
     voiceMode = intoInput ? 'input' : 'orb';
     voiceText = '';
-
-    if (canUseExtensionVoiceBridge()) {
-      bridgeVoice = true;
-      recognizing = true;
-      if (intoInput) cmdMic?.classList.add('active');
-      else setOrbState('listen', 'LISTENING', 'Fale seu comando');
-      beep(660, 0.12);
-      try {
-        chrome.runtime.sendMessage({
-          type: 'VOICE_START',
-          lang: 'pt-BR',
-          existingText: intoInput ? (cmdInput?.value || '') : '',
-        }, () => {
-          if (!chrome.runtime.lastError) return;
-          bridgeVoice = false;
-          recognizing = false;
-          startLocalRecognition(intoInput);
-        });
-      } catch (_) {
-        bridgeVoice = false;
-        recognizing = false;
-        startLocalRecognition(intoInput);
-      }
-      return;
-    }
+    bridgeVoice = false;
     startLocalRecognition(intoInput);
   }
 
@@ -389,6 +386,7 @@
       if (!text) return;
       if (intoInput && cmdInput) {
         cmdInput.value = cmdInput.value ? `${cmdInput.value} ${text}` : text;
+        cmdInput.dispatchEvent(new Event('input', { bubbles: true }));
         cmdInput.focus();
       } else {
         handleSpokenText(text);

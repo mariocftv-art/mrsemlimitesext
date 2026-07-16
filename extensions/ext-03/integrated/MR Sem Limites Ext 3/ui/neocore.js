@@ -230,6 +230,29 @@
     return !!(window.chrome?.runtime?.sendMessage);
   }
 
+  function startBridgeRecognition(intoInput) {
+    if (!canUseExtensionVoiceBridge()) return false;
+    bridgeVoice = true;
+    voiceMode = intoInput ? 'input' : 'orb';
+    voiceText = '';
+    recognizing = true;
+    if (intoInput) cmdMic?.classList.add('active');
+    else setOrbState('listen', 'LISTENING', 'Fale seu comando');
+    try {
+      chrome.runtime.sendMessage({
+        type: 'VOICE_START',
+        lang: 'pt-BR',
+        existingText: intoInput ? (cmdInput?.value || '') : ''
+      }, () => void chrome.runtime.lastError);
+      return true;
+    } catch (_) {
+      bridgeVoice = false;
+      recognizing = false;
+      cmdMic?.classList.remove('active');
+      return false;
+    }
+  }
+
   function stopRecognition(silent) {
     clearTimeout(voiceTimer);
     voiceTimer = null;
@@ -259,23 +282,28 @@
   }
 
   async function sendPromptRaw(promptText) {
-    if (!promptText || !promptText.trim()) { alert('Digite ou fale um comando primeiro.'); return; }
+    const cleanPrompt = String(promptText || '').trim();
+    if (!cleanPrompt) { alert('Digite ou fale um comando primeiro.'); return; }
     // NÃO esconder a home — envia o comando em background e mantém o painel MR visível.
     setOrbState('think', 'WORKING', 'Sending command');
+    try { window.mrPromptHistory?.push(cleanPrompt, 'orb'); } catch (_) {}
+    try { window.mrAppendPromptToChat?.(cleanPrompt, 'user'); } catch (_) {}
     try {
       if (typeof window.sendDirectLovableMessage === 'function') {
-        await window.sendDirectLovableMessage(promptText);
+        await window.sendDirectLovableMessage(cleanPrompt);
       } else {
         const message = document.getElementById('message');
         const sendBtn = document.getElementById('sendBtn');
         if (!message || !sendBtn) throw new Error('Painel de chat indisponível.');
-        message.value = promptText;
+        message.value = cleanPrompt;
         message.dispatchEvent(new Event('input', { bubbles: true }));
         await new Promise((r) => setTimeout(r, 250));
         sendBtn.click();
       }
+      try { window.mrAppendPromptToChat?.('✅ Prompt enviado para o Lovable.', 'bot'); } catch (_) {}
       setOrbState('idle', 'ENVIADO', 'Comando executado');
     } catch (e) {
+      try { window.mrAppendPromptToChat?.('❌ ' + (e?.message || 'Falha ao enviar'), 'bot'); } catch (_) {}
       setOrbState('idle', 'ERRO', e?.message || 'Falha ao enviar');
     }
   }
@@ -324,6 +352,7 @@
   function startLocalRecognition(intoInput) {
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SR) {
+      if (startBridgeRecognition(intoInput)) return;
       if (intoInput && cmdInput) cmdInput.focus();
       else {
         const text = prompt('Reconhecimento de voz indisponível. Digite o comando para a Orbe:');
@@ -334,7 +363,8 @@
     }
     try { recognition && recognition.abort(); } catch (_) {}
     recognition = new SR();
-    recognition.lang = 'pt-BR'; recognition.interimResults = false; recognition.continuous = false;
+    let heardText = '';
+    recognition.lang = 'pt-BR'; recognition.interimResults = true; recognition.continuous = false;
     recognition.onstart = () => {
       recognizing = true;
       if (intoInput) { cmdMic?.classList.add('active'); }
@@ -347,18 +377,15 @@
       const err = ev?.error || '';
       if (err === 'not-allowed' || err === 'service-not-allowed') {
         // Verifica de verdade se o navegador permite antes de bloquear
-        let granted = false;
+        let state = 'unknown';
         try {
           const p = await navigator.permissions.query({ name: 'microphone' });
-          granted = p.state === 'granted';
+          state = p.state || 'unknown';
         } catch (_) {}
-        if (granted) {
-          // Falso positivo — tenta reiniciar sem bloquear
-          if (!intoInput && orb?.dataset.mode === 'on') {
-            setTimeout(() => { if (orb?.dataset.mode === 'on') startRecognition(false); }, 400);
-            return;
-          }
-          if (!intoInput) setOrbState('listen', 'LISTENING', 'Fale seu comando');
+        if (state !== 'denied') {
+          // Falso positivo comum em extension sidepanel: tenta pelo offscreen e nunca desliga a Orbe.
+          if (startBridgeRecognition(intoInput)) return;
+          if (!intoInput) setOrbState('listen', 'LISTENING', 'Toque novamente e fale');
           return;
         }
         setOrbState('idle', 'MIC OFF', 'Permita o microfone e toque novamente');
@@ -376,23 +403,32 @@
     recognition.onend = () => {
       recognizing = false;
       cmdMic?.classList.remove('active');
+      const finalHeard = heardText.trim();
+      if (finalHeard) {
+        if (intoInput && cmdInput) {
+          cmdInput.value = cmdInput.value ? `${cmdInput.value} ${finalHeard}` : finalHeard;
+          cmdInput.dispatchEvent(new Event('input', { bubbles: true }));
+          cmdInput.focus();
+        } else {
+          handleSpokenText(finalHeard);
+        }
+        return;
+      }
       if (!intoInput && orb?.dataset.mode === 'on') {
         // Auto-reinicia enquanto o modo conversa estiver ativo
         setTimeout(() => { if (orb?.dataset.mode === 'on') startRecognition(false); }, 250);
       }
     };
     recognition.onresult = (ev) => {
-      const text = ev.results?.[0]?.[0]?.transcript || '';
-      if (!text) return;
-      if (intoInput && cmdInput) {
-        cmdInput.value = cmdInput.value ? `${cmdInput.value} ${text}` : text;
-        cmdInput.dispatchEvent(new Event('input', { bubbles: true }));
-        cmdInput.focus();
-      } else {
-        handleSpokenText(text);
+      let text = '';
+      for (let i = ev.resultIndex || 0; i < (ev.results?.length || 0); i++) {
+        text += ev.results[i]?.[0]?.transcript || '';
       }
+      heardText = text.trim() || heardText;
+      if (!text) return;
     };
     try { recognition.start(); } catch (_) {
+      if (startBridgeRecognition(intoInput)) return;
       // Se start falhar (ex.: já iniciado), tenta novamente em breve
       setTimeout(() => { try { recognition.start(); } catch (_) {} }, 250);
     }
@@ -451,6 +487,10 @@
         if (/Abra o lovable|primeiro/i.test(err)) {
           setOrbState('idle', 'ABRA O LOVABLE', 'Deixe um projeto Lovable aberto');
           if (orb) orb.dataset.mode = 'off';
+          return;
+        }
+        if (/not-allowed|service-not-allowed/i.test(err)) {
+          setOrbState('listen', 'LISTENING', 'Microfone liberado? toque novamente');
           return;
         }
         setOrbState('idle', 'MIC OFF', 'Permita o microfone e toque novamente');
@@ -552,6 +592,8 @@
   function pushHistory(text, source) {
     const clean = String(text || '').trim();
     if (!clean) return;
+    const last = historyCache[0];
+    if (last?.text === clean && Date.now() - (last.ts || 0) < 2500) return;
     historyCache.unshift({ text: clean, source: source || 'chat', ts: Date.now() });
     if (historyCache.length > HIST_MAX) historyCache.length = HIST_MAX;
     saveHistory();

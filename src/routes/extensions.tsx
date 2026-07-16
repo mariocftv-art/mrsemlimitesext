@@ -190,12 +190,6 @@ function ExtensionsPage() {
                 Baixe o ZIP, descompacte e no Chrome use “Carregar sem compactação” na pasta interna “MR Sem Limites EXT1”, onde está o manifest.json.
               </p>
             </div>
-            <Button className="gap-1.5 md:w-auto" onClick={downloadExt1}>
-              <Download className="h-4 w-4" /> EXT1 Download
-            </Button>
-          </CardContent>
-        </Card>
-
             <div className="flex flex-col gap-2 md:flex-row md:w-auto">
               <Button className="gap-1.5 md:w-auto" onClick={downloadExt1}>
                 <Download className="h-4 w-4" /> EXT1 Download

@@ -739,6 +739,14 @@
       beep(440, 0.15);
       return;
     }
+    // Solicita permissão de mic no origem da extensão dentro do gesto de clique.
+    // Sem esse warmup o Web Speech dispara "not-allowed" mesmo com o mic
+    // liberado no sistema operacional.
+    const micOk = await ensureMicPermission();
+    if (!micOk) {
+      setOrbState('idle', 'MICROFONE', 'Permita o microfone na aba aberta');
+      return;
+    }
     orb.dataset.mode = 'on';
     conversation = [];
     if (voiceLog) { voiceLog.innerHTML = ''; voiceLog.classList.remove('show'); }

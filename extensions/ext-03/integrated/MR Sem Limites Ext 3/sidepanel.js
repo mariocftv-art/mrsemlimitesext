@@ -1207,6 +1207,7 @@ function initDirectChat() {
     callCommand('storage.set', { data: { history } });
     renderHistory();
   }
+  window.mrAppendPromptToChat = (text, role = 'user') => addMessage(role, String(text || ''));
 
   function renderHistory() {
     if (!historyEl) return;

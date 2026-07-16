@@ -379,11 +379,11 @@
 
   function handleSpokenText(text) {
     const rawText = String(text || '').trim();
-    const cleanText = stripWakeWords(rawText);
+    const cleanText = normalizeSpeechText(stripWakeWords(rawText));
     if (!cleanText && hasWakeWord(rawText)) {
-      const reply = 'Estou ouvindo. Fale o comando agora.';
+      const reply = 'Estou ouvindo. Pode falar.';
       logMsg('a', reply);
-      setOrbState('listen', 'LISTENING', 'Fale seu comando');
+      setOrbState('listen', 'OUVINDO', 'Fale agora');
       setTimeout(() => { if (orb?.dataset.mode === 'on') startRecognition(false); }, 350);
       return;
     }
@@ -421,23 +421,26 @@
         return;
       }
       const msg = 'Perfeito, enviando o plano para o Lovable agora.';
-      setOrbState('think', 'WORKING', 'Sending command');
+      setOrbState('think', 'ENVIANDO', 'Mandando o plano');
       logMsg('a', msg); speak(msg);
       setTimeout(sendToLovableFromVoice, 400);
       return;
     }
 
-    // 4) CONVERSA — manda para o Lovable em MODO CONVERSA (usando a IA
-    //    escolhida no ia-picker) e lê a resposta do assistente para falar
-    //    de volta. NÃO gera código nem executa nada até o usuário dizer
-    //    "pode enviar".
+    // 4) CONVERSA — resposta local imediata. O Lovable só recebe algo quando
+    //    o usuário disser explicitamente "pode enviar".
     conversation.push({ who: 'u', text: finalText });
-    setOrbState('think', 'THINKING', 'Consultando a IA...');
-    startConversationTurn(finalText).catch((e) => {
-      const err = 'Não consegui falar com a IA agora: ' + (e?.message || 'erro desconhecido');
-      logMsg('a', err); speak(err);
-      if (orb?.dataset.mode === 'on') setTimeout(() => { if (!recognizing) startRecognition(false); }, 1500);
-    });
+    setOrbState('think', 'PENSANDO', 'Já respondo');
+    setTimeout(() => {
+      const pontos = conversation.filter((c) => c.who === 'u' && !hasTrigger(c.text) && !hasAny(c.text, CLEAR_CMDS) && !hasAny(c.text, SUMMARY_CMDS)).length;
+      const reply = buildConversationalReply(finalText, pontos);
+      conversation.push({ who: 'a', text: reply });
+      logMsg('a', reply);
+      setOrbState('speak', 'RESPONDENDO', 'Falando com você');
+      speak(reply, () => {
+        if (orb?.dataset.mode === 'on' && !recognizing) startRecognition(false);
+      });
+    }, 450);
   }
 
   async function startConversationTurn(userText) {
@@ -488,17 +491,20 @@
   // até o usuário dizer "pode enviar". Não chama backend — usa heurística
   // leve para variar tom e sempre lembrar o comando de envio.
   function buildConversationalReply(userText, pontos) {
-    const t = String(userText || '').toLowerCase().trim();
-    const isQuestion = /\?$/.test(userText) || /^(o que|como|por que|porque|quando|onde|qual|quais|posso|dá pra|da pra|consegue|você|voce)\b/.test(t);
-    const acks = ['Entendi.', 'Anotado.', 'Perfeito.', 'Certo.', 'Beleza.', 'Ok.'];
-    const ack = acks[Math.floor(Math.random() * acks.length)];
-    const lembrete = pontos >= 3
-      ? `Já temos ${pontos} pontos no plano. Quer adicionar mais alguma coisa ou digo "pode enviar"?`
-      : 'Quer detalhar mais alguma coisa antes de eu mandar para o Lovable? Quando estiver pronto, é só dizer "pode enviar".';
-    if (isQuestion) {
-      return `${ack} Boa pergunta. Vou considerar isso no plano. ${lembrete}`;
-    }
-    return `${ack} Adicionei ao plano. ${lembrete}`;
+    const t = normalizeSpeechText(userText).toLowerCase().trim();
+    const isQuestion = /\?$/.test(userText) || /^(o que|como|por que|porque|quando|onde|qual|quais|posso|dá pra|da pra|consegue|você|voce|me fala|me explica)\b/.test(t);
+    const wantsIdeas = /ideia|ideias|formato|modelo|sugest|dúvida|duvida|o que dá|o que da|dá para montar|da para montar/.test(t);
+    const dashboard = /dashboard|painel|admin|sistema|métrica|metrica|kpi|licença|licenca|cliente|dispositivo|financeiro/.test(t);
+    const heardCheck = /tá me ouvindo|ta me ouvindo|me ouviu|entendeu|consegue me ouvir/.test(t);
+
+    if (heardCheck) return 'Estou te ouvindo sim. Fala sua ideia em partes que eu vou organizando; quando disser “pode enviar”, eu mando o plano.';
+    if (dashboard && wantsIdeas) return 'Dá para montar em três caminhos: visão executiva com KPIs, controle de clientes e licenças, ou financeiro com receita e alertas. Qual você quer priorizar?';
+    if (dashboard && isQuestion) return 'Para esse painel, eu começaria com KPIs no topo, clientes no meio e ações rápidas na lateral. Você quer visual premium ou simples e direto?';
+    if (wantsIdeas) return 'Tenho duas ideias boas: uma versão simples para validar rápido, ou uma versão premium com mais detalhes e automações. Qual estilo você prefere?';
+    if (/não entendi|nao entendi|explica|melhor/.test(t)) return 'Claro. Eu converso com você primeiro, organizo o plano e só envio quando você falar “pode enviar”.';
+    if (isQuestion) return 'Sim, dá para fazer. Me diga qual resultado final você quer ver na tela que eu transformo isso em um plano claro.';
+    if (pontos >= 3) return `Anotado. Já temos ${pontos} pontos no plano; se estiver bom, fale “pode enviar”.`;
+    return 'Anotado. Pode continuar falando que eu vou juntando tudo no plano.';
   }
 
   function startRecognition(intoInput) {

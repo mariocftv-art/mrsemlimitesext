@@ -937,6 +937,66 @@
         })();
         return true;
       }
+      if (msg?.type === 'READ_LOVABLE_LAST_REPLY') {
+        (async () => {
+          try {
+            const sentMarker = String(msg.sentText || '').trim().slice(0, 60);
+            const timeoutMs = Math.min(Number(msg.timeoutMs) || 90000, 180000);
+            const stableMs = Math.min(Number(msg.stableMs) || 3000, 15000);
+            const start = Date.now();
+
+            const findChatContainer = () => {
+              const candidates = Array.from(document.querySelectorAll('main, section, div, article'));
+              let best = null, bestScore = 0;
+              for (const el of candidates) {
+                const style = getComputedStyle(el);
+                if (style.overflowY !== 'auto' && style.overflowY !== 'scroll') continue;
+                if (el.scrollHeight <= el.clientHeight + 20) continue;
+                const txt = el.innerText || '';
+                if (sentMarker && !txt.includes(sentMarker)) continue;
+                if (el.scrollHeight > bestScore) { bestScore = el.scrollHeight; best = el; }
+              }
+              return best || document.querySelector('main') || document.body;
+            };
+
+            // Aguarda o texto enviado aparecer no DOM
+            let container = null;
+            for (let i = 0; i < 30; i++) {
+              container = findChatContainer();
+              const t = container?.innerText || '';
+              if (!sentMarker || t.includes(sentMarker)) break;
+              await new Promise(r => setTimeout(r, 500));
+            }
+            container = container || document.body;
+
+            const extractTail = () => {
+              const full = container.innerText || '';
+              const idx = sentMarker ? full.lastIndexOf(sentMarker) : -1;
+              const tail = idx >= 0 ? full.slice(idx + sentMarker.length) : full.slice(-6000);
+              // Limpa: remove linhas curtinhas de UI (botões, timestamps repetidos)
+              return tail.replace(/\s+/g, ' ').trim();
+            };
+
+            let lastLen = 0, lastText = '', stableStart = Date.now();
+            while (Date.now() - start < timeoutMs) {
+              const tail = extractTail();
+              if (tail.length !== lastLen) {
+                lastLen = tail.length;
+                lastText = tail;
+                stableStart = Date.now();
+              } else if (tail.length > 15 && Date.now() - stableStart >= stableMs) {
+                sendResponse({ ok: true, reply: lastText });
+                return;
+              }
+              await new Promise(r => setTimeout(r, 700));
+            }
+            sendResponse({ ok: !!lastText, reply: lastText, error: lastText ? undefined : 'timeout aguardando resposta' });
+          } catch (e) {
+            sendResponse({ ok: false, error: e?.message || String(e) });
+          }
+        })();
+        return true;
+      }
       if (msg?.type === 'SEND_TRY_TO_FIX') {
         handleSendTryToFix(msg).then(sendResponse);
         return true; 

@@ -1431,5 +1431,454 @@
   })();
   </script>
 
+  <!-- ============================================================= -->
+  <!-- EXT3 NEO-CORE HOME OVERLAY — Clock + Countdown Timer + AI Orb -->
+  <!-- Zero mudanças na lógica original: apenas overlay + skin       -->
+  <!-- ============================================================= -->
+  <style id="ext3-neocore-css">
+    :root{
+      --nc-bg:#05030d; --nc-panel:rgba(14,10,32,0.72);
+      --nc-pink:#ff3df6; --nc-blue:#22c1ff; --nc-violet:#8a3bff;
+      --nc-green:#3dffb0; --nc-red:#ff3d5c;
+      --nc-text:#eef2ff; --nc-mute:#8a8fb3;
+    }
+    body{background:#04020a !important;}
+    /* Global neon backdrop */
+    body::before{
+      content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
+      background:
+        radial-gradient(1000px 600px at 15% -10%, rgba(255,61,246,.18), transparent 60%),
+        radial-gradient(1200px 700px at 110% 10%, rgba(34,193,255,.16), transparent 55%),
+        radial-gradient(900px 900px at 50% 120%, rgba(138,59,255,.20), transparent 60%),
+        linear-gradient(180deg,#05030d 0%,#0a0620 50%,#04020a 100%);
+    }
+    #ext3-home{
+      position:fixed; inset:0; z-index:50; overflow-y:auto; overflow-x:hidden;
+      color:var(--nc-text); font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+      padding:14px 14px 20px;
+    }
+    #ext3-home.hidden{display:none;}
+    .nc-topbar{display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;}
+    .nc-iconbtn{
+      width:38px;height:38px;border-radius:10px;display:grid;place-items:center;cursor:pointer;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,61,246,.35);
+      color:#fff; font-size:18px; transition:.2s;
+    }
+    .nc-iconbtn:hover{border-color:var(--nc-pink); box-shadow:0 0 14px rgba(255,61,246,.5);}
+    .nc-logo{
+      text-align:center; margin:6px 0 14px;
+      font-family:'Orbitron','Space Grotesk',sans-serif; font-weight:900;
+      font-size:52px; letter-spacing:.08em; line-height:1;
+      color:transparent; -webkit-text-stroke:1.6px var(--nc-pink);
+      text-shadow:0 0 18px rgba(255,61,246,.75), 0 0 40px rgba(138,59,255,.5);
+    }
+    .nc-logo small{
+      display:block; margin-top:6px; font-size:11px; letter-spacing:.6em;
+      -webkit-text-stroke:0; color:#c9d3ff; text-shadow:0 0 8px rgba(34,193,255,.6);
+      font-weight:500;
+    }
+    .nc-cards{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px;}
+    .nc-card{
+      position:relative; padding:12px 14px; border-radius:16px;
+      background:linear-gradient(180deg, rgba(20,10,40,.85), rgba(10,6,25,.85));
+      border:1px solid rgba(255,61,246,.28);
+      box-shadow:0 0 22px rgba(255,61,246,.18), inset 0 0 24px rgba(138,59,255,.10);
+    }
+    .nc-card.blue{border-color:rgba(34,193,255,.4); box-shadow:0 0 22px rgba(34,193,255,.22), inset 0 0 24px rgba(34,193,255,.10);}
+    .nc-card-title{display:flex; align-items:center; gap:8px; font-size:11px; letter-spacing:.22em; color:#d8def5; margin-bottom:6px; text-transform:uppercase;}
+    .nc-card .big{font-family:'Orbitron',sans-serif; font-weight:800; font-size:30px; letter-spacing:.02em; color:#fff; text-shadow:0 0 14px rgba(255,255,255,.35);}
+    .nc-card.blue .big{color:#7ad9ff; text-shadow:0 0 14px rgba(34,193,255,.7);}
+    .nc-card .sub{font-size:11px; color:var(--nc-mute); margin-top:4px;}
+    .nc-card .sub b{color:#c9d3ff; font-weight:600;}
+
+    .nc-timer-presets{display:flex; gap:6px; margin-top:8px; flex-wrap:wrap;}
+    .nc-preset{
+      flex:1; min-width:0; padding:6px 4px; font-size:11px; border-radius:8px;
+      background:rgba(34,193,255,.08); border:1px solid rgba(34,193,255,.35);
+      color:#c9e9ff; cursor:pointer; transition:.15s;
+    }
+    .nc-preset:hover{background:rgba(34,193,255,.2); box-shadow:0 0 10px rgba(34,193,255,.5);}
+    .nc-preset.custom{background:rgba(255,61,246,.08); border-color:rgba(255,61,246,.35); color:#ffcbfa;}
+    .nc-timer-actions{display:flex; gap:6px; margin-top:6px;}
+    .nc-timer-actions button{
+      flex:1; padding:6px; font-size:11px; border-radius:8px; cursor:pointer;
+      background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.15); color:#fff;
+    }
+    .nc-timer-actions button.go{background:linear-gradient(135deg,#22c1ff,#8a3bff); border:none;}
+    .nc-timer-actions button.stop{background:rgba(255,61,92,.15); border-color:rgba(255,61,92,.4); color:#ffb6c1;}
+
+    .nc-main{display:grid; grid-template-columns:170px 1fr; gap:12px; margin-top:6px;}
+    .nc-sidebar{display:flex; flex-direction:column; gap:6px;
+      padding:10px 8px; border-radius:16px;
+      background:linear-gradient(180deg,rgba(15,8,35,.9),rgba(8,4,20,.9));
+      border:1px solid rgba(138,59,255,.28);
+      box-shadow:inset 0 0 20px rgba(138,59,255,.12);
+    }
+    .nc-nav{
+      display:flex; align-items:center; gap:10px; padding:9px 10px; border-radius:10px;
+      cursor:pointer; color:#c9d3ff; font-size:13px; font-weight:500; transition:.15s;
+      border:1px solid transparent;
+    }
+    .nc-nav:hover{background:rgba(255,61,246,.08); color:#fff;}
+    .nc-nav.active{
+      background:linear-gradient(135deg, rgba(138,59,255,.35), rgba(255,61,246,.25));
+      border-color:rgba(255,61,246,.6);
+      color:#fff; box-shadow:0 0 16px rgba(255,61,246,.4);
+    }
+    .nc-nav svg{width:16px;height:16px;flex-shrink:0;}
+
+    .nc-orb-wrap{
+      position:relative; border-radius:16px; padding:16px 12px 20px;
+      background:linear-gradient(180deg,rgba(10,6,25,.7),rgba(4,2,12,.7));
+      border:1px solid rgba(34,193,255,.28);
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      min-height:340px;
+    }
+    .nc-orb-title{font-size:11px; letter-spacing:.5em; color:#8fb7d9; margin-bottom:12px;}
+    .nc-orb{
+      position:relative; width:230px; height:230px; border-radius:50%;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255,255,255,.35), transparent 40%),
+        radial-gradient(circle at 70% 65%, var(--nc-blue) 0%, var(--nc-violet) 45%, #1a0530 75%, #05030d 100%);
+      box-shadow:
+        0 0 60px rgba(138,59,255,.6),
+        0 0 120px rgba(34,193,255,.35),
+        inset 0 0 40px rgba(255,255,255,.1),
+        inset 0 0 80px rgba(138,59,255,.3);
+      cursor:pointer; transition:.4s; overflow:hidden;
+      display:grid; place-items:center;
+      animation: nc-breath 4s ease-in-out infinite;
+    }
+    .nc-orb::before{
+      content:""; position:absolute; inset:-4px; border-radius:50%;
+      background:conic-gradient(from 0deg, transparent, rgba(34,193,255,.7), transparent, rgba(255,61,246,.7), transparent);
+      filter:blur(8px); z-index:-1; animation:nc-spin 8s linear infinite;
+    }
+    .nc-orb .mr{
+      font-family:'Orbitron',sans-serif; font-weight:900; font-size:64px;
+      color:transparent; -webkit-text-stroke:2px #ff8ffb;
+      text-shadow:0 0 22px rgba(255,61,246,.9);
+      pointer-events:none;
+    }
+    @keyframes nc-breath{0%,100%{transform:scale(1);}50%{transform:scale(1.03);}}
+    @keyframes nc-spin{to{transform:rotate(360deg);}}
+    .nc-orb.listening{
+      animation: nc-pulse 1s ease-in-out infinite;
+      box-shadow: 0 0 80px rgba(61,255,176,.8), 0 0 140px rgba(61,255,176,.5), inset 0 0 60px rgba(61,255,176,.3);
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255,255,255,.4), transparent 40%),
+        radial-gradient(circle at 70% 65%, #3dffb0 0%, #10b981 45%, #052e20 75%, #05030d 100%);
+    }
+    .nc-orb.listening .mr{-webkit-text-stroke-color:#b8ffdb; text-shadow:0 0 22px rgba(61,255,176,.9);}
+    .nc-orb.thinking{
+      box-shadow:0 0 80px rgba(255,196,0,.8), inset 0 0 60px rgba(255,196,0,.3);
+    }
+    @keyframes nc-pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.08);}}
+    .nc-orb-status{
+      margin-top:14px; padding:5px 14px; border-radius:999px;
+      background:rgba(61,255,176,.1); border:1px solid rgba(61,255,176,.5);
+      color:#8affc9; font-size:11px; letter-spacing:.24em; font-weight:600;
+      display:inline-flex; align-items:center; gap:6px;
+    }
+    .nc-orb-status::before{content:""; width:6px;height:6px;border-radius:50%;background:#3dffb0; box-shadow:0 0 8px #3dffb0;}
+    .nc-orb-status.listen{background:rgba(61,255,176,.15); border-color:#3dffb0; color:#3dffb0;}
+    .nc-orb-status.think{background:rgba(255,196,0,.15); border-color:#ffc400; color:#ffc400;}
+    .nc-orb-status.think::before{background:#ffc400; box-shadow:0 0 8px #ffc400;}
+    .nc-orb-caption{margin-top:14px; text-align:center;}
+    .nc-orb-caption h3{margin:0 0 4px; font-size:15px; color:#fff; font-weight:700;}
+    .nc-orb-caption p{margin:0; font-size:12px; color:var(--nc-mute); line-height:1.4;}
+
+    .nc-voice-log{
+      margin-top:12px; width:100%; max-height:120px; overflow-y:auto;
+      font-size:12px; color:#d8def5; padding:8px 10px; border-radius:10px;
+      background:rgba(0,0,0,.3); border:1px solid rgba(138,59,255,.25);
+      display:none;
+    }
+    .nc-voice-log.show{display:block;}
+    .nc-voice-log .u{color:#7ad9ff;}
+    .nc-voice-log .a{color:#ff8ffb;}
+
+    .nc-footer{margin-top:14px; text-align:center; font-size:11px; color:var(--nc-mute);}
+    .nc-footer b{color:#ff3df6; font-family:'Orbitron',sans-serif;}
+    .nc-footer .lov{color:#22c1ff; font-weight:700; letter-spacing:.14em;}
+  </style>
+
+  <div id="ext3-home">
+    <div class="nc-topbar">
+      <button class="nc-iconbtn" id="ext3MenuBtn" title="Menu">☰</button>
+      <div style="display:flex;gap:8px;">
+        <button class="nc-iconbtn" title="Fixar">📌</button>
+        <button class="nc-iconbtn" title="Minimizar">—</button>
+        <button class="nc-iconbtn" id="ext3CloseHome" title="Ir para o app">×</button>
+      </div>
+    </div>
+
+    <div class="nc-logo">MR<small>SEM LIMITES</small></div>
+
+    <div class="nc-cards">
+      <div class="nc-card">
+        <div class="nc-card-title">⏰ Horário Atual</div>
+        <div class="big" id="ncClock">--:--:--</div>
+        <div class="sub" id="ncDate">—</div>
+      </div>
+      <div class="nc-card blue">
+        <div class="nc-card-title">⏱ Timer de Trabalho</div>
+        <div class="big" id="ncTimer">00:00:00</div>
+        <div class="sub">Foco • Produtividade • Resultados</div>
+        <div class="nc-timer-presets">
+          <button class="nc-preset" data-min="10">10 min</button>
+          <button class="nc-preset" data-min="30">30 min</button>
+          <button class="nc-preset" data-min="60">1 h</button>
+          <button class="nc-preset custom" id="ncPresetCustom">Custom</button>
+        </div>
+        <div class="nc-timer-actions">
+          <button class="go" id="ncTimerStart">Iniciar</button>
+          <button class="stop" id="ncTimerStop">Parar</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="nc-main">
+      <nav class="nc-sidebar">
+        <div class="nc-nav active" data-view="home">🏠 Início</div>
+        <div class="nc-nav" data-view="orb">🌐 IA Sphere</div>
+        <div class="nc-nav" data-view="app">💬 Chats</div>
+        <div class="nc-nav" data-view="app">📄 Documentos</div>
+        <div class="nc-nav" data-view="app">📁 Projetos</div>
+        <div class="nc-nav" data-view="app">✨ Prompts</div>
+        <div class="nc-nav" data-view="app">🧩 Extensões</div>
+        <div class="nc-nav" data-view="app">⚙️ Configurações</div>
+        <div class="nc-nav" data-view="about">ⓘ Sobre</div>
+      </nav>
+
+      <div class="nc-orb-wrap">
+        <div class="nc-orb-title">A I &nbsp; S P H E R E</div>
+        <div class="nc-orb" id="ncOrb" title="Clique para conversar por voz">
+          <span class="mr">MR</span>
+        </div>
+        <div class="nc-orb-status" id="ncOrbStatus">CONECTADO</div>
+        <div class="nc-orb-caption">
+          <h3>Sua IA. Sem limites. Sempre com você.</h3>
+          <p>Clique na Orbe para conversar por voz.<br>Quando decidir, diga <b style="color:#3dffb0">"enviar para o Lovable"</b>.</p>
+        </div>
+        <div class="nc-voice-log" id="ncVoiceLog"></div>
+      </div>
+    </div>
+
+    <div class="nc-footer">produto <b>MR</b> Sem Limites Extensão <span class="lov">LOVABLE</span> ♡</div>
+  </div>
+
+  <script>
+  (function(){
+    'use strict';
+
+    // ---------- Overlay show/hide ----------
+    const home = document.getElementById('ext3-home');
+    const closeHome = document.getElementById('ext3CloseHome');
+    const menuBtn = document.getElementById('ext3MenuBtn');
+    function showHome(){ home.classList.remove('hidden'); }
+    function hideHome(){ home.classList.add('hidden'); }
+    closeHome.addEventListener('click', hideHome);
+    menuBtn.addEventListener('click', showHome);
+
+    document.querySelectorAll('.nc-nav').forEach(el=>{
+      el.addEventListener('click', ()=>{
+        document.querySelectorAll('.nc-nav').forEach(n=>n.classList.remove('active'));
+        el.classList.add('active');
+        const v = el.dataset.view;
+        if(v === 'home' || v === 'orb' || v === 'about') return; // stay
+        hideHome();
+      });
+    });
+
+    // ---------- Clock ----------
+    const clockEl = document.getElementById('ncClock');
+    const dateEl = document.getElementById('ncDate');
+    const DAYS = ['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
+    const MONTHS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+    function pad(n){return String(n).padStart(2,'0');}
+    function tickClock(){
+      const d = new Date();
+      clockEl.textContent = pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds());
+      dateEl.textContent = DAYS[d.getDay()]+', '+d.getDate()+' de '+MONTHS[d.getMonth()]+' de '+d.getFullYear();
+    }
+    tickClock(); setInterval(tickClock, 1000);
+
+    // ---------- Countdown Timer ----------
+    const timerEl = document.getElementById('ncTimer');
+    let timerSeconds = 0, timerRemaining = 0, timerInt = null, timerRunning = false;
+    function fmt(s){
+      const h = Math.floor(s/3600), m = Math.floor((s%3600)/60), sec = s%60;
+      return pad(h)+':'+pad(m)+':'+pad(sec);
+    }
+    function renderTimer(){ timerEl.textContent = fmt(Math.max(0,timerRemaining)); }
+    function setTimerMinutes(min){
+      timerSeconds = Math.max(1, Math.floor(min*60));
+      timerRemaining = timerSeconds;
+      renderTimer();
+    }
+    setTimerMinutes(30); // default display
+    document.querySelectorAll('.nc-preset[data-min]').forEach(b=>{
+      b.addEventListener('click', ()=> setTimerMinutes(parseInt(b.dataset.min,10)));
+    });
+    document.getElementById('ncPresetCustom').addEventListener('click', ()=>{
+      const raw = prompt('Tempo do timer (ex.: "3h 45m", "90m", "2h", "45"):', '3h 45m');
+      if(!raw) return;
+      const h = /(\d+)\s*h/i.exec(raw), m = /(\d+)\s*m/i.exec(raw);
+      let total = 0;
+      if(h) total += parseInt(h[1],10)*60;
+      if(m) total += parseInt(m[1],10);
+      if(!h && !m){ const n = parseInt(raw,10); if(!isNaN(n)) total = n; }
+      if(total<=0){ alert('Valor inválido'); return; }
+      setTimerMinutes(total);
+    });
+    document.getElementById('ncTimerStart').addEventListener('click', ()=>{
+      if(timerRunning) return;
+      if(timerRemaining<=0) return;
+      timerRunning = true;
+      timerInt = setInterval(()=>{
+        timerRemaining--;
+        renderTimer();
+        if(timerRemaining<=0){
+          clearInterval(timerInt); timerRunning=false;
+          try{ finishBeep(); }catch(e){}
+          try{ speak('Tempo esgotado. Bom trabalho!'); }catch(e){}
+          alert('⏰ Timer finalizado!');
+        }
+      },1000);
+    });
+    document.getElementById('ncTimerStop').addEventListener('click', ()=>{
+      clearInterval(timerInt); timerRunning=false;
+      timerRemaining = timerSeconds; renderTimer();
+    });
+
+    // ---------- Audio beeps ----------
+    let audioCtx = null;
+    function ac(){ if(!audioCtx){ try{ audioCtx = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} } return audioCtx; }
+    function beep(freq, dur, type){
+      const c = ac(); if(!c) return;
+      const o = c.createOscillator(), g = c.createGain();
+      o.type = type||'sine'; o.frequency.value = freq;
+      o.connect(g); g.connect(c.destination);
+      g.gain.setValueAtTime(0.0001, c.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.25, c.currentTime+0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, c.currentTime+dur);
+      o.start(); o.stop(c.currentTime+dur+0.02);
+    }
+    function finishBeep(){ beep(880,0.25); setTimeout(()=>beep(1320,0.5),260); }
+
+    // ---------- Voice: Orb interactive conversation mode ----------
+    const orb = document.getElementById('ncOrb');
+    const orbStatus = document.getElementById('ncOrbStatus');
+    const voiceLog = document.getElementById('ncVoiceLog');
+    let recognition = null, recognizing = false, conversation = [];
+
+    function setOrbState(s, text){
+      orb.classList.remove('listening','thinking');
+      orbStatus.classList.remove('listen','think');
+      if(s==='listen'){ orb.classList.add('listening'); orbStatus.classList.add('listen'); }
+      if(s==='think'){ orb.classList.add('thinking'); orbStatus.classList.add('think'); }
+      orbStatus.textContent = text || (s==='listen'?'OUVINDO':s==='think'?'PENSANDO':'CONECTADO');
+    }
+    function logMsg(who, text){
+      voiceLog.classList.add('show');
+      const div = document.createElement('div');
+      div.innerHTML = '<span class="'+(who==='u'?'u':'a')+'">'+(who==='u'?'▸ Você: ':'◂ MR: ')+'</span>'+text;
+      voiceLog.appendChild(div); voiceLog.scrollTop = voiceLog.scrollHeight;
+    }
+    function speak(text){
+      try{
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = 'pt-BR'; u.rate = 1.05; u.pitch = 1;
+        window.speechSynthesis.speak(u);
+      }catch(e){}
+    }
+
+    const TRIGGERS = ['enviar para o lovable','manda pro lovable','manda para o lovable','envia pro lovable','executa','executar','pode enviar','manda ai','envia agora'];
+    function hasTrigger(t){ const s = (t||'').toLowerCase(); return TRIGGERS.some(k=>s.includes(k)); }
+
+    function buildPrompt(){
+      const userTurns = conversation.filter(c=>c.who==='u').map(c=>c.text);
+      return 'Baseado na nossa conversa, execute o seguinte plano:\n\n- '+userTurns.join('\n- ');
+    }
+
+    function sendToLovable(){
+      const message = document.getElementById('message');
+      const sendBtn = document.getElementById('sendBtn');
+      if(!message || !sendBtn){ alert('Painel de chat indisponível.'); return; }
+      const prompt = buildPrompt();
+      message.value = prompt;
+      hideHome();
+      setTimeout(()=> sendBtn.click(), 300);
+    }
+
+    function startRecognition(){
+      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if(!SR){ alert('Reconhecimento de voz não disponível neste navegador.'); return; }
+      if(recognizing) return;
+      recognition = new SR();
+      recognition.lang = 'pt-BR';
+      recognition.interimResults = false;
+      recognition.continuous = false;
+      recognition.onstart = ()=>{ recognizing = true; setOrbState('listen','OUVINDO'); beep(660,0.12); };
+      recognition.onerror = (e)=>{ recognizing=false; setOrbState('idle','ERRO: '+(e.error||'')); };
+      recognition.onend = ()=>{
+        recognizing=false;
+        if(orb.dataset.mode==='on') setOrbState('idle','TOQUE PARA FALAR');
+      };
+      recognition.onresult = (ev)=>{
+        const text = ev.results[0][0].transcript;
+        logMsg('u', text);
+        conversation.push({who:'u',text});
+        if(hasTrigger(text)){
+          setOrbState('think','ENVIANDO');
+          const msg = 'Perfeito, enviando o plano para o Lovable agora.';
+          logMsg('a', msg); speak(msg);
+          setTimeout(sendToLovable, 1200);
+          return;
+        }
+        setOrbState('think','PENSANDO');
+        const reply = 'Anotado. Diga mais ou fale "enviar para o Lovable" quando estiver pronto.';
+        logMsg('a', reply); speak(reply);
+        setTimeout(()=>{ if(orb.dataset.mode==='on') startRecognition(); }, 2200);
+      };
+      try{ recognition.start(); }catch(e){}
+    }
+
+    orb.addEventListener('click', ()=>{
+      if(orb.dataset.mode==='on'){
+        orb.dataset.mode = 'off';
+        try{ recognition && recognition.stop(); }catch(e){}
+        setOrbState('idle','CONECTADO');
+        beep(440,0.15);
+        return;
+      }
+      orb.dataset.mode = 'on';
+      conversation = [];
+      voiceLog.innerHTML = ''; voiceLog.classList.remove('show');
+      const msg = 'Modo conversa ativo. Pode falar.';
+      logMsg('a', msg); speak(msg);
+      startRecognition();
+    });
+
+    // ---------- License screen auto-hide home when unlicensed ----------
+    // Hide the neo-core home while the license screen is showing; show it when mainApp appears.
+    function syncOverlay(){
+      const ls = document.getElementById('licenseScreen');
+      const app = document.getElementById('mainApp');
+      const lsVisible = ls && getComputedStyle(ls).display !== 'none';
+      if(lsVisible){ home.classList.add('hidden'); return; }
+      // mainApp visible → show home overlay (user can dismiss)
+      if(app && !home.dataset.userDismissed) home.classList.remove('hidden');
+    }
+    closeHome.addEventListener('click', ()=>{ home.dataset.userDismissed = '1'; });
+    menuBtn.addEventListener('click', ()=>{ home.dataset.userDismissed = ''; });
+    setInterval(syncOverlay, 800);
+    syncOverlay();
+  })();
+  </script>
+
 </body>
 </html>
+

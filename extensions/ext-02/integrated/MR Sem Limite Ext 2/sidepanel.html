@@ -30,12 +30,26 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg:#0a0613;--bg2:#110d20;--bg3:#18122e;--bg4:#1e1638;
-      --border:rgba(236,72,153,0.15);--border2:rgba(236,72,153,0.3);
-      --purple:#ec4899;--purple2:#3b82f6;--purple3:#f472b6;
-      --text:#f0e8ff;--text2:#b39ddb;--text3:#7c6fa0;
+      --bg:#05060f;--bg2:#0a0c1c;--bg3:#101430;--bg4:#161a3c;
+      --border:rgba(34,211,238,0.18);--border2:rgba(236,72,153,0.32);
+      --purple:#ec4899;--purple2:#22d3ee;--purple3:#f472b6;
+      --cyan:#22d3ee;--cyan2:#67e8f9;
+      --text:#eaf6ff;--text2:#a5c8e0;--text3:#7089a8;
       --success:#22c55e;--error:#ef4444;--r:12px;
+      --neo-bg:url('assets/neo-core-bg.jpg');
     }
+    /* Neo-Core background layer applied globally */
+    html,body{background:#05060f}
+    body::before{content:'';position:fixed;inset:0;background-image:var(--neo-bg);background-size:cover;background-position:center top;background-repeat:no-repeat;opacity:.32;z-index:0;pointer-events:none;filter:saturate(1.1)}
+    body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(34,211,238,.12),transparent 55%),radial-gradient(ellipse at 50% 100%,rgba(236,72,153,.14),transparent 55%),linear-gradient(180deg,rgba(5,6,15,.55) 0%,rgba(5,6,15,.35) 40%,rgba(5,6,15,.75) 100%);z-index:0;pointer-events:none}
+    #licenseScreen,#mainApp{position:relative;z-index:1;background:transparent!important}
+    .app-header,.action-bar,.tabs-bar,.mr-tabs,.input-area,.app-footer,.quick-actions{background:linear-gradient(180deg,rgba(10,12,28,.72),rgba(10,12,28,.55))!important;backdrop-filter:blur(14px) saturate(140%);-webkit-backdrop-filter:blur(14px) saturate(140%);border-color:rgba(34,211,238,.16)!important}
+    .app-header-title{background:linear-gradient(135deg,#67e8f9,#f472b6,#22d3ee)!important;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+    .tab-btn.active,.mr-tab.active{color:var(--cyan2)!important;border-bottom-color:var(--cyan)!important}
+    .bubble.bot{background:rgba(16,20,48,.72)!important;border-color:rgba(34,211,238,.2)!important;backdrop-filter:blur(10px)}
+    .bubble.user{background:linear-gradient(135deg,var(--cyan),var(--purple))!important}
+    #sendBtn{background:linear-gradient(135deg,var(--cyan),var(--purple))!important;box-shadow:0 4px 20px rgba(34,211,238,.4),0 4px 20px rgba(236,72,153,.35)!important}
+    #message{background:rgba(10,12,28,.72)!important;backdrop-filter:blur(10px)}
     /* Animations */
     @keyframes neon-glow{0%,100%{box-shadow:0 0 8px rgba(236,72,153,.5)}50%{box-shadow:0 0 18px rgba(236,72,153,.9),0 0 40px rgba(236,72,153,.3)}}
     @keyframes slide-up{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}

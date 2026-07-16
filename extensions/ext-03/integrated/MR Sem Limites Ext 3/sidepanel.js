@@ -982,10 +982,12 @@ async function showMainApp() {
 
   if (ls) ls.style.display = 'none';
   mainApp.style.display = 'flex';
+  try { document.body.classList.remove('mr-locked'); } catch(_){}
 
   // Inicializa a UI do chat diretamente (sem iframe)
   initDirectChat();
 }
+
 
 // ========== DIRECT CHAT UI (no iframe, no bridge) ==========
 let _chatInitialized = false;

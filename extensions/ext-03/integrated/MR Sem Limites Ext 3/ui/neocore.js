@@ -170,14 +170,34 @@
     voiceLog.appendChild(div);
     voiceLog.scrollTop = voiceLog.scrollHeight;
   }
+  let ptVoice = null;
+  function pickVoice() {
+    try {
+      const voices = window.speechSynthesis.getVoices() || [];
+      ptVoice =
+        voices.find(v => /pt[-_]BR/i.test(v.lang) && /google/i.test(v.name)) ||
+        voices.find(v => /pt[-_]BR/i.test(v.lang)) ||
+        voices.find(v => /^pt/i.test(v.lang)) || null;
+    } catch (_) {}
+  }
+  pickVoice();
+  try { window.speechSynthesis.onvoiceschanged = pickVoice; } catch (_) {}
+
   function speak(text, onEnd) {
+    let done = false;
+    const finish = () => { if (done) return; done = true; try { onEnd && onEnd(); } catch (_) {} };
     try {
       const u = new SpeechSynthesisUtterance(text);
-      u.lang = 'pt-BR'; u.rate = 1.04; u.pitch = 1;
-      if (onEnd) u.onend = onEnd;
+      u.lang = 'pt-BR'; u.rate = 1.05; u.pitch = 1.05; u.volume = 1;
+      if (ptVoice) u.voice = ptVoice;
+      u.onend = finish;
+      u.onerror = finish;
       window.speechSynthesis.cancel();
       window.speechSynthesis.speak(u);
-    } catch (_) { if (onEnd) setTimeout(onEnd, 300); }
+      // Fallback: alguns browsers não disparam onend
+      const est = Math.max(1500, Math.min(12000, text.length * 90));
+      setTimeout(finish, est + 800);
+    } catch (_) { setTimeout(finish, 400); }
   }
 
   const TRIGGERS = ['enviar para o lovable','manda pro lovable','manda para o lovable','envia pro lovable','executa','executar','pode enviar','manda ai','manda aí','envia agora'];
@@ -328,11 +348,11 @@
 
   function syncOverlay() {
     const ls = document.getElementById('licenseScreen');
-    const app = document.getElementById('mainApp');
     const lsVisible = ls && getComputedStyle(ls).display !== 'none';
-    if (lsVisible) { home.classList.add('hidden'); return; }
-    if (app && !home.dataset.userDismissed) home.classList.remove('hidden');
+    if (lsVisible) home.classList.add('hidden');
+    // NÃO reabrimos automaticamente: se o usuário fechou ou clicou numa aba,
+    // a home permanece escondida para não misturar com o painel real.
   }
-  setInterval(syncOverlay, 800);
+  setInterval(syncOverlay, 1500);
   syncOverlay();
 })();

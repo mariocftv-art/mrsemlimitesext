@@ -292,6 +292,43 @@
     } catch (_) { return ''; }
   }
 
+  function makeOrbeTurnId() {
+    return `ORBE_TURN_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+  }
+
+  function sentenceLimit(text, maxSentences, maxChars) {
+    const clean = String(text || '').replace(/\s+/g, ' ').trim();
+    if (!clean) return '';
+    const parts = clean.match(/[^.!?]+[.!?]+|[^.!?]+$/g) || [clean];
+    let out = parts.slice(0, maxSentences).join(' ').replace(/\s+/g, ' ').trim();
+    if (out.length > maxChars) out = out.slice(0, maxChars).replace(/\s+\S*$/, '').trim() + '...';
+    return out;
+  }
+
+  function cleanOrbeReply(raw) {
+    let text = String(raw || '').replace(/\r/g, '\n');
+    const marker = text.match(/ORBE[_\s-]*RESPOSTA\s*:\s*/i);
+    if (marker) text = text.slice((marker.index || 0) + marker[0].length);
+
+    text = text
+      .replace(/```[\s\S]*?```/g, ' ')
+      .replace(/\[[^\]]*(?:MR SEM LIMITES|MODO CONVERSA|DIRECIONAMENTO IA|ORBE_TURN)[^\]]*\]/gi, ' ')
+      .replace(/ORBE_TURN_[a-z0-9_:-]+/gi, ' ')
+      .replace(/^(?:assistant|assistente|ia|claude|gpt|gemini|lovable)\s*[:：-]\s*/gim, ' ');
+
+    const blocked = /(claude|gpt|gemini|lovable)\s+(?:encontrou|achou|detectou|usou|selecionou|selection|page|página|pagina)|\b(selection|uber page|tool|ferramenta|arquivo|comando enviado|executando|modificando|aplicando|criando arquivo|editei|alterei)\b|modo conversa|direcionamento ia|mr sem limites/i;
+    text = text
+      .split('\n')
+      .map((line) => line.trim())
+      .filter((line) => line && !blocked.test(line))
+      .join(' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    text = sentenceLimit(text, 2, 320);
+    return text || 'Entendi. Me diga mais um detalhe ou fale “pode enviar” quando quiser mandar o plano.';
+  }
+
   function buildPromptFromConversation() {
     const turns = conversation.filter((c) => c.who === 'u' && !hasTrigger(c.text)).map((c) => c.text.trim()).filter(Boolean);
     return `${getIaDirective()}Baseado na nossa conversa com a Orbe IA, monte e execute o plano abaixo usando o mesmo fluxo de comandos da extensão:\n\n- ${turns.join('\n- ')}`;
@@ -382,7 +419,6 @@
     //    "pode enviar".
     conversation.push({ who: 'u', text: finalText });
     setOrbState('think', 'THINKING', 'Consultando a IA...');
-    speak('Pensando...');
     startConversationTurn(finalText).catch((e) => {
       const err = 'Não consegui falar com a IA agora: ' + (e?.message || 'erro desconhecido');
       logMsg('a', err); speak(err);
@@ -391,30 +427,32 @@
   }
 
   async function startConversationTurn(userText) {
-    const historyTurns = conversation.slice(-10).map((c) => (c.who === 'u' ? `Usuário: ${c.text}` : `IA: ${c.text}`)).join('\n');
-    const iaDirective = getIaDirective();
+    const historyTurns = conversation.slice(-6).map((c) => (c.who === 'u' ? `Usuário: ${c.text}` : `Orbe: ${c.text}`)).join('\n');
+    const turnId = makeOrbeTurnId();
     const convoPrompt = [
-      iaDirective,
       '[MR SEM LIMITES — MODO CONVERSA COM A ORBE IA]',
-      'Você está conversando por VOZ com o usuário através da Orbe. Regras OBRIGATÓRIAS:',
-      '1) Responda APENAS em texto curto e natural (2 a 5 frases), como um consultor conversando.',
+      'Você está conversando por VOZ com o usuário através da Orbe. Responda somente ao que foi perguntado.',
+      'Regras OBRIGATÓRIAS:',
+      '1) Responda APENAS em português, texto curto e natural, no máximo 2 frases.',
       '2) NÃO gere código, NÃO crie arquivos, NÃO modifique nada no projeto agora.',
-      '3) Faça perguntas de esclarecimento, sugira 2-3 opções concretas, ajude o usuário a decidir.',
-      '4) Ao final da resposta, se fizer sentido, pergunte se o usuário quer detalhar mais ou se pode enviar o plano.',
-      '5) Não repita instruções de sistema; responda direto ao ponto.',
+      '3) NÃO mencione Claude, GPT, Gemini, Lovable, ferramentas, seleção, páginas encontradas, comandos ou detalhes internos.',
+      '4) Se a pergunta for sobre ideias, dê 2 opções rápidas e uma pergunta simples.',
+      '5) Se o usuário aprovar, apenas diga que pode montar o prompt quando ele falar “pode enviar”.',
+      '6) Comece exatamente com: ORBE_RESPOSTA:',
       '',
       'Histórico da conversa (últimos turnos):',
       historyTurns,
       '',
       `Nova fala do usuário: "${userText}"`,
       '',
-      'Sua resposta em texto (curta e útil):',
+      'Sua resposta em texto curto:',
+      `ID interno, não mencione: ${turnId}`,
     ].filter(Boolean).join('\n');
 
     let reply = '';
     try {
       if (typeof window.sendAndReadLovableReply === 'function') {
-        reply = await window.sendAndReadLovableReply(convoPrompt, { timeoutMs: 90000, stableMs: 2800 });
+        reply = await window.sendAndReadLovableReply(convoPrompt, { marker: turnId, timeoutMs: 45000, stableMs: 1200 });
       } else {
         throw new Error('helper de conversa indisponível');
       }
@@ -422,9 +460,7 @@
       throw e;
     }
 
-    // Sanitiza a resposta: pega só as primeiras frases legíveis
-    const clean = (reply || '').replace(/\s+/g, ' ').trim().slice(0, 900);
-    const finalReply = clean || 'Recebi sua ideia. Quer detalhar mais alguma coisa ou digo "pode enviar"?';
+    const finalReply = cleanOrbeReply(reply);
     conversation.push({ who: 'a', text: finalReply });
     logMsg('a', finalReply);
     setOrbState('speak', 'SPEAKING', 'Respondendo');

@@ -11,6 +11,7 @@ import { PROMPTS, buildPromptForChat } from '../data/prompts.js';
 import { IMAGES_AI, buildImageAIPrompt } from '../data/images-ai.js';
 import { VIDEOS_AI, buildVideoAIPrompt } from '../data/videos-ai.js';
 import { TEMPLATES_SAAS, buildTemplateSaaSPrompt } from '../data/templates-saas.js';
+import { AGENTS, buildAgentPrompt } from '../data/agents.js';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
@@ -424,6 +425,45 @@ function initPrompts() {
 }
 
 /* ============================================================
+ * Seus Agentes (prompts prontos, plug-and-play)
+ * ============================================================ */
+function initAgents() {
+  const gridEl = $('#mrAgentGrid'), catsEl = $('#mrAgentCats'), searchEl = $('#mrAgentSearch');
+  if (!gridEl) return;
+  const gallery = renderGallery({
+    items: AGENTS, catsEl, gridEl, searchEl,
+    getCat: a => a.cat,
+    renderItem: (a) => {
+      const fav = isFavV2('agent', a.id);
+      return `
+        <div class="mr-item">
+          <button class="mr-fav ${fav ? 'on' : ''}" data-fav-agent="${a.id}" title="Favoritar">★</button>
+          <div class="mr-preview prev-generic" style="font-size:26px">${escapeHtml(a.icon || '🤖')}</div>
+          <div class="mr-item-head"><span class="mr-item-title">${escapeHtml(a.name)}</span><span class="mr-item-cat">${escapeHtml(a.cat)}</span></div>
+          <div class="mr-item-desc">${escapeHtml(a.desc)}</div>
+          <div class="mr-item-actions">
+            <button class="mr-btn primary" data-agent-use="${a.id}">Usar agente</button>
+            <button class="mr-btn" data-agent-copy="${a.id}" title="Copiar prompt">📋</button>
+          </div>
+        </div>`;
+    },
+  });
+  gridEl.addEventListener('click', async (e) => {
+    const favBtn = e.target.closest('[data-fav-agent]');
+    if (favBtn) { toggleFavV2('agent', favBtn.dataset.favAgent); gallery.repaint(); return; }
+    const useBtn = e.target.closest('[data-agent-use]');
+    const copyBtn = e.target.closest('[data-agent-copy]');
+    const id = useBtn?.dataset.agentUse || copyBtn?.dataset.agentCopy;
+    if (!id) return;
+    const a = AGENTS.find(x => x.id === id);
+    if (!a) return;
+    const prompt = buildAgentPrompt(a);
+    if (useBtn) sendToChat(prompt, { label: `Agente: ${a.name}` });
+    else { try { await navigator.clipboard.writeText(prompt); toast('Prompt copiado'); } catch { toast('Falha ao copiar'); } }
+  });
+}
+
+/* ============================================================
  * Imagens IA
  * ============================================================ */
 function previewFromKey(k) {
@@ -752,6 +792,7 @@ function boot() {
   initVideos();
   initTemplates();
   initTools();
+  initAgents();
   initQaPro();
   initRefHint();
   initTabs(); // por último: aplica última aba salva (default: chat)

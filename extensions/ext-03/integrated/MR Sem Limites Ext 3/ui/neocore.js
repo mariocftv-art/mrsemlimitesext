@@ -227,7 +227,7 @@
 
   async function sendPromptRaw(promptText) {
     if (!promptText || !promptText.trim()) { alert('Digite ou fale um comando primeiro.'); return; }
-    hideHome();
+    // NÃO esconder a home — envia o comando em background e mantém o painel MR visível.
     setOrbState('think', 'WORKING', 'Sending command');
     try {
       if (typeof window.sendDirectLovableMessage === 'function') {

@@ -13,6 +13,31 @@
   // a resposta em português para a Orbe ler em voz alta.
   const ORBE_CHAT_ENDPOINT = 'https://mrsemlimitesext.lovable.app/api/public/orbe-chat';
   let userLeftHome = false;
+  let micGranted = false;
+
+  function openMicPermissionTab() {
+    try {
+      const url = chrome?.runtime?.getURL ? chrome.runtime.getURL('permission.html') : 'permission.html';
+      if (chrome?.tabs?.create) chrome.tabs.create({ url });
+      else window.open(url, '_blank');
+    } catch (_) {}
+  }
+
+  // Garante permissão de mic no ORIGEM da extensão. Chamar de dentro de um
+  // handler de clique (gesto do usuário) — sem isso, o Web Speech dispara
+  // "not-allowed" mesmo com o microfone liberado no sistema operacional.
+  async function ensureMicPermission() {
+    if (micGranted) return true;
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      stream.getTracks().forEach(t => t.stop());
+      micGranted = true;
+      return true;
+    } catch (_) {
+      openMicPermissionTab();
+      return false;
+    }
+  }
 
   function showHome() {
     userLeftHome = false;

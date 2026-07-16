@@ -697,10 +697,19 @@
     orb.dataset.mode = 'on';
     conversation = [];
     if (voiceLog) { voiceLog.innerHTML = ''; voiceLog.classList.remove('show'); }
-    const msg = 'Pode falar.';
-    logMsg('a', msg);
-    setOrbState('listen', 'OUVINDO', 'Fale agora');
-    listenAfterSpeech();
+    // Saudação inicial da Orbe (MR): fala e depois começa a ouvir.
+    const greetings = [
+      'MR pronto pra te ajudar. Pode falar.',
+      'MR aqui, como eu posso te ajudar?',
+      'Oi! Sou a Orbe da MR, pode mandar sua ideia.',
+    ];
+    const greeting = greetings[Math.floor(Math.random() * greetings.length)];
+    logMsg('a', greeting);
+    setOrbState('speak', 'RESPONDENDO', 'Falando com você');
+    speak(greeting, () => {
+      setOrbState('listen', 'OUVINDO', 'Fale agora');
+      listenAfterSpeech();
+    });
   });
 
   // Command bar

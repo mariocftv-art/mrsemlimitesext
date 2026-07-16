@@ -342,6 +342,19 @@
       .trim();
 
     text = sentenceLimit(text, 2, 320);
+
+    // Detector de idioma: se veio em inglês (ou qualquer coisa que não pareça português),
+    // substitui por uma resposta padrão em português para não falar inglês na voz.
+    if (text) {
+      const lower = text.toLowerCase();
+      const englishHits = (lower.match(/\b(the|and|you|your|are|is|will|would|should|could|can|have|has|for|with|this|that|what|when|where|why|how|please|hello|hi|okay|yes|no|of|on|in|to|from|about|going|create|make|build|need|want|help)\b/g) || []).length;
+      const portugueseHits = (lower.match(/\b(você|voce|é|não|nao|sim|para|com|isso|aquilo|posso|dá|da|pra|então|entao|também|tambem|obrigad|olá|ola|oi|tá|ta|tudo|bem|fazer|criar|quero|preciso|pode|enviar|beleza|legal)\b/g) || []).length;
+      const hasAccents = /[áàâãéêíóôõúüç]/i.test(text);
+      if (englishHits >= 3 && portugueseHits === 0 && !hasAccents) {
+        text = 'Entendi sua ideia. Quer que eu monte o prompt agora? É só falar “pode enviar”.';
+      }
+    }
+
     return text || 'Entendi. Me diga mais um detalhe ou fale “pode enviar” quando quiser mandar o plano.';
   }
 

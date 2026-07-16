@@ -940,9 +940,9 @@
       if (msg?.type === 'READ_LOVABLE_LAST_REPLY') {
         (async () => {
           try {
-            const sentMarker = String(msg.sentText || '').trim().slice(0, 60);
-            const timeoutMs = Math.min(Number(msg.timeoutMs) || 90000, 180000);
-            const stableMs = Math.min(Number(msg.stableMs) || 3000, 15000);
+            const sentMarker = String(msg.sentText || '').trim().slice(0, 120);
+            const timeoutMs = Math.min(Number(msg.timeoutMs) || 45000, 90000);
+            const stableMs = Math.min(Number(msg.stableMs) || 1200, 6000);
             const start = Date.now();
 
             const findChatContainer = () => {
@@ -961,20 +961,35 @@
 
             // Aguarda o texto enviado aparecer no DOM
             let container = null;
-            for (let i = 0; i < 30; i++) {
+            for (let i = 0; i < 18; i++) {
               container = findChatContainer();
               const t = container?.innerText || '';
               if (!sentMarker || t.includes(sentMarker)) break;
-              await new Promise(r => setTimeout(r, 500));
+              await new Promise(r => setTimeout(r, 350));
             }
             container = container || document.body;
 
+            const cleanAssistantTail = (raw) => {
+              let text = String(raw || '').replace(/\r/g, '\n');
+              const marker = text.match(/ORBE[_\s-]*RESPOSTA\s*:\s*/i);
+              if (marker) text = text.slice((marker.index || 0) + marker[0].length);
+              const blocked = /(claude|gpt|gemini|lovable)\s+(?:encontrou|achou|detectou|usou|selecionou|selection|page|página|pagina)|\b(selection|uber page|tool|ferramenta|arquivo|comando enviado|executando|modificando|aplicando|editou|alterou)\b|modo conversa|direcionamento ia|mr sem limites|orbe_turn/i;
+              return text
+                .split('\n')
+                .map((line) => line.trim())
+                .filter((line) => line && !blocked.test(line))
+                .join(' ')
+                .replace(/```[\s\S]*?```/g, ' ')
+                .replace(/\s+/g, ' ')
+                .trim();
+            };
+
             const extractTail = () => {
-              const full = container.innerText || '';
+              const liveContainer = findChatContainer() || container || document.body;
+              const full = liveContainer.innerText || '';
               const idx = sentMarker ? full.lastIndexOf(sentMarker) : -1;
               const tail = idx >= 0 ? full.slice(idx + sentMarker.length) : full.slice(-6000);
-              // Limpa: remove linhas curtinhas de UI (botões, timestamps repetidos)
-              return tail.replace(/\s+/g, ' ').trim();
+              return cleanAssistantTail(tail);
             };
 
             let lastLen = 0, lastText = '', stableStart = Date.now();
@@ -988,7 +1003,7 @@
                 sendResponse({ ok: true, reply: lastText });
                 return;
               }
-              await new Promise(r => setTimeout(r, 700));
+              await new Promise(r => setTimeout(r, 350));
             }
             sendResponse({ ok: !!lastText, reply: lastText, error: lastText ? undefined : 'timeout aguardando resposta' });
           } catch (e) {

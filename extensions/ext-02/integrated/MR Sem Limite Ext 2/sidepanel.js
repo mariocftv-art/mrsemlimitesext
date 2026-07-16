@@ -140,3 +140,38 @@ document.addEventListener('DOMContentLoaded', () => {
   }, 100);
 });
 
+
+/* === EXT2 → EXT1 backend compatibility adapter (local-only, no backend changes) === */
+;(function(){
+  if (typeof bgFetch !== 'function') return;
+  var _bgFetchOrig = bgFetch;
+  var STUBS = {
+    '/rest/v1/notifications': [],
+    '/rest/v1/extension_versions': [],
+    '/rest/v1/user_roles': [],
+    '/rest/v1/feature_flags': [],
+    '/rest/v1/licenses': []
+  };
+  var REWRITES = [
+    ['/functions/v1/validate-license?', '/functions/v1/validate-license-v2?'],
+    ['/functions/v1/validate-license"', '/functions/v1/validate-license-v2"'],
+    ['/functions/v1/validate-license\'', '/functions/v1/validate-license-v2\''],
+    ['/functions/v1/validate-license'  , '/functions/v1/validate-license-v2']
+  ];
+  var MISSING = ['optimize-prompt','proxy-command','remove-watermark','enable-cloud','publish-project','create-lovable-project'];
+  bgFetch = function(url, opts){
+    try{
+      var u = String(url || '');
+      for (var k in STUBS){ if (u.indexOf(k) !== -1) return Promise.resolve(STUBS[k]); }
+      for (var i=0;i<MISSING.length;i++){
+        if (u.indexOf('/functions/v1/'+MISSING[i]) !== -1){
+          return Promise.resolve({ success:false, error_display:'Recurso ainda nao disponivel neste backend.', message:'not_implemented' });
+        }
+      }
+      for (var j=0;j<REWRITES.length;j++){
+        if (u.indexOf(REWRITES[j][0]) !== -1){ u = u.split(REWRITES[j][0]).join(REWRITES[j][1]); break; }
+      }
+      return _bgFetchOrig(u, opts);
+    }catch(e){ return _bgFetchOrig(url, opts); }
+  };
+})();

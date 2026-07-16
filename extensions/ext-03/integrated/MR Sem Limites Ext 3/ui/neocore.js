@@ -214,8 +214,18 @@
     } catch (_) { setTimeout(finish, 400); }
   }
 
-  const TRIGGERS = ['enviar para o lovable','manda pro lovable','manda para o lovable','envia pro lovable','executa','executar','pode enviar','manda ai','manda aí','envia agora','responde','responder','manda','enviar'];
-  const hasTrigger = (t) => TRIGGERS.some((k) => String(t || '').toLowerCase().includes(k));
+  // Gatilhos EXPLÍCITOS de envio — só envia para o Lovable quando o usuário
+  // pedir claramente. Frases genéricas como "manda" ou "enviar" foram removidas
+  // para evitar envios acidentais durante a conversa.
+  const TRIGGERS = [
+    'pode enviar','pode mandar','envia agora','envia pro lovable','envia para o lovable',
+    'manda pro lovable','manda para o lovable','enviar para o lovable','manda o plano',
+    'executa o plano','executar o plano','manda agora','mandar agora'
+  ];
+  const CLEAR_CMDS = ['limpar conversa','apagar conversa','novo plano','recomeçar','recomecar','esquece tudo','zerar conversa'];
+  const SUMMARY_CMDS = ['resumo','resumir','qual o plano','me mostra o plano','mostrar o plano'];
+  const hasAny = (t, list) => list.some((k) => String(t || '').toLowerCase().includes(k));
+  const hasTrigger = (t) => hasAny(t, TRIGGERS);
   const WAKE_WORDS = ['standby', 'stand by', 'ativar ia', 'ativa ia', 'orbe', 'mr'];
   const hasWakeWord = (t) => WAKE_WORDS.some((k) => String(t || '').toLowerCase().includes(k));
   const stripWakeWords = (t) => {

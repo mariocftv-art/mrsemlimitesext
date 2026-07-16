@@ -353,6 +353,7 @@
     voiceMode = intoInput ? 'input' : 'orb';
     voiceText = '';
     bridgeVoice = false;
+    if (startBridgeRecognition(intoInput)) return;
     startLocalRecognition(intoInput);
   }
 

@@ -442,16 +442,24 @@
       return;
     }
 
-    // 4) CONVERSA — manda a pergunta pro Lovable em modo conversa (usando a IA
-    //    selecionada: Claude/GPT/Gemini) e lê a resposta. Nada é executado
-    //    no painel até o usuário dizer "pode enviar".
+    // 4) CONVERSA — responde LOCALMENTE (rápido, sempre em português) para
+    //    manter o diálogo fluido. O Lovable só é acionado quando o usuário
+    //    disser "pode enviar". Isso evita depender do chat do Lovable
+    //    (que é assistente de código, não de conversa) e garante que a
+    //    Orbe sempre responda por voz.
     conversation.push({ who: 'u', text: finalText });
-    setOrbState('think', 'PENSANDO', 'Consultando a IA');
+    setOrbState('think', 'PENSANDO', 'Formulando resposta');
     try {
-      await startConversationTurn(finalText);
-    } catch (e) {
       const pontos = conversation.filter((c) => c.who === 'u' && !hasTrigger(c.text) && !hasAny(c.text, CLEAR_CMDS) && !hasAny(c.text, SUMMARY_CMDS)).length;
-      const fallback = buildConversationalReply(finalText, pontos);
+      const reply = buildConversationalReply(finalText, pontos);
+      conversation.push({ who: 'a', text: reply });
+      logMsg('a', reply);
+      setOrbState('speak', 'RESPONDENDO', 'Falando com você');
+      speak(reply, () => {
+        if (orb?.dataset.mode === 'on' && !recognizing) startRecognition(false);
+      });
+    } catch (e) {
+      const fallback = 'Entendi. Me conta mais um detalhe do que você quer, ou fale “pode enviar” quando quiser mandar o plano pro Lovable.';
       conversation.push({ who: 'a', text: fallback });
       logMsg('a', fallback);
       setOrbState('speak', 'RESPONDENDO', 'Falando com você');
@@ -461,70 +469,53 @@
     }
   }
 
+  // MODO CONVERSA agora responde localmente. Mantemos a função abaixo
+  // apenas como referência histórica — não é mais chamada no fluxo padrão.
   async function startConversationTurn(userText) {
-    const historyTurns = conversation.slice(-6).map((c) => (c.who === 'u' ? `Usuário: ${c.text}` : `Orbe: ${c.text}`)).join('\n');
-    const turnId = makeOrbeTurnId();
-    const convoPrompt = [
-      '[MR SEM LIMITES — MODO CONVERSA COM A ORBE IA]',
-      '⚠️ IDIOMA OBRIGATÓRIO: RESPONDA 100% EM PORTUGUÊS DO BRASIL (pt-BR). PROIBIDO usar inglês, espanhol ou qualquer palavra estrangeira. Toda palavra da resposta precisa ser em português brasileiro.',
-      'Você é a Orbe, uma consultora especialista brasileira conversando por VOZ com o usuário. Sua voz vai ler o texto em voz alta, então escreva como se estivesse falando naturalmente com ele.',
-      'Regras OBRIGATÓRIAS:',
-      '1) RESPONDA EM PORTUGUÊS DO BRASIL, tom conversacional e caloroso, de 3 a 4 frases (nem curto demais, nem longo demais).',
-      '2) Seja ESPECIALISTA: mostre que entendeu a ideia, comente algo útil sobre ela (ex.: um estilo, um formato, um cuidado), e faça 1 pergunta objetiva para avançar.',
-      '3) NÃO gere código, NÃO crie arquivos, NÃO execute nada agora — isso só acontece quando o usuário disser “pode enviar”.',
-      '4) NÃO mencione Claude, GPT, Gemini, Lovable, ferramentas, seleção, páginas encontradas, arquivos, comandos ou detalhes internos.',
-      '5) Ao final, sempre lembre em português que basta ele falar “pode enviar” quando quiser que você monte e mande o prompt pro Lovable.',
-      '6) Comece exatamente com: ORBE_RESPOSTA:',
-      '7) Após ORBE_RESPOSTA:, TODO o texto deve estar em PORTUGUÊS DO BRASIL, sem nenhuma palavra em inglês.',
-      '',
-      'Histórico da conversa (últimos turnos, em português):',
-      historyTurns,
-      '',
-      `Nova fala do usuário (em português): "${userText}"`,
-      '',
-      'Sua resposta em PORTUGUÊS DO BRASIL (3 a 4 frases, tom de especialista conversando):',
-      `ID interno, não mencione: ${turnId}`,
-    ].filter(Boolean).join('\n');
-
-    let reply = '';
-    try {
-      if (typeof window.sendAndReadLovableReply === 'function') {
-        reply = await window.sendAndReadLovableReply(convoPrompt, { marker: turnId, timeoutMs: 45000, stableMs: 1200 });
-      } else {
-        throw new Error('helper de conversa indisponível');
-      }
-    } catch (e) {
-      throw e;
-    }
-
-    const finalReply = cleanOrbeReply(reply);
-    conversation.push({ who: 'a', text: finalReply });
-    logMsg('a', finalReply);
+    const pontos = conversation.filter((c) => c.who === 'u' && !hasTrigger(c.text) && !hasAny(c.text, CLEAR_CMDS) && !hasAny(c.text, SUMMARY_CMDS)).length;
+    const reply = buildConversationalReply(userText, pontos);
+    conversation.push({ who: 'a', text: reply });
+    logMsg('a', reply);
     setOrbState('speak', 'RESPONDENDO', 'Falando com você');
-    speak(finalReply, () => {
+    speak(reply, () => {
       if (orb?.dataset.mode === 'on' && !recognizing) startRecognition(false);
     });
   }
 
 
-  // Gera uma resposta curta de assistente para manter a conversa fluindo
-  // até o usuário dizer "pode enviar". Não chama backend — usa heurística
-  // leve para variar tom e sempre lembrar o comando de envio.
+  // Gera a resposta da Orbe em português. Reconhece intenções comuns
+  // (dashboard, app, site, landing, ecommerce, pergunta, dúvida, teste
+  // de áudio) e sempre lembra o gatilho "pode enviar".
   function buildConversationalReply(userText, pontos) {
-    const t = normalizeSpeechText(userText).toLowerCase().trim();
-    const isQuestion = /\?$/.test(userText) || /^(o que|como|por que|porque|quando|onde|qual|quais|posso|dá pra|da pra|consegue|você|voce|me fala|me explica)\b/.test(t);
+    const raw = String(userText || '').trim();
+    const t = normalizeSpeechText(raw).toLowerCase().trim();
+    const isQuestion = /\?$/.test(raw) || /^(o que|como|por que|porque|quando|onde|qual|quais|posso|dá pra|da pra|consegue|você|voce|me fala|me explica|vamos|será)\b/.test(t);
     const wantsIdeas = /ideia|ideias|formato|modelo|sugest|dúvida|duvida|o que dá|o que da|dá para montar|da para montar/.test(t);
-    const dashboard = /dashboard|painel|admin|sistema|métrica|metrica|kpi|licença|licenca|cliente|dispositivo|financeiro/.test(t);
-    const heardCheck = /tá me ouvindo|ta me ouvindo|me ouviu|entendeu|consegue me ouvir/.test(t);
+    const dashboard = /dashboard|desemburde|desembur|painel|admin|sistema|métrica|metrica|kpi|licença|licenca|cliente|dispositivo|financeiro/.test(t);
+    const novo = /\b(novo|nova|refazer|reformular|do zero|começar|comecar)\b/.test(t);
+    const app = /\b(app|aplicativo|mobile|celular)\b/.test(t);
+    const site = /\b(site|landing|página|pagina|hotsite|institucional)\b/.test(t);
+    const loja = /\b(loja|ecommerce|e-?commerce|carrinho|checkout|venda|produto)\b/.test(t);
+    const heardCheck = /tá me ouvindo|ta me ouvindo|me ouviu|entendeu|consegue me ouvir|oi orbe|alô|alo\b/.test(t);
+    const saudacao = /^(oi|olá|ola|opa|eae|e aí|e ai|bom dia|boa tarde|boa noite)\b/.test(t);
 
-    if (heardCheck) return 'Estou te ouvindo sim. Fala sua ideia em partes que eu vou organizando; quando disser “pode enviar”, eu mando o plano.';
-    if (dashboard && wantsIdeas) return 'Dá para montar em três caminhos: visão executiva com KPIs, controle de clientes e licenças, ou financeiro com receita e alertas. Qual você quer priorizar?';
-    if (dashboard && isQuestion) return 'Para esse painel, eu começaria com KPIs no topo, clientes no meio e ações rápidas na lateral. Você quer visual premium ou simples e direto?';
-    if (wantsIdeas) return 'Tenho duas ideias boas: uma versão simples para validar rápido, ou uma versão premium com mais detalhes e automações. Qual estilo você prefere?';
-    if (/não entendi|nao entendi|explica|melhor/.test(t)) return 'Claro. Eu converso com você primeiro, organizo o plano e só envio quando você falar “pode enviar”.';
-    if (isQuestion) return 'Sim, dá para fazer. Me diga qual resultado final você quer ver na tela que eu transformo isso em um plano claro.';
-    if (pontos >= 3) return `Anotado. Já temos ${pontos} pontos no plano; se estiver bom, fale “pode enviar”.`;
-    return 'Anotado. Pode continuar falando que eu vou juntando tudo no plano.';
+    if (heardCheck) return 'Tô te ouvindo perfeitamente. Pode ir falando sua ideia em partes que eu vou organizando aqui; quando quiser mandar pro Lovable, é só falar “pode enviar”.';
+    if (saudacao && t.length < 25) return 'Oi! Tô aqui pronta pra te ajudar. Me conta o que você quer construir hoje que eu vou montando o plano; quando estiver bom, fala “pode enviar”.';
+
+    if (dashboard && novo) return 'Show, um dashboard novo pra esse projeto é uma ótima ideia. Costumo montar em três blocos: KPIs no topo, tabela de clientes ou licenças no meio, e ações rápidas na lateral. Quer visual futurista neon ou algo mais clean e corporativo? Quando decidir, fala “pode enviar” que eu mando o plano.';
+    if (dashboard && wantsIdeas) return 'Dá pra montar em três caminhos: visão executiva com KPIs, controle de clientes e licenças, ou financeiro com receita e alertas. Qual você quer priorizar primeiro? Depois é só falar “pode enviar”.';
+    if (dashboard && isQuestion) return 'Pra esse painel eu começaria com KPIs no topo, clientes no meio e ações rápidas na lateral. Você quer visual premium futurista ou simples e direto? Assim que decidir, fala “pode enviar”.';
+    if (dashboard) return 'Anotado: dashboard entrou no plano. Me diz que tipo de dado você quer ver primeiro (clientes, licenças, financeiro) e o estilo visual que prefere. Quando estiver bom, é só falar “pode enviar”.';
+
+    if (app) return 'Legal, um app faz sentido. Antes de montar, me diz se é pra Android, iPhone ou os dois, e qual é a função principal. Depois é só falar “pode enviar” que eu monto o plano.';
+    if (loja) return 'Boa, dá pra montar uma loja completa com produtos, carrinho e checkout. Você quer venda de produto físico, digital ou assinatura? Quando decidir, fala “pode enviar”.';
+    if (site) return 'Perfeito, posso montar um site bem direto. Me diz se é institucional, landing de conversão ou portfólio, e o estilo visual que combina com sua marca. Depois é só falar “pode enviar”.';
+
+    if (wantsIdeas) return 'Tenho duas linhas boas: uma versão simples pra validar rápido, ou uma versão premium com mais detalhes e automações. Qual estilo combina mais com você? Quando decidir, fala “pode enviar”.';
+    if (/não entendi|nao entendi|explica|melhor/.test(t)) return 'Claro. Eu converso com você primeiro, organizo o plano em cima do que você fala, e só mando pro Lovable quando você falar “pode enviar”. Pode continuar.';
+    if (isQuestion) return 'Sim, dá pra fazer sem problema. Me diz qual resultado final você quer ver na tela e qual estilo visual prefere, que eu transformo isso num plano claro. Depois é só falar “pode enviar”.';
+    if (pontos >= 3) return `Anotado. Já temos ${pontos} pontos no plano; se estiver bom, fala “pode enviar” que eu monto o prompt e mando pro Lovable.`;
+    return 'Anotado. Pode continuar falando que eu vou juntando tudo no plano; quando estiver bom, fala “pode enviar”.';
   }
 
   function startRecognition(intoInput) {

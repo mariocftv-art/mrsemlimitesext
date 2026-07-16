@@ -11,6 +11,7 @@ import {
   GitBranch,
   Hammer,
   ImageIcon,
+  MessageCircle,
   Pencil,
   Plus,
   Puzzle,
@@ -18,6 +19,11 @@ import {
   Trash2,
   Upload,
 } from "lucide-react";
+
+const SUPPORT_WHATSAPP_URL =
+  "https://wa.me/5511962579428?text=" +
+  encodeURIComponent("Olá! Preciso de suporte com a extensão MR Sem Limites.");
+const openSupport = () => window.open(SUPPORT_WHATSAPP_URL, "_blank", "noopener");
 import { ImportExtensionDialog } from "@/factory/importer-dialog";
 
 import { toast } from "sonner";

@@ -342,6 +342,19 @@
       .trim();
 
     text = sentenceLimit(text, 2, 320);
+
+    // Detector de idioma: se veio em inglês (ou qualquer coisa que não pareça português),
+    // substitui por uma resposta padrão em português para não falar inglês na voz.
+    if (text) {
+      const lower = text.toLowerCase();
+      const englishHits = (lower.match(/\b(the|and|you|your|are|is|will|would|should|could|can|have|has|for|with|this|that|what|when|where|why|how|please|hello|hi|okay|yes|no|of|on|in|to|from|about|going|create|make|build|need|want|help)\b/g) || []).length;
+      const portugueseHits = (lower.match(/\b(você|voce|é|não|nao|sim|para|com|isso|aquilo|posso|dá|da|pra|então|entao|também|tambem|obrigad|olá|ola|oi|tá|ta|tudo|bem|fazer|criar|quero|preciso|pode|enviar|beleza|legal)\b/g) || []).length;
+      const hasAccents = /[áàâãéêíóôõúüç]/i.test(text);
+      if (englishHits >= 3 && portugueseHits === 0 && !hasAccents) {
+        text = 'Entendi sua ideia. Quer que eu monte o prompt agora? É só falar “pode enviar”.';
+      }
+    }
+
     return text || 'Entendi. Me diga mais um detalhe ou fale “pode enviar” quando quiser mandar o plano.';
   }
 
@@ -453,21 +466,23 @@
     const turnId = makeOrbeTurnId();
     const convoPrompt = [
       '[MR SEM LIMITES — MODO CONVERSA COM A ORBE IA]',
-      'Você está conversando por VOZ com o usuário através da Orbe. Responda somente ao que foi perguntado.',
+      '⚠️ IDIOMA OBRIGATÓRIO: RESPONDA SEMPRE EM PORTUGUÊS DO BRASIL (pt-BR). NUNCA use inglês, espanhol ou qualquer outro idioma. Se responder em outro idioma que não português, sua resposta será rejeitada.',
+      'Você está conversando por VOZ com o usuário brasileiro através da Orbe. Responda somente ao que foi perguntado, em português brasileiro natural.',
       'Regras OBRIGATÓRIAS:',
-      '1) Responda APENAS em português, texto curto e natural, no máximo 2 frases.',
+      '1) RESPONDA 100% EM PORTUGUÊS DO BRASIL, texto curto e natural, no máximo 2 frases.',
       '2) NÃO gere código, NÃO crie arquivos, NÃO modifique nada no projeto agora.',
       '3) NÃO mencione Claude, GPT, Gemini, Lovable, ferramentas, seleção, páginas encontradas, comandos ou detalhes internos.',
-      '4) Se a pergunta for sobre ideias, dê 2 opções rápidas e uma pergunta simples.',
-      '5) Se o usuário aprovar, apenas diga que pode montar o prompt quando ele falar “pode enviar”.',
+      '4) Se a pergunta for sobre ideias, dê 2 opções rápidas em português e uma pergunta simples em português.',
+      '5) Se o usuário aprovar, apenas diga em português que pode montar o prompt quando ele falar “pode enviar”.',
       '6) Comece exatamente com: ORBE_RESPOSTA:',
+      '7) Toda a resposta após ORBE_RESPOSTA: deve estar em PORTUGUÊS DO BRASIL.',
       '',
-      'Histórico da conversa (últimos turnos):',
+      'Histórico da conversa (últimos turnos, em português):',
       historyTurns,
       '',
-      `Nova fala do usuário: "${userText}"`,
+      `Nova fala do usuário (em português): "${userText}"`,
       '',
-      'Sua resposta em texto curto:',
+      'Sua resposta curta em PORTUGUÊS DO BRASIL:',
       `ID interno, não mencione: ${turnId}`,
     ].filter(Boolean).join('\n');
 

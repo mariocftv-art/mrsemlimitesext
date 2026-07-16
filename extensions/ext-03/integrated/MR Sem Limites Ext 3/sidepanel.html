@@ -1377,283 +1377,421 @@
   <!-- ============================================================= -->
   <style id="ext3-neocore-css">
     :root{
-      --nc-bg:#05030d; --nc-panel:rgba(14,10,32,0.72);
-      --nc-pink:#ff3df6; --nc-blue:#22c1ff; --nc-violet:#8a3bff;
-      --nc-green:#3dffb0; --nc-red:#ff3d5c;
-      --nc-text:#eef2ff; --nc-mute:#8a8fb3;
+      --nc-bg:#050818; --nc-panel:rgba(10,16,40,.78);
+      --nc-cyan:#4bd6ff; --nc-blue:#3aa2ff; --nc-violet:#7b6bff;
+      --nc-pink:#ff3df6; --nc-green:#3dffb0;
+      --nc-text:#e8ecff; --nc-mute:#8792b8;
+      --nc-border:rgba(90,140,255,.28);
     }
-    body{background:#04020a !important;}
-    /* Global neon backdrop */
+    body{background:#03060f !important;}
     body::before{
       content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
       background:
-        radial-gradient(1000px 600px at 15% -10%, rgba(255,61,246,.18), transparent 60%),
-        radial-gradient(1200px 700px at 110% 10%, rgba(34,193,255,.16), transparent 55%),
-        radial-gradient(900px 900px at 50% 120%, rgba(138,59,255,.20), transparent 60%),
-        linear-gradient(180deg,#05030d 0%,#0a0620 50%,#04020a 100%);
+        radial-gradient(900px 600px at 100% -10%, rgba(75,214,255,.18), transparent 60%),
+        radial-gradient(800px 700px at -10% 30%, rgba(123,107,255,.20), transparent 55%),
+        radial-gradient(700px 900px at 50% 120%, rgba(58,162,255,.16), transparent 62%),
+        linear-gradient(180deg,#03060f 0%,#050b1e 50%,#02040a 100%);
     }
     #ext3-home{
       position:fixed; inset:0; z-index:999; overflow-y:auto; overflow-x:hidden;
       color:var(--nc-text); font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-      padding:14px 14px 20px;
+      padding:14px 14px 22px;
       background:
-        radial-gradient(900px 520px at 18% -8%, rgba(255,61,246,.22), transparent 62%),
-        radial-gradient(900px 560px at 105% 12%, rgba(34,193,255,.18), transparent 60%),
-        radial-gradient(760px 680px at 50% 118%, rgba(138,59,255,.24), transparent 62%),
-        linear-gradient(180deg, rgba(4,2,10,.98) 0%, rgba(7,4,20,.98) 48%, rgba(3,2,9,.99) 100%);
-      backdrop-filter:blur(18px) saturate(135%);
-      -webkit-backdrop-filter:blur(18px) saturate(135%);
+        radial-gradient(700px 500px at 100% 0%, rgba(75,214,255,.15), transparent 62%),
+        radial-gradient(600px 700px at -10% 60%, rgba(123,107,255,.18), transparent 60%),
+        linear-gradient(180deg, #03060f 0%, #050b1e 55%, #02040a 100%);
+      backdrop-filter:blur(18px) saturate(130%);
     }
     #ext3-home.hidden{display:none;}
-    .nc-topbar{display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;}
+
+    /* ---------- HEADER ---------- */
+    .nc-header{display:flex; align-items:center; gap:12px; padding:6px 4px 14px;}
+    .nc-header .nc-logo-mr{
+      width:52px;height:52px;border-radius:14px;display:grid;place-items:center;
+      font-family:'Orbitron',sans-serif;font-weight:900;font-size:26px;
+      color:transparent;-webkit-text-stroke:1.6px var(--nc-cyan);
+      background:linear-gradient(160deg,rgba(75,214,255,.12),rgba(123,107,255,.15));
+      border:1px solid var(--nc-border);
+      box-shadow:0 0 18px rgba(75,214,255,.35), inset 0 0 18px rgba(123,107,255,.25);
+      text-shadow:0 0 12px rgba(75,214,255,.7);
+    }
+    .nc-header-info{flex:1;min-width:0;}
+    .nc-header-info .t1{font-size:18px;font-weight:700;color:#fff;letter-spacing:.01em;}
+    .nc-header-info .t2{font-size:10px;letter-spacing:.42em;color:var(--nc-mute);margin-top:2px;text-transform:uppercase;}
     .nc-iconbtn{
-      width:38px;height:38px;border-radius:10px;display:grid;place-items:center;cursor:pointer;
-      background:rgba(255,255,255,.04);
-      border:1px solid rgba(255,61,246,.35);
+      width:40px;height:40px;border-radius:12px;display:grid;place-items:center;cursor:pointer;
+      background:rgba(255,255,255,.03); border:1px solid var(--nc-border);
       color:#fff; font-size:18px; transition:.2s;
     }
-    .nc-iconbtn:hover{border-color:var(--nc-pink); box-shadow:0 0 14px rgba(255,61,246,.5);}
-    .nc-logo{
-      text-align:center; margin:6px 0 14px;
-      font-family:'Orbitron','Space Grotesk',sans-serif; font-weight:900;
-      font-size:52px; letter-spacing:.08em; line-height:1;
-      color:transparent; -webkit-text-stroke:1.6px var(--nc-pink);
-      text-shadow:0 0 18px rgba(255,61,246,.75), 0 0 40px rgba(138,59,255,.5);
-    }
-    .nc-logo small{
-      display:block; margin-top:6px; font-size:11px; letter-spacing:.6em;
-      -webkit-text-stroke:0; color:#c9d3ff; text-shadow:0 0 8px rgba(34,193,255,.6);
-      font-weight:500;
-    }
-    .nc-cards{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px;}
-    .nc-card{
-      position:relative; padding:12px 14px; border-radius:16px;
-      background:linear-gradient(180deg, rgba(20,10,40,.85), rgba(10,6,25,.85));
-      border:1px solid rgba(255,61,246,.28);
-      box-shadow:0 0 22px rgba(255,61,246,.18), inset 0 0 24px rgba(138,59,255,.10);
-    }
-    .nc-card.blue{border-color:rgba(34,193,255,.4); box-shadow:0 0 22px rgba(34,193,255,.22), inset 0 0 24px rgba(34,193,255,.10);}
-    .nc-card-title{display:flex; align-items:center; gap:8px; font-size:11px; letter-spacing:.22em; color:#d8def5; margin-bottom:6px; text-transform:uppercase;}
-    .nc-card .big{font-family:'Orbitron',sans-serif; font-weight:800; font-size:clamp(21px,7vw,30px); letter-spacing:.02em; color:#fff; text-shadow:0 0 14px rgba(255,255,255,.35);}
-    .nc-card.blue .big{color:#7ad9ff; text-shadow:0 0 14px rgba(34,193,255,.7);}
-    .nc-card .sub{font-size:11px; color:var(--nc-mute); margin-top:4px;}
-    .nc-card .sub b{color:#c9d3ff; font-weight:600;}
+    .nc-iconbtn:hover{border-color:var(--nc-cyan); box-shadow:0 0 12px rgba(75,214,255,.5);}
+    .nc-topbar-actions{display:flex;gap:6px;}
 
-    .nc-timer-presets{display:flex; gap:6px; margin-top:8px; flex-wrap:wrap;}
+    /* ---------- CLOCK CARD ---------- */
+    .nc-clock-card{
+      border-radius:18px; padding:18px 20px; margin-bottom:12px;
+      background:linear-gradient(180deg,rgba(8,14,36,.9),rgba(4,8,22,.9));
+      border:1px solid var(--nc-border);
+      box-shadow:inset 0 0 28px rgba(75,214,255,.10), 0 0 22px rgba(58,162,255,.14);
+      text-align:center;
+    }
+    .nc-clock-digits{
+      font-family:'Orbitron','Share Tech Mono',monospace; font-weight:800;
+      font-size:clamp(38px,12vw,54px); letter-spacing:.06em;
+      color:#4bd6ff; text-shadow:0 0 14px rgba(75,214,255,.85), 0 0 30px rgba(58,162,255,.55);
+      line-height:1;
+    }
+    .nc-clock-label{font-size:10px; letter-spacing:.42em; color:var(--nc-mute); margin-top:10px; text-transform:uppercase;}
+
+    /* ---------- TIMER CARD ---------- */
+    .nc-timer-card{
+      border-radius:18px; padding:14px 16px; margin-bottom:14px;
+      background:linear-gradient(180deg,rgba(8,14,36,.9),rgba(4,8,22,.9));
+      border:1px solid var(--nc-border);
+      box-shadow:inset 0 0 24px rgba(123,107,255,.08);
+    }
+    .nc-timer-label{font-size:10px;letter-spacing:.32em;color:var(--nc-mute);margin-bottom:6px;text-transform:uppercase;}
+    .nc-timer-row{display:flex;align-items:center;gap:12px;}
+    .nc-timer-digits{
+      flex:1;font-family:'Orbitron',monospace;font-weight:700;
+      font-size:clamp(28px,9vw,38px);color:#fff;letter-spacing:.04em;
+      text-shadow:0 0 10px rgba(255,255,255,.25);
+    }
+    .nc-timer-stop{
+      display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:12px;cursor:pointer;
+      background:rgba(255,61,246,.08); border:1px solid rgba(255,61,246,.45);
+      color:#ffb0f5; font-size:12px; font-weight:700; letter-spacing:.15em; text-transform:uppercase;
+      transition:.2s;
+    }
+    .nc-timer-stop:hover{background:rgba(255,61,246,.18); box-shadow:0 0 14px rgba(255,61,246,.5);}
+    .nc-timer-stop .dot{width:10px;height:10px;background:#ff3df6;border-radius:2px;box-shadow:0 0 8px #ff3df6;}
+    .nc-timer-presets{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;}
     .nc-preset{
-      flex:1; min-width:0; padding:6px 4px; font-size:11px; border-radius:8px;
-      background:rgba(34,193,255,.08); border:1px solid rgba(34,193,255,.35);
-      color:#c9e9ff; cursor:pointer; transition:.15s;
+      flex:1;min-width:0;padding:7px 4px;font-size:11px;border-radius:9px;cursor:pointer;transition:.15s;
+      background:rgba(75,214,255,.06); border:1px solid rgba(75,214,255,.28); color:#c8e8ff;
     }
-    .nc-preset:hover{background:rgba(34,193,255,.2); box-shadow:0 0 10px rgba(34,193,255,.5);}
-    .nc-preset.custom{background:rgba(255,61,246,.08); border-color:rgba(255,61,246,.35); color:#ffcbfa;}
-    .nc-timer-actions{display:flex; gap:6px; margin-top:6px;}
+    .nc-preset:hover{background:rgba(75,214,255,.18);}
+    .nc-preset.custom{background:rgba(123,107,255,.08);border-color:rgba(123,107,255,.38);color:#c9c0ff;}
+    .nc-timer-actions{display:flex;gap:6px;margin-top:6px;}
     .nc-timer-actions button{
-      flex:1; padding:6px; font-size:11px; border-radius:8px; cursor:pointer;
-      background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.15); color:#fff;
+      flex:1;padding:7px;font-size:11px;border-radius:9px;cursor:pointer;color:#fff;
+      background:rgba(255,255,255,.04);border:1px solid var(--nc-border);
     }
-    .nc-timer-actions button.go{background:linear-gradient(135deg,#22c1ff,#8a3bff); border:none;}
-    .nc-timer-actions button.stop{background:rgba(255,61,92,.15); border-color:rgba(255,61,92,.4); color:#ffb6c1;}
+    .nc-timer-actions button.go{background:linear-gradient(135deg,var(--nc-cyan),var(--nc-violet));border:none;font-weight:700;}
 
-    .nc-main{display:grid; grid-template-columns:minmax(92px,34%) minmax(0,1fr); gap:8px; margin-top:6px;}
-    .nc-sidebar{display:flex; flex-direction:column; gap:6px;
-      padding:10px 8px; border-radius:16px; min-width:0;
-      background:linear-gradient(180deg,rgba(15,8,35,.9),rgba(8,4,20,.9));
-      border:1px solid rgba(138,59,255,.28);
-      box-shadow:inset 0 0 20px rgba(138,59,255,.12);
+    /* ---------- MENU LIST ---------- */
+    .nc-menu{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
+    .nc-group-title{
+      font-size:9.5px;font-weight:800;letter-spacing:.28em;text-transform:uppercase;
+      color:rgba(200,220,255,.5); padding:10px 4px 2px;
     }
-    .nc-menu-group{display:flex;flex-direction:column;gap:5px;min-width:0;}
-    .nc-menu-title{font-size:8.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:rgba(201,211,255,.48);padding:8px 8px 2px;border-top:1px solid rgba(138,59,255,.22);}
-    .nc-menu-group:first-child .nc-menu-title{border-top:none;padding-top:0;}
-    .nc-nav{
-      display:flex; align-items:center; gap:10px; padding:9px 10px; border-radius:10px;
-      cursor:pointer; color:#c9d3ff; font-size:12px; font-weight:600; transition:.15s;
-      border:1px solid transparent;
+    .nc-item{
+      display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:14px;cursor:pointer;
+      background:linear-gradient(180deg,rgba(10,16,40,.75),rgba(6,10,26,.75));
+      border:1px solid var(--nc-border);
+      transition:.18s; color:#e8ecff;
     }
-    .nc-nav:hover{background:rgba(255,61,246,.08); color:#fff;}
-    .nc-nav.active{
-      background:linear-gradient(135deg, rgba(138,59,255,.35), rgba(255,61,246,.25));
-      border-color:rgba(255,61,246,.6);
-      color:#fff; box-shadow:0 0 16px rgba(255,61,246,.4);
+    .nc-item:hover{
+      border-color:var(--nc-cyan);
+      box-shadow:0 0 16px rgba(75,214,255,.28), inset 0 0 18px rgba(75,214,255,.08);
+      transform:translateY(-1px);
     }
-    .nc-nav svg{width:16px;height:16px;flex-shrink:0;}
-    .nc-open-home{
-      position:fixed;left:10px;top:10px;z-index:998;width:36px;height:36px;border-radius:10px;
-      display:none;place-items:center;cursor:pointer;color:#fff;background:rgba(7,10,24,.82);
-      border:1px solid rgba(34,193,255,.45);box-shadow:0 0 18px rgba(34,193,255,.28);
+    .nc-item.active{
+      border-color:var(--nc-cyan);
+      box-shadow:0 0 18px rgba(75,214,255,.4), inset 0 0 20px rgba(75,214,255,.12);
     }
-    #ext3-home.hidden + .nc-open-home{display:grid;}
+    .nc-item-icon{
+      width:38px;height:38px;border-radius:11px;display:grid;place-items:center;font-size:18px;flex-shrink:0;
+      background:linear-gradient(160deg,rgba(75,214,255,.12),rgba(123,107,255,.15));
+      border:1px solid rgba(75,214,255,.35);
+      color:var(--nc-cyan); text-shadow:0 0 10px rgba(75,214,255,.7);
+    }
+    .nc-item-icon.pink{background:linear-gradient(160deg,rgba(255,61,246,.12),rgba(123,107,255,.15));border-color:rgba(255,61,246,.4);color:#ff8ffb;text-shadow:0 0 10px rgba(255,61,246,.6);}
+    .nc-item-icon.violet{background:linear-gradient(160deg,rgba(123,107,255,.16),rgba(75,214,255,.10));border-color:rgba(123,107,255,.5);color:#b6adff;text-shadow:0 0 10px rgba(123,107,255,.7);}
+    .nc-item-icon.green{background:linear-gradient(160deg,rgba(61,255,176,.14),rgba(75,214,255,.10));border-color:rgba(61,255,176,.4);color:#8affc9;text-shadow:0 0 10px rgba(61,255,176,.6);}
+    .nc-item-body{flex:1;min-width:0;}
+    .nc-item-title{font-size:14px;font-weight:600;color:#fff;line-height:1.2;}
+    .nc-item-sub{font-size:11px;color:var(--nc-mute);margin-top:2px;line-height:1.3;}
+    .nc-item-chev{color:var(--nc-mute);font-size:18px;flex-shrink:0;}
 
-    .nc-orb-wrap{
-      position:relative; border-radius:16px; padding:16px 12px 20px;
-      background:linear-gradient(180deg,rgba(10,6,25,.7),rgba(4,2,12,.7));
-      border:1px solid rgba(34,193,255,.28);
-      display:flex; flex-direction:column; align-items:center; justify-content:center;
-      min-height:300px; min-width:0; overflow:hidden;
+    /* ---------- WORK STATUS / ORB ---------- */
+    .nc-work{
+      border-radius:20px; padding:18px 14px 18px; margin-bottom:14px;
+      background:linear-gradient(180deg,rgba(8,14,36,.85),rgba(4,8,22,.9));
+      border:1px solid var(--nc-border);
+      box-shadow:inset 0 0 28px rgba(75,214,255,.10);
+      display:flex; flex-direction:column; align-items:center;
     }
-    .nc-orb-title{font-size:11px; letter-spacing:.5em; color:#8fb7d9; margin-bottom:12px;}
+    .nc-work-title{font-size:10px; letter-spacing:.5em; color:#8fb7d9; margin-bottom:14px; text-transform:uppercase;}
     .nc-orb{
-      position:relative; width:clamp(136px,52vw,230px); height:clamp(136px,52vw,230px); border-radius:50%;
+      position:relative; width:clamp(160px,58vw,220px); height:clamp(160px,58vw,220px); border-radius:50%;
       background:
-        radial-gradient(circle at 30% 30%, rgba(255,255,255,.35), transparent 40%),
-        radial-gradient(circle at 70% 65%, var(--nc-blue) 0%, var(--nc-violet) 45%, #1a0530 75%, #05030d 100%);
+        radial-gradient(circle at 32% 30%, rgba(255,255,255,.35), transparent 40%),
+        radial-gradient(circle at 68% 65%, var(--nc-cyan) 0%, var(--nc-blue) 40%, #0a1a4e 78%, #05030d 100%);
       box-shadow:
-        0 0 60px rgba(138,59,255,.6),
-        0 0 120px rgba(34,193,255,.35),
-        inset 0 0 40px rgba(255,255,255,.1),
-        inset 0 0 80px rgba(138,59,255,.3);
+        0 0 60px rgba(75,214,255,.55),
+        0 0 120px rgba(58,162,255,.3),
+        inset 0 0 40px rgba(255,255,255,.12),
+        inset 0 0 80px rgba(58,162,255,.35);
       cursor:pointer; transition:.4s; overflow:hidden;
       display:grid; place-items:center;
       animation: nc-breath 4s ease-in-out infinite;
     }
     .nc-orb::before{
       content:""; position:absolute; inset:-4px; border-radius:50%;
-      background:conic-gradient(from 0deg, transparent, rgba(34,193,255,.7), transparent, rgba(255,61,246,.7), transparent);
+      background:conic-gradient(from 0deg, transparent, rgba(75,214,255,.65), transparent, rgba(123,107,255,.6), transparent);
       filter:blur(8px); z-index:-1; animation:nc-spin 8s linear infinite;
     }
-    .nc-orb .mr{
-      font-family:'Orbitron',sans-serif; font-weight:900; font-size:clamp(40px,15vw,64px);
-      color:transparent; -webkit-text-stroke:2px #ff8ffb;
-      text-shadow:0 0 22px rgba(255,61,246,.9);
-      pointer-events:none;
+    .nc-orb::after{
+      content:""; position:absolute; inset:-18px; border-radius:50%;
+      border:1px solid rgba(75,214,255,.18);
     }
     @keyframes nc-breath{0%,100%{transform:scale(1);}50%{transform:scale(1.03);}}
     @keyframes nc-spin{to{transform:rotate(360deg);}}
     .nc-orb.listening{
       animation: nc-pulse 1s ease-in-out infinite;
-      box-shadow: 0 0 80px rgba(61,255,176,.8), 0 0 140px rgba(61,255,176,.5), inset 0 0 60px rgba(61,255,176,.3);
+      box-shadow: 0 0 80px rgba(61,255,176,.7), inset 0 0 60px rgba(61,255,176,.3);
       background:
-        radial-gradient(circle at 30% 30%, rgba(255,255,255,.4), transparent 40%),
-        radial-gradient(circle at 70% 65%, #3dffb0 0%, #10b981 45%, #052e20 75%, #05030d 100%);
+        radial-gradient(circle at 32% 30%, rgba(255,255,255,.4), transparent 40%),
+        radial-gradient(circle at 68% 65%, #3dffb0 0%, #10b981 45%, #052e20 78%, #05030d 100%);
     }
-    .nc-orb.listening .mr{-webkit-text-stroke-color:#b8ffdb; text-shadow:0 0 22px rgba(61,255,176,.9);}
     .nc-orb.thinking{
-      box-shadow:0 0 80px rgba(255,196,0,.8), inset 0 0 60px rgba(255,196,0,.3);
+      box-shadow:0 0 80px rgba(255,196,0,.65), inset 0 0 60px rgba(255,196,0,.28);
+      background:
+        radial-gradient(circle at 32% 30%, rgba(255,255,255,.4), transparent 40%),
+        radial-gradient(circle at 68% 65%, #ffc400 0%, #d18f00 45%, #3a2600 78%, #05030d 100%);
     }
     @keyframes nc-pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.08);}}
-    .nc-orb-status{
-      margin-top:14px; padding:5px 14px; border-radius:999px;
-      background:rgba(61,255,176,.1); border:1px solid rgba(61,255,176,.5);
-      color:#8affc9; font-size:11px; letter-spacing:.24em; font-weight:600;
-      display:inline-flex; align-items:center; gap:6px;
+    .nc-work-caption{margin-top:16px;text-align:center;}
+    .nc-work-caption h3{margin:0;font-size:22px;font-weight:800;letter-spacing:.05em;color:var(--nc-cyan);text-shadow:0 0 14px rgba(75,214,255,.7);}
+    .nc-work-caption p{margin:4px 0 0;font-size:10px;letter-spacing:.42em;color:var(--nc-mute);text-transform:uppercase;}
+    .nc-work-caption.listen h3{color:#3dffb0;text-shadow:0 0 14px rgba(61,255,176,.75);}
+    .nc-work-caption.think h3{color:#ffc400;text-shadow:0 0 14px rgba(255,196,0,.75);}
+
+    /* ---------- COMMAND BAR (aparece com Orbe desativada) ---------- */
+    .nc-cmdbar{
+      width:100%; margin-top:16px; display:flex; align-items:center; gap:8px;
+      padding:10px; border-radius:14px;
+      background:rgba(5,10,26,.7); border:1px solid var(--nc-border);
+      box-shadow:inset 0 0 12px rgba(75,214,255,.08);
     }
-    .nc-orb-status::before{content:""; width:6px;height:6px;border-radius:50%;background:#3dffb0; box-shadow:0 0 8px #3dffb0;}
-    .nc-orb-status.listen{background:rgba(61,255,176,.15); border-color:#3dffb0; color:#3dffb0;}
-    .nc-orb-status.think{background:rgba(255,196,0,.15); border-color:#ffc400; color:#ffc400;}
-    .nc-orb-status.think::before{background:#ffc400; box-shadow:0 0 8px #ffc400;}
-    .nc-orb-caption{margin-top:14px; text-align:center;}
-    .nc-orb-caption h3{margin:0 0 4px; font-size:15px; color:#fff; font-weight:700;}
-    .nc-orb-caption p{margin:0; font-size:12px; color:var(--nc-mute); line-height:1.4;}
+    .nc-cmdbar.hidden{display:none;}
+    .nc-cmd-btn{
+      width:36px;height:36px;border-radius:10px;display:grid;place-items:center;cursor:pointer;flex-shrink:0;
+      background:rgba(75,214,255,.08); border:1px solid rgba(75,214,255,.3);
+      color:#c8e8ff; font-size:15px; transition:.18s;
+    }
+    .nc-cmd-btn:hover{background:rgba(75,214,255,.2); border-color:var(--nc-cyan);}
+    .nc-cmd-btn.mic.active{background:rgba(61,255,176,.15); border-color:#3dffb0; color:#8affc9;}
+    .nc-cmd-input{
+      flex:1;min-width:0;background:transparent;border:none;outline:none;
+      color:#fff;font-size:13px;padding:6px 4px;font-family:inherit;
+    }
+    .nc-cmd-input::placeholder{color:rgba(200,220,255,.4);}
+    .nc-cmd-send{
+      padding:9px 14px;border-radius:10px;cursor:pointer;flex-shrink:0;font-size:12px;font-weight:700;letter-spacing:.1em;
+      background:linear-gradient(135deg,var(--nc-cyan),var(--nc-violet));border:none;color:#fff;text-transform:uppercase;
+      box-shadow:0 0 14px rgba(75,214,255,.4);
+    }
+    .nc-cmd-send:hover{box-shadow:0 0 22px rgba(75,214,255,.6);}
 
     .nc-voice-log{
-      margin-top:12px; width:100%; max-height:120px; overflow-y:auto;
-      font-size:12px; color:#d8def5; padding:8px 10px; border-radius:10px;
-      background:rgba(0,0,0,.3); border:1px solid rgba(138,59,255,.25);
-      display:none;
+      margin-top:12px;width:100%;max-height:140px;overflow-y:auto;
+      font-size:12px;color:#d8def5;padding:10px 12px;border-radius:12px;
+      background:rgba(0,0,0,.32);border:1px solid var(--nc-border); display:none;
     }
     .nc-voice-log.show{display:block;}
-    .nc-voice-log .u{color:#7ad9ff;}
-    .nc-voice-log .a{color:#ff8ffb;}
+    .nc-voice-log .u{color:var(--nc-cyan);font-weight:600;}
+    .nc-voice-log .a{color:#b6adff;font-weight:600;}
 
-    .nc-footer{margin-top:14px; text-align:center; font-size:11px; color:var(--nc-mute);}
-    .nc-footer b{color:#ff3df6; font-family:'Orbitron',sans-serif;}
-    .nc-footer .lov{color:#22c1ff; font-weight:700; letter-spacing:.14em;}
+    .nc-footer{margin-top:6px; text-align:center; font-size:11px; color:var(--nc-mute);}
+    .nc-footer .shield{color:var(--nc-cyan);}
+    .nc-footer b{color:#fff;font-weight:700;}
+    .nc-footer .lov{color:var(--nc-cyan); font-weight:700; letter-spacing:.14em;}
+
+    .nc-open-home{
+      position:fixed;left:10px;top:10px;z-index:998;width:38px;height:38px;border-radius:11px;
+      display:none;place-items:center;cursor:pointer;color:#fff;background:rgba(7,10,24,.85);
+      border:1px solid var(--nc-border);box-shadow:0 0 16px rgba(75,214,255,.28);
+    }
+    #ext3-home.hidden + .nc-open-home{display:grid;}
+
     @media (max-width:360px){
-      #ext3-home{padding:12px 10px 18px;}
-      .nc-logo{font-size:44px;margin-bottom:10px;}
-      .nc-cards{gap:8px;}
-      .nc-card{padding:10px 9px;border-radius:14px;}
-      .nc-card-title{font-size:9px;letter-spacing:.12em;}
-      .nc-preset{font-size:10px;padding:6px 3px;}
-      .nc-main{grid-template-columns:92px minmax(0,1fr);gap:7px;}
-      .nc-sidebar{padding:8px 6px;border-radius:14px;}
-      .nc-nav{font-size:10.5px;gap:6px;padding:8px 7px;}
-      .nc-orb-wrap{padding:12px 8px 16px;min-height:270px;}
-      .nc-orb-title{font-size:9px;letter-spacing:.32em;}
-      .nc-orb-caption h3{font-size:13px;}
-      .nc-orb-caption p{font-size:10.5px;}
+      #ext3-home{padding:12px 10px 20px;}
+      .nc-item{padding:10px 12px;gap:10px;}
+      .nc-item-icon{width:34px;height:34px;font-size:16px;}
+      .nc-item-title{font-size:13px;}
+      .nc-item-sub{font-size:10px;}
     }
   </style>
 
   <div id="ext3-home">
-    <div class="nc-topbar">
-      <button class="nc-iconbtn" id="ext3MenuBtn" title="Menu">☰</button>
-      <div style="display:flex;gap:8px;">
-        <button class="nc-iconbtn" title="Fixar">📌</button>
-        <button class="nc-iconbtn" title="Minimizar">—</button>
+    <!-- HEADER -->
+    <div class="nc-header">
+      <div class="nc-logo-mr">MR</div>
+      <div class="nc-header-info">
+        <div class="t1">MR Sem Limites</div>
+        <div class="t2">Extensão</div>
+      </div>
+      <div class="nc-topbar-actions">
+        <button class="nc-iconbtn" id="ext3MenuBtn" title="Menu">⋮</button>
         <button class="nc-iconbtn" id="ext3CloseHome" title="Ir para o app">×</button>
       </div>
     </div>
 
-    <div class="nc-logo">MR<small>SEM LIMITES</small></div>
+    <!-- CLOCK -->
+    <div class="nc-clock-card">
+      <div class="nc-clock-digits" id="ncClock">--:--:--</div>
+      <div class="nc-clock-label" id="ncDate">Horário Atual</div>
+    </div>
 
-    <div class="nc-cards">
-      <div class="nc-card">
-        <div class="nc-card-title">⏰ Horário Atual</div>
-        <div class="big" id="ncClock">--:--:--</div>
-        <div class="sub" id="ncDate">—</div>
+    <!-- TIMER -->
+    <div class="nc-timer-card">
+      <div class="nc-timer-label">Timer de Trabalho</div>
+      <div class="nc-timer-row">
+        <div class="nc-timer-digits" id="ncTimer">00:00:00</div>
+        <button class="nc-timer-stop" id="ncTimerStop"><span class="dot"></span>Stop Alarm</button>
       </div>
-      <div class="nc-card blue">
-        <div class="nc-card-title">⏱ Timer de Trabalho</div>
-        <div class="big" id="ncTimer">00:00:00</div>
-        <div class="sub">Foco • Produtividade • Resultados</div>
-        <div class="nc-timer-presets">
-          <button class="nc-preset" data-min="10">10 min</button>
-          <button class="nc-preset" data-min="30">30 min</button>
-          <button class="nc-preset" data-min="60">1 h</button>
-          <button class="nc-preset custom" id="ncPresetCustom">Custom</button>
-        </div>
-        <div class="nc-timer-actions">
-          <button class="go" id="ncTimerStart">Iniciar</button>
-          <button class="stop" id="ncTimerStop">Parar</button>
-        </div>
+      <div class="nc-timer-presets">
+        <button class="nc-preset" data-min="10">10 min</button>
+        <button class="nc-preset" data-min="30">30 min</button>
+        <button class="nc-preset" data-min="60">1 h</button>
+        <button class="nc-preset custom" id="ncPresetCustom">Custom</button>
+      </div>
+      <div class="nc-timer-actions">
+        <button class="go" id="ncTimerStart">Iniciar</button>
       </div>
     </div>
 
-    <div class="nc-main">
-      <nav class="nc-sidebar" aria-label="Menu EXT3">
-        <div class="nc-menu-group">
-          <div class="nc-menu-title">Principal</div>
-          <div class="nc-nav active" data-tab="home">🏠 Início</div>
-          <div class="nc-nav" data-tab="chat">💬 Chat</div>
-          <div class="nc-nav" data-view="orb">🌐 Orbe IA</div>
+    <!-- MENU -->
+    <div class="nc-menu">
+      <div class="nc-group-title">Principal</div>
+      <div class="nc-item active" data-tab="home">
+        <div class="nc-item-icon">🏠</div>
+        <div class="nc-item-body">
+          <div class="nc-item-title">Início</div>
+          <div class="nc-item-sub">Visão geral e controles rápidos</div>
         </div>
-        <div class="nc-menu-group">
-          <div class="nc-menu-title">Biblioteca</div>
-          <div class="nc-nav" data-tab="ias">🧠 IAs</div>
-          <div class="nc-nav" data-tab="comp">🧩 Componentes</div>
-          <div class="nc-nav" data-tab="anim">✨ Animações</div>
-          <div class="nc-nav" data-tab="prompts">📋 Prompts</div>
+        <div class="nc-item-chev">›</div>
+      </div>
+      <div class="nc-item" data-tab="chat">
+        <div class="nc-item-icon pink">💬</div>
+        <div class="nc-item-body">
+          <div class="nc-item-title">Chat</div>
+          <div class="nc-item-sub">Assistente de código inteligente</div>
         </div>
-        <div class="nc-menu-group">
-          <div class="nc-menu-title">Mídia</div>
-          <div class="nc-nav" data-tab="img">🎨 Imagens IA</div>
-          <div class="nc-nav" data-tab="vid">🎬 Vídeos IA</div>
-          <div class="nc-nav" data-tab="tpl">📦 Templates</div>
-        </div>
-        <div class="nc-menu-group">
-          <div class="nc-menu-title">Sistema</div>
-          <div class="nc-nav" data-tab="tools">🛠 Ferramentas</div>
-          <div class="nc-nav" data-tab="fav">⭐ Favoritos</div>
-          <div class="nc-nav" data-tab="config">⚙️ Configurações</div>
-        </div>
-      </nav>
+        <div class="nc-item-chev">›</div>
+      </div>
 
-      <div class="nc-orb-wrap">
-        <div class="nc-orb-title">A I &nbsp; S P H E R E</div>
-        <div class="nc-orb" id="ncOrb" title="Clique para conversar por voz">
-          <span class="mr">MR</span>
+      <div class="nc-group-title">Biblioteca</div>
+      <div class="nc-item" data-tab="ias">
+        <div class="nc-item-icon violet">🧠</div>
+        <div class="nc-item-body">
+          <div class="nc-item-title">IAs</div>
+          <div class="nc-item-sub">Modelos e direcionamentos</div>
         </div>
-        <div class="nc-orb-status" id="ncOrbStatus">CONECTADO</div>
-        <div class="nc-orb-caption">
-          <h3>Sua IA. Sem limites. Sempre com você.</h3>
-          <p>Clique na Orbe para conversar por voz.<br>Quando decidir, diga <b style="color:#3dffb0">"enviar para o Lovable"</b>.</p>
+        <div class="nc-item-chev">›</div>
+      </div>
+      <div class="nc-item" data-tab="comp">
+        <div class="nc-item-icon">🧩</div>
+        <div class="nc-item-body">
+          <div class="nc-item-title">Componentes</div>
+          <div class="nc-item-sub">Blocos prontos para UI</div>
         </div>
-        <div class="nc-voice-log" id="ncVoiceLog"></div>
+        <div class="nc-item-chev">›</div>
+      </div>
+      <div class="nc-item" data-tab="anim">
+        <div class="nc-item-icon violet">✨</div>
+        <div class="nc-item-body">
+          <div class="nc-item-title">Animações</div>
+          <div class="nc-item-sub">Efeitos e transições</div>
+        </div>
+        <div class="nc-item-chev">›</div>
+      </div>
+      <div class="nc-item" data-tab="prompts">
+        <div class="nc-item-icon pink">📋</div>
+        <div class="nc-item-body">
+          <div class="nc-item-title">Prompts</div>
+          <div class="nc-item-sub">Biblioteca de comandos</div>
+        </div>
+        <div class="nc-item-chev">›</div>
+      </div>
+
+      <div class="nc-group-title">Mídia</div>
+      <div class="nc-item" data-tab="img">
+        <div class="nc-item-icon green">🎨</div>
+        <div class="nc-item-body">
+          <div class="nc-item-title">Imagens IA</div>
+          <div class="nc-item-sub">Geradores e referências</div>
+        </div>
+        <div class="nc-item-chev">›</div>
+      </div>
+      <div class="nc-item" data-tab="vid">
+        <div class="nc-item-icon pink">🎬</div>
+        <div class="nc-item-body">
+          <div class="nc-item-title">Vídeos IA</div>
+          <div class="nc-item-sub">Motion e clipes gerados</div>
+        </div>
+        <div class="nc-item-chev">›</div>
+      </div>
+      <div class="nc-item" data-tab="tpl">
+        <div class="nc-item-icon violet">📦</div>
+        <div class="nc-item-body">
+          <div class="nc-item-title">Templates</div>
+          <div class="nc-item-sub">Estruturas SaaS prontas</div>
+        </div>
+        <div class="nc-item-chev">›</div>
+      </div>
+
+      <div class="nc-group-title">Sistema</div>
+      <div class="nc-item" data-tab="tools">
+        <div class="nc-item-icon">🛠</div>
+        <div class="nc-item-body">
+          <div class="nc-item-title">Ferramentas</div>
+          <div class="nc-item-sub">Utilitários avançados</div>
+        </div>
+        <div class="nc-item-chev">›</div>
+      </div>
+      <div class="nc-item" data-tab="fav">
+        <div class="nc-item-icon green">⭐</div>
+        <div class="nc-item-body">
+          <div class="nc-item-title">Favoritos</div>
+          <div class="nc-item-sub">Seus itens salvos</div>
+        </div>
+        <div class="nc-item-chev">›</div>
+      </div>
+      <div class="nc-item" data-tab="config">
+        <div class="nc-item-icon">⚙️</div>
+        <div class="nc-item-body">
+          <div class="nc-item-title">Configurações</div>
+          <div class="nc-item-sub">Personalize sua experiência</div>
+        </div>
+        <div class="nc-item-chev">›</div>
       </div>
     </div>
 
-    <div class="nc-footer">produto <b>MR</b> Sem Limites Extensão <span class="lov">LOVABLE</span> ♡</div>
+    <!-- WORK STATUS / ORB -->
+    <div class="nc-work">
+      <div class="nc-work-title">Work Status</div>
+      <div class="nc-orb" id="ncOrb" title="Clique para conversar por voz"></div>
+      <div class="nc-work-caption" id="ncOrbCaption">
+        <h3 id="ncOrbTitle">STANDBY</h3>
+        <p id="ncOrbStatus">Clique na Orbe para ativar</p>
+      </div>
+
+      <!-- Barra de comandos (visível com Orbe desativada) -->
+      <div class="nc-cmdbar" id="ncCmdBar">
+        <button class="nc-cmd-btn" id="ncCmdAttach" title="Anexar arquivo">📎</button>
+        <button class="nc-cmd-btn mic" id="ncCmdMic" title="Ditar por voz">🎤</button>
+        <input class="nc-cmd-input" id="ncCmdInput" type="text" placeholder="Digite seu comando…" />
+        <button class="nc-cmd-send" id="ncCmdSend" title="Ativar IA e enviar">Ativar IA</button>
+      </div>
+
+      <div class="nc-voice-log" id="ncVoiceLog"></div>
+    </div>
+
+    <div class="nc-footer">
+      <span class="shield">🛡</span> produto <b>MR Sem Limites</b><br>Extensão <span class="lov">LOVABLE</span>
+    </div>
   </div>
   <button class="nc-open-home" id="ext3OpenHome" title="Abrir painel EXT3">☰</button>
 

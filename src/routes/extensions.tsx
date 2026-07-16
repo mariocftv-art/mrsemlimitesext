@@ -79,7 +79,8 @@ const statusMeta: Record<ExtensionStatus, { label: string; dot: string; color: s
 };
 
 const EXT1_ZIP_URL = "/MR%20Sem%20Limites%20EXT1.zip";
-const EXT2_ZIP_URL = "/MR%20Sem%20Limites%20EXT2.zip";
+import ext2ZipAsset from "@/../public/MR Sem Limites EXT2.zip.asset.json";
+const EXT2_ZIP_URL = (ext2ZipAsset as { url: string }).url;
 
 type Filter = "all" | ExtensionStatus;
 type Sort = "name" | "version" | "updated" | "status";

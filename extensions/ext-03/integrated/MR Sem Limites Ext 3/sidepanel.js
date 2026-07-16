@@ -1826,6 +1826,8 @@ async function sendDirectLovableMessage(messageText) {
   return true;
 }
 
+window.sendDirectLovableMessage = sendDirectLovableMessage;
+
 document.addEventListener('DOMContentLoaded', async () => {
   const activateBtn = document.getElementById('activateBtn');
   const licenseInput = document.getElementById('licenseKey');

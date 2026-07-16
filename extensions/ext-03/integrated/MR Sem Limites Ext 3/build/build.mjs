@@ -23,7 +23,7 @@ import { execSync } from 'node:child_process';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
-const NAME = 'MR Sem Limites EXT1';
+const NAME = 'MR Sem Limites EXT3';
 const DIST = path.join(ROOT, 'dist');
 
 const args = Object.fromEntries(
@@ -35,7 +35,7 @@ const IGNORE = new Set(['dist', 'build', 'node_modules', '.git', '.DS_Store', '.
 const JS_ENTRY = new Set([
   'background.js','sidepanel.js','popup.js','remote-ui.js','hide-element.js',
   'content/content.js','content/inject.js','content/sound-detector.js',
-  'ui/sidepanel-ui.js','ui/sound-settings.js',
+  'ui/sidepanel-ui.js','ui/sound-settings.js','ui/ia-picker.js','ui/input-status.js','ui/neocore.js',
   'lib/storage.js','lib/license.js','lib/constants.js',
   'data/animations.js','data/components.js','data/prompts.js',
   'adapters/backend-adapter.js','interfaces/backend.interface.js',

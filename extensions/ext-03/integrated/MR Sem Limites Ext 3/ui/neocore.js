@@ -592,6 +592,8 @@
   function pushHistory(text, source) {
     const clean = String(text || '').trim();
     if (!clean) return;
+    const last = historyCache[0];
+    if (last?.text === clean && Date.now() - (last.ts || 0) < 2500) return;
     historyCache.unshift({ text: clean, source: source || 'chat', ts: Date.now() });
     if (historyCache.length > HIST_MAX) historyCache.length = HIST_MAX;
     saveHistory();

@@ -290,7 +290,7 @@
     voiceMode = null;
     voiceText = '';
     cmdMic?.classList.remove('active');
-    if (!silent && orb?.dataset.mode !== 'on') setOrbState('idle', 'STANDBY', 'Clique na Orbe para ativar');
+    if (!silent && orb?.dataset.mode !== 'on') setOrbState('idle', 'PRONTA', 'Toque na Orbe para falar');
   }
 
   function listenAfterSpeech() {
@@ -352,7 +352,7 @@
     const cleanPrompt = String(promptText || '').trim();
     if (!cleanPrompt) { alert('Digite ou fale um comando primeiro.'); return; }
     // NÃO esconder a home — envia o comando em background e mantém o painel MR visível.
-    setOrbState('think', 'WORKING', 'Sending command');
+    setOrbState('think', 'ENVIANDO', 'Mandando comando');
     try { window.mrPromptHistory?.push(cleanPrompt, 'orb'); } catch (_) {}
     try { window.mrAppendPromptToChat?.(cleanPrompt, 'user'); } catch (_) {}
     try {
@@ -480,7 +480,7 @@
     const finalReply = cleanOrbeReply(reply);
     conversation.push({ who: 'a', text: finalReply });
     logMsg('a', finalReply);
-    setOrbState('speak', 'SPEAKING', 'Respondendo');
+    setOrbState('speak', 'RESPONDENDO', 'Falando com você');
     speak(finalReply, () => {
       if (orb?.dataset.mode === 'on' && !recognizing) startRecognition(false);
     });
@@ -536,7 +536,7 @@
     recognition.onstart = () => {
       recognizing = true;
       if (intoInput) { cmdMic?.classList.add('active'); }
-      else setOrbState('listen', 'LISTENING', 'Fale seu comando');
+      else setOrbState('listen', 'OUVINDO', 'Fale agora');
       beep(660, 0.12);
     };
     recognition.onerror = async (ev) => {
@@ -638,7 +638,7 @@
           const finalText = voiceText.trim();
           stopRecognition(true);
           if (finalText) handleSpokenText(finalText);
-        }, 1250);
+        }, 700);
         return;
       }
       if (msg.type === 'VOICE_ERROR') {

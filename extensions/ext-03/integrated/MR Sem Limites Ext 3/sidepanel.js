@@ -1507,8 +1507,19 @@ function initDirectChat() {
           messageEl?.focus();
         };
 
-        _voiceRecognition.onerror = (event) => {
+        _voiceRecognition.onerror = async (event) => {
           stopNativeVoice();
+          if (event?.error === 'not-allowed' || event?.error === 'service-not-allowed') {
+            let state = 'unknown';
+            try {
+              const p = await navigator.permissions.query({ name: 'microphone' });
+              state = p.state || 'unknown';
+            } catch (_) {}
+            if (state !== 'denied') {
+              updateStatus('🎤 Microfone ativo. Toque novamente e fale após o aviso de ouvindo.');
+              return;
+            }
+          }
           const errMap = {
             'not-allowed': '🎤 Microfone sem acesso. Permita no Chrome e tente novamente.',
             'service-not-allowed': '🎤 Microfone bloqueado pelo Chrome. Permita no site/extensão.',
@@ -1554,6 +1565,10 @@ function initDirectChat() {
       } else if (msg.type === 'VOICE_ERROR') {
         _voiceRecording = false;
         micBtn.classList.remove('recording');
+        if (msg.error === 'not-allowed' || msg.error === 'service-not-allowed') {
+          updateStatus('🎤 Microfone ativo. Toque novamente e fale após o aviso de ouvindo.');
+          return;
+        }
         const errMap = {
           'not-allowed': '🎤 Microfone sem acesso. Permita no Chrome e tente novamente.',
           'no-speech': '⚠️ Nenhuma fala detectada. Tente novamente.',

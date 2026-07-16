@@ -526,6 +526,135 @@
     .mr-ia-qbtn .qsub{display:block;font-size:9.5px;font-weight:600;color:rgba(255,255,255,.7);margin-top:2px;letter-spacing:.03em}
   </style>
 
+  <!-- ============================================================
+       V6 — NEON LASER OVERRIDES + LEFT ACTION TREE + INPUT STATUS
+       ============================================================ -->
+  <style>
+    :root{
+      --laser-blue:#00e5ff;
+      --laser-blue2:#38bdf8;
+      --laser-red:#ff2050;
+      --laser-red2:#ff5577;
+      --laser-green:#22ff88;
+      --laser-green2:#4ade80;
+      --laser-magenta:#ff2fd6;
+      --laser-violet:#a855f7;
+    }
+
+    /* Beef up the 3D robot background */
+    body::before{opacity:.5 !important;filter:saturate(1.35) contrast(1.05) brightness(1.05) !important}
+    body::after{background:
+      radial-gradient(ellipse at 50% 0%,rgba(0,229,255,.20),transparent 55%),
+      radial-gradient(ellipse at 50% 100%,rgba(255,32,80,.18),transparent 55%),
+      linear-gradient(180deg,rgba(3,4,12,.55) 0%,rgba(3,4,12,.32) 40%,rgba(3,4,12,.78) 100%) !important}
+
+    /* Right sidebar: flip mr-tabs to the right side of the body */
+    .mr-body{flex-direction:row-reverse !important}
+    .mr-tabs{
+      border-right:none !important;
+      border-left:1px solid rgba(0,229,255,.28) !important;
+      box-shadow:inset 1px 0 0 rgba(255,32,80,.10),-4px 0 24px -12px rgba(0,229,255,.5) !important;
+      background:linear-gradient(180deg,rgba(4,8,22,.96),rgba(2,4,14,.96)) !important;
+    }
+    .mr-tab.active{
+      background:linear-gradient(135deg,rgba(0,229,255,.28),rgba(255,32,80,.24)) !important;
+      border-color:rgba(0,229,255,.6) !important;
+      box-shadow:0 0 0 1px rgba(0,229,255,.4),0 6px 22px -8px rgba(0,229,255,.7),inset 0 0 14px rgba(255,32,80,.22) !important;
+    }
+    .mr-tab.active::before{
+      background:linear-gradient(180deg,var(--laser-blue),var(--laser-magenta),var(--laser-red)) !important;
+      box-shadow:0 0 10px var(--laser-blue),0 0 18px var(--laser-red) !important;
+    }
+    .mr-tab:hover{background:linear-gradient(135deg,rgba(0,229,255,.14),rgba(255,32,80,.10)) !important;border-color:rgba(0,229,255,.35) !important}
+
+    /* ===== LEFT ACTION TREE ===== */
+    /* Turn the chat section into a horizontal 2-column: [left tree] [chat] */
+    .mr-panel[data-mrpanel="chat"]{flex-direction:row !important;overflow:hidden}
+    .mr-left-tree{
+      flex:0 0 118px;max-width:118px;height:100%;
+      display:flex;flex-direction:column;gap:6px;
+      padding:10px 8px;overflow-y:auto;overflow-x:hidden;
+      background:linear-gradient(180deg,rgba(4,8,22,.9),rgba(6,3,14,.9));
+      border-right:1px solid rgba(255,32,80,.28);
+      box-shadow:inset -1px 0 0 rgba(0,229,255,.08),4px 0 24px -12px rgba(255,32,80,.5);
+      position:relative;
+    }
+    .mr-left-tree::before{content:"";position:absolute;top:0;left:0;right:0;height:120px;background:radial-gradient(circle at top,rgba(255,32,80,.22),transparent 70%);pointer-events:none}
+    .mr-left-tree::after{content:"";position:absolute;bottom:0;left:0;right:0;height:120px;background:radial-gradient(circle at bottom,rgba(0,229,255,.20),transparent 70%);pointer-events:none}
+    .mr-left-tree::-webkit-scrollbar{width:3px}
+    .mr-left-tree::-webkit-scrollbar-thumb{background:rgba(0,229,255,.3);border-radius:3px}
+
+    .mr-left-tree .lt-section{position:relative;z-index:1;font-size:9px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.55);padding:6px 2px 2px;border-top:1px dashed rgba(0,229,255,.15)}
+    .mr-left-tree .lt-section:first-child{border-top:none}
+
+    .mr-chat-right{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden}
+
+    /* Inside the tree, force the pre-existing bars into a single-column vertical stack */
+    .mr-left-tree .action-bar,
+    .mr-left-tree .quick-actions,
+    .mr-left-tree .qa-pro{
+      display:flex !important;flex-direction:column !important;
+      grid-template-columns:none !important;
+      gap:6px !important;padding:0 !important;border:none !important;background:transparent !important;
+      overflow:visible !important;flex-wrap:nowrap !important;flex-shrink:0;
+    }
+    .mr-left-tree .action-btn,
+    .mr-left-tree #clearBtn,
+    .mr-left-tree .qa-pro-btn{
+      width:100%;justify-content:flex-start;padding:7px 9px !important;
+      font-size:10px !important;border-radius:9px !important;
+      background:rgba(0,229,255,.05) !important;border:1px solid rgba(0,229,255,.22) !important;
+      color:#c8f4ff !important;white-space:normal !important;text-align:left;line-height:1.2;
+      transition:.2s;
+    }
+    .mr-left-tree .action-btn:hover,
+    .mr-left-tree .qa-pro-btn:hover{background:linear-gradient(135deg,rgba(0,229,255,.16),rgba(255,32,80,.14)) !important;border-color:rgba(0,229,255,.6) !important;box-shadow:0 0 12px rgba(0,229,255,.35);transform:translateX(2px)}
+    .mr-left-tree #publishBtn{
+      background:linear-gradient(135deg,#00e5ff,#38bdf8) !important;color:#00121a !important;
+      border:none !important;font-weight:800;box-shadow:0 0 14px rgba(0,229,255,.55) !important;
+    }
+    .mr-left-tree #removeWatermarkBtn{
+      background:rgba(255,32,80,.10) !important;border-color:rgba(255,32,80,.4) !important;color:#ff8fa7 !important;
+    }
+    .mr-left-tree #logoutBtn{margin-left:0 !important;background:rgba(255,32,80,.06) !important;border-color:rgba(255,32,80,.3) !important;color:#ff8fa7 !important}
+
+    .mr-left-tree .qa-btn{
+      flex-direction:row !important;justify-content:flex-start !important;gap:8px !important;
+      padding:8px 9px !important;min-height:auto !important;font-size:10px !important;letter-spacing:.5px !important;
+      text-align:left !important;border-radius:10px !important;
+      background:linear-gradient(155deg,rgba(6,10,26,.9),rgba(3,4,14,.95)) !important;
+      border:1px solid rgba(0,229,255,.25) !important;color:#e6f8ff !important;
+    }
+    .mr-left-tree .qa-btn:hover{border-color:rgba(0,229,255,.6) !important;box-shadow:0 6px 22px -8px rgba(0,229,255,.5),inset 0 0 12px rgba(255,32,80,.15) !important}
+    .mr-left-tree .qa-btn .qa-icon{width:24px !important;height:24px !important;border-radius:7px !important}
+    .mr-left-tree .qa-btn .qa-icon svg{width:13px !important;height:13px !important}
+
+    /* Neon accents in tabs pill area */
+    .mr-left-tree .qa-pro-btn{border-color:rgba(255,32,80,.3) !important;background:rgba(255,32,80,.06) !important}
+    .mr-left-tree .qa-pro-btn:hover{background:linear-gradient(135deg,rgba(255,32,80,.18),rgba(0,229,255,.14)) !important;border-color:rgba(255,32,80,.6) !important;box-shadow:0 0 14px rgba(255,32,80,.4)}
+
+    /* Send button laser style */
+    #sendBtn{background:linear-gradient(135deg,var(--laser-blue),var(--laser-magenta)) !important;box-shadow:0 4px 22px rgba(0,229,255,.55),0 4px 22px rgba(255,32,80,.35) !important}
+
+    /* ===== INPUT STATUS: neon border colors + halo ===== */
+    .input-area{position:relative;transition:box-shadow .25s ease,border-color .25s ease;border-top-width:2px !important}
+    #message{transition:border-color .25s ease,box-shadow .25s ease}
+    .input-area.state-sending{border-top-color:var(--laser-green) !important;box-shadow:0 -8px 22px -8px rgba(34,255,136,.55)}
+    .input-area.state-sending #message{border-color:var(--laser-green) !important;box-shadow:0 0 0 1.5px var(--laser-green),0 0 12px rgba(34,255,136,.7),inset 0 0 8px rgba(34,255,136,.15) !important;animation:mrPulseGreen 1.2s ease-in-out infinite}
+    .input-area.state-done #message{border-color:var(--laser-blue) !important;box-shadow:0 0 0 1.5px var(--laser-blue),0 0 14px rgba(0,229,255,.75),inset 0 0 8px rgba(0,229,255,.15) !important}
+    .input-area.state-done{border-top-color:var(--laser-blue) !important;box-shadow:0 -8px 22px -8px rgba(0,229,255,.6)}
+    .input-area.state-asking #message{border-color:var(--laser-red) !important;box-shadow:0 0 0 1.5px var(--laser-red),0 0 16px rgba(255,32,80,.9),inset 0 0 8px rgba(255,32,80,.2) !important;animation:mrPulseRed 1s ease-in-out infinite}
+    .input-area.state-asking{border-top-color:var(--laser-red) !important;box-shadow:0 -8px 24px -6px rgba(255,32,80,.7)}
+    @keyframes mrPulseGreen{0%,100%{box-shadow:0 0 0 1.5px var(--laser-green),0 0 10px rgba(34,255,136,.6),inset 0 0 6px rgba(34,255,136,.1)}50%{box-shadow:0 0 0 2px var(--laser-green),0 0 18px rgba(34,255,136,.9),inset 0 0 10px rgba(34,255,136,.2)}}
+    @keyframes mrPulseRed{0%,100%{box-shadow:0 0 0 1.5px var(--laser-red),0 0 12px rgba(255,32,80,.7),inset 0 0 6px rgba(255,32,80,.15)}50%{box-shadow:0 0 0 2px var(--laser-red),0 0 22px rgba(255,32,80,1),inset 0 0 12px rgba(255,32,80,.28)}}
+
+    /* Narrow-width shrink for left tree */
+    @media (max-width:360px){
+      .mr-left-tree{flex-basis:100px;max-width:100px;padding:8px 6px}
+      .mr-left-tree .action-btn,.mr-left-tree .qa-pro-btn,.mr-left-tree .qa-btn{font-size:9px !important;padding:6px 7px !important}
+    }
+  </style>
+
 
 </head>
 <body>

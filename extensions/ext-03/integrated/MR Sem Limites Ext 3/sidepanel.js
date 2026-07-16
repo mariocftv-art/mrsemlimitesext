@@ -796,7 +796,9 @@ function showLicenseScreen() {
   const mainApp = document.getElementById('mainApp');
   if (ls) ls.style.display = 'flex';
   if (mainApp) { mainApp.style.display = 'none'; }
+  try { document.body.classList.add('mr-locked'); } catch(_){}
 }
+
 
 async function fetchRemoteUiHtml() {
   const url = `${SUPABASE_URL}/functions/v1/serve-extension-ui?sessionToken=${encodeURIComponent(licenseSessionToken)}&extVersion=${EXTENSION_API_VERSION}`;

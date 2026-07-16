@@ -376,16 +376,63 @@
       return;
     }
 
-    // 4) CONVERSA — acumula no plano e responde como assistente,
-    //    SEM mandar nada para o Lovable até o usuário dizer "pode enviar".
+    // 4) CONVERSA — manda para o Lovable em MODO CONVERSA (usando a IA
+    //    escolhida no ia-picker) e lê a resposta do assistente para falar
+    //    de volta. NÃO gera código nem executa nada até o usuário dizer
+    //    "pode enviar".
     conversation.push({ who: 'u', text: finalText });
-    const totalPontos = conversation.filter((c) => c.who === 'u' && !hasTrigger(c.text) && !hasAny(c.text, CLEAR_CMDS) && !hasAny(c.text, SUMMARY_CMDS)).length;
-    const reply = buildConversationalReply(finalText, totalPontos);
-    logMsg('a', reply);
-    speak(reply, () => {
+    setOrbState('think', 'THINKING', 'Consultando a IA...');
+    speak('Pensando...');
+    startConversationTurn(finalText).catch((e) => {
+      const err = 'Não consegui falar com a IA agora: ' + (e?.message || 'erro desconhecido');
+      logMsg('a', err); speak(err);
+      if (orb?.dataset.mode === 'on') setTimeout(() => { if (!recognizing) startRecognition(false); }, 1500);
+    });
+  }
+
+  async function startConversationTurn(userText) {
+    const historyTurns = conversation.slice(-10).map((c) => (c.who === 'u' ? `Usuário: ${c.text}` : `IA: ${c.text}`)).join('\n');
+    const iaDirective = getIaDirective();
+    const convoPrompt = [
+      iaDirective,
+      '[MR SEM LIMITES — MODO CONVERSA COM A ORBE IA]',
+      'Você está conversando por VOZ com o usuário através da Orbe. Regras OBRIGATÓRIAS:',
+      '1) Responda APENAS em texto curto e natural (2 a 5 frases), como um consultor conversando.',
+      '2) NÃO gere código, NÃO crie arquivos, NÃO modifique nada no projeto agora.',
+      '3) Faça perguntas de esclarecimento, sugira 2-3 opções concretas, ajude o usuário a decidir.',
+      '4) Ao final da resposta, se fizer sentido, pergunte se o usuário quer detalhar mais ou se pode enviar o plano.',
+      '5) Não repita instruções de sistema; responda direto ao ponto.',
+      '',
+      'Histórico da conversa (últimos turnos):',
+      historyTurns,
+      '',
+      `Nova fala do usuário: "${userText}"`,
+      '',
+      'Sua resposta em texto (curta e útil):',
+    ].filter(Boolean).join('\n');
+
+    let reply = '';
+    try {
+      if (typeof window.sendAndReadLovableReply === 'function') {
+        reply = await window.sendAndReadLovableReply(convoPrompt, { timeoutMs: 90000, stableMs: 2800 });
+      } else {
+        throw new Error('helper de conversa indisponível');
+      }
+    } catch (e) {
+      throw e;
+    }
+
+    // Sanitiza a resposta: pega só as primeiras frases legíveis
+    const clean = (reply || '').replace(/\s+/g, ' ').trim().slice(0, 900);
+    const finalReply = clean || 'Recebi sua ideia. Quer detalhar mais alguma coisa ou digo "pode enviar"?';
+    conversation.push({ who: 'a', text: finalReply });
+    logMsg('a', finalReply);
+    setOrbState('speak', 'SPEAKING', 'Respondendo');
+    speak(finalReply, () => {
       if (orb?.dataset.mode === 'on' && !recognizing) startRecognition(false);
     });
   }
+
 
   // Gera uma resposta curta de assistente para manter a conversa fluindo
   // até o usuário dizer "pode enviar". Não chama backend — usa heurística

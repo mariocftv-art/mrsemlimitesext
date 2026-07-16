@@ -480,11 +480,9 @@
     }
   } catch (_) {}
 
-  // Também grava quando sendPromptRaw é chamado internamente pela orbe
-  const _origSendPromptRaw = sendPromptRaw;
-  // Monkey-patch local (não afeta closure), então re-hookamos via wrap na command bar:
+  // Registra prompt da command bar da orbe ANTES do handler limpar o input
   cmdSend?.addEventListener('click', () => {
-    // Já enviado — apenas registra o último valor visível
-    // (o cmdInput foi limpo no handler original; usamos um trick: registramos ANTES do original)
-  }, true /* capture: roda antes */);
+    const t = (cmdInput?.value || '').trim();
+    if (t) pushHistory(t, 'orb');
+  }, true);
 })();

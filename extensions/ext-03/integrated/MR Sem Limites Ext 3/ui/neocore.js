@@ -348,11 +348,11 @@
 
   function syncOverlay() {
     const ls = document.getElementById('licenseScreen');
-    const app = document.getElementById('mainApp');
     const lsVisible = ls && getComputedStyle(ls).display !== 'none';
-    if (lsVisible) { home.classList.add('hidden'); return; }
-    if (app && !home.dataset.userDismissed) home.classList.remove('hidden');
+    if (lsVisible) home.classList.add('hidden');
+    // NÃO reabrimos automaticamente: se o usuário fechou ou clicou numa aba,
+    // a home permanece escondida para não misturar com o painel real.
   }
-  setInterval(syncOverlay, 800);
+  setInterval(syncOverlay, 1500);
   syncOverlay();
 })();

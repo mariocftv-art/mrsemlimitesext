@@ -231,7 +231,9 @@ function ExtensionsPage() {
         </Card>
 
 
+      <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex flex-wrap gap-1.5">
+
           {(["all", "production", "development", "testing", "archived"] as Filter[]).map((f) => (
             <Button
               key={f}

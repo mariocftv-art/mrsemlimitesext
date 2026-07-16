@@ -377,7 +377,7 @@
 
   const sendToLovableFromVoice = () => sendPromptRaw(buildPromptFromConversation());
 
-  function handleSpokenText(text) {
+  async function handleSpokenText(text) {
     const rawText = String(text || '').trim();
     const cleanText = normalizeSpeechText(stripWakeWords(rawText));
     if (!cleanText && hasWakeWord(rawText)) {

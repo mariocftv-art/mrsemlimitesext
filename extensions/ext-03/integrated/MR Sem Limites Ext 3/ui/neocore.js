@@ -261,7 +261,7 @@
     voiceText = '';
     recognizing = true;
     if (intoInput) cmdMic?.classList.add('active');
-    else setOrbState('listen', 'LISTENING', 'Fale seu comando');
+        else setOrbState('listen', 'OUVINDO', 'Fale agora');
     try {
       chrome.runtime.sendMessage({
         type: 'VOICE_START',
@@ -553,10 +553,10 @@
         if (state !== 'denied') {
           // Falso positivo comum em extension sidepanel: tenta pelo offscreen e nunca desliga a Orbe.
           if (startBridgeRecognition(intoInput)) return;
-          if (!intoInput) setOrbState('listen', 'LISTENING', 'Toque novamente e fale');
+          if (!intoInput) setOrbState('listen', 'OUVINDO', 'Toque novamente e fale');
           return;
         }
-        setOrbState('idle', 'MIC OFF', 'Permita o microfone e toque novamente');
+        setOrbState('idle', 'MICROFONE', 'Permita o microfone e toque novamente');
         if (orb) orb.dataset.mode = 'off';
         return;
       }
@@ -566,7 +566,7 @@
           return;
         }
       }
-      if (!intoInput) setOrbState('idle', 'STANDBY', 'Toque a Orbe para falar');
+      if (!intoInput) setOrbState('idle', 'PRONTA', 'Toque a Orbe para falar');
     };
     recognition.onend = () => {
       recognizing = false;
@@ -609,13 +609,13 @@
         if (msg.status === 'started') {
           recognizing = true;
           if (voiceMode === 'input') cmdMic?.classList.add('active');
-          else setOrbState('listen', 'LISTENING', 'Fale seu comando');
+          else setOrbState('listen', 'OUVINDO', 'Fale agora');
         }
         if (msg.status === 'ended') {
           if (voiceMode === 'input') cmdMic?.classList.remove('active');
           recognizing = false;
           if (voiceMode === 'orb' && orb?.dataset.mode === 'on' && !voiceText.trim()) {
-            setOrbState('listen', 'LISTENING', 'Fale seu comando');
+            setOrbState('listen', 'OUVINDO', 'Fale agora');
             setTimeout(() => { if (orb?.dataset.mode === 'on' && !recognizing) startRecognition(false); }, 450);
           }
         }
@@ -648,7 +648,7 @@
         stopRecognition(true);
         if (!currentMode || currentMode === 'input') return;
         if (canRetry && orb?.dataset.mode === 'on') {
-          setOrbState('listen', 'LISTENING', 'Fale seu comando');
+          setOrbState('listen', 'OUVINDO', 'Fale agora');
           setTimeout(() => { if (orb?.dataset.mode === 'on') startRecognition(false); }, 650);
           return;
         }
@@ -658,10 +658,10 @@
           return;
         }
         if (/not-allowed|service-not-allowed/i.test(err)) {
-          setOrbState('listen', 'LISTENING', 'Microfone liberado? toque novamente');
+          setOrbState('listen', 'OUVINDO', 'Microfone liberado? toque novamente');
           return;
         }
-        setOrbState('idle', 'MIC OFF', 'Permita o microfone e toque novamente');
+        setOrbState('idle', 'MICROFONE', 'Permita o microfone e toque novamente');
         if (orb) orb.dataset.mode = 'off';
       }
     });
@@ -675,16 +675,16 @@
       orb.dataset.mode = 'off';
       stopRecognition(true);
       try { window.speechSynthesis.cancel(); } catch (_) {}
-      setOrbState('idle', 'STANDBY', 'Clique na Orbe para ativar');
+      setOrbState('idle', 'PRONTA', 'Toque na Orbe para falar');
       beep(440, 0.15);
       return;
     }
     orb.dataset.mode = 'on';
     conversation = [];
     if (voiceLog) { voiceLog.innerHTML = ''; voiceLog.classList.remove('show'); }
-    const msg = 'Modo conversa ativo. Pode falar agora.';
+    const msg = 'Pode falar.';
     logMsg('a', msg);
-    setOrbState('listen', 'LISTENING', 'Fale seu comando');
+    setOrbState('listen', 'OUVINDO', 'Fale agora');
     listenAfterSpeech();
   });
 
@@ -717,7 +717,7 @@
   });
 
   // Estado inicial da orbe
-  setOrbState('idle', 'STANDBY', 'Clique na Orbe para ativar');
+  setOrbState('idle', 'PRONTA', 'Toque na Orbe para falar');
 
   function syncOverlay() {
     const ls = document.getElementById('licenseScreen');

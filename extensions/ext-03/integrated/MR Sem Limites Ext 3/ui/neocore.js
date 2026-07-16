@@ -166,8 +166,8 @@
     orbCaption?.classList.remove('listen', 'think');
     if (s === 'listen') { orb.classList.add('listening'); orbCaption?.classList.add('listen'); }
     if (s === 'think')  { orb.classList.add('thinking');  orbCaption?.classList.add('think'); }
-    if (orbTitle)  orbTitle.textContent  = title || (s === 'listen' ? 'LISTENING' : s === 'think' ? 'WORKING' : 'STANDBY');
-    if (orbStatus) orbStatus.textContent = subtitle || (s === 'listen' ? 'Fale seu comando' : s === 'think' ? 'Sending command' : 'Clique na Orbe para ativar');
+    if (orbTitle)  orbTitle.textContent  = title || (s === 'listen' ? 'OUVINDO' : s === 'think' ? 'PENSANDO' : s === 'speak' ? 'RESPONDENDO' : 'PRONTA');
+    if (orbStatus) orbStatus.textContent = subtitle || (s === 'listen' ? 'Fale agora' : s === 'think' ? 'Preparando resposta' : 'Toque na Orbe para falar');
     // Mostra/oculta command bar: aparece quando desativada
     if (cmdBar) {
       if (orb.dataset.mode === 'on') cmdBar.classList.add('hidden');
@@ -202,15 +202,15 @@
     const finish = () => { if (done) return; done = true; try { onEnd && onEnd(); } catch (_) {} };
     try {
       const u = new SpeechSynthesisUtterance(text);
-      u.lang = 'pt-BR'; u.rate = 0.96; u.pitch = 1.08; u.volume = 0.9;
+      u.lang = 'pt-BR'; u.rate = 1.08; u.pitch = 1.06; u.volume = 0.92;
       if (ptVoice) u.voice = ptVoice;
       u.onend = finish;
       u.onerror = finish;
       window.speechSynthesis.cancel();
       window.speechSynthesis.speak(u);
       // Fallback: alguns browsers não disparam onend
-      const est = Math.max(1500, Math.min(12000, text.length * 90));
-      setTimeout(finish, est + 800);
+      const est = Math.max(900, Math.min(7000, text.length * 55));
+      setTimeout(finish, est + 350);
     } catch (_) { setTimeout(finish, 400); }
   }
 

@@ -1604,16 +1604,32 @@
     </div>
 
     <div class="nc-main">
-      <nav class="nc-sidebar">
-        <div class="nc-nav active" data-view="home">🏠 Início</div>
-        <div class="nc-nav" data-view="orb">🌐 IA Sphere</div>
-        <div class="nc-nav" data-view="app">💬 Chats</div>
-        <div class="nc-nav" data-view="app">📄 Documentos</div>
-        <div class="nc-nav" data-view="app">📁 Projetos</div>
-        <div class="nc-nav" data-view="app">✨ Prompts</div>
-        <div class="nc-nav" data-view="app">🧩 Extensões</div>
-        <div class="nc-nav" data-view="app">⚙️ Configurações</div>
-        <div class="nc-nav" data-view="about">ⓘ Sobre</div>
+      <nav class="nc-sidebar" aria-label="Menu EXT3">
+        <div class="nc-menu-group">
+          <div class="nc-menu-title">Principal</div>
+          <div class="nc-nav active" data-tab="home">🏠 Início</div>
+          <div class="nc-nav" data-tab="chat">💬 Chat</div>
+          <div class="nc-nav" data-view="orb">🌐 Orbe IA</div>
+        </div>
+        <div class="nc-menu-group">
+          <div class="nc-menu-title">Biblioteca</div>
+          <div class="nc-nav" data-tab="ias">🧠 IAs</div>
+          <div class="nc-nav" data-tab="comp">🧩 Componentes</div>
+          <div class="nc-nav" data-tab="anim">✨ Animações</div>
+          <div class="nc-nav" data-tab="prompts">📋 Prompts</div>
+        </div>
+        <div class="nc-menu-group">
+          <div class="nc-menu-title">Mídia</div>
+          <div class="nc-nav" data-tab="img">🎨 Imagens IA</div>
+          <div class="nc-nav" data-tab="vid">🎬 Vídeos IA</div>
+          <div class="nc-nav" data-tab="tpl">📦 Templates</div>
+        </div>
+        <div class="nc-menu-group">
+          <div class="nc-menu-title">Sistema</div>
+          <div class="nc-nav" data-tab="tools">🛠 Ferramentas</div>
+          <div class="nc-nav" data-tab="fav">⭐ Favoritos</div>
+          <div class="nc-nav" data-tab="config">⚙️ Configurações</div>
+        </div>
       </nav>
 
       <div class="nc-orb-wrap">
@@ -1632,6 +1648,7 @@
 
     <div class="nc-footer">produto <b>MR</b> Sem Limites Extensão <span class="lov">LOVABLE</span> ♡</div>
   </div>
+  <button class="nc-open-home" id="ext3OpenHome" title="Abrir painel EXT3">☰</button>
 
   <script src="ui/neocore.js"></script>
 

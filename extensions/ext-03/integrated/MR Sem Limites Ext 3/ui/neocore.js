@@ -10,17 +10,18 @@
   const IA_PICK_KEY = 'mr_ia_pick_v1';
 
   function showHome() {
-    home.dataset.userDismissed = '';
     home.classList.remove('hidden');
   }
   function hideHome() {
-    home.dataset.userDismissed = '1';
     home.classList.add('hidden');
   }
 
-  closeHome?.addEventListener('click', hideHome);
+  // Botão × agora leva ao Chat (aba real) em vez de esconder a home
+  closeHome?.addEventListener('click', () => {
+    activateRealTab('chat');
+    hideHome();
+  });
   menuBtn?.addEventListener('click', () => {
-    // pequena rotação/scroll ao topo como feedback
     home.scrollTo({ top: 0, behavior: 'smooth' });
   });
   openHome?.addEventListener('click', showHome);
@@ -35,10 +36,19 @@
     el.addEventListener('click', () => {
       document.querySelectorAll('.nc-item').forEach((n) => n.classList.remove('active'));
       el.classList.add('active');
-      if (el.dataset.tab) {
-        activateRealTab(el.dataset.tab);
-        hideHome();
-      }
+      const t = el.dataset.tab;
+      if (!t) return;
+      if (t === 'home') { showHome(); return; }
+      activateRealTab(t);
+      hideHome();
+    });
+  });
+
+  // Clique nas abas laterais reais também esconde a home
+  document.querySelectorAll('.mr-tab[data-mrtab]').forEach((tab) => {
+    tab.addEventListener('click', () => {
+      if (tab.dataset.mrtab === 'home') showHome();
+      else hideHome();
     });
   });
 

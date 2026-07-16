@@ -426,11 +426,6 @@
       }
       heardText = text.trim() || heardText;
       if (!text) return;
-      if (intoInput && cmdInput) {
-        cmdInput.value = cmdInput.value ? `${cmdInput.value} ${text.trim()}` : text.trim();
-        cmdInput.dispatchEvent(new Event('input', { bubbles: true }));
-        cmdInput.focus();
-      }
     };
     try { recognition.start(); } catch (_) {
       if (startBridgeRecognition(intoInput)) return;

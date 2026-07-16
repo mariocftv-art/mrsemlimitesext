@@ -653,6 +653,145 @@
       .mr-left-tree{flex-basis:100px;max-width:100px;padding:8px 6px}
       .mr-left-tree .action-btn,.mr-left-tree .qa-pro-btn,.mr-left-tree .qa-btn{font-size:9px !important;padding:6px 7px !important}
     }
+
+    /* ═══════════════════════════════════════════════════════════════
+       PREMIUM VISUAL OVERLAY — Neo Enterprise HUD
+       (visual-only, no logic/markup changes)
+       ═══════════════════════════════════════════════════════════════ */
+    :root{
+      --neo-cyan:#22d3ee; --neo-blue:#3b82f6; --neo-magenta:#ec4899;
+      --neo-violet:#a855f7; --neo-orange:#fb923c; --neo-white:#f2f7ff;
+      --neo-ink:#04050d; --neo-panel:rgba(11,15,32,.62);
+      --neo-line:rgba(120,200,255,.14);
+      --neo-glow-cyan:0 0 22px rgba(34,211,238,.55),0 0 60px rgba(34,211,238,.18);
+      --neo-glow-mag:0 0 22px rgba(236,72,153,.55),0 0 60px rgba(236,72,153,.18);
+    }
+
+    @keyframes neo-breath{0%,100%{transform:scale(1);filter:drop-shadow(0 0 8px rgba(34,211,238,.35))}50%{transform:scale(1.035);filter:drop-shadow(0 0 18px rgba(34,211,238,.7)) drop-shadow(0 0 32px rgba(236,72,153,.35))}}
+    @keyframes neo-tilt{0%,100%{transform:rotate(-1.2deg)}50%{transform:rotate(1.2deg)}}
+    @keyframes neo-eyes{0%,100%{opacity:.9}50%{opacity:.45}}
+    @keyframes neo-scan{0%{transform:translateY(-120%)}100%{transform:translateY(220%)}}
+    @keyframes neo-grid{0%{background-position:0 0}100%{background-position:44px 44px}}
+    @keyframes neo-halo{0%,100%{opacity:.55;transform:rotate(0deg)}50%{opacity:.9;transform:rotate(180deg)}}
+    @keyframes neo-shine{0%{transform:translateX(-140%) skewX(-18deg)}60%,100%{transform:translateX(260%) skewX(-18deg)}}
+    @keyframes neo-particle{0%{transform:translate3d(0,0,0);opacity:0}10%{opacity:.7}100%{transform:translate3d(var(--dx,20px),-160px,0);opacity:0}}
+    @keyframes neo-loader-arc{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+
+    /* Deep starfield + subtle tech grid layered above existing bg */
+    body::before{opacity:.28 !important;filter:saturate(1.25) contrast(1.08) brightness(1.02) !important}
+    body::after{
+      background:
+        radial-gradient(1200px 500px at 50% -10%,rgba(34,211,238,.16),transparent 60%),
+        radial-gradient(900px 500px at 100% 110%,rgba(236,72,153,.14),transparent 60%),
+        radial-gradient(700px 400px at 0% 60%,rgba(168,85,247,.10),transparent 60%),
+        linear-gradient(180deg,rgba(4,5,13,.72),rgba(4,5,13,.55) 45%,rgba(4,5,13,.88)) !important;
+    }
+    body{position:relative}
+    body > .neo-grid{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.14;
+      background-image:linear-gradient(rgba(34,211,238,.18) 1px,transparent 1px),linear-gradient(90deg,rgba(34,211,238,.18) 1px,transparent 1px);
+      background-size:44px 44px;mask-image:radial-gradient(ellipse at 50% 40%,#000 40%,transparent 78%);
+      animation:neo-grid 30s linear infinite}
+
+    /* Glass panels everywhere */
+    .app-header,.action-bar,.tabs-bar,.mr-tabs,.input-area,.app-footer,.quick-actions,
+    .mr-left-tree,.mr-right-tree{
+      background:linear-gradient(180deg,rgba(9,12,26,.72),rgba(9,12,26,.5)) !important;
+      backdrop-filter:blur(18px) saturate(150%);-webkit-backdrop-filter:blur(18px) saturate(150%);
+      border-color:rgba(120,200,255,.14) !important;
+    }
+    .app-header{border-bottom:1px solid transparent !important;
+      background-image:linear-gradient(180deg,rgba(9,12,26,.78),rgba(9,12,26,.55)),linear-gradient(90deg,transparent,rgba(34,211,238,.7),rgba(236,72,153,.7),transparent) !important;
+      background-origin:padding-box,border-box !important;background-clip:padding-box,border-box !important;
+      border-bottom:1px solid transparent !important;box-shadow:0 1px 0 rgba(34,211,238,.18),0 10px 30px -18px rgba(0,0,0,.6);position:relative}
+    .app-header::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;background:linear-gradient(90deg,transparent,rgba(34,211,238,.55),rgba(236,72,153,.55),transparent)}
+
+    /* Title — clean gradient */
+    .app-header-title{
+      background:linear-gradient(135deg,#c7f1ff,#67e8f9 40%,#f472b6 75%,#a5b4fc) !important;
+      -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+      text-shadow:0 0 24px rgba(34,211,238,.15);
+    }
+
+    /* Robot / logo — living breathing hologram */
+    .app-header-logo,.app-header-brand,.lic-logo{position:relative;animation:neo-breath 4.2s ease-in-out infinite !important;transition:filter .3s ease}
+    .app-header-brand::before,.lic-logo::before{
+      content:"";position:absolute;inset:-8px;border-radius:50%;
+      background:conic-gradient(from 0deg,rgba(34,211,238,.0),rgba(34,211,238,.55),rgba(236,72,153,.55),rgba(168,85,247,.4),rgba(34,211,238,0));
+      filter:blur(9px);opacity:.55;z-index:-1;animation:neo-halo 8s linear infinite
+    }
+    .app-header-logo{box-shadow:0 0 0 1px rgba(34,211,238,.35),var(--neo-glow-cyan) !important}
+
+    /* License logo micro-life */
+    .lic-logo{animation:neo-breath 4.5s ease-in-out infinite, lic-logoGlow 3s ease-in-out infinite !important}
+    .lic-logo img{animation:neo-eyes 3s ease-in-out infinite}
+    .lic-logo-wrap{animation:lic-fadeInUp .7s cubic-bezier(.16,1,.3,1) .15s both, neo-tilt 6s ease-in-out infinite}
+
+    /* Tabs — premium underline glow + hover ripple */
+    .tab-btn,.mr-tab{position:relative;transition:color .25s ease,background .25s ease !important}
+    .tab-btn:hover,.mr-tab:hover{color:#c7f1ff !important;background:linear-gradient(180deg,rgba(34,211,238,.06),transparent) !important}
+    .tab-btn.active,.mr-tab.active{color:#e8faff !important;border-bottom-color:transparent !important}
+    .tab-btn.active::after,.mr-tab.active::after{
+      content:"";position:absolute;left:12%;right:12%;bottom:-1px;height:2px;border-radius:2px;
+      background:linear-gradient(90deg,var(--neo-cyan),var(--neo-magenta));
+      box-shadow:0 0 14px rgba(34,211,238,.7),0 0 22px rgba(236,72,153,.4)
+    }
+
+    /* Bubbles — glass */
+    .bubble{backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);transition:transform .2s ease,box-shadow .3s ease}
+    .bubble.bot{background:linear-gradient(155deg,rgba(15,20,44,.82),rgba(9,12,26,.7)) !important;border:1px solid rgba(120,200,255,.18) !important;box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 8px 24px -14px rgba(0,0,0,.6)}
+    .bubble.user{background:linear-gradient(135deg,#0891b2 0%,#22d3ee 40%,#ec4899 100%) !important;box-shadow:0 8px 26px -10px rgba(34,211,238,.5),0 8px 26px -10px rgba(236,72,153,.45) !important}
+    .bubble:hover{transform:translateY(-1px)}
+
+    /* Send / mic / attach — premium round buttons */
+    #sendBtn{background:linear-gradient(135deg,var(--neo-cyan),var(--neo-blue) 55%,var(--neo-magenta)) !important;background-size:180% 180% !important;box-shadow:0 6px 22px rgba(34,211,238,.45),0 6px 22px rgba(236,72,153,.35),inset 0 1px 0 rgba(255,255,255,.25) !important;position:relative;overflow:hidden}
+    #sendBtn::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);transform:translateX(-140%) skewX(-18deg);animation:neo-shine 4.5s ease-in-out infinite}
+    #sendBtn:hover{background-position:100% 0 !important;transform:translateY(-2px) scale(1.05) !important;box-shadow:0 10px 32px rgba(34,211,238,.6),0 10px 32px rgba(236,72,153,.5) !important}
+    #attachBtn,#micBtn{background:rgba(11,15,32,.65) !important;border:1px solid rgba(120,200,255,.28) !important;color:#c7f1ff !important;backdrop-filter:blur(10px);transition:all .25s ease}
+    #attachBtn:hover,#micBtn:hover{border-color:rgba(34,211,238,.7) !important;box-shadow:var(--neo-glow-cyan);color:#e8faff !important}
+
+    /* Message input — subtle inner glow + focus ring */
+    #message{background:linear-gradient(180deg,rgba(9,12,26,.85),rgba(9,12,26,.65)) !important;border:1px solid rgba(120,200,255,.2) !important;backdrop-filter:blur(12px);transition:border-color .25s ease,box-shadow .3s ease}
+    #message:focus{border-color:rgba(34,211,238,.55) !important;box-shadow:0 0 0 3px rgba(34,211,238,.12),0 0 24px rgba(34,211,238,.18) !important}
+
+    /* Left action tree + quick-actions — premium cards */
+    .qa-btn,.action-btn,.qa-pro-btn{transition:transform .25s cubic-bezier(.16,1,.3,1),box-shadow .3s ease,border-color .25s ease,background .25s ease !important;will-change:transform}
+    .qa-btn:hover,.qa-pro-btn:hover,.action-btn:hover{transform:translateY(-2px) !important}
+    .qa-btn:active,.qa-pro-btn:active,.action-btn:active{transform:scale(.97) !important}
+    .qa-btn::after{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,.08) 50%,transparent 70%);transform:translateX(-120%);transition:transform .6s ease;pointer-events:none}
+    .qa-btn:hover::after{transform:translateX(120%)}
+
+    /* Sidebar (left tree) — luminous edge */
+    .mr-left-tree{border-right:1px solid transparent !important;position:relative}
+    .mr-left-tree::after{content:"";position:absolute;top:8%;bottom:8%;right:0;width:1px;background:linear-gradient(180deg,transparent,rgba(34,211,238,.55),rgba(236,72,153,.45),transparent);box-shadow:0 0 12px rgba(34,211,238,.35)}
+    .mr-right-tree{border-left:1px solid transparent !important;position:relative}
+    .mr-right-tree::after{content:"";position:absolute;top:8%;bottom:8%;left:0;width:1px;background:linear-gradient(180deg,transparent,rgba(236,72,153,.5),rgba(34,211,238,.5),transparent);box-shadow:0 0 12px rgba(236,72,153,.35)}
+
+    /* License card — deeper premium */
+    .lic-card{background:linear-gradient(160deg,rgba(13,18,40,.78),rgba(9,12,26,.72)) !important;border:1px solid rgba(120,200,255,.2) !important;box-shadow:0 30px 80px -30px rgba(0,0,0,.7),0 0 60px -20px rgba(34,211,238,.25),0 0 60px -20px rgba(236,72,153,.2),inset 0 1px 0 rgba(255,255,255,.05) !important}
+    .lic-field input{background:rgba(9,12,26,.8) !important;border-color:rgba(120,200,255,.22) !important;color:#e8faff !important}
+    .lic-field input:focus{border-color:rgba(34,211,238,.6) !important;box-shadow:0 0 0 3px rgba(34,211,238,.14),0 0 24px rgba(34,211,238,.22) !important;animation:none !important}
+    .btn-activate{background:linear-gradient(135deg,#22d3ee 0%,#3b82f6 45%,#ec4899 100%) !important;background-size:220% 220% !important;box-shadow:0 10px 30px -8px rgba(34,211,238,.55),0 10px 30px -8px rgba(236,72,153,.45) !important}
+    .btn-activate:hover{background-position:100% 0 !important;box-shadow:0 14px 40px -8px rgba(34,211,238,.7),0 14px 40px -8px rgba(236,72,153,.55) !important}
+
+    /* Publish button (green) — keep semantic color but polish */
+    #publishBtn{background:linear-gradient(135deg,#059669,#10b981 55%,#22d3ee) !important;box-shadow:0 6px 22px rgba(16,185,129,.45),0 6px 22px rgba(34,211,238,.25) !important}
+
+    /* License badge — pulsing green */
+    #licenseInfo{background:linear-gradient(135deg,rgba(34,197,94,.1),rgba(34,211,238,.06)) !important;border:1px solid rgba(34,197,94,.28) !important;box-shadow:0 0 12px rgba(34,197,94,.2)}
+
+    /* Toast — glass */
+    .toast{background:linear-gradient(155deg,rgba(15,20,44,.88),rgba(9,12,26,.82)) !important;border:1px solid rgba(120,200,255,.25) !important;backdrop-filter:blur(14px);box-shadow:0 20px 40px -10px rgba(0,0,0,.6),0 0 24px rgba(34,211,238,.2)}
+
+    /* Custom scrollbar */
+    *::-webkit-scrollbar-thumb{background:linear-gradient(180deg,rgba(34,211,238,.45),rgba(236,72,153,.45)) !important;border-radius:4px}
+
+    /* HUD loader utility (opt-in via class, does not alter existing logic) */
+    .neo-loader{position:relative;width:22px;height:22px;border-radius:50%;border:2px solid rgba(34,211,238,.18);border-top-color:var(--neo-cyan);border-right-color:var(--neo-magenta);animation:neo-loader-arc .9s linear infinite;box-shadow:0 0 12px rgba(34,211,238,.35)}
+
+    /* Reduce motion respect */
+    @media (prefers-reduced-motion:reduce){
+      *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important}
+    }
   </style>
 
 

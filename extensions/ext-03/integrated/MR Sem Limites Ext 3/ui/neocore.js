@@ -8,18 +8,21 @@
   const menuBtn = document.getElementById('ext3MenuBtn');
   const openHome = document.getElementById('ext3OpenHome');
   const IA_PICK_KEY = 'mr_ia_pick_v1';
+  let userLeftHome = false;
 
   function showHome() {
+    userLeftHome = false;
     home.classList.remove('hidden');
   }
-  function hideHome() {
+  function hideHome(fromUser) {
+    if (fromUser) userLeftHome = true;
     home.classList.add('hidden');
   }
 
   // Botão × agora leva ao Chat (aba real) em vez de esconder a home
   closeHome?.addEventListener('click', () => {
     activateRealTab('chat');
-    hideHome();
+    hideHome(true);
   });
   menuBtn?.addEventListener('click', () => {
     home.scrollTo({ top: 0, behavior: 'smooth' });
@@ -40,7 +43,7 @@
       if (!t) return;
       if (t === 'home') { showHome(); return; }
       activateRealTab(t);
-      hideHome();
+      hideHome(true);
     });
   });
 
@@ -48,7 +51,7 @@
   document.querySelectorAll('.mr-tab[data-mrtab]').forEach((tab) => {
     tab.addEventListener('click', () => {
       if (tab.dataset.mrtab === 'home') showHome();
-      else hideHome();
+      else hideHome(true);
     });
   });
 
@@ -155,6 +158,7 @@
   const cmdMic = document.getElementById('ncCmdMic');
   const cmdAttach = document.getElementById('ncCmdAttach');
   let recognition = null, recognizing = false, conversation = [];
+  let voiceMode = null, voiceText = '', voiceTimer = null, bridgeVoice = false;
 
   function setOrbState(s, title, subtitle) {
     if (!orb) return;
@@ -198,7 +202,7 @@
     const finish = () => { if (done) return; done = true; try { onEnd && onEnd(); } catch (_) {} };
     try {
       const u = new SpeechSynthesisUtterance(text);
-      u.lang = 'pt-BR'; u.rate = 1.05; u.pitch = 1.05; u.volume = 1;
+      u.lang = 'pt-BR'; u.rate = 0.96; u.pitch = 1.08; u.volume = 0.9;
       if (ptVoice) u.voice = ptVoice;
       u.onend = finish;
       u.onerror = finish;
@@ -212,6 +216,26 @@
 
   const TRIGGERS = ['enviar para o lovable','manda pro lovable','manda para o lovable','envia pro lovable','executa','executar','pode enviar','manda ai','manda aí','envia agora'];
   const hasTrigger = (t) => TRIGGERS.some((k) => String(t || '').toLowerCase().includes(k));
+
+  function canUseExtensionVoiceBridge() {
+    return !!(window.chrome?.runtime?.sendMessage);
+  }
+
+  function stopRecognition(silent) {
+    clearTimeout(voiceTimer);
+    voiceTimer = null;
+    try { recognition && recognition.stop(); } catch (_) {}
+    if (bridgeVoice) {
+      try { chrome.runtime.sendMessage({ type: 'VOICE_STOP' }, () => void chrome.runtime.lastError); } catch (_) {}
+    }
+    recognition = null;
+    recognizing = false;
+    bridgeVoice = false;
+    voiceMode = null;
+    voiceText = '';
+    cmdMic?.classList.remove('active');
+    if (!silent && orb?.dataset.mode !== 'on') setOrbState('idle', 'STANDBY', 'Clique na Orbe para ativar');
+  }
 
   function getIaDirective() {
     try {
@@ -263,15 +287,44 @@
     const reply = 'Anotado. Pode continuar falando, ou diga "enviar para o Lovable" quando estiver pronto.';
     setOrbState('listen', 'LISTENING', 'Fale seu comando');
     logMsg('a', reply);
-    speak(reply);
-    // Re-arma reconhecimento em paralelo (não depende do onend de speak,
-    // que costuma falhar em alguns browsers)
     if (orb?.dataset.mode === 'on') {
-      setTimeout(() => { if (orb?.dataset.mode === 'on') startRecognition(false); }, 600);
+      setTimeout(() => { if (orb?.dataset.mode === 'on') startRecognition(false); }, 450);
     }
   }
 
   function startRecognition(intoInput) {
+    if (recognizing) { stopRecognition(true); return; }
+    voiceMode = intoInput ? 'input' : 'orb';
+    voiceText = '';
+
+    if (canUseExtensionVoiceBridge()) {
+      bridgeVoice = true;
+      recognizing = true;
+      if (intoInput) cmdMic?.classList.add('active');
+      else setOrbState('listen', 'LISTENING', 'Fale seu comando');
+      beep(660, 0.12);
+      try {
+        chrome.runtime.sendMessage({
+          type: 'VOICE_START',
+          lang: 'pt-BR',
+          existingText: intoInput ? (cmdInput?.value || '') : '',
+        }, () => {
+          if (!chrome.runtime.lastError) return;
+          bridgeVoice = false;
+          recognizing = false;
+          startLocalRecognition(intoInput);
+        });
+      } catch (_) {
+        bridgeVoice = false;
+        recognizing = false;
+        startLocalRecognition(intoInput);
+      }
+      return;
+    }
+    startLocalRecognition(intoInput);
+  }
+
+  function startLocalRecognition(intoInput) {
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SR) {
       if (intoInput && cmdInput) cmdInput.focus();
@@ -282,7 +335,6 @@
       }
       return;
     }
-    if (recognizing) { try { recognition.stop(); } catch (_) {} return; }
     try { recognition && recognition.abort(); } catch (_) {}
     recognition = new SR();
     recognition.lang = 'pt-BR'; recognition.interimResults = false; recognition.continuous = false;
@@ -312,7 +364,7 @@
           if (!intoInput) setOrbState('listen', 'LISTENING', 'Fale seu comando');
           return;
         }
-        setOrbState('idle', 'MIC BLOQUEADO', 'Permita o microfone e tente novamente');
+        setOrbState('idle', 'MIC OFF', 'Permita o microfone e toque novamente');
         if (orb) orb.dataset.mode = 'off';
         return;
       }
@@ -348,13 +400,74 @@
     }
   }
 
+  try {
+    chrome.runtime?.onMessage?.addListener((msg) => {
+      if (!bridgeVoice || !msg || !voiceMode) return;
+      if (msg.type === 'VOICE_STATUS') {
+        if (msg.status === 'started') {
+          recognizing = true;
+          if (voiceMode === 'input') cmdMic?.classList.add('active');
+          else setOrbState('listen', 'LISTENING', 'Fale seu comando');
+        }
+        if (msg.status === 'ended') {
+          if (voiceMode === 'input') cmdMic?.classList.remove('active');
+          recognizing = false;
+          if (voiceMode === 'orb' && orb?.dataset.mode === 'on' && !voiceText.trim()) {
+            setOrbState('listen', 'LISTENING', 'Fale seu comando');
+            setTimeout(() => { if (orb?.dataset.mode === 'on' && !recognizing) startRecognition(false); }, 450);
+          }
+        }
+        return;
+      }
+      if (msg.type === 'VOICE_RESULT') {
+        const text = String(msg.text || '').trim();
+        if (!text) return;
+        if (voiceMode === 'input') {
+          if (cmdInput) {
+            cmdInput.value = text;
+            cmdInput.focus();
+          }
+          return;
+        }
+        voiceText = text;
+        setOrbState('listen', 'OUVINDO', 'Continue falando');
+        clearTimeout(voiceTimer);
+        voiceTimer = setTimeout(() => {
+          const finalText = voiceText.trim();
+          stopRecognition(true);
+          if (finalText) handleSpokenText(finalText);
+        }, 1250);
+        return;
+      }
+      if (msg.type === 'VOICE_ERROR') {
+        const err = String(msg.error || '');
+        const currentMode = voiceMode;
+        const canRetry = /no-speech|aborted|Content script|respondeu/i.test(err);
+        stopRecognition(true);
+        if (!currentMode || currentMode === 'input') return;
+        if (canRetry && orb?.dataset.mode === 'on') {
+          setOrbState('listen', 'LISTENING', 'Fale seu comando');
+          setTimeout(() => { if (orb?.dataset.mode === 'on') startRecognition(false); }, 650);
+          return;
+        }
+        if (/Abra o lovable|primeiro/i.test(err)) {
+          setOrbState('idle', 'ABRA O LOVABLE', 'Deixe um projeto Lovable aberto');
+          if (orb) orb.dataset.mode = 'off';
+          return;
+        }
+        setOrbState('idle', 'MIC OFF', 'Permita o microfone e toque novamente');
+        if (orb) orb.dataset.mode = 'off';
+      }
+    });
+  } catch (_) {}
+
   // Clique na Orbe: ativa/desativa modo conversa
   // IMPORTANTE: startRecognition() DEVE ser chamado SÍNCRONO neste handler
   // para preservar o contexto de gesto do usuário (senão o browser bloqueia).
   orb?.addEventListener('click', () => {
     if (orb.dataset.mode === 'on') {
       orb.dataset.mode = 'off';
-      try { recognition && recognition.stop(); } catch (_) {}
+      stopRecognition(true);
       try { window.speechSynthesis.cancel(); } catch (_) {}
       setOrbState('idle', 'STANDBY', 'Clique na Orbe para ativar');
       beep(440, 0.15);
@@ -366,9 +479,7 @@
     const msg = 'Modo conversa ativo. Pode falar.';
     logMsg('a', msg);
     setOrbState('listen', 'LISTENING', 'Fale seu comando');
-    // Fala e reconhecimento em paralelo — assim o gesto do usuário
-    // ainda está ativo quando SpeechRecognition.start() é chamado.
-    speak(msg);
+    // Não fala por cima do microfone: mostra o status e já começa a ouvir.
     startRecognition(false);
   });
 
@@ -385,7 +496,7 @@
   });
   cmdMic?.addEventListener('click', () => {
     // Se já está gravando, para. Senão, dispara reconhecimento no input.
-    if (recognizing) { try { recognition.stop(); } catch (_) {} cmdMic?.classList.remove('active'); return; }
+    if (recognizing) { stopRecognition(true); return; }
     startRecognition(true);
   });
 
@@ -406,11 +517,21 @@
   function syncOverlay() {
     const ls = document.getElementById('licenseScreen');
     const lsVisible = ls && getComputedStyle(ls).display !== 'none';
-    if (lsVisible) home.classList.add('hidden');
-    // NÃO reabrimos automaticamente: se o usuário fechou ou clicou numa aba,
-    // a home permanece escondida para não misturar com o painel real.
+    const app = document.getElementById('mainApp');
+    const appVisible = app && getComputedStyle(app).display !== 'none';
+    if (lsVisible) {
+      home.classList.add('hidden');
+      return;
+    }
+    // Depois da licença, a tela principal correta é a Home Neo-Core (print novo).
+    // Só não reabre se o usuário saiu dela clicando em uma aba real.
+    if (appVisible && !userLeftHome) home.classList.remove('hidden');
   }
   setInterval(syncOverlay, 1500);
+  try {
+    const app = document.getElementById('mainApp');
+    if (app) new MutationObserver(syncOverlay).observe(app, { attributes: true, attributeFilter: ['style', 'class'] });
+  } catch (_) {}
   syncOverlay();
 
   // ---------- Prompt history store (global, persistido) ----------

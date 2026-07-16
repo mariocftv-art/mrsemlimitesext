@@ -1492,7 +1492,7 @@ function initDirectChat() {
         _voiceRecording = false;
         micBtn.classList.remove('recording');
         const errMap = {
-          'not-allowed': '❌ Microfone bloqueado. Permita em chrome://settings/content/microphone',
+          'not-allowed': '🎤 Microfone sem acesso. Permita no Chrome e tente novamente.',
           'no-speech': '⚠️ Nenhuma fala detectada. Tente novamente.',
           'audio-capture': '❌ Microfone não encontrado',
           'not-supported': '❌ Navegador não suporta reconhecimento de voz',

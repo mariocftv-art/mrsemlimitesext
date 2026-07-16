@@ -1393,9 +1393,16 @@
         linear-gradient(180deg,#05030d 0%,#0a0620 50%,#04020a 100%);
     }
     #ext3-home{
-      position:fixed; inset:0; z-index:50; overflow-y:auto; overflow-x:hidden;
+      position:fixed; inset:0; z-index:999; overflow-y:auto; overflow-x:hidden;
       color:var(--nc-text); font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
       padding:14px 14px 20px;
+      background:
+        radial-gradient(900px 520px at 18% -8%, rgba(255,61,246,.22), transparent 62%),
+        radial-gradient(900px 560px at 105% 12%, rgba(34,193,255,.18), transparent 60%),
+        radial-gradient(760px 680px at 50% 118%, rgba(138,59,255,.24), transparent 62%),
+        linear-gradient(180deg, rgba(4,2,10,.98) 0%, rgba(7,4,20,.98) 48%, rgba(3,2,9,.99) 100%);
+      backdrop-filter:blur(18px) saturate(135%);
+      -webkit-backdrop-filter:blur(18px) saturate(135%);
     }
     #ext3-home.hidden{display:none;}
     .nc-topbar{display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;}
@@ -1471,7 +1478,7 @@
     }
     .nc-nav svg{width:16px;height:16px;flex-shrink:0;}
     .nc-open-home{
-      position:fixed;left:10px;top:10px;z-index:49;width:36px;height:36px;border-radius:10px;
+      position:fixed;left:10px;top:10px;z-index:998;width:36px;height:36px;border-radius:10px;
       display:none;place-items:center;cursor:pointer;color:#fff;background:rgba(7,10,24,.82);
       border:1px solid rgba(34,193,255,.45);box-shadow:0 0 18px rgba(34,193,255,.28);
     }

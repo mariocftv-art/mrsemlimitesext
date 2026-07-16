@@ -226,7 +226,7 @@
   const SUMMARY_CMDS = ['resumo','resumir','qual o plano','me mostra o plano','mostrar o plano'];
   const hasAny = (t, list) => list.some((k) => String(t || '').toLowerCase().includes(k));
   const hasTrigger = (t) => hasAny(t, TRIGGERS);
-  const WAKE_WORDS = ['standby', 'stand by', 'ativar ia', 'ativa ia', 'orbe', 'mr'];
+  const WAKE_WORDS = ['standby', 'stand by', 'stand bye', 'estande bai', 'ativar ia', 'ativa ia', 'orbe', 'orbi', 'mr'];
   const hasWakeWord = (t) => WAKE_WORDS.some((k) => String(t || '').toLowerCase().includes(k));
   const stripWakeWords = (t) => {
     let out = String(t || '').trim();
@@ -235,6 +235,20 @@
     });
     return out.replace(/^[\s,.:;-]+|[\s,.:;-]+$/g, '').replace(/\s{2,}/g, ' ').trim();
   };
+
+  function normalizeSpeechText(text) {
+    return String(text || '')
+      .replace(/\bstand\s*(?:by|bye|bai)\b/gi, 'Orbe')
+      .replace(/\bestande\s*(?:by|bye|bai)\b/gi, 'Orbe')
+      .replace(/\borbi\b/gi, 'Orbe')
+      .replace(/\blouva(?:do|da)?\b/gi, 'Lovable')
+      .replace(/\bluva(?:do|da)?\b/gi, 'Lovable')
+      .replace(/\bdesembord\b/gi, 'dashboard')
+      .replace(/\bdash\s*bord\b/gi, 'dashboard')
+      .replace(/\bCláudia\b/gi, 'Claude')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
 
   function canUseExtensionVoiceBridge() {
     return !!(window.chrome?.runtime?.sendMessage);

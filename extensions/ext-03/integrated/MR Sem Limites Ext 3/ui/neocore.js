@@ -10,17 +10,18 @@
   const IA_PICK_KEY = 'mr_ia_pick_v1';
 
   function showHome() {
-    home.dataset.userDismissed = '';
     home.classList.remove('hidden');
   }
   function hideHome() {
-    home.dataset.userDismissed = '1';
     home.classList.add('hidden');
   }
 
-  closeHome?.addEventListener('click', hideHome);
+  // Botão × agora leva ao Chat (aba real) em vez de esconder a home
+  closeHome?.addEventListener('click', () => {
+    activateRealTab('chat');
+    hideHome();
+  });
   menuBtn?.addEventListener('click', () => {
-    // pequena rotação/scroll ao topo como feedback
     home.scrollTo({ top: 0, behavior: 'smooth' });
   });
   openHome?.addEventListener('click', showHome);
@@ -35,10 +36,19 @@
     el.addEventListener('click', () => {
       document.querySelectorAll('.nc-item').forEach((n) => n.classList.remove('active'));
       el.classList.add('active');
-      if (el.dataset.tab) {
-        activateRealTab(el.dataset.tab);
-        hideHome();
-      }
+      const t = el.dataset.tab;
+      if (!t) return;
+      if (t === 'home') { showHome(); return; }
+      activateRealTab(t);
+      hideHome();
+    });
+  });
+
+  // Clique nas abas laterais reais também esconde a home
+  document.querySelectorAll('.mr-tab[data-mrtab]').forEach((tab) => {
+    tab.addEventListener('click', () => {
+      if (tab.dataset.mrtab === 'home') showHome();
+      else hideHome();
     });
   });
 
@@ -246,13 +256,19 @@
       const msg = 'Perfeito, enviando o plano para o Lovable agora.';
       setOrbState('think', 'WORKING', 'Sending command');
       logMsg('a', msg);
-      speak(msg, () => setTimeout(sendToLovableFromVoice, 250));
+      speak(msg);
+      setTimeout(sendToLovableFromVoice, 400);
       return;
     }
     const reply = 'Anotado. Pode continuar falando, ou diga "enviar para o Lovable" quando estiver pronto.';
-    setOrbState('think', 'PENSANDO', 'Aguardando…');
+    setOrbState('listen', 'LISTENING', 'Fale seu comando');
     logMsg('a', reply);
-    speak(reply, () => { if (orb?.dataset.mode === 'on') setTimeout(startRecognition, 300); });
+    speak(reply);
+    // Re-arma reconhecimento em paralelo (não depende do onend de speak,
+    // que costuma falhar em alguns browsers)
+    if (orb?.dataset.mode === 'on') {
+      setTimeout(() => { if (orb?.dataset.mode === 'on') startRecognition(false); }, 600);
+    }
   }
 
   function startRecognition(intoInput) {
@@ -266,7 +282,8 @@
       }
       return;
     }
-    if (recognizing) return;
+    if (recognizing) { try { recognition.stop(); } catch (_) {} return; }
+    try { recognition && recognition.abort(); } catch (_) {}
     recognition = new SR();
     recognition.lang = 'pt-BR'; recognition.interimResults = false; recognition.continuous = false;
     recognition.onstart = () => {
@@ -275,15 +292,31 @@
       else setOrbState('listen', 'LISTENING', 'Fale seu comando');
       beep(660, 0.12);
     };
-    recognition.onerror = () => {
+    recognition.onerror = (ev) => {
       recognizing = false;
       cmdMic?.classList.remove('active');
-      if (!intoInput) setOrbState('idle');
+      const err = ev?.error || '';
+      if (err === 'not-allowed' || err === 'service-not-allowed') {
+        setOrbState('idle', 'MIC BLOQUEADO', 'Permita o microfone e tente novamente');
+        if (orb) orb.dataset.mode = 'off';
+        return;
+      }
+      if (err === 'no-speech' || err === 'aborted') {
+        // Continua ouvindo se estiver em modo conversa
+        if (!intoInput && orb?.dataset.mode === 'on') {
+          setTimeout(() => { if (orb?.dataset.mode === 'on') startRecognition(false); }, 300);
+          return;
+        }
+      }
+      if (!intoInput) setOrbState('idle', 'STANDBY', 'Toque a Orbe para falar');
     };
     recognition.onend = () => {
       recognizing = false;
       cmdMic?.classList.remove('active');
-      if (!intoInput && orb?.dataset.mode === 'on') setOrbState('idle', 'STANDBY', 'Toque para falar');
+      if (!intoInput && orb?.dataset.mode === 'on') {
+        // Auto-reinicia enquanto o modo conversa estiver ativo
+        setTimeout(() => { if (orb?.dataset.mode === 'on') startRecognition(false); }, 250);
+      }
     };
     recognition.onresult = (ev) => {
       const text = ev.results?.[0]?.[0]?.transcript || '';
@@ -295,14 +328,20 @@
         handleSpokenText(text);
       }
     };
-    try { recognition.start(); } catch (_) {}
+    try { recognition.start(); } catch (_) {
+      // Se start falhar (ex.: já iniciado), tenta novamente em breve
+      setTimeout(() => { try { recognition.start(); } catch (_) {} }, 250);
+    }
   }
 
   // Clique na Orbe: ativa/desativa modo conversa
+  // IMPORTANTE: startRecognition() DEVE ser chamado SÍNCRONO neste handler
+  // para preservar o contexto de gesto do usuário (senão o browser bloqueia).
   orb?.addEventListener('click', () => {
     if (orb.dataset.mode === 'on') {
       orb.dataset.mode = 'off';
       try { recognition && recognition.stop(); } catch (_) {}
+      try { window.speechSynthesis.cancel(); } catch (_) {}
       setOrbState('idle', 'STANDBY', 'Clique na Orbe para ativar');
       beep(440, 0.15);
       return;
@@ -312,8 +351,11 @@
     if (voiceLog) { voiceLog.innerHTML = ''; voiceLog.classList.remove('show'); }
     const msg = 'Modo conversa ativo. Pode falar.';
     logMsg('a', msg);
-    setOrbState('listen', 'ATIVANDO', 'Preparando microfone…');
-    speak(msg, () => startRecognition(false));
+    setOrbState('listen', 'LISTENING', 'Fale seu comando');
+    // Fala e reconhecimento em paralelo — assim o gesto do usuário
+    // ainda está ativo quando SpeechRecognition.start() é chamado.
+    speak(msg);
+    startRecognition(false);
   });
 
   // Command bar
@@ -328,7 +370,8 @@
     if (e.key === 'Enter') { e.preventDefault(); cmdSend?.click(); }
   });
   cmdMic?.addEventListener('click', () => {
-    if (recognizing) { try { recognition.stop(); } catch (_) {} return; }
+    // Se já está gravando, para. Senão, dispara reconhecimento no input.
+    if (recognizing) { try { recognition.stop(); } catch (_) {} cmdMic?.classList.remove('active'); return; }
     startRecognition(true);
   });
 

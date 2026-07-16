@@ -526,6 +526,135 @@
     .mr-ia-qbtn .qsub{display:block;font-size:9.5px;font-weight:600;color:rgba(255,255,255,.7);margin-top:2px;letter-spacing:.03em}
   </style>
 
+  <!-- ============================================================
+       V6 — NEON LASER OVERRIDES + LEFT ACTION TREE + INPUT STATUS
+       ============================================================ -->
+  <style>
+    :root{
+      --laser-blue:#00e5ff;
+      --laser-blue2:#38bdf8;
+      --laser-red:#ff2050;
+      --laser-red2:#ff5577;
+      --laser-green:#22ff88;
+      --laser-green2:#4ade80;
+      --laser-magenta:#ff2fd6;
+      --laser-violet:#a855f7;
+    }
+
+    /* Beef up the 3D robot background */
+    body::before{opacity:.5 !important;filter:saturate(1.35) contrast(1.05) brightness(1.05) !important}
+    body::after{background:
+      radial-gradient(ellipse at 50% 0%,rgba(0,229,255,.20),transparent 55%),
+      radial-gradient(ellipse at 50% 100%,rgba(255,32,80,.18),transparent 55%),
+      linear-gradient(180deg,rgba(3,4,12,.55) 0%,rgba(3,4,12,.32) 40%,rgba(3,4,12,.78) 100%) !important}
+
+    /* Right sidebar: flip mr-tabs to the right side of the body */
+    .mr-body{flex-direction:row-reverse !important}
+    .mr-tabs{
+      border-right:none !important;
+      border-left:1px solid rgba(0,229,255,.28) !important;
+      box-shadow:inset 1px 0 0 rgba(255,32,80,.10),-4px 0 24px -12px rgba(0,229,255,.5) !important;
+      background:linear-gradient(180deg,rgba(4,8,22,.96),rgba(2,4,14,.96)) !important;
+    }
+    .mr-tab.active{
+      background:linear-gradient(135deg,rgba(0,229,255,.28),rgba(255,32,80,.24)) !important;
+      border-color:rgba(0,229,255,.6) !important;
+      box-shadow:0 0 0 1px rgba(0,229,255,.4),0 6px 22px -8px rgba(0,229,255,.7),inset 0 0 14px rgba(255,32,80,.22) !important;
+    }
+    .mr-tab.active::before{
+      background:linear-gradient(180deg,var(--laser-blue),var(--laser-magenta),var(--laser-red)) !important;
+      box-shadow:0 0 10px var(--laser-blue),0 0 18px var(--laser-red) !important;
+    }
+    .mr-tab:hover{background:linear-gradient(135deg,rgba(0,229,255,.14),rgba(255,32,80,.10)) !important;border-color:rgba(0,229,255,.35) !important}
+
+    /* ===== LEFT ACTION TREE ===== */
+    /* Turn the chat section into a horizontal 2-column: [left tree] [chat] */
+    .mr-panel[data-mrpanel="chat"]{flex-direction:row !important;overflow:hidden}
+    .mr-left-tree{
+      flex:0 0 118px;max-width:118px;height:100%;
+      display:flex;flex-direction:column;gap:6px;
+      padding:10px 8px;overflow-y:auto;overflow-x:hidden;
+      background:linear-gradient(180deg,rgba(4,8,22,.9),rgba(6,3,14,.9));
+      border-right:1px solid rgba(255,32,80,.28);
+      box-shadow:inset -1px 0 0 rgba(0,229,255,.08),4px 0 24px -12px rgba(255,32,80,.5);
+      position:relative;
+    }
+    .mr-left-tree::before{content:"";position:absolute;top:0;left:0;right:0;height:120px;background:radial-gradient(circle at top,rgba(255,32,80,.22),transparent 70%);pointer-events:none}
+    .mr-left-tree::after{content:"";position:absolute;bottom:0;left:0;right:0;height:120px;background:radial-gradient(circle at bottom,rgba(0,229,255,.20),transparent 70%);pointer-events:none}
+    .mr-left-tree::-webkit-scrollbar{width:3px}
+    .mr-left-tree::-webkit-scrollbar-thumb{background:rgba(0,229,255,.3);border-radius:3px}
+
+    .mr-left-tree .lt-section{position:relative;z-index:1;font-size:9px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.55);padding:6px 2px 2px;border-top:1px dashed rgba(0,229,255,.15)}
+    .mr-left-tree .lt-section:first-child{border-top:none}
+
+    .mr-chat-right{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden}
+
+    /* Inside the tree, force the pre-existing bars into a single-column vertical stack */
+    .mr-left-tree .action-bar,
+    .mr-left-tree .quick-actions,
+    .mr-left-tree .qa-pro{
+      display:flex !important;flex-direction:column !important;
+      grid-template-columns:none !important;
+      gap:6px !important;padding:0 !important;border:none !important;background:transparent !important;
+      overflow:visible !important;flex-wrap:nowrap !important;flex-shrink:0;
+    }
+    .mr-left-tree .action-btn,
+    .mr-left-tree #clearBtn,
+    .mr-left-tree .qa-pro-btn{
+      width:100%;justify-content:flex-start;padding:7px 9px !important;
+      font-size:10px !important;border-radius:9px !important;
+      background:rgba(0,229,255,.05) !important;border:1px solid rgba(0,229,255,.22) !important;
+      color:#c8f4ff !important;white-space:normal !important;text-align:left;line-height:1.2;
+      transition:.2s;
+    }
+    .mr-left-tree .action-btn:hover,
+    .mr-left-tree .qa-pro-btn:hover{background:linear-gradient(135deg,rgba(0,229,255,.16),rgba(255,32,80,.14)) !important;border-color:rgba(0,229,255,.6) !important;box-shadow:0 0 12px rgba(0,229,255,.35);transform:translateX(2px)}
+    .mr-left-tree #publishBtn{
+      background:linear-gradient(135deg,#00e5ff,#38bdf8) !important;color:#00121a !important;
+      border:none !important;font-weight:800;box-shadow:0 0 14px rgba(0,229,255,.55) !important;
+    }
+    .mr-left-tree #removeWatermarkBtn{
+      background:rgba(255,32,80,.10) !important;border-color:rgba(255,32,80,.4) !important;color:#ff8fa7 !important;
+    }
+    .mr-left-tree #logoutBtn{margin-left:0 !important;background:rgba(255,32,80,.06) !important;border-color:rgba(255,32,80,.3) !important;color:#ff8fa7 !important}
+
+    .mr-left-tree .qa-btn{
+      flex-direction:row !important;justify-content:flex-start !important;gap:8px !important;
+      padding:8px 9px !important;min-height:auto !important;font-size:10px !important;letter-spacing:.5px !important;
+      text-align:left !important;border-radius:10px !important;
+      background:linear-gradient(155deg,rgba(6,10,26,.9),rgba(3,4,14,.95)) !important;
+      border:1px solid rgba(0,229,255,.25) !important;color:#e6f8ff !important;
+    }
+    .mr-left-tree .qa-btn:hover{border-color:rgba(0,229,255,.6) !important;box-shadow:0 6px 22px -8px rgba(0,229,255,.5),inset 0 0 12px rgba(255,32,80,.15) !important}
+    .mr-left-tree .qa-btn .qa-icon{width:24px !important;height:24px !important;border-radius:7px !important}
+    .mr-left-tree .qa-btn .qa-icon svg{width:13px !important;height:13px !important}
+
+    /* Neon accents in tabs pill area */
+    .mr-left-tree .qa-pro-btn{border-color:rgba(255,32,80,.3) !important;background:rgba(255,32,80,.06) !important}
+    .mr-left-tree .qa-pro-btn:hover{background:linear-gradient(135deg,rgba(255,32,80,.18),rgba(0,229,255,.14)) !important;border-color:rgba(255,32,80,.6) !important;box-shadow:0 0 14px rgba(255,32,80,.4)}
+
+    /* Send button laser style */
+    #sendBtn{background:linear-gradient(135deg,var(--laser-blue),var(--laser-magenta)) !important;box-shadow:0 4px 22px rgba(0,229,255,.55),0 4px 22px rgba(255,32,80,.35) !important}
+
+    /* ===== INPUT STATUS: neon border colors + halo ===== */
+    .input-area{position:relative;transition:box-shadow .25s ease,border-color .25s ease;border-top-width:2px !important}
+    #message{transition:border-color .25s ease,box-shadow .25s ease}
+    .input-area.state-sending{border-top-color:var(--laser-green) !important;box-shadow:0 -8px 22px -8px rgba(34,255,136,.55)}
+    .input-area.state-sending #message{border-color:var(--laser-green) !important;box-shadow:0 0 0 1.5px var(--laser-green),0 0 12px rgba(34,255,136,.7),inset 0 0 8px rgba(34,255,136,.15) !important;animation:mrPulseGreen 1.2s ease-in-out infinite}
+    .input-area.state-done #message{border-color:var(--laser-blue) !important;box-shadow:0 0 0 1.5px var(--laser-blue),0 0 14px rgba(0,229,255,.75),inset 0 0 8px rgba(0,229,255,.15) !important}
+    .input-area.state-done{border-top-color:var(--laser-blue) !important;box-shadow:0 -8px 22px -8px rgba(0,229,255,.6)}
+    .input-area.state-asking #message{border-color:var(--laser-red) !important;box-shadow:0 0 0 1.5px var(--laser-red),0 0 16px rgba(255,32,80,.9),inset 0 0 8px rgba(255,32,80,.2) !important;animation:mrPulseRed 1s ease-in-out infinite}
+    .input-area.state-asking{border-top-color:var(--laser-red) !important;box-shadow:0 -8px 24px -6px rgba(255,32,80,.7)}
+    @keyframes mrPulseGreen{0%,100%{box-shadow:0 0 0 1.5px var(--laser-green),0 0 10px rgba(34,255,136,.6),inset 0 0 6px rgba(34,255,136,.1)}50%{box-shadow:0 0 0 2px var(--laser-green),0 0 18px rgba(34,255,136,.9),inset 0 0 10px rgba(34,255,136,.2)}}
+    @keyframes mrPulseRed{0%,100%{box-shadow:0 0 0 1.5px var(--laser-red),0 0 12px rgba(255,32,80,.7),inset 0 0 6px rgba(255,32,80,.15)}50%{box-shadow:0 0 0 2px var(--laser-red),0 0 22px rgba(255,32,80,1),inset 0 0 12px rgba(255,32,80,.28)}}
+
+    /* Narrow-width shrink for left tree */
+    @media (max-width:360px){
+      .mr-left-tree{flex-basis:100px;max-width:100px;padding:8px 6px}
+      .mr-left-tree .action-btn,.mr-left-tree .qa-pro-btn,.mr-left-tree .qa-btn{font-size:9px !important;padding:6px 7px !important}
+    }
+  </style>
+
 
 </head>
 <body>
@@ -585,7 +714,8 @@
       <div class="app-header-right">
         <button id="mrPowerToggle" class="mr-power" title="Ativar/Desativar extensão"><span class="mr-power-dot"></span><span id="mrPowerLabel">ATIVA</span></button>
         <span id="licenseInfo">--</span>
-        <button id="publishBtn" class="action-btn">Publish</button>
+        <!-- publishBtn moved to left action tree -->
+
         <div class="app-header-brand" title="MR Sem Limites"><img src="logo.png" alt="MR Sem Limites"></div>
       </div>
     </div>
@@ -646,53 +776,60 @@
 
     <!-- Chat (existente — IDs preservados) -->
     <section class="mr-panel active" data-mrpanel="chat">
-      <div class="mr-ia-chip" id="mrIaChip"><span id="mrIaChipText">🧠 Modo: Padrão</span><button class="mr-ia-chip-x" id="mrIaChipClear" title="Remover direcionamento">✕</button></div>
-      <div class="action-bar">
-        <button id="downloadBtn" class="action-btn">&#11015; Download</button>
-        <button id="removeWatermarkBtn" class="action-btn">&#10005; TIRAR MARCA D'AGUA</button>
-        <button id="clearBtn">&#128465; Limpar</button>
-        <button id="logoutBtn" class="action-btn">Sair</button>
-      </div>
-      <div class="banner"><img src="banner.png" alt="MR SEM LIMITES"></div>
-      <div class="quick-actions">
-        <button class="qa-btn" data-action="corrigir"><span class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg></span>CORRIGIR</button>
-        <button class="qa-btn" data-action="refatorar"><span class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/><line x1="14" y1="4" x2="10" y2="20"/></svg></span>REFATORAR</button>
-        <button class="qa-btn" data-action="melhorar"><span class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span>MELHORAR</button>
-        <button class="qa-btn" data-action="otimizar"><span class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></span>OTIMIZAR</button>
-        <button class="qa-btn" data-action="seguranca"><span class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></span>SEGURAN&Ccedil;A</button>
-        <button class="qa-btn" data-action="responsivo"><span class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg></span>RESPONSIVO</button>
-      </div>
-      <!-- Botões rápidos Pro (ações explícitas, roteadas via UI module) -->
-      <div class="qa-pro" id="mrQaPro"></div>
-      <div id="chatPanel">
-        <div id="history">
-          <div class="empty-state">
-            <h3>Pronto para come&ccedil;ar</h3>
-            <p>Envie uma mensagem para interagir</p>
-          </div>
+      <aside class="mr-left-tree">
+        <div class="lt-section">Ações</div>
+        <div class="action-bar">
+          <button id="publishBtn" class="action-btn">Publish</button>
+          <button id="downloadBtn" class="action-btn">&#11015; Download</button>
+          <button id="removeWatermarkBtn" class="action-btn">&#10005; Tirar marca d'água</button>
+          <button id="clearBtn">&#128465; Limpar</button>
+          <button id="logoutBtn" class="action-btn">Sair</button>
         </div>
-        <div id="quickSuggestions"></div>
-        <div id="status"></div>
-        <div id="filePreview"></div>
-        <div class="mr-ref-hint" id="mrRefHint">
-          <label><input type="checkbox" id="mrRefOnly" checked> Imagem apenas como <b>referência visual</b> — gerar código, não imagem</label>
+        <div class="lt-section">Prompt rápido</div>
+        <div class="quick-actions">
+          <button class="qa-btn" data-action="corrigir"><span class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg></span>CORRIGIR</button>
+          <button class="qa-btn" data-action="refatorar"><span class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/><line x1="14" y1="4" x2="10" y2="20"/></svg></span>REFATORAR</button>
+          <button class="qa-btn" data-action="melhorar"><span class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span>MELHORAR</button>
+          <button class="qa-btn" data-action="otimizar"><span class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></span>OTIMIZAR</button>
+          <button class="qa-btn" data-action="seguranca"><span class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></span>SEGURAN&Ccedil;A</button>
+          <button class="qa-btn" data-action="responsivo"><span class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg></span>RESPONSIVO</button>
         </div>
-        <div class="input-area">
-          <div class="input-enhance-row">
-            <button id="enhanceBtn">&#10024; <span>Otimizar com IA</span></button>
+        <div class="lt-section">Pro</div>
+        <div class="qa-pro" id="mrQaPro"></div>
+      </aside>
+      <div class="mr-chat-right">
+        <div class="mr-ia-chip" id="mrIaChip"><span id="mrIaChipText">🧠 Modo: Padrão</span><button class="mr-ia-chip-x" id="mrIaChipClear" title="Remover direcionamento">✕</button></div>
+        <div class="banner"><img src="banner.png" alt="MR SEM LIMITES"></div>
+        <div id="chatPanel">
+          <div id="history">
+            <div class="empty-state">
+              <h3>Pronto para come&ccedil;ar</h3>
+              <p>Envie uma mensagem para interagir</p>
+            </div>
           </div>
-          <div class="input-row">
-            <button id="attachBtn" title="Anexar arquivo">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
-            </button>
-            <input type="file" id="fileInput" multiple style="display:none">
-            <button id="micBtn" title="Comando de voz">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
-            </button>
-            <textarea id="message" placeholder="Digite sua mensagem..." rows="1"></textarea>
-            <button id="sendBtn" title="Enviar">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
-            </button>
+          <div id="quickSuggestions"></div>
+          <div id="status"></div>
+          <div id="filePreview"></div>
+          <div class="mr-ref-hint" id="mrRefHint">
+            <label><input type="checkbox" id="mrRefOnly" checked> Imagem apenas como <b>referência visual</b> — gerar código, não imagem</label>
+          </div>
+          <div class="input-area">
+            <div class="input-enhance-row">
+              <button id="enhanceBtn">&#10024; <span>Otimizar com IA</span></button>
+            </div>
+            <div class="input-row">
+              <button id="attachBtn" title="Anexar arquivo">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
+              </button>
+              <input type="file" id="fileInput" multiple style="display:none">
+              <button id="micBtn" title="Comando de voz">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+              </button>
+              <textarea id="message" placeholder="Digite sua mensagem..." rows="1"></textarea>
+              <button id="sendBtn" title="Enviar">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -897,6 +1034,69 @@
   <script src="ui/ia-picker.js"></script>
 
 
+
+  <!-- V6 — Beeps + input status colors -->
+  <script>
+  (function(){
+    let ctx = null;
+    function ac(){ try { ctx = ctx || new (window.AudioContext||window.webkitAudioContext)(); return ctx; } catch(e){ return null; } }
+    function beep(freq, dur, type, vol){
+      const a = ac(); if(!a) return;
+      try{
+        if(a.state === 'suspended') a.resume();
+        const o = a.createOscillator(), g = a.createGain();
+        o.type = type||'sine'; o.frequency.value = freq;
+        g.gain.value = 0;
+        o.connect(g); g.connect(a.destination);
+        const t = a.currentTime;
+        g.gain.linearRampToValueAtTime(vol||0.14, t+0.01);
+        g.gain.exponentialRampToValueAtTime(0.0001, t+dur);
+        o.start(t); o.stop(t+dur+0.02);
+      }catch(e){}
+    }
+    const beepShort = () => beep(880, 0.10, 'square', 0.14);
+    const beepDone  = () => { beep(1174, 0.09, 'sine', 0.15); setTimeout(()=>beep(1568,0.10,'sine',0.14),90); };
+    const beepLong  = () => { beep(523, 0.22,'square',0.15); setTimeout(()=>beep(392,0.28,'square',0.15),200); };
+
+    function inputArea(){ return document.querySelector('#mainApp .input-area'); }
+    let stateTimer = null;
+    function setState(cls, ttl){
+      const el = inputArea(); if(!el) return;
+      el.classList.remove('state-sending','state-done','state-asking');
+      if(cls) el.classList.add(cls);
+      clearTimeout(stateTimer);
+      if(ttl) stateTimer = setTimeout(()=>{ el.classList.remove(cls); }, ttl);
+    }
+
+    // On send: green + short beep
+    document.addEventListener('click', (ev) => {
+      const btn = ev.target.closest && ev.target.closest('#sendBtn, .qa-btn, .qa-pro-btn');
+      if(!btn) return;
+      beepShort();
+      setState('state-sending', 45000); // green while working
+    }, true);
+
+    // Also detect Enter to send (textarea)
+    document.addEventListener('keydown', (ev) => {
+      if(ev.key === 'Enter' && !ev.shiftKey && ev.target && ev.target.id === 'message'){
+        beepShort();
+        setState('state-sending', 45000);
+      }
+    }, true);
+
+    // Receive events from the content-side sound detector (coin=done, alert=approval)
+    try {
+      chrome.runtime.onMessage.addListener((msg) => {
+        if(!msg) return;
+        if(msg.kind === 'coin' || msg.type === 'coin'){
+          beepDone(); setState('state-done', 3500);
+        } else if(msg.kind === 'alert' || msg.type === 'alert'){
+          beepLong(); setState('state-asking', 6000);
+        }
+      });
+    } catch(e){}
+  })();
+  </script>
 
 </body>
 </html>

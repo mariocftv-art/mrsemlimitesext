@@ -166,8 +166,8 @@
     orbCaption?.classList.remove('listen', 'think');
     if (s === 'listen') { orb.classList.add('listening'); orbCaption?.classList.add('listen'); }
     if (s === 'think')  { orb.classList.add('thinking');  orbCaption?.classList.add('think'); }
-    if (orbTitle)  orbTitle.textContent  = title || (s === 'listen' ? 'LISTENING' : s === 'think' ? 'WORKING' : 'STANDBY');
-    if (orbStatus) orbStatus.textContent = subtitle || (s === 'listen' ? 'Fale seu comando' : s === 'think' ? 'Sending command' : 'Clique na Orbe para ativar');
+    if (orbTitle)  orbTitle.textContent  = title || (s === 'listen' ? 'OUVINDO' : s === 'think' ? 'PENSANDO' : s === 'speak' ? 'RESPONDENDO' : 'PRONTA');
+    if (orbStatus) orbStatus.textContent = subtitle || (s === 'listen' ? 'Fale agora' : s === 'think' ? 'Preparando resposta' : 'Toque na Orbe para falar');
     // Mostra/oculta command bar: aparece quando desativada
     if (cmdBar) {
       if (orb.dataset.mode === 'on') cmdBar.classList.add('hidden');
@@ -202,15 +202,15 @@
     const finish = () => { if (done) return; done = true; try { onEnd && onEnd(); } catch (_) {} };
     try {
       const u = new SpeechSynthesisUtterance(text);
-      u.lang = 'pt-BR'; u.rate = 0.96; u.pitch = 1.08; u.volume = 0.9;
+      u.lang = 'pt-BR'; u.rate = 1.08; u.pitch = 1.06; u.volume = 0.92;
       if (ptVoice) u.voice = ptVoice;
       u.onend = finish;
       u.onerror = finish;
       window.speechSynthesis.cancel();
       window.speechSynthesis.speak(u);
       // Fallback: alguns browsers não disparam onend
-      const est = Math.max(1500, Math.min(12000, text.length * 90));
-      setTimeout(finish, est + 800);
+      const est = Math.max(900, Math.min(7000, text.length * 55));
+      setTimeout(finish, est + 350);
     } catch (_) { setTimeout(finish, 400); }
   }
 
@@ -226,7 +226,7 @@
   const SUMMARY_CMDS = ['resumo','resumir','qual o plano','me mostra o plano','mostrar o plano'];
   const hasAny = (t, list) => list.some((k) => String(t || '').toLowerCase().includes(k));
   const hasTrigger = (t) => hasAny(t, TRIGGERS);
-  const WAKE_WORDS = ['standby', 'stand by', 'ativar ia', 'ativa ia', 'orbe', 'mr'];
+  const WAKE_WORDS = ['standby', 'stand by', 'stand bye', 'estande bai', 'ativar ia', 'ativa ia', 'orbe', 'orbi', 'mr'];
   const hasWakeWord = (t) => WAKE_WORDS.some((k) => String(t || '').toLowerCase().includes(k));
   const stripWakeWords = (t) => {
     let out = String(t || '').trim();
@@ -235,6 +235,20 @@
     });
     return out.replace(/^[\s,.:;-]+|[\s,.:;-]+$/g, '').replace(/\s{2,}/g, ' ').trim();
   };
+
+  function normalizeSpeechText(text) {
+    return String(text || '')
+      .replace(/\bstand\s*(?:by|bye|bai)\b/gi, 'Orbe')
+      .replace(/\bestande\s*(?:by|bye|bai)\b/gi, 'Orbe')
+      .replace(/\borbi\b/gi, 'Orbe')
+      .replace(/\blouva(?:do|da)?\b/gi, 'Lovable')
+      .replace(/\bluva(?:do|da)?\b/gi, 'Lovable')
+      .replace(/\bdesembord\b/gi, 'dashboard')
+      .replace(/\bdash\s*bord\b/gi, 'dashboard')
+      .replace(/\bCláudia\b/gi, 'Claude')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
 
   function canUseExtensionVoiceBridge() {
     return !!(window.chrome?.runtime?.sendMessage);
@@ -247,7 +261,7 @@
     voiceText = '';
     recognizing = true;
     if (intoInput) cmdMic?.classList.add('active');
-    else setOrbState('listen', 'LISTENING', 'Fale seu comando');
+        else setOrbState('listen', 'OUVINDO', 'Fale agora');
     try {
       chrome.runtime.sendMessage({
         type: 'VOICE_START',
@@ -276,7 +290,7 @@
     voiceMode = null;
     voiceText = '';
     cmdMic?.classList.remove('active');
-    if (!silent && orb?.dataset.mode !== 'on') setOrbState('idle', 'STANDBY', 'Clique na Orbe para ativar');
+    if (!silent && orb?.dataset.mode !== 'on') setOrbState('idle', 'PRONTA', 'Toque na Orbe para falar');
   }
 
   function listenAfterSpeech() {
@@ -338,7 +352,7 @@
     const cleanPrompt = String(promptText || '').trim();
     if (!cleanPrompt) { alert('Digite ou fale um comando primeiro.'); return; }
     // NÃO esconder a home — envia o comando em background e mantém o painel MR visível.
-    setOrbState('think', 'WORKING', 'Sending command');
+    setOrbState('think', 'ENVIANDO', 'Mandando comando');
     try { window.mrPromptHistory?.push(cleanPrompt, 'orb'); } catch (_) {}
     try { window.mrAppendPromptToChat?.(cleanPrompt, 'user'); } catch (_) {}
     try {
@@ -365,11 +379,11 @@
 
   function handleSpokenText(text) {
     const rawText = String(text || '').trim();
-    const cleanText = stripWakeWords(rawText);
+    const cleanText = normalizeSpeechText(stripWakeWords(rawText));
     if (!cleanText && hasWakeWord(rawText)) {
-      const reply = 'Estou ouvindo. Fale o comando agora.';
+      const reply = 'Estou ouvindo. Pode falar.';
       logMsg('a', reply);
-      setOrbState('listen', 'LISTENING', 'Fale seu comando');
+      setOrbState('listen', 'OUVINDO', 'Fale agora');
       setTimeout(() => { if (orb?.dataset.mode === 'on') startRecognition(false); }, 350);
       return;
     }
@@ -407,23 +421,26 @@
         return;
       }
       const msg = 'Perfeito, enviando o plano para o Lovable agora.';
-      setOrbState('think', 'WORKING', 'Sending command');
+      setOrbState('think', 'ENVIANDO', 'Mandando o plano');
       logMsg('a', msg); speak(msg);
       setTimeout(sendToLovableFromVoice, 400);
       return;
     }
 
-    // 4) CONVERSA — manda para o Lovable em MODO CONVERSA (usando a IA
-    //    escolhida no ia-picker) e lê a resposta do assistente para falar
-    //    de volta. NÃO gera código nem executa nada até o usuário dizer
-    //    "pode enviar".
+    // 4) CONVERSA — resposta local imediata. O Lovable só recebe algo quando
+    //    o usuário disser explicitamente "pode enviar".
     conversation.push({ who: 'u', text: finalText });
-    setOrbState('think', 'THINKING', 'Consultando a IA...');
-    startConversationTurn(finalText).catch((e) => {
-      const err = 'Não consegui falar com a IA agora: ' + (e?.message || 'erro desconhecido');
-      logMsg('a', err); speak(err);
-      if (orb?.dataset.mode === 'on') setTimeout(() => { if (!recognizing) startRecognition(false); }, 1500);
-    });
+    setOrbState('think', 'PENSANDO', 'Já respondo');
+    setTimeout(() => {
+      const pontos = conversation.filter((c) => c.who === 'u' && !hasTrigger(c.text) && !hasAny(c.text, CLEAR_CMDS) && !hasAny(c.text, SUMMARY_CMDS)).length;
+      const reply = buildConversationalReply(finalText, pontos);
+      conversation.push({ who: 'a', text: reply });
+      logMsg('a', reply);
+      setOrbState('speak', 'RESPONDENDO', 'Falando com você');
+      speak(reply, () => {
+        if (orb?.dataset.mode === 'on' && !recognizing) startRecognition(false);
+      });
+    }, 450);
   }
 
   async function startConversationTurn(userText) {
@@ -463,7 +480,7 @@
     const finalReply = cleanOrbeReply(reply);
     conversation.push({ who: 'a', text: finalReply });
     logMsg('a', finalReply);
-    setOrbState('speak', 'SPEAKING', 'Respondendo');
+    setOrbState('speak', 'RESPONDENDO', 'Falando com você');
     speak(finalReply, () => {
       if (orb?.dataset.mode === 'on' && !recognizing) startRecognition(false);
     });
@@ -474,17 +491,20 @@
   // até o usuário dizer "pode enviar". Não chama backend — usa heurística
   // leve para variar tom e sempre lembrar o comando de envio.
   function buildConversationalReply(userText, pontos) {
-    const t = String(userText || '').toLowerCase().trim();
-    const isQuestion = /\?$/.test(userText) || /^(o que|como|por que|porque|quando|onde|qual|quais|posso|dá pra|da pra|consegue|você|voce)\b/.test(t);
-    const acks = ['Entendi.', 'Anotado.', 'Perfeito.', 'Certo.', 'Beleza.', 'Ok.'];
-    const ack = acks[Math.floor(Math.random() * acks.length)];
-    const lembrete = pontos >= 3
-      ? `Já temos ${pontos} pontos no plano. Quer adicionar mais alguma coisa ou digo "pode enviar"?`
-      : 'Quer detalhar mais alguma coisa antes de eu mandar para o Lovable? Quando estiver pronto, é só dizer "pode enviar".';
-    if (isQuestion) {
-      return `${ack} Boa pergunta. Vou considerar isso no plano. ${lembrete}`;
-    }
-    return `${ack} Adicionei ao plano. ${lembrete}`;
+    const t = normalizeSpeechText(userText).toLowerCase().trim();
+    const isQuestion = /\?$/.test(userText) || /^(o que|como|por que|porque|quando|onde|qual|quais|posso|dá pra|da pra|consegue|você|voce|me fala|me explica)\b/.test(t);
+    const wantsIdeas = /ideia|ideias|formato|modelo|sugest|dúvida|duvida|o que dá|o que da|dá para montar|da para montar/.test(t);
+    const dashboard = /dashboard|painel|admin|sistema|métrica|metrica|kpi|licença|licenca|cliente|dispositivo|financeiro/.test(t);
+    const heardCheck = /tá me ouvindo|ta me ouvindo|me ouviu|entendeu|consegue me ouvir/.test(t);
+
+    if (heardCheck) return 'Estou te ouvindo sim. Fala sua ideia em partes que eu vou organizando; quando disser “pode enviar”, eu mando o plano.';
+    if (dashboard && wantsIdeas) return 'Dá para montar em três caminhos: visão executiva com KPIs, controle de clientes e licenças, ou financeiro com receita e alertas. Qual você quer priorizar?';
+    if (dashboard && isQuestion) return 'Para esse painel, eu começaria com KPIs no topo, clientes no meio e ações rápidas na lateral. Você quer visual premium ou simples e direto?';
+    if (wantsIdeas) return 'Tenho duas ideias boas: uma versão simples para validar rápido, ou uma versão premium com mais detalhes e automações. Qual estilo você prefere?';
+    if (/não entendi|nao entendi|explica|melhor/.test(t)) return 'Claro. Eu converso com você primeiro, organizo o plano e só envio quando você falar “pode enviar”.';
+    if (isQuestion) return 'Sim, dá para fazer. Me diga qual resultado final você quer ver na tela que eu transformo isso em um plano claro.';
+    if (pontos >= 3) return `Anotado. Já temos ${pontos} pontos no plano; se estiver bom, fale “pode enviar”.`;
+    return 'Anotado. Pode continuar falando que eu vou juntando tudo no plano.';
   }
 
   function startRecognition(intoInput) {
@@ -516,7 +536,7 @@
     recognition.onstart = () => {
       recognizing = true;
       if (intoInput) { cmdMic?.classList.add('active'); }
-      else setOrbState('listen', 'LISTENING', 'Fale seu comando');
+      else setOrbState('listen', 'OUVINDO', 'Fale agora');
       beep(660, 0.12);
     };
     recognition.onerror = async (ev) => {
@@ -533,10 +553,10 @@
         if (state !== 'denied') {
           // Falso positivo comum em extension sidepanel: tenta pelo offscreen e nunca desliga a Orbe.
           if (startBridgeRecognition(intoInput)) return;
-          if (!intoInput) setOrbState('listen', 'LISTENING', 'Toque novamente e fale');
+          if (!intoInput) setOrbState('listen', 'OUVINDO', 'Toque novamente e fale');
           return;
         }
-        setOrbState('idle', 'MIC OFF', 'Permita o microfone e toque novamente');
+        setOrbState('idle', 'MICROFONE', 'Permita o microfone e toque novamente');
         if (orb) orb.dataset.mode = 'off';
         return;
       }
@@ -546,7 +566,7 @@
           return;
         }
       }
-      if (!intoInput) setOrbState('idle', 'STANDBY', 'Toque a Orbe para falar');
+      if (!intoInput) setOrbState('idle', 'PRONTA', 'Toque a Orbe para falar');
     };
     recognition.onend = () => {
       recognizing = false;
@@ -589,13 +609,13 @@
         if (msg.status === 'started') {
           recognizing = true;
           if (voiceMode === 'input') cmdMic?.classList.add('active');
-          else setOrbState('listen', 'LISTENING', 'Fale seu comando');
+          else setOrbState('listen', 'OUVINDO', 'Fale agora');
         }
         if (msg.status === 'ended') {
           if (voiceMode === 'input') cmdMic?.classList.remove('active');
           recognizing = false;
           if (voiceMode === 'orb' && orb?.dataset.mode === 'on' && !voiceText.trim()) {
-            setOrbState('listen', 'LISTENING', 'Fale seu comando');
+            setOrbState('listen', 'OUVINDO', 'Fale agora');
             setTimeout(() => { if (orb?.dataset.mode === 'on' && !recognizing) startRecognition(false); }, 450);
           }
         }
@@ -618,7 +638,7 @@
           const finalText = voiceText.trim();
           stopRecognition(true);
           if (finalText) handleSpokenText(finalText);
-        }, 1250);
+        }, 700);
         return;
       }
       if (msg.type === 'VOICE_ERROR') {
@@ -628,7 +648,7 @@
         stopRecognition(true);
         if (!currentMode || currentMode === 'input') return;
         if (canRetry && orb?.dataset.mode === 'on') {
-          setOrbState('listen', 'LISTENING', 'Fale seu comando');
+          setOrbState('listen', 'OUVINDO', 'Fale agora');
           setTimeout(() => { if (orb?.dataset.mode === 'on') startRecognition(false); }, 650);
           return;
         }
@@ -638,10 +658,10 @@
           return;
         }
         if (/not-allowed|service-not-allowed/i.test(err)) {
-          setOrbState('listen', 'LISTENING', 'Microfone liberado? toque novamente');
+          setOrbState('listen', 'OUVINDO', 'Microfone liberado? toque novamente');
           return;
         }
-        setOrbState('idle', 'MIC OFF', 'Permita o microfone e toque novamente');
+        setOrbState('idle', 'MICROFONE', 'Permita o microfone e toque novamente');
         if (orb) orb.dataset.mode = 'off';
       }
     });
@@ -655,16 +675,16 @@
       orb.dataset.mode = 'off';
       stopRecognition(true);
       try { window.speechSynthesis.cancel(); } catch (_) {}
-      setOrbState('idle', 'STANDBY', 'Clique na Orbe para ativar');
+      setOrbState('idle', 'PRONTA', 'Toque na Orbe para falar');
       beep(440, 0.15);
       return;
     }
     orb.dataset.mode = 'on';
     conversation = [];
     if (voiceLog) { voiceLog.innerHTML = ''; voiceLog.classList.remove('show'); }
-    const msg = 'Modo conversa ativo. Pode falar agora.';
+    const msg = 'Pode falar.';
     logMsg('a', msg);
-    setOrbState('listen', 'LISTENING', 'Fale seu comando');
+    setOrbState('listen', 'OUVINDO', 'Fale agora');
     listenAfterSpeech();
   });
 
@@ -697,7 +717,7 @@
   });
 
   // Estado inicial da orbe
-  setOrbState('idle', 'STANDBY', 'Clique na Orbe para ativar');
+  setOrbState('idle', 'PRONTA', 'Toque na Orbe para falar');
 
   function syncOverlay() {
     const ls = document.getElementById('licenseScreen');

@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Mr Sem Limite Ext 2",
-  "version": "2.1.0",
-  "description": "Mr Sem Limite Ext 2 — Painel neon com todos os recursos: Chat, IAs, Componentes, Animações, Templates, Prompts, Ferramentas e comando de voz.",
+  "name": "MR Sem Limites Ext 3",
+  "version": "3.0.0",
+  "description": "MR Sem Limites Ext 3 — Orbe IA interativa, relógio, timer de trabalho decrescente e painel neon Neo-Core.",
   "permissions": [
     "storage",
     "cookies",

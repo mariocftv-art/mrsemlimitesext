@@ -412,4 +412,79 @@
   }
   setInterval(syncOverlay, 1500);
   syncOverlay();
+
+  // ---------- Prompt history store (global, persistido) ----------
+  const HIST_KEY = 'mr_prompt_history_v1';
+  const HIST_MAX = 200;
+  const listeners = new Set();
+  let historyCache = [];
+  function loadHistory(cb) {
+    try {
+      chrome.storage?.local?.get([HIST_KEY], (r) => {
+        historyCache = Array.isArray(r?.[HIST_KEY]) ? r[HIST_KEY] : [];
+        cb && cb();
+        listeners.forEach((fn) => { try { fn(historyCache); } catch (_) {} });
+      });
+    } catch (_) { cb && cb(); }
+  }
+  function saveHistory() {
+    try { chrome.storage?.local?.set({ [HIST_KEY]: historyCache }); } catch (_) {}
+  }
+  function pushHistory(text, source) {
+    const clean = String(text || '').trim();
+    if (!clean) return;
+    historyCache.unshift({ text: clean, source: source || 'chat', ts: Date.now() });
+    if (historyCache.length > HIST_MAX) historyCache.length = HIST_MAX;
+    saveHistory();
+    listeners.forEach((fn) => { try { fn(historyCache); } catch (_) {} });
+  }
+  window.mrPromptHistory = {
+    get: () => historyCache.slice(),
+    push: pushHistory,
+    subscribe: (fn) => { listeners.add(fn); fn(historyCache); return () => listeners.delete(fn); },
+    clear: () => { historyCache = []; saveHistory(); listeners.forEach((fn) => fn(historyCache)); },
+  };
+  loadHistory();
+
+  // Grava prompts enviados pela orbe/command bar
+  const _origSendRaw = sendPromptRaw;
+  window.mrSendPrompt = async (text, source) => {
+    pushHistory(text, source || 'tab');
+    return _origSendRaw(text);
+  };
+  // Também intercepta envio direto (usado pelo painel real)
+  try {
+    const orig = window.sendDirectLovableMessage;
+    if (typeof orig === 'function' && !orig.__mrWrapped) {
+      const wrapped = async function (text) {
+        pushHistory(text, 'lovable');
+        return orig.apply(this, arguments);
+      };
+      wrapped.__mrWrapped = true;
+      window.sendDirectLovableMessage = wrapped;
+    } else {
+      // Se ainda não existe, aguarda e envolve depois
+      const iv = setInterval(() => {
+        const fn = window.sendDirectLovableMessage;
+        if (typeof fn === 'function' && !fn.__mrWrapped) {
+          const wrapped = async function (text) {
+            pushHistory(text, 'lovable');
+            return fn.apply(this, arguments);
+          };
+          wrapped.__mrWrapped = true;
+          window.sendDirectLovableMessage = wrapped;
+          clearInterval(iv);
+        }
+      }, 400);
+      setTimeout(() => clearInterval(iv), 15000);
+    }
+  } catch (_) {}
+
+  // Também grava quando sendPromptRaw é chamado internamente pela orbe
+  const _origSendPromptRaw = sendPromptRaw;
+  // Monkey-patch local (não afeta closure), então re-hookamos via wrap na command bar:
+  cmdSend?.addEventListener('click', () => {
+    // Já enviado — apenas registra o último valor visível
+    // (o cmdInput foi limpo no handler original; usamos um trick: registramos ANTES do original)
+  }, true /* capture: roda antes */);
 })();

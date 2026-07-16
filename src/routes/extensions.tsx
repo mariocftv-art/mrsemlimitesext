@@ -79,6 +79,7 @@ const statusMeta: Record<ExtensionStatus, { label: string; dot: string; color: s
 };
 
 const EXT1_ZIP_URL = "/MR%20Sem%20Limites%20EXT1.zip";
+const EXT2_ZIP_URL = "/MR%20Sem%20Limites%20EXT2.zip";
 
 type Filter = "all" | ExtensionStatus;
 type Sort = "name" | "version" | "updated" | "status";

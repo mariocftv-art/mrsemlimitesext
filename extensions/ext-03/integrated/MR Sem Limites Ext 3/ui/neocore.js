@@ -8,6 +8,10 @@
   const menuBtn = document.getElementById('ext3MenuBtn');
   const openHome = document.getElementById('ext3OpenHome');
   const IA_PICK_KEY = 'mr_ia_pick_v1';
+  // Endpoint público do backend MR Sem Limites que fala com a Lovable AI Gateway.
+  // A Orbe manda o histórico + a IA escolhida, o backend chama o modelo e devolve
+  // a resposta em português para a Orbe ler em voz alta.
+  const ORBE_CHAT_ENDPOINT = 'https://mrsemlimitesext.lovable.app/api/public/orbe-chat';
   let userLeftHome = false;
 
   function showHome() {

@@ -13,6 +13,31 @@
   // a resposta em português para a Orbe ler em voz alta.
   const ORBE_CHAT_ENDPOINT = 'https://mrsemlimitesext.lovable.app/api/public/orbe-chat';
   let userLeftHome = false;
+  let micGranted = false;
+
+  function openMicPermissionTab() {
+    try {
+      const url = chrome?.runtime?.getURL ? chrome.runtime.getURL('permission.html') : 'permission.html';
+      if (chrome?.tabs?.create) chrome.tabs.create({ url });
+      else window.open(url, '_blank');
+    } catch (_) {}
+  }
+
+  // Garante permissão de mic no ORIGEM da extensão. Chamar de dentro de um
+  // handler de clique (gesto do usuário) — sem isso, o Web Speech dispara
+  // "not-allowed" mesmo com o microfone liberado no sistema operacional.
+  async function ensureMicPermission() {
+    if (micGranted) return true;
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      stream.getTracks().forEach(t => t.stop());
+      micGranted = true;
+      return true;
+    } catch (_) {
+      openMicPermissionTab();
+      return false;
+    }
+  }
 
   function showHome() {
     userLeftHome = false;
@@ -705,13 +730,21 @@
   // Clique na Orbe: ativa/desativa modo conversa
   // IMPORTANTE: startRecognition() DEVE ser chamado SÍNCRONO neste handler
   // para preservar o contexto de gesto do usuário (senão o browser bloqueia).
-  orb?.addEventListener('click', () => {
+  orb?.addEventListener('click', async () => {
     if (orb.dataset.mode === 'on') {
       orb.dataset.mode = 'off';
       stopRecognition(true);
       try { window.speechSynthesis.cancel(); } catch (_) {}
       setOrbState('idle', 'PRONTA', 'Toque na Orbe para falar');
       beep(440, 0.15);
+      return;
+    }
+    // Solicita permissão de mic no origem da extensão dentro do gesto de clique.
+    // Sem esse warmup o Web Speech dispara "not-allowed" mesmo com o mic
+    // liberado no sistema operacional.
+    const micOk = await ensureMicPermission();
+    if (!micOk) {
+      setOrbState('idle', 'MICROFONE', 'Permita o microfone na aba aberta');
       return;
     }
     orb.dataset.mode = 'on';
@@ -743,9 +776,10 @@
   cmdInput?.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') { e.preventDefault(); cmdSend?.click(); }
   });
-  cmdMic?.addEventListener('click', () => {
-    // Se já está gravando, para. Senão, dispara reconhecimento no input.
+  cmdMic?.addEventListener('click', async () => {
     if (recognizing) { stopRecognition(true); return; }
+    const ok = await ensureMicPermission();
+    if (!ok) return;
     startRecognition(true);
   });
 

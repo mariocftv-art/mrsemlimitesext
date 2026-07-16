@@ -8,6 +8,10 @@
   const menuBtn = document.getElementById('ext3MenuBtn');
   const openHome = document.getElementById('ext3OpenHome');
   const IA_PICK_KEY = 'mr_ia_pick_v1';
+  // Endpoint público do backend MR Sem Limites que fala com a Lovable AI Gateway.
+  // A Orbe manda o histórico + a IA escolhida, o backend chama o modelo e devolve
+  // a resposta em português para a Orbe ler em voz alta.
+  const ORBE_CHAT_ENDPOINT = 'https://mrsemlimitesext.lovable.app/api/public/orbe-chat';
   let userLeftHome = false;
 
   function showHome() {
@@ -442,24 +446,25 @@
       return;
     }
 
-    // 4) CONVERSA — responde LOCALMENTE (rápido, sempre em português) para
-    //    manter o diálogo fluido. O Lovable só é acionado quando o usuário
-    //    disser "pode enviar". Isso evita depender do chat do Lovable
-    //    (que é assistente de código, não de conversa) e garante que a
-    //    Orbe sempre responda por voz.
+    // 4) CONVERSA — manda o histórico da conversa + IA escolhida para o
+    //    endpoint público do backend MR Sem Limites, que chama a Lovable
+    //    AI Gateway (Claude / Gemini / GPT conforme escolha do usuário) e
+    //    devolve a resposta em português. Só quando o usuário disser
+    //    "pode enviar" é que o prompt de execução vai pro chat do Lovable.
     conversation.push({ who: 'u', text: finalText });
-    setOrbState('think', 'PENSANDO', 'Formulando resposta');
+    setOrbState('think', 'PENSANDO', 'Consultando a IA');
     try {
-      const pontos = conversation.filter((c) => c.who === 'u' && !hasTrigger(c.text) && !hasAny(c.text, CLEAR_CMDS) && !hasAny(c.text, SUMMARY_CMDS)).length;
-      const reply = buildConversationalReply(finalText, pontos);
-      conversation.push({ who: 'a', text: reply });
-      logMsg('a', reply);
+      const reply = await fetchOrbeReply();
+      const finalReply = reply || 'Entendi. Me conta mais um detalhe pra eu montar direitinho.';
+      conversation.push({ who: 'a', text: finalReply });
+      logMsg('a', finalReply);
       setOrbState('speak', 'RESPONDENDO', 'Falando com você');
-      speak(reply, () => {
+      speak(finalReply, () => {
         if (orb?.dataset.mode === 'on' && !recognizing) startRecognition(false);
       });
     } catch (e) {
-      const fallback = 'Entendi. Me conta mais um detalhe do que você quer, ou fale “pode enviar” quando quiser mandar o plano pro Lovable.';
+      const pontos = conversation.filter((c) => c.who === 'u' && !hasTrigger(c.text) && !hasAny(c.text, CLEAR_CMDS) && !hasAny(c.text, SUMMARY_CMDS)).length;
+      const fallback = buildConversationalReply(finalText, pontos);
       conversation.push({ who: 'a', text: fallback });
       logMsg('a', fallback);
       setOrbState('speak', 'RESPONDENDO', 'Falando com você');
@@ -469,17 +474,36 @@
     }
   }
 
-  // MODO CONVERSA agora responde localmente. Mantemos a função abaixo
-  // apenas como referência histórica — não é mais chamada no fluxo padrão.
-  async function startConversationTurn(userText) {
-    const pontos = conversation.filter((c) => c.who === 'u' && !hasTrigger(c.text) && !hasAny(c.text, CLEAR_CMDS) && !hasAny(c.text, SUMMARY_CMDS)).length;
-    const reply = buildConversationalReply(userText, pontos);
-    conversation.push({ who: 'a', text: reply });
-    logMsg('a', reply);
-    setOrbState('speak', 'RESPONDENDO', 'Falando com você');
-    speak(reply, () => {
-      if (orb?.dataset.mode === 'on' && !recognizing) startRecognition(false);
-    });
+  // Chama o backend MR Sem Limites, que fala com a Lovable AI Gateway usando
+  // o modelo escolhido pelo usuário no ia-picker (Claude/GPT/Gemini).
+  async function fetchOrbeReply() {
+    let pick = null;
+    try { pick = JSON.parse(localStorage.getItem(IA_PICK_KEY) || 'null'); } catch (_) { pick = null; }
+    const iaId = pick?.id || 'gemflash';
+    const directive = pick?.directive || '';
+
+    const history = conversation
+      .filter((c) => c && c.text && (c.who === 'u' || c.who === 'a'))
+      .slice(-12)
+      .map((c) => ({ role: c.who === 'u' ? 'user' : 'assistant', content: String(c.text) }));
+
+    const ctrl = new AbortController();
+    const to = setTimeout(() => ctrl.abort(), 30000);
+    try {
+      const resp = await fetch(ORBE_CHAT_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ iaId, directive, messages: history }),
+        signal: ctrl.signal,
+      });
+      const data = await resp.json().catch(() => null);
+      if (!resp.ok || !data?.ok) {
+        throw new Error(data?.error || `HTTP ${resp.status}`);
+      }
+      return String(data.reply || '').trim();
+    } finally {
+      clearTimeout(to);
+    }
   }
 
 
@@ -693,10 +717,19 @@
     orb.dataset.mode = 'on';
     conversation = [];
     if (voiceLog) { voiceLog.innerHTML = ''; voiceLog.classList.remove('show'); }
-    const msg = 'Pode falar.';
-    logMsg('a', msg);
-    setOrbState('listen', 'OUVINDO', 'Fale agora');
-    listenAfterSpeech();
+    // Saudação inicial da Orbe (MR): fala e depois começa a ouvir.
+    const greetings = [
+      'MR pronto pra te ajudar. Pode falar.',
+      'MR aqui, como eu posso te ajudar?',
+      'Oi! Sou a Orbe da MR, pode mandar sua ideia.',
+    ];
+    const greeting = greetings[Math.floor(Math.random() * greetings.length)];
+    logMsg('a', greeting);
+    setOrbState('speak', 'RESPONDENDO', 'Falando com você');
+    speak(greeting, () => {
+      setOrbState('listen', 'OUVINDO', 'Fale agora');
+      listenAfterSpeech();
+    });
   });
 
   // Command bar

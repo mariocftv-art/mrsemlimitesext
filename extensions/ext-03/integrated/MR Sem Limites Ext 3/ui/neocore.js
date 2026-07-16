@@ -294,9 +294,11 @@
   }
 
   function listenAfterSpeech() {
-    speak('Modo conversa ativo. Pode falar agora.', () => {
-      if (orb?.dataset.mode === 'on') startRecognition(false);
-    });
+    // Saudação curta + escuta imediata (sem esperar TTS terminar)
+    speak('Pode falar.');
+    setTimeout(() => {
+      if (orb?.dataset.mode === 'on' && !recognizing) startRecognition(false);
+    }, 120);
   }
 
   function getIaDirective() {

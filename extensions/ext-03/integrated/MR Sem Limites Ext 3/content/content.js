@@ -701,7 +701,13 @@
           window._lovVoiceRec = null;
         };
         window._lovVoiceRec = rec;
-        rec.start();
+        try { rec.start(); }
+        catch (e) {
+          window._lovVoiceRec = null;
+          chrome.runtime.sendMessage({ type: 'VOICE_ERROR', error: e?.message || 'start-failed' }).catch(() => {});
+          sendResponse({ ok: false });
+          return;
+        }
         sendResponse({ ok: true });
         return;
       }

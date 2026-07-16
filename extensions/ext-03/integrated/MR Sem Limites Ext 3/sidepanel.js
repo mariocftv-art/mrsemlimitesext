@@ -1928,14 +1928,14 @@ async function sendAndReadLovableReply(messageText, opts = {}) {
   });
   if (!sendResp?.ok) throw new Error(sendResp?.error || 'Falha ao enviar mensagem.');
 
-  const marker = String(messageText).trim().slice(0, 60);
+  const marker = String(opts.marker || messageText).trim().slice(0, 120);
   const readResp = await new Promise((resolve) => {
     try {
       chrome.tabs.sendMessage(tab.id, {
         type: 'READ_LOVABLE_LAST_REPLY',
         sentText: marker,
-        timeoutMs: opts.timeoutMs || 90000,
-        stableMs: opts.stableMs || 3000,
+        timeoutMs: opts.timeoutMs || 45000,
+        stableMs: opts.stableMs || 1200,
       }, (r) => { void chrome.runtime.lastError; resolve(r || { ok: false, error: 'sem resposta' }); });
     } catch (e) { resolve({ ok: false, error: e?.message || String(e) }); }
   });

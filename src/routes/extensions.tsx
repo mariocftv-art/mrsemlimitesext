@@ -196,6 +196,17 @@ function ExtensionsPage() {
           </CardContent>
         </Card>
 
+            <div className="flex flex-col gap-2 md:flex-row md:w-auto">
+              <Button className="gap-1.5 md:w-auto" onClick={downloadExt1}>
+                <Download className="h-4 w-4" /> EXT1 Download
+              </Button>
+              <Button variant="outline" className="gap-1.5 border-emerald-500/60 text-emerald-400 hover:bg-emerald-500/10 md:w-auto" onClick={openSupport}>
+                <MessageCircle className="h-4 w-4" /> Suporte
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
       <Card className="glass mb-4 border-primary/40">
           <CardContent className="flex flex-col gap-3 p-4 md:flex-row md:items-center md:justify-between">
             <div className="space-y-1">
@@ -204,15 +215,20 @@ function ExtensionsPage() {
                 Baixe o ZIP, descompacte e no Chrome use “Carregar sem compactação” na pasta interna “MR Sem Limite Ext 2”, onde está o manifest.json.
               </p>
             </div>
-            <Button
-              className="gap-1.5 md:w-auto"
-              onClick={() => {
-                downloadZip(EXT2_ZIP_URL, "MR Sem Limites EXT2.zip");
-                toast.success("Download da EXT2 iniciado.");
-              }}
-            >
-              <Download className="h-4 w-4" /> EXT2 Download
-            </Button>
+            <div className="flex flex-col gap-2 md:flex-row md:w-auto">
+              <Button
+                className="gap-1.5 md:w-auto"
+                onClick={() => {
+                  downloadZip(EXT2_ZIP_URL, "MR Sem Limites EXT2.zip");
+                  toast.success("Download da EXT2 iniciado.");
+                }}
+              >
+                <Download className="h-4 w-4" /> EXT2 Download
+              </Button>
+              <Button variant="outline" className="gap-1.5 border-emerald-500/60 text-emerald-400 hover:bg-emerald-500/10 md:w-auto" onClick={openSupport}>
+                <MessageCircle className="h-4 w-4" /> Suporte
+              </Button>
+            </div>
           </CardContent>
         </Card>
 
@@ -224,15 +240,20 @@ function ExtensionsPage() {
                 Cópia da EXT2 com novo painel Neo-Core: relógio, timer de trabalho decrescente, Orbe IA interativa por voz. Mesma licença da EXT2.
               </p>
             </div>
-            <Button
-              className="gap-1.5 md:w-auto"
-              onClick={() => {
-                downloadZip(EXT3_ZIP_URL, "MR Sem Limites EXT3.zip");
-                toast.success("Download da EXT3 iniciado.");
-              }}
-            >
-              <Download className="h-4 w-4" /> EXT3 Download
-            </Button>
+            <div className="flex flex-col gap-2 md:flex-row md:w-auto">
+              <Button
+                className="gap-1.5 md:w-auto"
+                onClick={() => {
+                  downloadZip(EXT3_ZIP_URL, "MR Sem Limites EXT3.zip");
+                  toast.success("Download da EXT3 iniciado.");
+                }}
+              >
+                <Download className="h-4 w-4" /> EXT3 Download
+              </Button>
+              <Button variant="outline" className="gap-1.5 border-emerald-500/60 text-emerald-400 hover:bg-emerald-500/10 md:w-auto" onClick={openSupport}>
+                <MessageCircle className="h-4 w-4" /> Suporte
+              </Button>
+            </div>
           </CardContent>
         </Card>
 

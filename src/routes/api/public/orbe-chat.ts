@@ -1,4 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { generateText } from "ai";
+
+import {
+  createLovableAiGatewayProvider,
+  getLovableAiGatewayResponseHeaders,
+  getLovableAiGatewayRunId,
+} from "@/lib/ai-gateway.server";
 
 // Endpoint público chamado pela extensão MR Sem Limites (Orbe IA).
 // Recebe o histórico da conversa + a IA escolhida no ia-picker e devolve
@@ -93,70 +100,42 @@ export const Route = createFileRoute("/api/public/orbe-chat")({
             ? `\n\nDIRECIONAMENTO DO USUÁRIO PARA ESTA CONVERSA: ${body.directive.trim()}`
             : "";
 
-        const gatewayBody: Record<string, unknown> = {
-          model,
-          messages: [
-            { role: "system", content: SYSTEM_PROMPT + directive },
-            ...cleanHistory,
-          ],
-        };
-        // GPT-5.6 exige reasoning_effort: "none" em chat completions com tools.
-        // Como a Orbe é conversa pura, mantemos "none" também nos demais para latência baixa.
-        if (model.startsWith("openai/gpt-5.6")) {
-          gatewayBody.reasoning_effort = "none";
-        }
-
-        let gatewayResp: Response;
         try {
-          gatewayResp = await fetch(
-            "https://ai.gateway.lovable.dev/v1/chat/completions",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${key}`,
-              },
-              body: JSON.stringify(gatewayBody),
-            },
+          const gateway = createLovableAiGatewayProvider(key, getLovableAiGatewayRunId(request));
+          const result = await generateText({
+            model: gateway(model),
+            system: SYSTEM_PROMPT + directive,
+            messages: cleanHistory,
+            abortSignal: request.signal,
+          });
+
+          const reply =
+            result.text?.trim() ||
+            "Entendi. Me conta mais um detalhe do que você quer construir.";
+
+          return Response.json(
+            { ok: true, reply, model },
+            { headers: getLovableAiGatewayResponseHeaders(result.response.headers, CORS_HEADERS) },
           );
         } catch (err) {
-          return Response.json(
-            {
-              ok: false,
-              error:
-                "Falha ao conectar no gateway de IA: " +
-                (err instanceof Error ? err.message : String(err)),
-            },
-            { status: 502, headers: CORS_HEADERS },
-          );
-        }
-
-        if (!gatewayResp.ok) {
-          const detail = await gatewayResp.text().catch(() => "");
-          const status = gatewayResp.status;
+          const message = err instanceof Error ? err.message : String(err);
+          const lowered = message.toLowerCase();
+          const status = /rate|429/.test(lowered) ? 429 : /credit|402|billing/.test(lowered) ? 402 : 502;
           const userMsg =
             status === 429
               ? "Muitas requisições agora. Aguarde alguns segundos e tente de novo."
               : status === 402
                 ? "Créditos de IA esgotados. Adicione créditos no painel do Lovable."
-                : `Gateway retornou ${status}.`;
+                : "Falha ao conectar na IA: " + message;
+
           return Response.json(
-            { ok: false, error: userMsg, detail: detail.slice(0, 400), status },
+            {
+              ok: false,
+              error: userMsg,
+            },
             { status, headers: CORS_HEADERS },
           );
         }
-
-        const data = (await gatewayResp.json().catch(() => null)) as
-          | { choices?: Array<{ message?: { content?: string } }> }
-          | null;
-        const reply =
-          data?.choices?.[0]?.message?.content?.trim() ||
-          "Entendi. Me conta mais um detalhe do que você quer construir.";
-
-        return Response.json(
-          { ok: true, reply, model },
-          { headers: CORS_HEADERS },
-        );
       },
     },
   },

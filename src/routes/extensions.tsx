@@ -253,6 +253,32 @@ function ExtensionsPage() {
           </CardContent>
         </Card>
 
+      <Card className="glass mb-4 border-primary/40">
+          <CardContent className="flex flex-col gap-3 p-4 md:flex-row md:items-center md:justify-between">
+            <div className="space-y-1">
+              <p className="text-sm font-semibold">EXT4 Download — MR Sem Limite Manus</p>
+              <p className="text-xs text-muted-foreground">
+                Ponte de API para o Manus com congelamento de contadores de crédito (Shadow Mode V16.4 corrigido). Baixe o ZIP, descompacte e no Chrome use “Carregar sem compactação” na pasta interna “MR Sem Limite Manus”.
+              </p>
+            </div>
+            <div className="flex flex-col gap-2 md:flex-row md:w-auto">
+              <Button
+                className="gap-1.5 md:w-auto"
+                onClick={() => {
+                  downloadZip(EXT4_ZIP_URL, "MR Sem Limites EXT4.zip");
+                  toast.success("Download da EXT4 iniciado.");
+                }}
+              >
+                <Download className="h-4 w-4" /> EXT4 Download
+              </Button>
+              <Button variant="outline" className="gap-1.5 border-emerald-500/60 text-emerald-400 hover:bg-emerald-500/10 md:w-auto" onClick={openSupport}>
+                <MessageCircle className="h-4 w-4" /> Suporte
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+
 
       <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex flex-wrap gap-1.5">

@@ -683,6 +683,12 @@
         rec.continuous = true;
         rec.interimResults = true;
         let finalText = msg.existingText || '';
+        let silenceTimer = null;
+        const clearSilenceTimer = () => { if (silenceTimer) clearTimeout(silenceTimer); silenceTimer = null; };
+        const armSilenceTimer = () => {
+          clearSilenceTimer();
+          silenceTimer = setTimeout(() => { try { rec.stop(); } catch(e) {} }, 2000);
+        };
         rec.onstart = () => chrome.runtime.sendMessage({ type: 'VOICE_STATUS', status: 'started' }).catch(() => {});
         rec.onresult = (event) => {
           let interim = '';
@@ -692,11 +698,13 @@
             else { interim += t; }
           }
           chrome.runtime.sendMessage({ type: 'VOICE_RESULT', text: finalText + (interim ? ' ' + interim : '') }).catch(() => {});
+          if ((finalText || interim).trim()) armSilenceTimer();
         };
         rec.onerror = (event) => {
           if (event.error !== 'aborted') chrome.runtime.sendMessage({ type: 'VOICE_ERROR', error: event.error }).catch(() => {});
         };
         rec.onend = () => {
+          clearSilenceTimer();
           chrome.runtime.sendMessage({ type: 'VOICE_STATUS', status: 'ended' }).catch(() => {});
           window._lovVoiceRec = null;
         };
@@ -973,6 +981,7 @@
               let text = String(raw || '').replace(/\r/g, '\n');
               const marker = text.match(/ORBE[_\s-]*RESPOSTA\s*:\s*/i);
               if (marker) text = text.slice((marker.index || 0) + marker[0].length);
+              text = text.replace(/\[[^\]]*ORBE_TURN_[^\]]*\]/gi, ' ');
               const blocked = /(claude|gpt|gemini|lovable)\s+(?:encontrou|achou|detectou|usou|selecionou|selection|page|página|pagina)|\b(selection|uber page|tool|ferramenta|arquivo|comando enviado|executando|modificando|aplicando|editou|alterou)\b|modo conversa|direcionamento ia|mr sem limites|orbe_turn/i;
               return text
                 .split('\n')

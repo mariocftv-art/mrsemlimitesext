@@ -8,10 +8,7 @@
   const menuBtn = document.getElementById('ext3MenuBtn');
   const openHome = document.getElementById('ext3OpenHome');
   const IA_PICK_KEY = 'mr_ia_pick_v1';
-  // Endpoint público do backend MR Sem Limites que fala com a Lovable AI Gateway.
-  // A Orbe manda o histórico + a IA escolhida, o backend chama o modelo e devolve
-  // a resposta em português para a Orbe ler em voz alta.
-  const ORBE_CHAT_ENDPOINT = 'https://mrsemlimitesext.lovable.app/api/public/orbe-chat';
+  const ORBE_SILENCE_DELAY_MS = 2000;
   let userLeftHome = false;
   let micGranted = false;
 
@@ -498,73 +495,66 @@
     }
   }
 
-  // Chama o backend MR Sem Limites, que fala com a Lovable AI Gateway usando
-  // o modelo escolhido pelo usuário no ia-picker (Claude/GPT/Gemini).
-  async function fetchOrbeReply() {
+  function buildLovableConversationPrompt(turnId, endMarker) {
     let pick = null;
     try { pick = JSON.parse(localStorage.getItem(IA_PICK_KEY) || 'null'); } catch (_) { pick = null; }
-    const iaId = pick?.id || 'gemflash';
-    const directive = pick?.directive || '';
-
+    const directive = pick?.directive ? `\nIA selecionada pelo usuário: ${pick.directive}\n` : '';
     const history = conversation
       .filter((c) => c && c.text && (c.who === 'u' || c.who === 'a'))
-      .slice(-12)
-      .map((c) => ({ role: c.who === 'u' ? 'user' : 'assistant', content: String(c.text) }));
+      .slice(-10)
+      .map((c) => `${c.who === 'u' ? 'Usuário' : 'Orbe'}: ${String(c.text).replace(/\s+/g, ' ').trim()}`)
+      .join('\n');
 
-    const ctrl = new AbortController();
-    const to = setTimeout(() => ctrl.abort(), 30000);
-    try {
-      const resp = await fetch(ORBE_CHAT_ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ iaId, directive, messages: history }),
-        signal: ctrl.signal,
-      });
-      const data = await resp.json().catch(() => null);
-      if (!resp.ok || !data?.ok) {
-        throw new Error(data?.error || `HTTP ${resp.status}`);
-      }
-      return String(data.reply || '').trim();
-    } finally {
-      clearTimeout(to);
+    return [
+      `[${turnId}]`,
+      'MODO CONVERSA DA ORBE. Não execute nenhuma alteração no projeto, não edite arquivos e não acione ferramentas.',
+      'Você só deve responder como consultor da Orbe para eu falar em voz ao usuário.',
+      'Responda 100% em português do Brasil, com 2 a 4 frases naturais, úteis e diretas.',
+      'Não fale sobre você, não cite modelo, Claude, GPT, Gemini, Lovable, ferramentas, seleção, arquivo ou execução.',
+      'Se o usuário pedir ideia, dê uma sugestão concreta. Se perguntar se dá para fazer, diga que dá e explique de forma simples.',
+      'Quando fizer sentido, diga que quando ele falar “pode enviar” a Orbe monta o plano e manda para execução.',
+      directive,
+      'Histórico da conversa:',
+      history,
+      '',
+      'Comece a resposta com as palavras ORBE RESPOSTA seguidas de dois-pontos, e depois fale a resposta curta.',
+      endMarker,
+    ].join('\n');
+  }
+
+  async function sendToLovableTab(type, payload) {
+    if (!chrome?.tabs?.query || !chrome?.tabs?.sendMessage) {
+      throw new Error('Abra um projeto no Lovable para a Orbe conversar pela aba ativa.');
     }
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (!tab?.id || !/lovable\.dev|lovableproject\.com/i.test(tab.url || '')) {
+      throw new Error('Abra a aba do projeto Lovable antes de falar com a Orbe.');
+    }
+    return await new Promise((resolve, reject) => {
+      chrome.tabs.sendMessage(tab.id, { type, ...payload }, (resp) => {
+        const err = chrome.runtime?.lastError?.message;
+        if (err) { reject(new Error(err)); return; }
+        if (!resp?.ok) { reject(new Error(resp?.error || 'A aba Lovable não respondeu.')); return; }
+        resolve(resp);
+      });
+    });
   }
 
-
-  // Gera a resposta da Orbe em português. Reconhece intenções comuns
-  // (dashboard, app, site, landing, ecommerce, pergunta, dúvida, teste
-  // de áudio) e sempre lembra o gatilho "pode enviar".
-  function buildConversationalReply(userText, pontos) {
-    const raw = String(userText || '').trim();
-    const t = normalizeSpeechText(raw).toLowerCase().trim();
-    const isQuestion = /\?$/.test(raw) || /^(o que|como|por que|porque|quando|onde|qual|quais|posso|dá pra|da pra|consegue|você|voce|me fala|me explica|vamos|será)\b/.test(t);
-    const wantsIdeas = /ideia|ideias|formato|modelo|sugest|dúvida|duvida|o que dá|o que da|dá para montar|da para montar/.test(t);
-    const dashboard = /dashboard|desemburde|desembur|painel|admin|sistema|métrica|metrica|kpi|licença|licenca|cliente|dispositivo|financeiro/.test(t);
-    const novo = /\b(novo|nova|refazer|reformular|do zero|começar|comecar)\b/.test(t);
-    const app = /\b(app|aplicativo|mobile|celular)\b/.test(t);
-    const site = /\b(site|landing|página|pagina|hotsite|institucional)\b/.test(t);
-    const loja = /\b(loja|ecommerce|e-?commerce|carrinho|checkout|venda|produto)\b/.test(t);
-    const heardCheck = /tá me ouvindo|ta me ouvindo|me ouviu|entendeu|consegue me ouvir|oi orbe|alô|alo\b/.test(t);
-    const saudacao = /^(oi|olá|ola|opa|eae|e aí|e ai|bom dia|boa tarde|boa noite)\b/.test(t);
-
-    if (heardCheck) return 'Tô te ouvindo perfeitamente. Pode ir falando sua ideia em partes que eu vou organizando aqui; quando quiser mandar pro Lovable, é só falar “pode enviar”.';
-    if (saudacao && t.length < 25) return 'Oi! Tô aqui pronta pra te ajudar. Me conta o que você quer construir hoje que eu vou montando o plano; quando estiver bom, fala “pode enviar”.';
-
-    if (dashboard && novo) return 'Show, um dashboard novo pra esse projeto é uma ótima ideia. Costumo montar em três blocos: KPIs no topo, tabela de clientes ou licenças no meio, e ações rápidas na lateral. Quer visual futurista neon ou algo mais clean e corporativo? Quando decidir, fala “pode enviar” que eu mando o plano.';
-    if (dashboard && wantsIdeas) return 'Dá pra montar em três caminhos: visão executiva com KPIs, controle de clientes e licenças, ou financeiro com receita e alertas. Qual você quer priorizar primeiro? Depois é só falar “pode enviar”.';
-    if (dashboard && isQuestion) return 'Pra esse painel eu começaria com KPIs no topo, clientes no meio e ações rápidas na lateral. Você quer visual premium futurista ou simples e direto? Assim que decidir, fala “pode enviar”.';
-    if (dashboard) return 'Anotado: dashboard entrou no plano. Me diz que tipo de dado você quer ver primeiro (clientes, licenças, financeiro) e o estilo visual que prefere. Quando estiver bom, é só falar “pode enviar”.';
-
-    if (app) return 'Legal, um app faz sentido. Antes de montar, me diz se é pra Android, iPhone ou os dois, e qual é a função principal. Depois é só falar “pode enviar” que eu monto o plano.';
-    if (loja) return 'Boa, dá pra montar uma loja completa com produtos, carrinho e checkout. Você quer venda de produto físico, digital ou assinatura? Quando decidir, fala “pode enviar”.';
-    if (site) return 'Perfeito, posso montar um site bem direto. Me diz se é institucional, landing de conversão ou portfólio, e o estilo visual que combina com sua marca. Depois é só falar “pode enviar”.';
-
-    if (wantsIdeas) return 'Tenho duas linhas boas: uma versão simples pra validar rápido, ou uma versão premium com mais detalhes e automações. Qual estilo combina mais com você? Quando decidir, fala “pode enviar”.';
-    if (/não entendi|nao entendi|explica|melhor/.test(t)) return 'Claro. Eu converso com você primeiro, organizo o plano em cima do que você fala, e só mando pro Lovable quando você falar “pode enviar”. Pode continuar.';
-    if (isQuestion) return 'Sim, dá pra fazer sem problema. Me diz qual resultado final você quer ver na tela e qual estilo visual prefere, que eu transformo isso num plano claro. Depois é só falar “pode enviar”.';
-    if (pontos >= 3) return `Anotado. Já temos ${pontos} pontos no plano; se estiver bom, fala “pode enviar” que eu monto o prompt e mando pro Lovable.`;
-    return 'Anotado. Pode continuar falando que eu vou juntando tudo no plano; quando estiver bom, fala “pode enviar”.';
+  // Fluxo real: a Orbe envia a fala do usuário para o chat Lovable aberto,
+  // espera a resposta do próprio Lovable e lê essa resposta em voz alta.
+  async function fetchOrbeReply() {
+    const turnId = makeOrbeTurnId();
+    const endMarker = `[FIM_${turnId}]`;
+    const prompt = buildLovableConversationPrompt(turnId, endMarker);
+    await sendToLovableTab('TYPE_AND_SEND_IN_LOVABLE', { text: prompt });
+    const resp = await sendToLovableTab('READ_LOVABLE_LAST_REPLY', {
+      sentText: endMarker,
+      timeoutMs: 90000,
+      stableMs: 900,
+    });
+    return cleanOrbeReply(resp.reply || '');
   }
+
 
   function startRecognition(intoInput) {
     if (recognizing) { stopRecognition(true); return; }
@@ -603,7 +593,7 @@
         if (dispatched) return;
         dispatched = true;
         try { recognition.stop(); } catch (_) {}
-      }, 2000);
+      }, ORBE_SILENCE_DELAY_MS);
     };
     recognition.onstart = () => {
       recognizing = true;
@@ -712,7 +702,7 @@
           const finalText = voiceText.trim();
           stopRecognition(true);
           if (finalText) handleSpokenText(finalText);
-        }, 700);
+        }, ORBE_SILENCE_DELAY_MS);
         return;
       }
       if (msg.type === 'VOICE_ERROR') {
@@ -766,9 +756,9 @@
     if (voiceLog) { voiceLog.innerHTML = ''; voiceLog.classList.remove('show'); }
     // Saudação inicial da Orbe (MR): fala e depois começa a ouvir.
     const greetings = [
-      'MR pronto pra te ajudar. Pode falar.',
-      'MR aqui, como eu posso te ajudar?',
-      'Oi! Sou a Orbe da MR, pode mandar sua ideia.',
+      'Pode falar.',
+      'Estou ouvindo.',
+      'Pode mandar sua ideia.',
     ];
     const greeting = greetings[Math.floor(Math.random() * greetings.length)];
     logMsg('a', greeting);

@@ -86,7 +86,8 @@ const statusMeta: Record<ExtensionStatus, { label: string; dot: string; color: s
 
 import ext2ZipAsset from "../../public/MR Sem Limites EXT2.zip.asset.json";
 import ext3ZipAsset from "../../public/MR Sem Limites EXT3.zip.asset.json";
-import ext4ZipAsset from "../../public/MR Sem Limites EXT4.zip.asset.json";
+import ext4ZipAsset from "../../public/MR Sem Limite Manus.zip.asset.json";
+
 const EXT1_ZIP_URL = "/MR%20Sem%20Limites%20EXT1.zip";
 const EXT2_ZIP_URL = (ext2ZipAsset as { url: string }).url;
 const EXT3_ZIP_URL = (ext3ZipAsset as { url: string }).url;
@@ -256,20 +257,21 @@ function ExtensionsPage() {
       <Card className="glass mb-4 border-primary/40">
           <CardContent className="flex flex-col gap-3 p-4 md:flex-row md:items-center md:justify-between">
             <div className="space-y-1">
-              <p className="text-sm font-semibold">EXT4 Download — MR Sem Limite Manus</p>
+              <p className="text-sm font-semibold">MR Sem Limite Manus — Download</p>
               <p className="text-xs text-muted-foreground">
-                Ponte de API para o Manus com congelamento de contadores de crédito (Shadow Mode V16.4 corrigido). Baixe o ZIP, descompacte e no Chrome use “Carregar sem compactação” na pasta interna “MR Sem Limite Manus”.
+                Ponte de API para o Manus com congelamento de contadores de crédito no cliente (Shadow Mode V17). Baixe o ZIP, descompacte e no Chrome use “Carregar sem compactação” na pasta interna “MR Sem Limite Manus”.
               </p>
             </div>
             <div className="flex flex-col gap-2 md:flex-row md:w-auto">
               <Button
                 className="gap-1.5 md:w-auto"
                 onClick={() => {
-                  downloadZip(EXT4_ZIP_URL, "MR Sem Limites EXT4.zip");
-                  toast.success("Download da EXT4 iniciado.");
+                  downloadZip(EXT4_ZIP_URL, "MR Sem Limite Manus.zip");
+                  toast.success("Download iniciado.");
                 }}
               >
-                <Download className="h-4 w-4" /> EXT4 Download
+                <Download className="h-4 w-4" /> MR Sem Limite Manus
+
               </Button>
               <Button variant="outline" className="gap-1.5 border-emerald-500/60 text-emerald-400 hover:bg-emerald-500/10 md:w-auto" onClick={openSupport}>
                 <MessageCircle className="h-4 w-4" /> Suporte

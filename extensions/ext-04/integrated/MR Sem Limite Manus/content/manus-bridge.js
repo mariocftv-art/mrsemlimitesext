@@ -240,23 +240,47 @@
   WSProxy.CLOSED = NativeWebSocket.CLOSED;
   window.WebSocket = WSProxy;
 
-  // ---------- UI Force-Unlock ----------
+  // ---------- UI Force-Unlock (V17.2 — text-scan agressivo) ----------
+  const HIDE_RX = /(cr[eé]dito|upgrade|atualizar|limite|quota|free trial|teste gratuito|run out|insufficient|used up|esgotad)/i;
+  const SAFE_RX = /(mr sem|extens|lovable|standby|ativar ia|modo conversa)/i;
+
+  const hideIfMatch = (el) => {
+    if (!el || el.__mrHidden) return;
+    if (el.closest(".mr-overdrive-badge, #mr-sidepanel-root, [data-mr-ui]")) return;
+    const t = (el.innerText || el.textContent || "").trim();
+    if (!t || t.length > 240) return;
+    if (SAFE_RX.test(t)) return;
+    if (HIDE_RX.test(t)) {
+      el.style.setProperty("display", "none", "important");
+      el.__mrHidden = true;
+    }
+  };
+
   const forceUnlock = () => {
-    const kws = ["credit", "limit", "upgrade", "limite", "used up", "insufficient", "quota", "run out"];
-    document
-      .querySelectorAll('[class*="credit"], [class*="limit"], [class*="upgrade"], [class*="quota"], [class*="Banner"], [role="dialog"]')
-      .forEach((el) => {
-        const t = (el.innerText || "").toLowerCase();
-        if (kws.some((k) => t.includes(k))) {
-          if (!el.closest("nav") && !el.closest(".mr-overdrive-badge")) {
-            el.style.setProperty("display", "none", "important");
-          }
+    document.querySelectorAll('div[class*="banner" i], div[class*="upgrade" i], div[class*="trial" i], [role="alert"]').forEach(hideIfMatch);
+
+    document.querySelectorAll("button, a").forEach((el) => {
+      const t = (el.innerText || "").trim().toLowerCase();
+      if (t === "atualizar" || t === "upgrade" || t === "fazer upgrade") {
+        el.style.setProperty("display", "none", "important");
+      }
+    });
+
+    document.querySelectorAll('aside *, nav *, [class*="sidebar" i] *, [class*="account" i] *').forEach((el) => {
+      const t = (el.innerText || "").trim();
+      if (!t || t.length > 60) return;
+      if (/^cr[eé]ditos?\b/i.test(t) || /^gr[aá]tis$/i.test(t)) {
+        const row = el.closest("li, a, button, div");
+        if (row && !row.closest(".mr-overdrive-badge")) {
+          row.style.setProperty("display", "none", "important");
         }
-      });
+      }
+    });
+
+    document.querySelectorAll('[role="dialog"], [class*="modal" i]').forEach(hideIfMatch);
+
     document.querySelectorAll("button[disabled]").forEach((btn) => {
-      const isSendBtn =
-        btn.querySelector("svg") ||
-        (btn.className && String(btn.className).includes("rounded-full"));
+      const isSendBtn = btn.querySelector("svg") || String(btn.className || "").includes("rounded-full");
       if (isSendBtn) {
         btn.disabled = false;
         btn.style.setProperty("opacity", "1", "important");
@@ -264,5 +288,6 @@
       }
     });
   };
-  setInterval(forceUnlock, 1800);
+  setInterval(forceUnlock, 1500);
+  forceUnlock();
 })();

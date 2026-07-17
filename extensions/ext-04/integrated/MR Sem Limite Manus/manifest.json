@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "MR Sem Limite Manus",
-  "version": "6.3.0",
+  "version": "6.4.0",
   "description": "MR Sem Limite Manus — Central premium de produtividade com chat inteligente e ferramentas estratégicas.",
   "permissions": [
     "storage",
@@ -12,8 +12,7 @@
     "alarms",
     "sidePanel",
     "offscreen",
-    "webRequest",
-    "webRequestBody"
+    "webRequest"
   ],
   "host_permissions": [
     "https://lovable.dev/*",

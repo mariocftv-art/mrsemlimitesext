@@ -1,0 +1,15 @@
+{
+  "name": "mr-sem-limites-build",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Pipeline de build (dev/prod) da extensão MR Sem Limites",
+  "scripts": {
+    "build:dev": "node build/build.mjs --mode=dev",
+    "build:prod": "node build/build.mjs --mode=prod"
+  },
+  "devDependencies": {
+    "terser": "^5.31.0",
+    "javascript-obfuscator": "^4.1.1"
+  }
+}

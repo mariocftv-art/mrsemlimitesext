@@ -86,7 +86,8 @@ const statusMeta: Record<ExtensionStatus, { label: string; dot: string; color: s
 
 import ext2ZipAsset from "../../public/MR Sem Limites EXT2.zip.asset.json";
 import ext3ZipAsset from "../../public/MR Sem Limites EXT3.zip.asset.json";
-import ext4ZipAsset from "../../public/MR Sem Limites EXT4.zip.asset.json";
+import ext4ZipAsset from "../../public/MR Sem Limite Manus.zip.asset.json";
+
 const EXT1_ZIP_URL = "/MR%20Sem%20Limites%20EXT1.zip";
 const EXT2_ZIP_URL = (ext2ZipAsset as { url: string }).url;
 const EXT3_ZIP_URL = (ext3ZipAsset as { url: string }).url;

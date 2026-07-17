@@ -488,12 +488,11 @@
         if (orb?.dataset.mode === 'on' && !recognizing) startRecognition(false);
       });
     } catch (e) {
-      const pontos = conversation.filter((c) => c.who === 'u' && !hasTrigger(c.text) && !hasAny(c.text, CLEAR_CMDS) && !hasAny(c.text, SUMMARY_CMDS)).length;
-      const fallback = buildConversationalReply(finalText, pontos);
-      conversation.push({ who: 'a', text: fallback });
-      logMsg('a', fallback);
+      const errMsg = 'Não consegui falar com a IA agora. ' + (e?.message ? 'Detalhe: ' + e.message + '.' : 'Tente de novo em alguns segundos.');
+      conversation.push({ who: 'a', text: errMsg });
+      logMsg('a', errMsg);
       setOrbState('speak', 'RESPONDENDO', 'Falando com você');
-      speak(fallback, () => {
+      speak(errMsg, () => {
         if (orb?.dataset.mode === 'on' && !recognizing) startRecognition(false);
       });
     }
@@ -592,26 +591,39 @@
     try { recognition && recognition.abort(); } catch (_) {}
     recognition = new SR();
     let heardText = '';
-    recognition.lang = 'pt-BR'; recognition.interimResults = true; recognition.continuous = false;
+    let silenceTimer = null;
+    let dispatched = false;
+    // Modo contínuo + timer de silêncio de 2s: quando o usuário para
+    // de falar por 2 segundos, encerra o reconhecimento e manda pra IA.
+    recognition.lang = 'pt-BR'; recognition.interimResults = true; recognition.continuous = true;
+    const clearSilence = () => { if (silenceTimer) { clearTimeout(silenceTimer); silenceTimer = null; } };
+    const armSilence = () => {
+      clearSilence();
+      silenceTimer = setTimeout(() => {
+        if (dispatched) return;
+        dispatched = true;
+        try { recognition.stop(); } catch (_) {}
+      }, 2000);
+    };
     recognition.onstart = () => {
       recognizing = true;
+      dispatched = false;
       if (intoInput) { cmdMic?.classList.add('active'); }
-      else setOrbState('listen', 'OUVINDO', 'Fale agora');
+      else setOrbState('listen', 'OUVINDO', 'Fale agora — 2s de silêncio envia');
       beep(660, 0.12);
     };
     recognition.onerror = async (ev) => {
       recognizing = false;
+      clearSilence();
       cmdMic?.classList.remove('active');
       const err = ev?.error || '';
       if (err === 'not-allowed' || err === 'service-not-allowed') {
-        // Verifica de verdade se o navegador permite antes de bloquear
         let state = 'unknown';
         try {
           const p = await navigator.permissions.query({ name: 'microphone' });
           state = p.state || 'unknown';
         } catch (_) {}
         if (state !== 'denied') {
-          // Falso positivo comum em extension sidepanel: tenta pelo offscreen e nunca desliga a Orbe.
           if (startBridgeRecognition(intoInput)) return;
           if (!intoInput) setOrbState('listen', 'OUVINDO', 'Toque novamente e fale');
           return;
@@ -621,15 +633,16 @@
         return;
       }
       if (err === 'no-speech' || err === 'aborted') {
-        if (!intoInput && orb?.dataset.mode === 'on') {
+        if (!intoInput && orb?.dataset.mode === 'on' && !dispatched) {
           setTimeout(() => { if (orb?.dataset.mode === "on") startRecognition(false); }, 80);
           return;
         }
       }
-      if (!intoInput) setOrbState('idle', 'PRONTA', 'Toque a Orbe para falar');
+      if (!intoInput && !dispatched) setOrbState('idle', 'PRONTA', 'Toque a Orbe para falar');
     };
     recognition.onend = () => {
       recognizing = false;
+      clearSilence();
       cmdMic?.classList.remove('active');
       const finalHeard = heardText.trim();
       if (finalHeard) {
@@ -643,21 +656,22 @@
         return;
       }
       if (!intoInput && orb?.dataset.mode === 'on') {
-        // Auto-reinicia enquanto o modo conversa estiver ativo
         setTimeout(() => { if (orb?.dataset.mode === "on") startRecognition(false); }, 80);
       }
     };
     recognition.onresult = (ev) => {
       let text = '';
-      for (let i = ev.resultIndex || 0; i < (ev.results?.length || 0); i++) {
+      for (let i = 0; i < (ev.results?.length || 0); i++) {
         text += ev.results[i]?.[0]?.transcript || '';
       }
-      heardText = text.trim() || heardText;
-      if (!text) return;
+      const trimmed = text.trim();
+      if (trimmed && trimmed !== heardText) {
+        heardText = trimmed;
+        armSilence(); // reinicia timer de 2s de silêncio a cada nova fala
+      }
     };
     try { recognition.start(); } catch (_) {
       if (startBridgeRecognition(intoInput)) return;
-      // Se start falhar (ex.: já iniciado), tenta novamente em breve
       setTimeout(() => { try { recognition.start(); } catch (_) {} }, 250);
     }
   }

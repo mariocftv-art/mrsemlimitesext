@@ -488,12 +488,11 @@
         if (orb?.dataset.mode === 'on' && !recognizing) startRecognition(false);
       });
     } catch (e) {
-      const pontos = conversation.filter((c) => c.who === 'u' && !hasTrigger(c.text) && !hasAny(c.text, CLEAR_CMDS) && !hasAny(c.text, SUMMARY_CMDS)).length;
-      const fallback = buildConversationalReply(finalText, pontos);
-      conversation.push({ who: 'a', text: fallback });
-      logMsg('a', fallback);
+      const errMsg = 'Não consegui falar com a IA agora. ' + (e?.message ? 'Detalhe: ' + e.message + '.' : 'Tente de novo em alguns segundos.');
+      conversation.push({ who: 'a', text: errMsg });
+      logMsg('a', errMsg);
       setOrbState('speak', 'RESPONDENDO', 'Falando com você');
-      speak(fallback, () => {
+      speak(errMsg, () => {
         if (orb?.dataset.mode === 'on' && !recognizing) startRecognition(false);
       });
     }

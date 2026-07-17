@@ -495,7 +495,7 @@
     }
   }
 
-  function buildLovableConversationPrompt(turnId) {
+  function buildLovableConversationPrompt(turnId, endMarker) {
     let pick = null;
     try { pick = JSON.parse(localStorage.getItem(IA_PICK_KEY) || 'null'); } catch (_) { pick = null; }
     const directive = pick?.directive ? `\nIA selecionada pelo usuário: ${pick.directive}\n` : '';
@@ -517,8 +517,8 @@
       'Histórico da conversa:',
       history,
       '',
-      'Responda exatamente neste formato, sem texto antes:',
-      'ORBE_RESPOSTA: sua resposta curta aqui',
+      'Comece a resposta com as palavras ORBE RESPOSTA seguidas de dois-pontos, e depois fale a resposta curta.',
+      endMarker,
     ].join('\n');
   }
 
@@ -544,10 +544,11 @@
   // espera a resposta do próprio Lovable e lê essa resposta em voz alta.
   async function fetchOrbeReply() {
     const turnId = makeOrbeTurnId();
-    const prompt = buildLovableConversationPrompt(turnId);
+    const endMarker = `[FIM_${turnId}]`;
+    const prompt = buildLovableConversationPrompt(turnId, endMarker);
     await sendToLovableTab('TYPE_AND_SEND_IN_LOVABLE', { text: prompt });
     const resp = await sendToLovableTab('READ_LOVABLE_LAST_REPLY', {
-      sentText: turnId,
+      sentText: endMarker,
       timeoutMs: 90000,
       stableMs: 900,
     });

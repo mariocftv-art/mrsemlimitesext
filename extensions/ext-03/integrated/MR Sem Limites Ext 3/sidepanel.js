@@ -40,6 +40,8 @@ console.log(`🚀 MR Ext Sem Limites v${EXTENSION_VERSION} (MRSL) iniciando...`)
 const SUPABASE_URL = "https://mrsemlimites.lovable.app/api/public/ext";
 const SUPABASE_ANON_KEY = "mrlov";
 const REMOTE_ORIGIN = SUPABASE_URL;
+const REMOTE_PANEL_ORIGIN = "https://mrsemlimitesext.lovable.app";
+const REMOTE_PANEL_URL = `${REMOTE_PANEL_ORIGIN}/ext3-remote-panel.html`;
 const WHATSAPP_FALLBACK_URL = 'https://w.app/lovableilimitado';
 
 let licenseSessionToken = null;
@@ -228,6 +230,26 @@ function openWhatsAppSupport() {
       }
     });
   } catch { window.open(url || WHATSAPP_FALLBACK_URL, '_blank'); }
+}
+
+function speakText(text) {
+  const clean = String(text || '').trim();
+  if (!clean) return false;
+  try {
+    const synth = window.speechSynthesis;
+    if (!synth) return false;
+    synth.cancel();
+    const utterance = new SpeechSynthesisUtterance(clean);
+    utterance.lang = 'pt-BR';
+    utterance.rate = 1.02;
+    utterance.pitch = 1;
+    utterance.volume = 1;
+    synth.speak(utterance);
+    return true;
+  } catch (e) {
+    console.warn('[MRSL] Falha no TTS:', e?.message || e);
+    return false;
+  }
 }
 
 async function getAuthData() {
@@ -436,9 +458,11 @@ async function getProjectFromActiveTab() {
 }
 
 function setupBridge(iframe) {
-  const ALLOWED_ORIGIN = REMOTE_ORIGIN;
+  const ALLOWED_ORIGIN = REMOTE_PANEL_ORIGIN;
 
   window.addEventListener('message', async (event) => {
+    if (event.source !== iframe.contentWindow) return;
+    if (event.origin && event.origin !== ALLOWED_ORIGIN) return;
     const { requestId, command, payload } = event.data || {};
     if (!requestId || !command) return;
 
@@ -531,6 +555,18 @@ function setupBridge(iframe) {
         } else {
           error = injected.error || 'Falha ao digitar no chat';
         }
+        break;
+      }
+      case 'lovable.sendAndRead': {
+        const msgText = String(payload?.message || '').trim();
+        if (!msgText) { error = 'Mensagem vazia'; break; }
+        const check = await revalidateLicense();
+        if (!check.valid) { error = check.message || 'Licença inválida'; break; }
+        const reply = await sendAndReadLovableReply(msgText, {
+          timeoutMs: payload?.timeoutMs || 60000,
+          stableMs: payload?.stableMs || 1200,
+        });
+        result = { reply };
         break;
       }
       case 'lovable.publish': {
@@ -750,6 +786,33 @@ function setupBridge(iframe) {
           break;
         }
 
+        case 'support.open': {
+          openWhatsAppSupport();
+          result = { ok: true };
+          break;
+        }
+
+        case 'voice.start': {
+          chrome.runtime.sendMessage({
+            type: 'VOICE_START',
+            lang: payload?.lang || 'pt-BR',
+            existingText: payload?.existingText || ''
+          }, () => { void chrome.runtime.lastError; });
+          result = { ok: true };
+          break;
+        }
+
+        case 'voice.stop': {
+          chrome.runtime.sendMessage({ type: 'VOICE_STOP' }, () => { void chrome.runtime.lastError; });
+          result = { ok: true };
+          break;
+        }
+
+        case 'voice.speak': {
+          result = { ok: speakText(payload?.text || '') };
+          break;
+        }
+
         default:
           error = `Unknown command: ${command}`;
       }
@@ -769,14 +832,21 @@ function setupBridge(iframe) {
         requestId: 'capture_' + Date.now(),
         command: 'chat.captured',
         payload: { content: message.content, source: message.source, timestamp: message.timestamp }
-      }, '*');
+      }, ALLOWED_ORIGIN);
     }
     if (message.action === 'suggestionsCapturedRelay' && Array.isArray(message.items)) {
       iframe.contentWindow?.postMessage({
         requestId: 'sugg_' + Date.now(),
         command: 'lovable.suggestions',
         payload: { items: message.items }
-      }, '*');
+      }, ALLOWED_ORIGIN);
+    }
+    if (message.type === 'VOICE_STATUS' || message.type === 'VOICE_RESULT' || message.type === 'VOICE_ERROR') {
+      iframe.contentWindow?.postMessage({
+        requestId: 'voice_' + Date.now(),
+        command: 'voice.event',
+        payload: message
+      }, ALLOWED_ORIGIN);
     }
     // Repassa revogação de licença para o iframe
     if (message.type === 'LICENSE_REVOKED') {
@@ -784,7 +854,7 @@ function setupBridge(iframe) {
         requestId: 'license_' + Date.now(),
         command: 'license.revoked',
         payload: {}
-      }, '*');
+      }, ALLOWED_ORIGIN);
     }
   });
 
@@ -986,8 +1056,39 @@ async function showMainApp() {
   mainApp.style.display = 'flex';
   try { document.body.classList.remove('mr-locked'); } catch(_){}
 
-  // Inicializa a UI do chat diretamente (sem iframe)
+  // UI remota atualizável: a instalação fica fixa, mas o painel vem do site.
+  // Assim futuras mudanças de layout/comandos são publicadas no projeto, sem reinstalar.
+  if (mountRemotePanel(mainApp)) return;
+
+  // Fallback local caso a UI remota não possa ser montada.
   initDirectChat();
+}
+
+function mountRemotePanel(mainApp) {
+  try {
+    if (document.getElementById('mrRemotePanel')) return true;
+    mainApp.innerHTML = '';
+    mainApp.style.display = 'flex';
+    mainApp.style.padding = '0';
+    mainApp.style.margin = '0';
+    mainApp.style.width = '100%';
+    mainApp.style.height = '100vh';
+    mainApp.style.background = '#05060f';
+
+    const iframe = document.createElement('iframe');
+    iframe.id = 'mrRemotePanel';
+    iframe.title = 'MR Sem Limites painel atualizável';
+    iframe.allow = 'microphone; clipboard-read; clipboard-write';
+    iframe.referrerPolicy = 'no-referrer';
+    iframe.style.cssText = 'border:0;width:100%;height:100vh;display:block;background:#05060f;';
+    iframe.src = `${REMOTE_PANEL_URL}?v=${Date.now()}`;
+    mainApp.appendChild(iframe);
+    setupBridge(iframe);
+    return true;
+  } catch (e) {
+    console.warn('[MRSL] Falha ao montar painel remoto:', e?.message || e);
+    return false;
+  }
 }
 
 

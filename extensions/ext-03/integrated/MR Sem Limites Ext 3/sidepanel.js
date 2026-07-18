@@ -1952,6 +1952,7 @@ async function sendAndReadLovableReply(messageText, opts = {}) {
   if (!tab?.id || !/lovable\.dev|lovableproject\.com/.test(tab.url || '')) {
     throw new Error('Abra um projeto Lovable na aba ativa primeiro.');
   }
+  await ensureLovableContentScript(tab.id);
   const sendResp = await new Promise((resolve) => {
     try {
       chrome.tabs.sendMessage(tab.id, { type: 'TYPE_AND_SEND_IN_LOVABLE', text: messageText }, (r) => {

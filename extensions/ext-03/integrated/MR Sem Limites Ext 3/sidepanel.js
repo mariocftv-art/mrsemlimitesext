@@ -1880,6 +1880,41 @@ Regras: NÃO quebrar funcionalidades, NÃO remover features, NÃO alterar design
   console.log('[MRSL] Chat direto inicializado — sem iframe');
 }
 
+// Garante que o content script da EXT3 esteja injetado na aba do Lovable.
+// Se o ping falhar, injeta inject.js + content.js + sound-detector.js
+// programaticamente — evita o erro "sem resposta do content script"
+// quando a aba foi aberta antes da extensão ser instalada/atualizada.
+async function ensureLovableContentScript(tabId) {
+  const ping = () => new Promise((resolve) => {
+    try {
+      chrome.tabs.sendMessage(tabId, { type: 'MRSL_PING' }, (r) => {
+        void chrome.runtime.lastError;
+        resolve(!!(r && r.ok));
+      });
+    } catch (_) { resolve(false); }
+  });
+  if (await ping()) return true;
+  try {
+    await chrome.scripting.executeScript({
+      target: { tabId, allFrames: false },
+      world: 'MAIN',
+      files: ['content/inject.js'],
+    });
+  } catch (_) {}
+  try {
+    await chrome.scripting.executeScript({
+      target: { tabId, allFrames: false },
+      files: ['content/content.js', 'content/sound-detector.js'],
+    });
+  } catch (e) {
+    throw new Error('Não consegui carregar o content script na aba Lovable: ' + (e?.message || e));
+  }
+  // pequeno delay pro listener registrar
+  await new Promise((r) => setTimeout(r, 250));
+  return await ping();
+}
+window.ensureLovableContentScript = ensureLovableContentScript;
+
 async function sendDirectLovableMessage(messageText) {
   const check = await revalidateLicense();
   if (!check.valid) throw new Error(check.message || 'Licença inválida');
@@ -1889,10 +1924,8 @@ async function sendDirectLovableMessage(messageText) {
     throw new Error('Abra um projeto na aba ativa primeiro.');
   }
 
-  // Segue exatamente o mesmo caminho da bolinha verde: manda o content script
-  // digitar no chat nativo do Lovable e clicar Enviar. O interceptor de fetch
-  // (inject.js) aplica o fluxo ativo no envio real. O handler também reativa
-  // a bolinha caso ela tenha sumido.
+  await ensureLovableContentScript(tab.id);
+
   const resp = await new Promise((resolve) => {
     try {
       chrome.tabs.sendMessage(tab.id, { type: 'TYPE_AND_SEND_IN_LOVABLE', text: messageText }, (r) => {
@@ -1909,6 +1942,7 @@ async function sendDirectLovableMessage(messageText) {
 }
 
 window.sendDirectLovableMessage = sendDirectLovableMessage;
+
 
 // Envia uma mensagem para o Lovable e aguarda a resposta do assistente
 // aparecer no chat. Usado pela Orbe no MODO CONVERSA para trocar ideias

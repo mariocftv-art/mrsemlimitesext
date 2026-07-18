@@ -114,20 +114,21 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
   if (msg.type === 'VOICE_START') {
     (async () => {
       try {
-        const tabStarted = await startVoiceInLovableTab(msg);
-        if (tabStarted) return;
-
+        // 1) Preferir offscreen (tem permissão USER_MEDIA garantida pela extensão).
         const ok = await ensureVoiceOffscreen();
-        if (!ok) {
-          chrome.runtime.sendMessage({ type: 'VOICE_ERROR', error: 'not-supported' }).catch(() => {});
+        if (ok) {
+          chrome.runtime.sendMessage({
+            target: 'offscreen',
+            type: 'OFFSCREEN_VOICE_START',
+            lang: msg.lang || 'pt-BR',
+            existingText: msg.existingText || ''
+          }).catch((e) => chrome.runtime.sendMessage({ type: 'VOICE_ERROR', error: e?.message || 'not-supported' }).catch(() => {}));
           return;
         }
-        chrome.runtime.sendMessage({
-          target: 'offscreen',
-          type: 'OFFSCREEN_VOICE_START',
-          lang: msg.lang || 'pt-BR',
-          existingText: msg.existingText || ''
-        }).catch((e) => chrome.runtime.sendMessage({ type: 'VOICE_ERROR', error: e?.message || 'not-supported' }).catch(() => {}));
+        // 2) Fallback: reconhecimento na aba do Lovable (só se offscreen falhar).
+        const tabStarted = await startVoiceInLovableTab(msg);
+        if (tabStarted) return;
+        chrome.runtime.sendMessage({ type: 'VOICE_ERROR', error: 'not-supported' }).catch(() => {});
       } catch (e) {
         chrome.runtime.sendMessage({ type: 'VOICE_ERROR', error: e.message }).catch(() => {});
       }

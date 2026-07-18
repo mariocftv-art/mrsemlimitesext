@@ -12,8 +12,12 @@
     .top{display:flex;align-items:center;gap:9px;min-height:42px}
     .logo{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;font-weight:900;color:#03101b;background:linear-gradient(135deg,var(--cyan),var(--pink));box-shadow:0 0 24px rgba(34,211,238,.35)}
     .brand b{display:block;font-size:13px}.brand span{display:block;font-size:8px;color:var(--muted);letter-spacing:3px;font-weight:800}
-    .top-actions{margin-left:auto;display:flex;gap:6px}
+    .top-actions{margin-left:auto;display:flex;gap:6px;position:relative}
     .icon{border:1px solid var(--line);background:rgba(255,255,255,.05);color:var(--text);border-radius:9px;width:32px;height:32px;cursor:pointer}
+    .menu-panel{position:absolute;right:0;top:38px;width:188px;padding:7px;border:1px solid rgba(34,211,238,.28);border-radius:12px;background:rgba(5,8,20,.98);box-shadow:0 18px 42px rgba(0,0,0,.45),0 0 24px rgba(34,211,238,.12);z-index:20;display:flex;flex-direction:column;gap:6px}
+    .menu-panel.hidden{display:none}
+    .menu-panel button{width:100%;border:1px solid rgba(34,211,238,.18);background:rgba(255,255,255,.045);color:var(--text);border-radius:9px;padding:9px 10px;text-align:left;font-size:12px;font-weight:800;cursor:pointer}
+    .menu-panel button:hover{border-color:rgba(34,211,238,.45);background:rgba(34,211,238,.10)}
     .orb-wrap{display:flex;flex-direction:column;align-items:center;padding-top:6px}
     .orb{width:min(48vw,158px);aspect-ratio:1;border:0;border-radius:50%;cursor:pointer;background:radial-gradient(circle at 54% 54%,#24e7ff 0 10%,#30b8ff 34%,#6674ff 66%,#8b5cf6 100%);box-shadow:0 0 60px rgba(34,211,238,.38),inset -24px -26px 55px rgba(11,17,44,.28);transition:transform .2s,box-shadow .2s}
     .orb:active{transform:scale(.98)}
@@ -45,8 +49,13 @@
       <div class="logo">MR</div>
       <div class="brand"><b>IA MR — Sem Limites</b><span>ASSISTENTE</span></div>
       <div class="top-actions">
-        <button class="icon" id="reset" title="Nova conversa">↻</button>
         <button class="icon" id="support" title="Suporte">☎</button>
+        <button class="icon" id="menu" title="Menu">⋮</button>
+        <div class="menu-panel hidden" id="menuPanel">
+          <button id="forceUpdate" type="button">⟳ Forçar atualização</button>
+          <button id="reset" type="button">↻ Nova conversa</button>
+          <button id="supportMenu" type="button">☎ Suporte</button>
+        </div>
       </div>
     </header>
 
@@ -78,7 +87,7 @@ function call(command, payload={}) {
     window.parent.postMessage({ requestId, command, payload }, '*');
     setTimeout(() => {
       if (pending.has(requestId)) { pending.delete(requestId); reject(new Error('Tempo esgotado: ' + command)); }
-    }, command === 'lovable.sendAndRead' ? 90000 : 30000);
+    }, command === 'lovable.sendAndRead' ? 120000 : 30000);
   });
 }
 window.addEventListener('message', (event) => {
@@ -100,6 +109,8 @@ const title = document.getElementById('title');
 const subtitle = document.getElementById('subtitle');
 const orb = document.getElementById('orb');
 const sendBtn = document.getElementById('send');
+const menuBtn = document.getElementById('menu');
+const menuPanel = document.getElementById('menuPanel');
 
 const ORBE_API = 'https://mrsemlimitesext.lovable.app/api/public/orbe-chat';
 const history = []; // {role:'user'|'assistant', content}
@@ -118,6 +129,43 @@ function addMsg(role, text, extra='') {
   log.appendChild(el); log.scrollTop = log.scrollHeight;
 }
 function clean(t){ return String(t||'').replace(/\s+/g,' ').trim(); }
+
+function buildConversationPrompt(userText) {
+  const recent = history.slice(-10).map(m => `${m.role === 'user' ? 'Usuário' : 'IA MR'}: ${clean(m.content)}`).join('\n');
+  return [
+    'MODO CONVERSA DA IA MR. Não execute alterações, não edite arquivos e não use ferramentas agora.',
+    'Responda como consultor especialista brasileiro, em 2 a 4 frases objetivas, para eu falar ao usuário por voz.',
+    'Ajude a planejar a ideia, sugira caminhos concretos e faça uma pergunta curta se faltar informação.',
+    'Quando fizer sentido, diga que ao falar “pode enviar” a IA MR monta o prompt e manda para execução.',
+    '',
+    'Histórico:',
+    recent,
+    '',
+    'Última fala do usuário:',
+    userText,
+    '',
+    'Responda somente com a fala curta da IA MR, em português do Brasil.'
+  ].join('\n');
+}
+
+function buildExecutionPrompt() {
+  const combined = history
+    .filter(m => m.role === 'user')
+    .map(m => clean(m.content))
+    .filter(t => t && !isSendTrigger(t))
+    .slice(-12)
+    .map(t => `- ${t}`)
+    .join('\n');
+  return [
+    'Baseado na conversa com a IA MR, monte e execute o plano abaixo no projeto atual.',
+    'Implemente de forma objetiva e completa, sem quebrar nada existente. Antes de alterar, preserve o design e a lógica já funcionando.',
+    '',
+    'Plano combinado:',
+    combined || '- Executar o plano combinado na conversa.',
+    '',
+    'Faça as alterações necessárias e valide o resultado no final.'
+  ].join('\n');
+}
 
 /* ---------- TTS ---------- */
 async function speak(text) {
@@ -173,23 +221,18 @@ async function send() {
   input.value = ''; addMsg('user', text);
   history.push({ role:'user', content: text });
   busy = true; sendBtn.disabled = true;
+  setStatus('Recebi. Enviando para o Lovable…');
 
   if (isSendTrigger(text)) { await enviarParaLovable(); busy = false; sendBtn.disabled = false; return; }
 
-  setState('PENSANDO','IA MR analisando…');
-  setStatus('Consultando IA…');
+  setState('PENSANDO','IA MR conversando pelo Lovable…');
   const wait = document.createElement('div'); wait.className = 'msg bot'; wait.textContent = 'Pensando…';
   if (log.querySelector('.empty')) log.innerHTML = '';
   log.appendChild(wait); log.scrollTop = log.scrollHeight;
 
   try {
-    const r = await fetch(ORBE_API, {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ mode:'chat', messages: history.slice(-16) })
-    });
-    const j = await r.json().catch(() => ({}));
-    if (!r.ok || !j?.ok) throw new Error(j?.error || ('HTTP ' + r.status));
-    const reply = clean(j.reply) || 'Certo.';
+    const res = await call('lovable.sendAndRead', { message: buildConversationPrompt(text), timeoutMs: 90000, stableMs: 1200 });
+    const reply = clean(res?.reply) || 'Entendi. Posso seguir nessa direção; se estiver bom, fale “pode enviar”.';
     wait.textContent = reply;
     history.push({ role:'assistant', content: reply });
     setStatus('');
@@ -211,21 +254,7 @@ async function enviarParaLovable() {
   const wait = document.createElement('div'); wait.className = 'msg final'; wait.textContent = 'Montando prompt final…';
   log.appendChild(wait); log.scrollTop = log.scrollHeight;
 
-  let finalPrompt = '';
-  try {
-    const r = await fetch(ORBE_API, {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ mode:'final', messages: history.slice(-20) })
-    });
-    const j = await r.json().catch(() => ({}));
-    if (!r.ok || !j?.ok) throw new Error(j?.error || ('HTTP ' + r.status));
-    finalPrompt = clean(j.reply);
-  } catch (e) {
-    wait.textContent = 'Não consegui montar o prompt: ' + (e.message || e);
-    setState('PRONTA','Toque na Orbe para conversar'); setStatus('');
-    sendBtn.classList.remove('ready'); sendBtn.textContent = 'FALAR COM IA';
-    return;
-  }
+  const finalPrompt = clean(buildExecutionPrompt());
   if (!finalPrompt) { wait.textContent = 'Prompt vazio.'; return; }
 
   wait.textContent = '📤 Prompt final enviado ao Lovable:\n\n' + finalPrompt;
@@ -253,6 +282,15 @@ input.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefau
 document.getElementById('mic').addEventListener('click', startVoice);
 orb.addEventListener('click', startVoice);
 document.getElementById('support').addEventListener('click', () => call('support.open').catch(()=>{}));
+document.getElementById('supportMenu').addEventListener('click', () => call('support.open').catch(()=>{}));
+menuBtn.addEventListener('click', (e) => { e.stopPropagation(); menuPanel.classList.toggle('hidden'); });
+document.addEventListener('click', (e) => { if (!menuPanel.contains(e.target) && e.target !== menuBtn) menuPanel.classList.add('hidden'); });
+document.getElementById('forceUpdate').addEventListener('click', async () => {
+  setStatus('Forçando atualização…');
+  try { if ('caches' in window) { const keys = await caches.keys(); await Promise.all(keys.map(k => caches.delete(k))); } } catch {}
+  const base = location.href.split('?')[0];
+  location.replace(base + '?v=' + Date.now());
+});
 document.getElementById('reset').addEventListener('click', () => {
   history.length = 0; greeted = false;
   log.innerHTML = '<div class="empty">Toque na Orbe e comece a conversar</div>';

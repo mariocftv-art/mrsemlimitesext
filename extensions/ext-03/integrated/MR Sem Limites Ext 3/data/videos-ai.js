@@ -91,8 +91,24 @@ const RECIPES = {
   'vid-motion':    'Motion abstrato em loop 8-15s (formas, gradientes, partículas) com trilha ambient sutil para background de hero.',
 };
 
-export function buildVideoAIPrompt(item) {
+export const VIDEO_DURATIONS = [
+  { id: '10s',  label: '10 segundos', seconds: 10  },
+  { id: '30s',  label: '30 segundos', seconds: 30  },
+  { id: '60s',  label: '60 segundos', seconds: 60  },
+  { id: '2min', label: '2 minutos',   seconds: 120 },
+  { id: '5min', label: '5 minutos',   seconds: 300 },
+  { id: '10min',label: '10 minutos',  seconds: 600 },
+];
+
+export function buildVideoAIPrompt(item, duration) {
+  const dur = VIDEO_DURATIONS.find(d => d.id === duration) || VIDEO_DURATIONS[1];
+  const durBlock = `🎯 DURAÇÃO OBRIGATÓRIA DO VÍDEO: **${dur.label}** (${dur.seconds}s).
+- Ajuste ritmo, cortes, roteiro, locução e trilha para EXATAMENTE essa duração.
+- Se a categoria sugerir tempo menor, faça loop/estender coerentemente para ${dur.label}.
+- Se sugerir tempo maior, condense mantendo hook, desenvolvimento e CTA dentro de ${dur.label}.`;
   return `Gerar vídeo — categoria **${item.name}** (${item.category}).
+
+${durBlock}
 
 ${RECIPES[item.id] || item.desc}
 
@@ -100,7 +116,7 @@ ${COMMON}
 
 ${SOCIAL_PACK}
 
-Descreva o roteiro/assunto exato na próxima mensagem (cena, tom, duração, locução, trilha).
+Descreva o roteiro/assunto exato na próxima mensagem (cena, tom, locução, trilha) — a duração já está fixada em ${dur.label}.
 O vídeo final deve entregar ÁUDIO sempre — trilha, locução ou som ambiente — para todas as categorias, inclusive backgrounds.
 Sempre entregar o vídeo + o PACOTE DE PUBLICAÇÃO SOCIAL completo (TikTok, Instagram Reels/Feed/Stories, Facebook Feed/Reels) com títulos, descrições e hashtags PRONTOS para publicar.`;
 }

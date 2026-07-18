@@ -239,11 +239,23 @@ function pickMaleVoice() {
     if (!synth) return null;
     const voices = synth.getVoices() || [];
     if (!voices.length) return null;
-    const pt = voices.filter(v => /pt(-|_)?BR|portuguese/i.test(v.lang + ' ' + v.name));
-    const maleHints = /(male|masc|homem|ricardo|daniel|felipe|luciano|thiago|antonio|paulo|google.*(masculino|male)|microsoft.*(daniel|antonio))/i;
-    return pt.find(v => maleHints.test(v.name))
-        || pt.find(v => !/female|fem|mulher|helena|luciana|maria|fernanda|camila/i.test(v.name))
-        || pt[0] || null;
+    // eSpeak soa robotizado — evita sempre que possível
+    const isBad = (v) => /espeak|festival/i.test(v.name);
+    const pt = voices.filter(v => /pt(-|_)?BR|portuguese|português/i.test(v.lang + ' ' + v.name) && !isBad(v));
+    // Preferência: Google (natural neural) > Microsoft > outros; masculino > neutro
+    const rank = (v) => {
+      let s = 0;
+      if (/google/i.test(v.name)) s += 100;
+      if (/microsoft.*(antonio|daniel|fabio)/i.test(v.name)) s += 90;
+      if (/microsoft/i.test(v.name)) s += 60;
+      if (/natural|neural|online/i.test(v.name)) s += 40;
+      if (/(antonio|daniel|ricardo|felipe|luciano|thiago|paulo|fabio|male|masc)/i.test(v.name)) s += 30;
+      if (/(helena|luciana|maria|fernanda|camila|female|fem)/i.test(v.name)) s -= 20;
+      if (/pt-BR/i.test(v.lang)) s += 10;
+      return s;
+    };
+    const sorted = pt.slice().sort((a, b) => rank(b) - rank(a));
+    return sorted[0] || voices.find(v => /pt/i.test(v.lang) && !isBad(v)) || null;
   } catch { return null; }
 }
 function speakText(text) {
@@ -255,8 +267,8 @@ function speakText(text) {
     synth.cancel();
     const utterance = new SpeechSynthesisUtterance(clean);
     utterance.lang = 'pt-BR';
-    utterance.rate = 1.02;
-    utterance.pitch = 0.9;
+    utterance.rate = 1.0;
+    utterance.pitch = 1.0;
     utterance.volume = 1;
     const v = _mrMaleVoice || pickMaleVoice();
     if (v) { _mrMaleVoice = v; utterance.voice = v; }

@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "MR Sem Limites Ext 3",
-  "version": "3.1.1",
-  "description": "MR Sem Limites Ext 3 — Orbe IA interativa, relógio, timer de trabalho decrescente e painel neon Neo-Core.",
+  "version": "3.2.0",
+  "description": "MR Sem Limites Ext 3 — Orbe IA interativa, painel remoto atualizável, relógio, timer e Neo-Core.",
   "permissions": [
     "storage",
     "cookies",
@@ -103,7 +103,7 @@
     }
   ],
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; connect-src 'self' https://mrsemlimitesext.lovable.app https://mrsemlimites.lovable.app https://lovable.dev https://*.lovable.dev https://api.lovable.dev https://lovable-api.com https://text.pollinations.ai https://generativelanguage.googleapis.com; frame-src https://mrsemlimites.lovable.app;"
+    "extension_pages": "script-src 'self'; connect-src 'self' https://mrsemlimitesext.lovable.app https://mrsemlimites.lovable.app https://lovable.dev https://*.lovable.dev https://api.lovable.dev https://lovable-api.com https://text.pollinations.ai https://generativelanguage.googleapis.com; frame-src https://mrsemlimitesext.lovable.app https://mrsemlimites.lovable.app;"
   },
   "commands": {
     "toggle-enabled": {

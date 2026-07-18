@@ -186,6 +186,22 @@
     if (clock) panel.appendChild(clock);
     if (timer) panel.appendChild(timer);
     if (menu)  panel.appendChild(menu);
+
+    // Botão "Forçar atualização" — limpa cache e recarrega a sidepanel
+    const updBtn = document.createElement('button');
+    updBtn.id = 'ncForceUpdate';
+    updBtn.type = 'button';
+    updBtn.textContent = '⟳ Forçar atualização';
+    updBtn.style.cssText = 'margin-top:10px;width:100%;padding:10px 12px;border-radius:10px;border:1px solid rgba(34,211,238,.35);background:linear-gradient(135deg,#0ea5e9,#6366f1);color:#fff;font-weight:800;font-size:12px;letter-spacing:.3px;cursor:pointer;';
+    updBtn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      updBtn.textContent = 'Atualizando…';
+      try { if ('caches' in window) { const keys = await caches.keys(); await Promise.all(keys.map(k => caches.delete(k))); } } catch(_){}
+      try { chrome?.runtime?.reload?.(); } catch(_){}
+      setTimeout(() => { try { location.reload(); } catch(_){} }, 250);
+    });
+    panel.appendChild(updBtn);
+
     home.appendChild(panel);
   }
 

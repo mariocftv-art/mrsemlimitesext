@@ -518,6 +518,8 @@ function setupBridge(iframe) {
         if (!tab?.id || !/lovable\.dev|lovableproject\.com/.test(tab.url || '')) {
           error = 'Abra a aba da plataforma com o projeto antes de enviar.'; break;
         }
+        try { await ensureLovableContentScript(tab.id); }
+        catch (e) { error = e?.message || 'Não consegui carregar o content script na aba Lovable.'; break; }
         const injected = await new Promise((resolve) => {
           chrome.tabs.sendMessage(tab.id, { type: 'TYPE_AND_SEND_IN_LOVABLE', text: msgText }, (resp) => {
             void chrome.runtime.lastError;

@@ -246,7 +246,9 @@
   const TRIGGERS = [
     'pode enviar','pode mandar','envia agora','envia pro lovable','envia para o lovable',
     'manda pro lovable','manda para o lovable','enviar para o lovable','manda o plano',
-    'executa o plano','executar o plano','manda agora','mandar agora'
+    'executa o plano','executar o plano','manda agora','mandar agora',
+    'topo','eu topo','fechado','fechou','beleza pode mandar','vamos nessa','bora',
+    'gostei manda','gostei pode mandar','confirmo','pode criar','cria isso','faz isso'
   ];
   const CLEAR_CMDS = ['limpar conversa','apagar conversa','novo plano','recomeçar','recomecar','esquece tudo','zerar conversa'];
   const SUMMARY_CMDS = ['resumo','resumir','qual o plano','me mostra o plano','mostrar o plano'];

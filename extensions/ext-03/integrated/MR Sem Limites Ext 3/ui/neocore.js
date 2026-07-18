@@ -530,6 +530,7 @@
     if (!tab?.id || !/lovable\.dev|lovableproject\.com/i.test(tab.url || '')) {
       throw new Error('Abra a aba do projeto Lovable antes de falar com a Orbe.');
     }
+    try { if (typeof window.ensureLovableContentScript === 'function') await window.ensureLovableContentScript(tab.id); } catch (_) {}
     return await new Promise((resolve, reject) => {
       chrome.tabs.sendMessage(tab.id, { type, ...payload }, (resp) => {
         const err = chrome.runtime?.lastError?.message;

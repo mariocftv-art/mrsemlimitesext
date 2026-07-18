@@ -1085,6 +1085,17 @@ async function showMainApp() {
 function mountRemotePanel(mainApp) {
   try {
     if (document.getElementById('mrRemotePanel')) return true;
+    try {
+      document.body.classList.add('mr-remote-mode');
+      ['ext3-home', 'ext3OpenHome', 'ncMenuPanel'].forEach((id) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.setAttribute('aria-hidden', 'true');
+        el.style.display = 'none';
+        el.style.visibility = 'hidden';
+        el.style.pointerEvents = 'none';
+      });
+    } catch (_) {}
     mainApp.innerHTML = '';
     mainApp.style.display = 'flex';
     mainApp.style.padding = '0';

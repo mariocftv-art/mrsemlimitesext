@@ -646,7 +646,8 @@
     .input-area{position:relative;transition:box-shadow .25s ease,border-color .25s ease;border-top-width:2px !important}
     #message{transition:border-color .25s ease,box-shadow .25s ease}
     .input-area.state-sending{border-top-color:var(--laser-green) !important;box-shadow:0 -8px 22px -8px rgba(34,255,136,.55)}
-    .input-area.state-sending #message{border-color:var(--laser-green) !important;box-shadow:0 0 0 1.5px var(--laser-green),0 0 12px rgba(34,255,136,.7),inset 0 0 8px rgba(34,255,136,.15) !important;animation:mrPulseGreen 1.2s ease-in-out infinite}
+    .input-area.state-sending #message{border-color:var(--laser-green) !important;box-shadow:0 0 0 2px var(--laser-green),0 0 16px rgba(34,255,136,.85),inset 0 0 10px rgba(34,255,136,.2) !important;animation:none !important;caret-color:var(--laser-green) !important}
+    .input-area.state-sending #message:focus{outline:none !important}
     .input-area.state-done #message{border-color:var(--laser-blue) !important;box-shadow:0 0 0 1.5px var(--laser-blue),0 0 14px rgba(0,229,255,.75),inset 0 0 8px rgba(0,229,255,.15) !important}
     .input-area.state-done{border-top-color:var(--laser-blue) !important;box-shadow:0 -8px 22px -8px rgba(0,229,255,.6)}
     .input-area.state-asking #message{border-color:var(--laser-red) !important;box-shadow:0 0 0 1.5px var(--laser-red),0 0 16px rgba(255,32,80,.9),inset 0 0 8px rgba(255,32,80,.2) !important;animation:mrPulseRed 1s ease-in-out infinite}

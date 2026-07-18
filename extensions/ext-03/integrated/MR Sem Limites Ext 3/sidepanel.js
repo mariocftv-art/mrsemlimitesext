@@ -1088,11 +1088,9 @@ async function showMainApp() {
   mainApp.style.display = 'flex';
   try { document.body.classList.remove('mr-locked'); } catch(_){}
 
-  // UI remota atualizável: a instalação fica fixa, mas o painel vem do site.
-  // Assim futuras mudanças de layout/comandos são publicadas no projeto, sem reinstalar.
-  if (mountRemotePanel(mainApp)) return;
-
-  // Fallback local caso a UI remota não possa ser montada.
+  // UI LOCAL (com todas as abas: Componentes, Imagens IA, Vídeos IA, Templates, Ferramentas, etc.)
+  // O painel remoto por iframe foi desativado a pedido do usuário — as abas ficavam ocultas.
+  // Atualizações do layout/scripts vêm dos arquivos em public/ext3-live/* via hot-loader.
   initDirectChat();
 }
 

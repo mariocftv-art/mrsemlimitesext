@@ -1431,18 +1431,43 @@ function initDirectChat() {
     }
   });
 
-  // Attach
+  // Attach — suporta arquivos grandes (imagens, vídeos até 400MB, PDF, ZIP, etc.)
+  const MAX_FILE_BYTES = 400 * 1024 * 1024; // 400 MB
   attachBtn?.addEventListener('click', () => fileInput?.click());
   fileInput?.addEventListener('change', async () => {
     if (!fileInput.files?.length) return;
     for (const file of fileInput.files) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const base64 = reader.result.split(',')[1] || '';
-        pendingFiles.push({ dataB64: base64, name: file.name, mime: file.type || 'application/octet-stream' });
+      if (file.size > MAX_FILE_BYTES) {
+        alert(`❌ "${file.name}" tem ${(file.size/1024/1024).toFixed(1)}MB. Limite: 400MB.`);
+        continue;
+      }
+      const sizeMB = (file.size / 1024 / 1024).toFixed(1);
+      const isBig = file.size > 25 * 1024 * 1024;
+      if (isBig) {
+        try { statusEl && (statusEl.textContent = `📦 Preparando ${file.name} (${sizeMB}MB)…`); } catch {}
+      }
+      // Para arquivos grandes (>25MB) guardamos como Blob para evitar estouro de memória do base64.
+      // Arquivos pequenos continuam como base64 para compatibilidade com o fluxo atual.
+      if (isBig) {
+        pendingFiles.push({
+          blob: file, name: file.name, mime: file.type || 'application/octet-stream',
+          size: file.size, large: true
+        });
         renderFilePreview();
-      };
-      reader.readAsDataURL(file);
+        try { statusEl && (statusEl.textContent = `✅ ${file.name} (${sizeMB}MB) pronto para envio.`); } catch {}
+      } else {
+        await new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            const base64 = reader.result.split(',')[1] || '';
+            pendingFiles.push({ dataB64: base64, name: file.name, mime: file.type || 'application/octet-stream', size: file.size });
+            renderFilePreview();
+            resolve();
+          };
+          reader.onerror = () => resolve();
+          reader.readAsDataURL(file);
+        });
+      }
     }
     fileInput.value = '';
   });

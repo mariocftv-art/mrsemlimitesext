@@ -810,6 +810,20 @@ function setupBridge(iframe) {
           break;
         }
 
+        case 'extension.forceUpdate': {
+          result = { ok: true, message: 'Atualizando painel remoto...' };
+          try {
+            if (typeof caches !== 'undefined') {
+              const keys = await caches.keys();
+              await Promise.all(keys.map((key) => caches.delete(key)));
+            }
+          } catch (_) {}
+          setTimeout(() => {
+            try { iframe.src = `${REMOTE_PANEL_URL}?v=${Date.now()}`; } catch (_) {}
+          }, 80);
+          break;
+        }
+
         case 'voice.start': {
           chrome.runtime.sendMessage({
             type: 'VOICE_START',

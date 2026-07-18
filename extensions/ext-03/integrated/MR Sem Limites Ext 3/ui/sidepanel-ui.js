@@ -544,13 +544,16 @@ function initVideos() {
     getCat: v => v.category,
     renderItem: (v) => {
       const fav = isFavV2('vid', v.id);
+      const durOpts = VIDEO_DURATIONS.map((d, i) => `<option value="${d.id}"${i===1?' selected':''}>${escapeHtml(d.label)}</option>`).join('');
       return `
         <div class="mr-item">
           <button class="mr-fav ${fav ? 'on' : ''}" data-fav-vid="${v.id}" title="Favoritar">★</button>
           <div class="mr-preview ${previewFromKey(v.preview)}"><span class="mr-preview-icon">${escapeHtml(v.icon || '🎬')}</span></div>
           <div class="mr-item-head"><span class="mr-item-title">${escapeHtml(v.name)}</span><span class="mr-item-cat">${escapeHtml(v.category)}</span></div>
           <div class="mr-item-desc">${escapeHtml(v.desc)}</div>
-          <div class="mr-item-actions">
+          <div class="mr-item-actions" style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+            <label style="font-size:11px;opacity:.75">⏱</label>
+            <select class="mr-btn mr-vid-dur" data-vid-dur="${v.id}" style="padding:4px 6px;font-size:11px">${durOpts}</select>
             <button class="mr-btn primary" data-vid-use="${v.id}">Usar</button>
             <button class="mr-btn" data-vid-copy="${v.id}">📋</button>
           </div>
@@ -566,8 +569,11 @@ function initVideos() {
     if (!id) return;
     const it = VIDEOS_AI.find(x => x.id === id);
     if (!it) return;
-    const prompt = buildVideoAIPrompt(it);
-    if (useBtn) sendToChat(prompt, { label: `Vídeo: ${it.name}` });
+    const durSel = gridEl.querySelector(`select[data-vid-dur="${id}"]`);
+    const duration = durSel?.value || '30s';
+    const durLabel = durSel?.selectedOptions?.[0]?.textContent || duration;
+    const prompt = buildVideoAIPrompt(it, duration);
+    if (useBtn) sendToChat(prompt, { label: `Vídeo: ${it.name} (${durLabel})` });
     else { try { await navigator.clipboard.writeText(prompt); toast('Prompt copiado'); } catch {} }
   });
 }

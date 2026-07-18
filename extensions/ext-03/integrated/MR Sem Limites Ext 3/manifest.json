@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "MR Sem Limites Ext 3",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "description": "MR Sem Limites Ext 3 — Orbe IA interativa, relógio, timer de trabalho decrescente e painel neon Neo-Core.",
   "permissions": [
     "storage",

@@ -810,6 +810,20 @@ function setupBridge(iframe) {
           break;
         }
 
+        case 'extension.forceUpdate': {
+          result = { ok: true, message: 'Atualizando painel remoto...' };
+          try {
+            if (typeof caches !== 'undefined') {
+              const keys = await caches.keys();
+              await Promise.all(keys.map((key) => caches.delete(key)));
+            }
+          } catch (_) {}
+          setTimeout(() => {
+            try { iframe.src = `${REMOTE_PANEL_URL}?v=${Date.now()}`; } catch (_) {}
+          }, 80);
+          break;
+        }
+
         case 'voice.start': {
           chrome.runtime.sendMessage({
             type: 'VOICE_START',
@@ -1085,6 +1099,17 @@ async function showMainApp() {
 function mountRemotePanel(mainApp) {
   try {
     if (document.getElementById('mrRemotePanel')) return true;
+    try {
+      document.body.classList.add('mr-remote-mode');
+      ['ext3-home', 'ext3OpenHome', 'ncMenuPanel'].forEach((id) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.setAttribute('aria-hidden', 'true');
+        el.style.display = 'none';
+        el.style.visibility = 'hidden';
+        el.style.pointerEvents = 'none';
+      });
+    } catch (_) {}
     mainApp.innerHTML = '';
     mainApp.style.display = 'flex';
     mainApp.style.padding = '0';

@@ -287,6 +287,8 @@ menuBtn.addEventListener('click', (e) => { e.stopPropagation(); menuPanel.classL
 document.addEventListener('click', (e) => { if (!menuPanel.contains(e.target) && e.target !== menuBtn) menuPanel.classList.add('hidden'); });
 document.getElementById('forceUpdate').addEventListener('click', async () => {
   setStatus('Forçando atualização…');
+  menuPanel.classList.add('hidden');
+  try { await call('extension.forceUpdate', { version: Date.now() }); return; } catch {}
   try { if ('caches' in window) { const keys = await caches.keys(); await Promise.all(keys.map(k => caches.delete(k))); } } catch {}
   const base = location.href.split('?')[0];
   location.replace(base + '?v=' + Date.now());

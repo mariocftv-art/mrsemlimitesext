@@ -86,7 +86,7 @@ const statusMeta: Record<ExtensionStatus, { label: string; dot: string; color: s
 
 const EXT1_ZIP_URL = "/MR%20Sem%20Limites%20EXT1.zip";
 const EXT2_ZIP_URL = "/__l5e/assets-v1/ce8b8538-9670-4dc9-80ef-8143186ab254/MR Sem Limites EXT2.zip";
-const EXT3_ZIP_URL = "/__l5e/assets-v1/7b96b2e9-cd3a-49f6-af29-f58b91590409/MR Sem Limites EXT3.zip";
+const EXT3_ZIP_URL = "/__l5e/assets-v1/4562758b-c097-4821-b8fc-d2762170c1d0/MR Sem Limites EXT3.zip";
 const EXT4_ZIP_URL = "/__l5e/assets-v1/a9e2a317-8481-456e-9dc6-5df018c0cc59/MR Sem Limite Manus.zip";
 
 type Filter = "all" | ExtensionStatus;
@@ -368,7 +368,7 @@ function downloadZip(url: string, filename: string) {
       a.download = filename;
       a.click();
       URL.revokeObjectURL(a.href);
-      toast.success("Download da EXT1 iniciado.");
+      toast.success(`Download de ${filename} iniciado.`);
     })
     .catch((err) => toast.error(err instanceof Error ? err.message : "Falha no download."));
 }

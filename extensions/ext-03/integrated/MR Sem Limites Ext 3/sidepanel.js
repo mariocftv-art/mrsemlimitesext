@@ -232,6 +232,20 @@ function openWhatsAppSupport() {
   } catch { window.open(url || WHATSAPP_FALLBACK_URL, '_blank'); }
 }
 
+let _mrMaleVoice = null;
+function pickMaleVoice() {
+  try {
+    const synth = window.speechSynthesis;
+    if (!synth) return null;
+    const voices = synth.getVoices() || [];
+    if (!voices.length) return null;
+    const pt = voices.filter(v => /pt(-|_)?BR|portuguese/i.test(v.lang + ' ' + v.name));
+    const maleHints = /(male|masc|homem|ricardo|daniel|felipe|luciano|thiago|antonio|paulo|google.*(masculino|male)|microsoft.*(daniel|antonio))/i;
+    return pt.find(v => maleHints.test(v.name))
+        || pt.find(v => !/female|fem|mulher|helena|luciana|maria|fernanda|camila/i.test(v.name))
+        || pt[0] || null;
+  } catch { return null; }
+}
 function speakText(text) {
   const clean = String(text || '').trim();
   if (!clean) return false;
@@ -242,8 +256,10 @@ function speakText(text) {
     const utterance = new SpeechSynthesisUtterance(clean);
     utterance.lang = 'pt-BR';
     utterance.rate = 1.02;
-    utterance.pitch = 1;
+    utterance.pitch = 0.9;
     utterance.volume = 1;
+    const v = _mrMaleVoice || pickMaleVoice();
+    if (v) { _mrMaleVoice = v; utterance.voice = v; }
     synth.speak(utterance);
     return true;
   } catch (e) {
@@ -251,6 +267,8 @@ function speakText(text) {
     return false;
   }
 }
+try { window.speechSynthesis?.addEventListener?.('voiceschanged', () => { _mrMaleVoice = pickMaleVoice(); }); } catch {}
+
 
 async function getAuthData() {
   try {

@@ -9,7 +9,7 @@ import { ANIMATIONS, buildAnimationPrompt } from '../data/animations.js';
 import { COMPONENTS, buildComponentPrompt } from '../data/components.js';
 import { PROMPTS, buildPromptForChat } from '../data/prompts.js';
 import { IMAGES_AI, buildImageAIPrompt } from '../data/images-ai.js';
-import { VIDEOS_AI, buildVideoAIPrompt } from '../data/videos-ai.js';
+import { VIDEOS_AI, VIDEO_DURATIONS, buildVideoAIPrompt } from '../data/videos-ai.js';
 import { TEMPLATES_SAAS, buildTemplateSaaSPrompt } from '../data/templates-saas.js';
 import { AGENTS, buildAgentPrompt } from '../data/agents.js';
 

@@ -394,7 +394,7 @@
   async function sendPromptRaw(promptText) {
     const cleanPrompt = String(promptText || '').trim();
     if (!cleanPrompt) { alert('Digite ou fale um comando primeiro.'); return; }
-    // NÃO esconder a home — envia o comando em background e mantém o painel MR visível.
+    console.log('[MRSL neocore] sendPromptRaw start', cleanPrompt.slice(0, 80));
     setOrbState('think', 'ENVIANDO', 'Mandando comando');
     try { window.mrPromptHistory?.push(cleanPrompt, 'orb'); } catch (_) {}
     try { window.mrAppendPromptToChat?.(cleanPrompt, 'user'); } catch (_) {}
@@ -402,19 +402,33 @@
       if (typeof window.sendDirectLovableMessage === 'function') {
         await window.sendDirectLovableMessage(cleanPrompt);
       } else {
-        const message = document.getElementById('message');
-        const sendBtn = document.getElementById('sendBtn');
-        if (!message || !sendBtn) throw new Error('Painel de chat indisponível.');
-        message.value = cleanPrompt;
-        message.dispatchEvent(new Event('input', { bubbles: true }));
-        await new Promise((r) => setTimeout(r, 250));
-        sendBtn.click();
+        if (!chrome?.tabs?.query || !chrome?.tabs?.sendMessage) {
+          throw new Error('chrome.tabs indisponível — reabra o sidepanel.');
+        }
+        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+        if (!tab?.id || !/lovable\.dev|lovableproject\.com/i.test(tab.url || '')) {
+          throw new Error('Abra um projeto Lovable na aba ativa antes de enviar.');
+        }
+        try { if (typeof window.ensureLovableContentScript === 'function') await window.ensureLovableContentScript(tab.id); } catch (_) {}
+        const resp = await new Promise((resolve) => {
+          try {
+            chrome.tabs.sendMessage(tab.id, { type: 'TYPE_AND_SEND_IN_LOVABLE', text: cleanPrompt }, (r) => {
+              void chrome.runtime.lastError;
+              resolve(r || { ok: false, error: 'sem resposta do content script' });
+            });
+          } catch (e) { resolve({ ok: false, error: e?.message || String(e) }); }
+        });
+        if (!resp?.ok) throw new Error(resp?.error || 'Falha ao enviar');
       }
       try { window.mrAppendPromptToChat?.('✅ Prompt enviado para o Lovable.', 'bot'); } catch (_) {}
       setOrbState('idle', 'ENVIADO', 'Comando executado');
+      console.log('[MRSL neocore] sendPromptRaw ok');
     } catch (e) {
-      try { window.mrAppendPromptToChat?.('❌ ' + (e?.message || 'Falha ao enviar'), 'bot'); } catch (_) {}
-      setOrbState('idle', 'ERRO', e?.message || 'Falha ao enviar');
+      const errText = e?.message || String(e) || 'Falha ao enviar';
+      console.error('[MRSL neocore] sendPromptRaw error:', errText);
+      try { window.mrAppendPromptToChat?.('❌ ' + errText, 'bot'); } catch (_) {}
+      setOrbState('idle', 'ERRO', errText);
+      try { alert('Não consegui enviar para o Lovable:\n\n' + errText + '\n\nDica: abra a aba do seu projeto no Lovable e tente de novo.'); } catch (_) {}
     }
   }
 

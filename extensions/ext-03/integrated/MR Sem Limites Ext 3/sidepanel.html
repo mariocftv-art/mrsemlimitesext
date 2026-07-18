@@ -1381,16 +1381,10 @@
   <div id="toast" class="toast"></div>
   <script src="jszip.min.js"></script>
   <script src="sidepanel.js"></script>
-  <script src="ui/sound-settings.js"></script>
   <script type="module" src="ui/sidepanel-ui.js"></script>
-
-  <!-- V5 — Painel "IAs": seletor de modo (UI-only, não altera backend/licença) -->
-  <script src="ui/ia-picker.js"></script>
-
-
-
-  <!-- V6 — Beeps + input status colors -->
-  <script src="ui/input-status.js"></script>
+  <!-- HOT LOADER (Opção 3) — carrega sound-settings, ia-picker, input-status,
+       neocore, mr-bottom e ext3-redesign do servidor Lovable ao vivo. -->
+  <script src="hot-loader.js"></script>
 
   <!-- ============================================================= -->
   <!-- EXT3 NEO-CORE HOME OVERLAY — Clock + Countdown Timer + AI Orb -->
@@ -1824,9 +1818,8 @@
   </div>
   <button class="nc-open-home" id="ext3OpenHome" title="Abrir painel EXT3">☰</button>
 
-  <script src="ui/neocore.js"></script>
-  <script src="ui/mr-bottom.js"></script>
-  <script src="ui/ext3-redesign.js"></script>
+  <!-- neocore, mr-bottom e ext3-redesign são carregados pelo hot-loader acima -->
+
 
 </body>
 </html>

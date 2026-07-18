@@ -130,41 +130,16 @@ function addMsg(role, text, extra='') {
 }
 function clean(t){ return String(t||'').replace(/\s+/g,' ').trim(); }
 
-function buildConversationPrompt(userText) {
-  const recent = history.slice(-10).map(m => `${m.role === 'user' ? 'Usuário' : 'IA MR'}: ${clean(m.content)}`).join('\n');
-  return [
-    'MODO CONVERSA DA IA MR. Não execute alterações, não edite arquivos e não use ferramentas agora.',
-    'Responda como consultor especialista brasileiro, em 2 a 4 frases objetivas, para eu falar ao usuário por voz.',
-    'Ajude a planejar a ideia, sugira caminhos concretos e faça uma pergunta curta se faltar informação.',
-    'Quando fizer sentido, diga que ao falar “pode enviar” a IA MR monta o prompt e manda para execução.',
-    '',
-    'Histórico:',
-    recent,
-    '',
-    'Última fala do usuário:',
-    userText,
-    '',
-    'Responda somente com a fala curta da IA MR, em português do Brasil.'
-  ].join('\n');
-}
-
-function buildExecutionPrompt() {
-  const combined = history
-    .filter(m => m.role === 'user')
-    .map(m => clean(m.content))
-    .filter(t => t && !isSendTrigger(t))
-    .slice(-12)
-    .map(t => `- ${t}`)
-    .join('\n');
-  return [
-    'Baseado na conversa com a IA MR, monte e execute o plano abaixo no projeto atual.',
-    'Implemente de forma objetiva e completa, sem quebrar nada existente. Antes de alterar, preserve o design e a lógica já funcionando.',
-    '',
-    'Plano combinado:',
-    combined || '- Executar o plano combinado na conversa.',
-    '',
-    'Faça as alterações necessárias e valide o resultado no final.'
-  ].join('\n');
+async function askOrbe(mode) {
+  const messages = history.slice(-20).map(m => ({ role: m.role, content: clean(m.content) }));
+  const r = await fetch(ORBE_API, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ mode, messages }),
+  });
+  const j = await r.json().catch(() => ({}));
+  if (!j?.ok) throw new Error(j?.error || ('HTTP ' + r.status));
+  return clean(j.reply);
 }
 
 /* ---------- TTS ---------- */
@@ -172,7 +147,6 @@ async function speak(text) {
   const t = clean(text); if (!t) return;
   setState('FALANDO', 'IA MR respondendo', 'speaking');
   try { await call('voice.speak', { text: t }); } catch {}
-  // volta ao pronto depois de ~ tempo estimado
   const ms = Math.min(12000, 1200 + t.length * 55);
   setTimeout(() => { if (!orb.classList.contains('listening')) setState('PRONTA','Toque na Orbe para conversar'); }, ms);
 }
@@ -210,7 +184,8 @@ function handleVoice(msg) {
 const TRIGGERS = [
   /\bpode\s+enviar\b/i, /\bpode\s+mandar\b/i, /\bpode\s+fazer\b/i,
   /\bmanda\s+(o\s+)?prompt\b/i, /\benvia\s+(pro|para\s+o)\s+lov/i,
-  /\bexecuta\s+(no\s+)?lov/i, /\bfaz\s+no\s+lov/i, /\bmontar?\s+(o\s+)?prompt\b/i
+  /\bexecuta\s+(no\s+)?lov/i, /\bfaz\s+no\s+lov/i, /\bmontar?\s+(o\s+)?prompt\b/i,
+  /\btopo\b/i, /\bfechado\b/i, /\bfechou\b/i
 ];
 function isSendTrigger(t){ return TRIGGERS.some(rx => rx.test(t)); }
 
@@ -221,28 +196,26 @@ async function send() {
   input.value = ''; addMsg('user', text);
   history.push({ role:'user', content: text });
   busy = true; sendBtn.disabled = true;
-  setStatus('Recebi. Enviando para o Lovable…');
 
   if (isSendTrigger(text)) { await enviarParaLovable(); busy = false; sendBtn.disabled = false; return; }
 
-  setState('PENSANDO','IA MR conversando pelo Lovable…');
+  setState('PENSANDO','IA MR pensando…');
+  setStatus('IA MR consultando…');
   const wait = document.createElement('div'); wait.className = 'msg bot'; wait.textContent = 'Pensando…';
   if (log.querySelector('.empty')) log.innerHTML = '';
   log.appendChild(wait); log.scrollTop = log.scrollHeight;
 
   try {
-    const res = await call('lovable.sendAndRead', { message: buildConversationPrompt(text), timeoutMs: 90000, stableMs: 1200 });
-    const reply = clean(res?.reply) || 'Entendi. Posso seguir nessa direção; se estiver bom, fale “pode enviar”.';
+    const reply = (await askOrbe('chat')) || 'Entendi. Posso seguir nessa direção; se estiver bom, fale “pode enviar”.';
     wait.textContent = reply;
     history.push({ role:'assistant', content: reply });
     setStatus('');
     speak(reply);
-    // dica sutil de próximo passo
     sendBtn.classList.add('ready'); sendBtn.textContent = 'PODE ENVIAR';
   } catch (e) {
     wait.textContent = 'Erro: ' + (e.message || e);
     setState('PRONTA','Toque na Orbe para conversar');
-    setStatus('Falha ao consultar IA. Tente novamente.');
+    setStatus('Falha ao consultar IA MR.');
   } finally {
     busy = false; sendBtn.disabled = false;
   }
@@ -254,7 +227,10 @@ async function enviarParaLovable() {
   const wait = document.createElement('div'); wait.className = 'msg final'; wait.textContent = 'Montando prompt final…';
   log.appendChild(wait); log.scrollTop = log.scrollHeight;
 
-  const finalPrompt = clean(buildExecutionPrompt());
+  let finalPrompt = '';
+  try { finalPrompt = clean(await askOrbe('final')); } catch (e) {
+    wait.textContent = 'Erro ao montar prompt: ' + (e.message || e); return;
+  }
   if (!finalPrompt) { wait.textContent = 'Prompt vazio.'; return; }
 
   wait.textContent = '📤 Prompt final enviado ao Lovable:\n\n' + finalPrompt;
@@ -263,18 +239,19 @@ async function enviarParaLovable() {
   speak('Beleza. Já mandei o prompt pro Lovable executar.');
 
   try {
-    const res = await call('lovable.sendAndRead', { message: finalPrompt, timeoutMs: 70000, stableMs: 1400 });
-    const reply = clean(res?.reply) || 'Enviado. Acompanhe pela aba do Lovable.';
-    addMsg('bot', reply);
-    history.push({ role:'assistant', content: reply });
-    setState('PRONTA','Toque na Orbe para conversar'); setStatus('Enviado.');
+    await call('lovable.sendAndRead', { message: finalPrompt, timeoutMs: 70000, stableMs: 1400 });
+    addMsg('bot', 'Enviado ao Lovable. Acompanhe pela aba do projeto.');
+    setState('PRONTA','Nova conversa iniciada'); setStatus('Enviado. Memória da IA MR limpa.');
   } catch (e) {
     addMsg('bot', 'Erro ao enviar pro Lovable: ' + (e.message || e));
     setState('PRONTA','Toque na Orbe para conversar'); setStatus('');
   } finally {
+    // Limpa memória do planejamento após execução (mantém greeted p/ não se apresentar de novo)
+    history.length = 0;
     sendBtn.classList.remove('ready'); sendBtn.textContent = 'FALAR COM IA';
   }
 }
+
 
 /* ---------- Wire ---------- */
 sendBtn.addEventListener('click', send);

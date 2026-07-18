@@ -669,6 +669,8 @@
 
   function bindExtensionMessages() {
     chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
+      if (msg?.type === 'MRSL_PING') { sendResponse({ ok: true, pong: true }); return; }
+      
       
       if (msg?.type === 'VOICE_START_TAB') {
         if (window._lovVoiceRec) { try { window._lovVoiceRec.abort(); } catch(e) {} }

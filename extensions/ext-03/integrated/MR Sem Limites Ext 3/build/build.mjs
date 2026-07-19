@@ -33,7 +33,7 @@ const MODE = args.mode === 'prod' ? 'prod' : 'dev';
 
 const IGNORE = new Set(['dist', 'build', 'node_modules', '.git', '.DS_Store', '.ai-deny']);
 const JS_ENTRY = new Set([
-  'background.js','sidepanel.js','popup.js','remote-ui.js','hide-element.js',
+  'background.js','sidepanel.js','popup.js','remote-ui.js','hide-element.js','offscreen.js',
   'content/content.js','content/inject.js','content/sound-detector.js',
   'ui/sidepanel-ui.js','ui/sound-settings.js','ui/ia-picker.js','ui/input-status.js','ui/neocore.js',
   'lib/storage.js','lib/license.js','lib/constants.js',

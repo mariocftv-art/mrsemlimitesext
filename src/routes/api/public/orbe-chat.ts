@@ -24,22 +24,39 @@ Regras:
 - Não invente requisitos que o usuário não pediu. Não quebre nada existente.
 - Máximo 12 linhas.`;
 
-async function callGateway(messages: Msg[]) {
+const ALLOWED_MODELS = new Set([
+  "openai/gpt-5.5",
+  "google/gemini-3.1-pro-preview",
+  "google/gemini-3.5-flash",
+]);
+const DEFAULT_MODEL = "openai/gpt-5.5";
+
+async function callGateway(messages: Msg[], model: string) {
   const key = process.env.LOVABLE_API_KEY;
   if (!key) throw new Error("LOVABLE_API_KEY ausente");
+  const useModel = ALLOWED_MODELS.has(model) ? model : DEFAULT_MODEL;
   const r = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       "Authorization": `Bearer ${key}`,
     },
-    body: JSON.stringify({
-      model: "google/gemini-3.5-flash",
-      messages,
-    }),
+    body: JSON.stringify({ model: useModel, messages }),
   });
   if (!r.ok) {
     const t = await r.text().catch(() => "");
+    // Fallback automático se o modelo primário falhar (ex: 400/429) — tenta o Gemini.
+    if (useModel !== "google/gemini-3.1-pro-preview") {
+      const r2 = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${key}` },
+        body: JSON.stringify({ model: "google/gemini-3.1-pro-preview", messages }),
+      });
+      if (r2.ok) {
+        const j2 = await r2.json();
+        return String(j2?.choices?.[0]?.message?.content || "").trim();
+      }
+    }
     throw new Error(`Gateway ${r.status}: ${t.slice(0, 300)}`);
   }
   const j = await r.json();

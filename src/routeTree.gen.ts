@@ -37,6 +37,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as RuntimeIdRouteImport } from './routes/runtime.$id'
 import { Route as PreviewIdRouteImport } from './routes/preview.$id'
 import { Route as LiveIdRouteImport } from './routes/live.$id'
+import { Route as ApiPublicOrbeTtsRouteImport } from './routes/api/public/orbe-tts'
 import { Route as ApiPublicOrbeChatRouteImport } from './routes/api/public/orbe-chat'
 
 const VersionsRoute = VersionsRouteImport.update({
@@ -179,6 +180,11 @@ const LiveIdRoute = LiveIdRouteImport.update({
   path: '/live/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicOrbeTtsRoute = ApiPublicOrbeTtsRouteImport.update({
+  id: '/api/public/orbe-tts',
+  path: '/api/public/orbe-tts',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicOrbeChatRoute = ApiPublicOrbeChatRouteImport.update({
   id: '/api/public/orbe-chat',
   path: '/api/public/orbe-chat',
@@ -215,6 +221,7 @@ export interface FileRoutesByFullPath {
   '/preview/$id': typeof PreviewIdRoute
   '/runtime/$id': typeof RuntimeIdRoute
   '/api/public/orbe-chat': typeof ApiPublicOrbeChatRoute
+  '/api/public/orbe-tts': typeof ApiPublicOrbeTtsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -246,6 +253,7 @@ export interface FileRoutesByTo {
   '/preview/$id': typeof PreviewIdRoute
   '/runtime/$id': typeof RuntimeIdRoute
   '/api/public/orbe-chat': typeof ApiPublicOrbeChatRoute
+  '/api/public/orbe-tts': typeof ApiPublicOrbeTtsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -278,6 +286,7 @@ export interface FileRoutesById {
   '/preview/$id': typeof PreviewIdRoute
   '/runtime/$id': typeof RuntimeIdRoute
   '/api/public/orbe-chat': typeof ApiPublicOrbeChatRoute
+  '/api/public/orbe-tts': typeof ApiPublicOrbeTtsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -311,6 +320,7 @@ export interface FileRouteTypes {
     | '/preview/$id'
     | '/runtime/$id'
     | '/api/public/orbe-chat'
+    | '/api/public/orbe-tts'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -342,6 +352,7 @@ export interface FileRouteTypes {
     | '/preview/$id'
     | '/runtime/$id'
     | '/api/public/orbe-chat'
+    | '/api/public/orbe-tts'
   id:
     | '__root__'
     | '/'
@@ -373,6 +384,7 @@ export interface FileRouteTypes {
     | '/preview/$id'
     | '/runtime/$id'
     | '/api/public/orbe-chat'
+    | '/api/public/orbe-tts'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -405,6 +417,7 @@ export interface RootRouteChildren {
   PreviewIdRoute: typeof PreviewIdRoute
   RuntimeIdRoute: typeof RuntimeIdRoute
   ApiPublicOrbeChatRoute: typeof ApiPublicOrbeChatRoute
+  ApiPublicOrbeTtsRoute: typeof ApiPublicOrbeTtsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -605,6 +618,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LiveIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/orbe-tts': {
+      id: '/api/public/orbe-tts'
+      path: '/api/public/orbe-tts'
+      fullPath: '/api/public/orbe-tts'
+      preLoaderRoute: typeof ApiPublicOrbeTtsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/orbe-chat': {
       id: '/api/public/orbe-chat'
       path: '/api/public/orbe-chat'
@@ -645,6 +665,7 @@ const rootRouteChildren: RootRouteChildren = {
   PreviewIdRoute: PreviewIdRoute,
   RuntimeIdRoute: RuntimeIdRoute,
   ApiPublicOrbeChatRoute: ApiPublicOrbeChatRoute,
+  ApiPublicOrbeTtsRoute: ApiPublicOrbeTtsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

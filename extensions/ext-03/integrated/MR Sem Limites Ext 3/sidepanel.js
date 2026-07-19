@@ -43,6 +43,7 @@ const REMOTE_ORIGIN = SUPABASE_URL;
 const REMOTE_PANEL_ORIGIN = "https://mrsemlimitesext.lovable.app";
 const REMOTE_PANEL_URL = `${REMOTE_PANEL_ORIGIN}/ext3-remote-panel.html`;
 const ORBE_CHAT_API = `${REMOTE_PANEL_ORIGIN}/api/public/orbe-chat`;
+const ORBE_TTS_API = `${REMOTE_PANEL_ORIGIN}/api/public/orbe-tts`;
 const WHATSAPP_FALLBACK_URL = 'https://wa.me/5511956915920';
 
 let licenseSessionToken = null;
@@ -1411,9 +1412,26 @@ function initDirectChat() {
     return cleanText(data.reply);
   }
 
-  function speakOrbe(text) {
-    const said = speakText(text);
-    if (!said) updateStatus('🔊 Resposta pronta. Se o Chrome bloquear a fala, confira o volume/permissão.');
+  async function speakOrbe(text) {
+    const clean = cleanText(text).slice(0, 900);
+    if (!clean) return;
+    try {
+      const response = await fetch(ORBE_TTS_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: clean, voice: 'onyx' }),
+      });
+      if (!response.ok) throw new Error(`TTS HTTP ${response.status}`);
+      const blob = await response.blob();
+      const audioUrl = URL.createObjectURL(blob);
+      const audio = new Audio(audioUrl);
+      audio.onended = () => URL.revokeObjectURL(audioUrl);
+      audio.onerror = () => URL.revokeObjectURL(audioUrl);
+      await audio.play();
+    } catch (e) {
+      const said = speakText(clean);
+      if (!said) updateStatus('🔊 Resposta pronta. Se o Chrome bloquear a fala, confira o volume/permissão.');
+    }
   }
 
   async function sendFinalPromptToLovable() {

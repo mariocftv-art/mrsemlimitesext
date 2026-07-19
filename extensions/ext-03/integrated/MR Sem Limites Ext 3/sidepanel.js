@@ -1034,6 +1034,8 @@ textarea#message {
 #sendBtn:hover{transform:scale(1.08)!important;box-shadow:0 6px 24px rgba(168,85,247,.6)!important}
 #sendBtn:active{transform:scale(.95)!important}
 #sendBtn:disabled{background:rgba(168,85,247,.12)!important;box-shadow:none!important;transform:none!important;cursor:not-allowed!important}
+#sendBtn.orbe-ready{background:linear-gradient(135deg,#16a34a,#22c55e,#86efac)!important;color:#03140a!important;font-size:20px!important;font-weight:900!important;box-shadow:0 0 0 3px rgba(34,197,94,.22),0 12px 34px rgba(34,197,94,.58)!important;animation:none!important}
+#sendBtn.orbe-ready:hover{box-shadow:0 0 0 4px rgba(34,197,94,.25),0 16px 42px rgba(34,197,94,.72)!important}
 
 /* Attach button */
 #attachBtn,button#attachBtn{background:rgba(168,85,247,.08)!important;border:1.5px solid rgba(168,85,247,.28)!important;color:#a855f7!important;border-radius:12px!important;width:38px!important;height:38px!important;min-width:38px!important;display:flex!important;align-items:center!important;justify-content:center!important;cursor:pointer!important;padding:0!important;flex-shrink:0!important;transition:all .25s cubic-bezier(.4,0,.2,1)!important;backdrop-filter:blur(4px)!important}

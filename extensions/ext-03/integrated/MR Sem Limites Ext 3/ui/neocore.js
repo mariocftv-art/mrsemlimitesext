@@ -290,6 +290,12 @@
     recognizing = true;
     if (intoInput) cmdMic?.classList.add('active');
         else setOrbState('listen', 'OUVINDO', 'Fale agora');
+    clearTimeout(voiceTimer);
+    voiceTimer = setTimeout(() => {
+      if (!bridgeVoice || !recognizing || voiceText.trim()) return;
+      stopRecognition(true);
+      if (!intoInput) setOrbState('idle', 'MICROFONE', 'Não recebi sua voz. Toque de novo e fale perto do microfone.');
+    }, 15000);
     try {
       chrome.runtime.sendMessage({
         type: 'VOICE_START',
@@ -694,8 +700,19 @@
         }
         if (msg.status === 'ended') {
           if (voiceMode === 'input') cmdMic?.classList.remove('active');
+          const finalText = String(msg.finalText || voiceText || '').trim();
           recognizing = false;
-          if (voiceMode === 'orb' && orb?.dataset.mode === 'on' && !voiceText.trim()) {
+          if (voiceMode === 'orb' && finalText) {
+            clearTimeout(voiceTimer);
+            voiceTimer = null;
+            const spoken = finalText;
+            bridgeVoice = false;
+            voiceMode = null;
+            voiceText = '';
+            handleSpokenText(spoken);
+            return;
+          }
+          if (voiceMode === 'orb' && orb?.dataset.mode === 'on') {
             setOrbState('listen', 'OUVINDO', 'Fale agora');
             setTimeout(() => { if (orb?.dataset.mode === "on" && !recognizing) startRecognition(false); }, 120);
           }

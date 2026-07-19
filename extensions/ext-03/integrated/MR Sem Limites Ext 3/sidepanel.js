@@ -1511,7 +1511,7 @@ function initDirectChat() {
   async function handleSend() {
     if (!messageEl) return;
     const msg = cleanText(messageEl.value);
-    if (!msg && pendingFiles.length === 0) return;
+    if (!msg && pendingFiles.length === 0 && !finalPromptReady) return;
 
     if (!msg && finalPromptReady && pendingFiles.length === 0) {
       await sendFinalPromptToLovable();
@@ -1757,6 +1757,8 @@ function initDirectChat() {
   // Clear
   clearBtn?.addEventListener('click', () => {
     history = [];
+    orbeConversation = [];
+    setFinalPromptReady(false);
     callCommand('storage.set', { data: { history: [] } });
     renderHistory();
   });

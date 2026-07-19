@@ -1360,8 +1360,91 @@ function initDirectChat() {
 
   let history = [];
   let pendingFiles = [];
+  let orbeConversation = [];
+  let orbeBusy = false;
+  let finalPromptReady = false;
+  const defaultSendHtml = sendBtn?.innerHTML || '';
+  const ORBE_FAST_MODEL = 'google/gemini-3.5-flash';
+  const ORBE_SEND_TRIGGERS = [
+    /\bpode\s+enviar\b/i,
+    /\bpode\s+mandar\b/i,
+    /\bpode\s+fazer\b/i,
+    /\bmanda\s+(o\s+)?prompt\b/i,
+    /\benvia\s+(pro|para\s+o)\s+lov/i,
+    /\benviar\s+(pro|para\s+o)\s+lov/i,
+    /\bexecuta\s+(no\s+)?lov/i,
+    /\bfaz\s+(no\s+)?lov/i,
+    /\bcan\s+send\b/i,
+  ];
 
   function updateStatus(text) { if (statusEl) statusEl.textContent = text; }
+
+  function cleanText(text) {
+    return String(text || '').replace(/\s+/g, ' ').trim();
+  }
+
+  function isFinalSendCommand(text) {
+    return ORBE_SEND_TRIGGERS.some((rx) => rx.test(String(text || '')));
+  }
+
+  function setFinalPromptReady(ready) {
+    finalPromptReady = !!ready;
+    if (!sendBtn) return;
+    sendBtn.classList.toggle('orbe-ready', finalPromptReady);
+    sendBtn.title = finalPromptReady ? 'Enviar prompt final para o Lovable' : 'Enviar mensagem para a IA MR';
+    sendBtn.innerHTML = finalPromptReady ? '✓' : defaultSendHtml;
+  }
+
+  async function askOrbe(mode) {
+    const messages = orbeConversation
+      .slice(-20)
+      .map((m) => ({ role: m.role, content: cleanText(m.content).slice(0, 4000) }))
+      .filter((m) => m.content);
+    if (!messages.length) throw new Error('Converse primeiro com a IA MR.');
+    const response = await fetch(ORBE_CHAT_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ mode, model: ORBE_FAST_MODEL, messages }),
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok || !data?.ok) throw new Error(data?.error || `IA MR HTTP ${response.status}`);
+    return cleanText(data.reply);
+  }
+
+  function speakOrbe(text) {
+    const said = speakText(text);
+    if (!said) updateStatus('🔊 Resposta pronta. Se o Chrome bloquear a fala, confira o volume/permissão.');
+  }
+
+  async function sendFinalPromptToLovable() {
+    if (orbeBusy) return;
+    if (!orbeConversation.some((m) => m.role === 'user')) {
+      updateStatus('⚠️ Converse com a IA MR antes de enviar ao Lovable.');
+      return;
+    }
+    orbeBusy = true;
+    sendBtn && (sendBtn.disabled = true);
+    updateStatus('🧠 Montando prompt final…');
+    try {
+      const finalPrompt = await askOrbe('final');
+      if (!finalPrompt) throw new Error('Prompt final vazio.');
+      addMessage('bot', '📤 Prompt final enviado ao Lovable:\n\n' + finalPrompt);
+      const res = await callCommand('lovable.sendMessage', { message: finalPrompt, files: [] });
+      if (res?.error) throw new Error(res.error);
+      addMessage('bot', '✅ Enviado ao Lovable. Acompanhe a execução na aba do projeto.');
+      speakOrbe('Pronto, Mr. Enviei o prompt final para o Lovable executar.');
+      orbeConversation = [];
+      setFinalPromptReady(false);
+      updateStatus('✅ Enviado ao Lovable');
+    } catch (e) {
+      addMessage('bot', '❌ ' + (e?.message || 'Erro ao enviar para o Lovable'));
+      updateStatus('❌ Falha ao enviar');
+    } finally {
+      orbeBusy = false;
+      sendBtn && (sendBtn.disabled = false);
+      messageEl?.focus();
+    }
+  }
 
   function addMessage(role, text) {
     history.push({ role, text });

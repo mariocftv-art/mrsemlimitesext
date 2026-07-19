@@ -1504,13 +1504,57 @@ function initDirectChat() {
   messageEl?.addEventListener('input', () => {
     messageEl.style.height = 'auto';
     messageEl.style.height = Math.min(messageEl.scrollHeight, 300) + 'px';
+    if (cleanText(messageEl.value)) setFinalPromptReady(false);
   });
 
   // Send
   async function handleSend() {
     if (!messageEl) return;
-    const msg = messageEl.value.trim();
+    const msg = cleanText(messageEl.value);
     if (!msg && pendingFiles.length === 0) return;
+
+    if (!msg && finalPromptReady && pendingFiles.length === 0) {
+      await sendFinalPromptToLovable();
+      return;
+    }
+
+    if (msg && isFinalSendCommand(msg) && pendingFiles.length === 0) {
+      messageEl.value = '';
+      messageEl.style.height = 'auto';
+      addMessage('user', msg);
+      await sendFinalPromptToLovable();
+      return;
+    }
+
+    if (pendingFiles.length === 0) {
+      if (orbeBusy) return;
+      orbeBusy = true;
+      sendBtn && (sendBtn.disabled = true);
+      messageEl.value = '';
+      messageEl.style.height = 'auto';
+      addMessage('user', msg);
+      orbeConversation.push({ role: 'user', content: msg });
+      updateStatus('🧠 IA MR pensando…');
+      try {
+        const reply = await askOrbe('chat');
+        const finalReply = reply || 'Entendi, Mr. Me passe mais um detalhe ou clique no verde quando quiser enviar.';
+        orbeConversation.push({ role: 'assistant', content: finalReply });
+        addMessage('bot', finalReply);
+        speakOrbe(finalReply);
+        setFinalPromptReady(true);
+        updateStatus('✅ Resposta pronta. Botão verde envia o prompt final.');
+      } catch (e) {
+        const err = 'Não consegui responder agora. ' + (e?.message || 'Tente novamente.');
+        addMessage('bot', '❌ ' + err);
+        speakOrbe(err);
+        updateStatus('❌ IA MR sem resposta');
+      } finally {
+        orbeBusy = false;
+        sendBtn && (sendBtn.disabled = false);
+        messageEl.focus();
+      }
+      return;
+    }
 
     sendBtn && (sendBtn.disabled = true);
     updateStatus('📤 Enviando...');

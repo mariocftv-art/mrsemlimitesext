@@ -1424,11 +1424,11 @@ function initDirectChat() {
         body: JSON.stringify({ text: clean, voice: 'onyx' }),
       });
       if (!response.ok) throw new Error(`TTS HTTP ${response.status}`);
-      const blob = await response.blob();
-      const audioUrl = URL.createObjectURL(blob);
-      const audio = new Audio(audioUrl);
-      audio.onended = () => URL.revokeObjectURL(audioUrl);
-      audio.onerror = () => URL.revokeObjectURL(audioUrl);
+      const buffer = await response.arrayBuffer();
+      let binary = '';
+      const bytes = new Uint8Array(buffer);
+      for (let i = 0; i < bytes.length; i += 1) binary += String.fromCharCode(bytes[i]);
+      const audio = new Audio(`data:audio/mpeg;base64,${btoa(binary)}`);
       await audio.play();
     } catch (e) {
       const said = speakText(clean);

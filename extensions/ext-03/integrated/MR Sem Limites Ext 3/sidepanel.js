@@ -1848,8 +1848,10 @@ function initDirectChat() {
         _voiceRecognition.onend = () => {
           _voiceRecording = false;
           micBtn.classList.remove('recording');
-          updateStatus(messageEl?.value?.trim() ? '✅ Texto transcrito' : '');
+          const transcribed = cleanText(messageEl?.value || '');
+          updateStatus(transcribed ? '✅ Voz recebida. IA MR respondendo…' : '');
           messageEl?.focus();
+          if (transcribed && !orbeBusy) setTimeout(() => handleSend(), 80);
         };
 
         updateStatus('🎤 Iniciando...');
@@ -1870,8 +1872,10 @@ function initDirectChat() {
         } else if (msg.status === 'ended') {
           _voiceRecording = false;
           micBtn.classList.remove('recording');
-          updateStatus(messageEl?.value?.trim() ? '✅ Texto transcrito' : '');
+          const transcribed = cleanText(messageEl?.value || '');
+          updateStatus(transcribed ? '✅ Voz recebida. IA MR respondendo…' : '');
           messageEl?.focus();
+          if (transcribed && !orbeBusy) setTimeout(() => handleSend(), 80);
         }
       } else if (msg.type === 'VOICE_RESULT' && messageEl) {
         messageEl.value = msg.text || '';

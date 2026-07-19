@@ -7,40 +7,43 @@
   <style>
     :root{--bg:#05060f;--panel:#0b1024;--line:rgba(34,211,238,.18);--cyan:#22d3ee;--pink:#ec4899;--green:#22c55e;--text:#eaf6ff;--muted:#8aa5be}
     *{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;overflow:hidden;background:var(--bg);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;color:var(--text)}
-    body:before{content:"";position:fixed;inset:0;background:radial-gradient(circle at 50% 18%,rgba(34,211,238,.20),transparent 34%),radial-gradient(circle at 78% 5%,rgba(236,72,153,.18),transparent 28%),linear-gradient(180deg,#071225 0%,#05060f 45%,#050718 100%);pointer-events:none}
-    .app{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;padding:12px;gap:10px}
+    body:before{content:"";position:fixed;inset:0;background:radial-gradient(circle at 50% 18%,rgba(34,211,238,.18),transparent 34%),radial-gradient(circle at 78% 5%,rgba(236,72,153,.15),transparent 28%),linear-gradient(180deg,#071225 0%,#05060f 45%,#050718 100%);pointer-events:none}
+    .app{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;padding:10px;gap:8px}
     .top{display:flex;align-items:center;gap:9px;min-height:42px}
     .logo{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;font-weight:900;color:#03101b;background:linear-gradient(135deg,var(--cyan),var(--pink));box-shadow:0 0 24px rgba(34,211,238,.35)}
     .brand b{display:block;font-size:13px}.brand span{display:block;font-size:8px;color:var(--muted);letter-spacing:3px;font-weight:800}
     .top-actions{margin-left:auto;display:flex;gap:6px;position:relative}
-    .icon{border:1px solid var(--line);background:rgba(255,255,255,.05);color:var(--text);border-radius:9px;width:32px;height:32px;cursor:pointer}
-    .menu-panel{position:absolute;right:0;top:38px;width:188px;padding:7px;border:1px solid rgba(34,211,238,.28);border-radius:12px;background:rgba(5,8,20,.98);box-shadow:0 18px 42px rgba(0,0,0,.45),0 0 24px rgba(34,211,238,.12);z-index:20;display:flex;flex-direction:column;gap:6px}
+    .icon{border:1px solid var(--line);background:rgba(255,255,255,.05);color:var(--text);border-radius:9px;width:32px;height:32px;cursor:pointer;font-size:14px}
+    .icon:hover{border-color:rgba(34,211,238,.45);background:rgba(34,211,238,.1)}
+    .menu-panel{position:absolute;right:0;top:38px;width:200px;padding:7px;border:1px solid rgba(34,211,238,.28);border-radius:12px;background:rgba(5,8,20,.98);box-shadow:0 18px 42px rgba(0,0,0,.45),0 0 24px rgba(34,211,238,.12);z-index:20;display:flex;flex-direction:column;gap:6px}
     .menu-panel.hidden{display:none}
     .menu-panel button{width:100%;border:1px solid rgba(34,211,238,.18);background:rgba(255,255,255,.045);color:var(--text);border-radius:9px;padding:9px 10px;text-align:left;font-size:12px;font-weight:800;cursor:pointer}
     .menu-panel button:hover{border-color:rgba(34,211,238,.45);background:rgba(34,211,238,.10)}
-    .orb-wrap{display:flex;flex-direction:column;align-items:center;padding-top:6px}
-    .orb{width:min(48vw,158px);aspect-ratio:1;border:0;border-radius:50%;cursor:pointer;background:radial-gradient(circle at 54% 54%,#24e7ff 0 10%,#30b8ff 34%,#6674ff 66%,#8b5cf6 100%);box-shadow:0 0 60px rgba(34,211,238,.38),inset -24px -26px 55px rgba(11,17,44,.28);transition:transform .2s,box-shadow .2s}
-    .orb:active{transform:scale(.98)}
-    .orb.listening{box-shadow:0 0 0 6px rgba(34,197,94,.18),0 0 80px rgba(34,197,94,.5),inset -24px -26px 55px rgba(11,17,44,.28)}
-    .orb.speaking{box-shadow:0 0 0 6px rgba(236,72,153,.18),0 0 80px rgba(236,72,153,.5),inset -24px -26px 55px rgba(11,17,44,.28)}
-    .state{margin-top:8px;text-align:center}
-    .state h1{font-size:22px;line-height:1;margin:0;color:#38bdf8;text-shadow:0 0 18px rgba(56,189,248,.45);letter-spacing:.5px}
-    .state p{font-size:9px;color:var(--muted);font-weight:800;letter-spacing:3px;margin:6px 0 0;text-transform:uppercase}
-    .cmd{display:flex;align-items:center;gap:6px;border:1px solid var(--line);background:rgba(4,9,24,.78);border-radius:15px;padding:7px}
-    .cmd input{flex:1;min-width:0;border:0;outline:0;background:transparent;color:var(--text);font-size:13px}
-    .cmd input::placeholder{color:rgba(234,246,255,.45)}
-    .mini{border:1px solid rgba(34,211,238,.22);background:rgba(34,211,238,.07);color:var(--text);border-radius:9px;width:28px;height:28px;cursor:pointer}
-    .send{border:0;background:linear-gradient(135deg,#38bdf8,#6366f1);color:white;border-radius:10px;padding:8px 10px;font-size:10px;font-weight:900;letter-spacing:.3px;cursor:pointer}
-    .send.ready{background:linear-gradient(135deg,#22c55e,#16a34a);box-shadow:0 0 18px rgba(34,197,94,.5)}
-    .status{min-height:16px;color:#86efac;font-size:10px;text-align:center}
-    .log{flex:1;min-height:0;overflow:auto;border-top:1px solid rgba(255,255,255,.06);padding-top:10px}
-    .empty{text-align:center;color:var(--muted);font-size:12px;padding-top:22px}
-    .msg{max-width:92%;margin:0 0 8px;padding:9px 10px;border-radius:12px;font-size:12px;line-height:1.45;white-space:pre-wrap;word-break:break-word}
-    .msg.user{margin-left:auto;background:linear-gradient(135deg,#0ea5e9,#7c3aed);color:white}
-    .msg.bot{background:rgba(255,255,255,.06);border:1px solid rgba(34,211,238,.10);color:#dff7ff}
-    .msg.final{background:rgba(34,197,94,.10);border:1px solid rgba(34,197,94,.35);color:#dcfce7}
-    .foot{text-align:center;color:rgba(138,165,190,.78);font-size:9px}
+    .status{min-height:16px;color:#86efac;font-size:10px;text-align:center;letter-spacing:.5px}
+    .status.err{color:#fca5a5}
+    .log{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding:8px 4px;display:flex;flex-direction:column;gap:8px}
+    .log::-webkit-scrollbar{width:6px}.log::-webkit-scrollbar-thumb{background:rgba(34,211,238,.2);border-radius:3px}
+    .empty{text-align:center;color:var(--muted);font-size:12px;padding:38px 12px;line-height:1.55}
+    .empty b{color:var(--cyan);font-size:13px;display:block;margin-bottom:6px}
+    .msg{max-width:94%;padding:10px 12px;border-radius:13px;font-size:13px;line-height:1.5;white-space:pre-wrap;word-break:break-word}
+    .msg.user{align-self:flex-end;background:linear-gradient(135deg,#0ea5e9,#7c3aed);color:white;border-bottom-right-radius:4px}
+    .msg.bot{align-self:flex-start;background:rgba(255,255,255,.06);border:1px solid rgba(34,211,238,.14);color:#dff7ff;border-bottom-left-radius:4px}
+    .msg.final{align-self:stretch;background:rgba(34,197,94,.10);border:1px solid rgba(34,197,94,.35);color:#dcfce7;max-width:100%}
+    .msg.thinking{opacity:.7;font-style:italic}
+    .composer{border:1px solid var(--line);background:rgba(4,9,24,.85);border-radius:14px;padding:8px;display:flex;flex-direction:column;gap:6px}
+    .composer textarea{width:100%;border:0;outline:0;background:transparent;color:var(--text);font-size:13px;resize:none;min-height:38px;max-height:120px;font-family:inherit;line-height:1.45}
+    .composer textarea::placeholder{color:rgba(234,246,255,.4)}
+    .row{display:flex;align-items:center;gap:6px}
+    .row .grow{flex:1}
+    .mini{border:1px solid rgba(34,211,238,.22);background:rgba(34,211,238,.07);color:var(--text);border-radius:9px;height:30px;padding:0 10px;cursor:pointer;font-size:11px;font-weight:700;letter-spacing:.3px}
+    .mini:hover{background:rgba(34,211,238,.15)}
+    .mini.active{background:rgba(236,72,153,.25);border-color:rgba(236,72,153,.5);color:#fecdd3}
+    .send{border:0;background:linear-gradient(135deg,#38bdf8,#6366f1);color:white;border-radius:10px;padding:0 14px;height:32px;font-size:11px;font-weight:900;letter-spacing:.5px;cursor:pointer;box-shadow:0 4px 14px rgba(56,189,248,.25)}
+    .send:disabled{opacity:.5;cursor:not-allowed}
+    .send.ready{background:linear-gradient(135deg,#22c55e,#16a34a);box-shadow:0 4px 18px rgba(34,197,94,.4)}
+    .foot{text-align:center;color:rgba(138,165,190,.7);font-size:9px;padding-top:2px}
     .lov{color:#67e8f9;font-weight:900}
+    .badge{display:inline-block;padding:2px 6px;border-radius:5px;background:rgba(34,211,238,.15);color:var(--cyan);font-size:9px;font-weight:800;letter-spacing:.5px;margin-left:6px}
   </style>
 </head>
 <body>
@@ -49,32 +52,36 @@
       <div class="logo">MR</div>
       <div class="brand"><b>IA MR — Sem Limites</b><span>ASSISTENTE</span></div>
       <div class="top-actions">
-        <button class="icon" id="support" title="Suporte">☎</button>
+        <button class="icon" id="support" title="Suporte via WhatsApp">☎</button>
         <button class="icon" id="modelBtn" title="Trocar modelo de IA" style="width:auto;padding:0 9px;font-size:10px;font-weight:900;letter-spacing:.4px">GPT-5.5</button>
         <button class="icon" id="menu" title="Menu">⋮</button>
         <div class="menu-panel hidden" id="menuPanel">
           <button id="forceUpdate" type="button">⟳ Forçar atualização</button>
           <button id="reset" type="button">↻ Nova conversa</button>
           <button id="modelMenu" type="button">🧠 Modelo: GPT-5.5</button>
-          <button id="supportMenu" type="button">☎ Suporte</button>
+          <button id="supportMenu" type="button">☎ Suporte WhatsApp</button>
         </div>
       </div>
     </header>
 
-    <section class="orb-wrap">
-      <button class="orb" id="orb" title="Toque para falar"></button>
-      <div class="state"><h1 id="title">PRONTA</h1><p id="subtitle">Toque na Orbe para conversar</p></div>
-    </section>
-
-    <div class="cmd">
-      <button class="mini" id="mic" title="Falar">🎤</button>
-      <input id="input" placeholder="Converse com a IA MR… (diga 'pode enviar' quando quiser mandar pro Lovable)" autocomplete="off" />
-      <button class="send" id="send">FALAR COM IA</button>
-    </div>
-
     <div class="status" id="status"></div>
 
-    <section class="log" id="log"><div class="empty">Toque na Orbe e comece a conversar</div></section>
+    <section class="log" id="log">
+      <div class="empty">
+        <b>Olá! Sou a IA MR — Sem Limites</b>
+        Converse comigo como no ChatGPT. Vamos planejar juntos o que você quer criar.
+        Quando estiver pronto, clique em <b style="color:#22c55e">PODE ENVIAR</b> ou diga "pode enviar" e eu monto o prompt e envio para o Lovable executar.
+      </div>
+    </section>
+
+    <div class="composer">
+      <textarea id="input" placeholder="Digite sua mensagem para a IA MR…" autocomplete="off" rows="1"></textarea>
+      <div class="row">
+        <button class="mini" id="mic" title="Falar por voz">🎤 Voz</button>
+        <span class="grow"></span>
+        <button class="send" id="send" title="Enviar mensagem">ENVIAR</button>
+      </div>
+    </div>
 
     <footer class="foot">produto <b>MR Sem Limites</b> · Extensão <span class="lov">LOVABLE</span></footer>
   </main>
@@ -100,19 +107,17 @@ window.addEventListener('message', (event) => {
     return;
   }
   if (d.command === 'voice.event') handleVoice(d.payload || {});
-  if (d.command === 'license.revoked') setStatus('Licença expirada ou revogada.');
+  if (d.command === 'license.revoked') setStatus('Licença expirada ou revogada.', true);
 });
 
 /* ---------- Estado ---------- */
 const log = document.getElementById('log');
 const input = document.getElementById('input');
 const statusEl = document.getElementById('status');
-const title = document.getElementById('title');
-const subtitle = document.getElementById('subtitle');
-const orb = document.getElementById('orb');
 const sendBtn = document.getElementById('send');
 const menuBtn = document.getElementById('menu');
 const menuPanel = document.getElementById('menuPanel');
+const micBtn = document.getElementById('mic');
 
 const ORBE_API = 'https://mrsemlimitesext.lovable.app/api/public/orbe-chat';
 const MODELS = [
@@ -137,21 +142,18 @@ function cycleModel(){
   setStatus('Modelo: ' + modelLabel(currentModel));
 }
 const history = []; // {role:'user'|'assistant', content}
-let greeted = false;   // apresentação só na 1ª vez
 let busy = false;
+let voiceOn = false;
 
-function setState(a, b, cls='') {
-  title.textContent = a; subtitle.textContent = b;
-  orb.classList.remove('listening','speaking');
-  if (cls) orb.classList.add(cls);
-}
-function setStatus(t){ statusEl.textContent = t || ''; }
+function setStatus(t, err=false){ statusEl.textContent = t || ''; statusEl.classList.toggle('err', !!err); }
 function addMsg(role, text, extra='') {
-  if (log.querySelector('.empty')) log.innerHTML = '';
+  const empty = log.querySelector('.empty'); if (empty) empty.remove();
   const el = document.createElement('div'); el.className = 'msg ' + role + (extra?' '+extra:''); el.textContent = text;
   log.appendChild(el); log.scrollTop = log.scrollHeight;
+  return el;
 }
 function clean(t){ return String(t||'').replace(/\s+/g,' ').trim(); }
+function autoGrow(){ input.style.height='auto'; input.style.height = Math.min(120, input.scrollHeight) + 'px'; }
 
 async function askOrbe(mode) {
   const messages = history.slice(-20).map(m => ({ role: m.role, content: clean(m.content) }));
@@ -165,45 +167,36 @@ async function askOrbe(mode) {
   return clean(j.reply);
 }
 
-/* ---------- TTS ---------- */
-async function speak(text) {
-  const t = clean(text); if (!t) return;
-  setState('FALANDO', 'IA MR respondendo', 'speaking');
-  try { await call('voice.speak', { text: t }); } catch {}
-  const ms = Math.min(12000, 1200 + t.length * 55);
-  setTimeout(() => { if (!orb.classList.contains('listening')) setState('PRONTA','Toque na Orbe para conversar'); }, ms);
-}
-
-/* ---------- Reconhecimento de voz ---------- */
-async function startVoice() {
-  if (busy) return;
-  if (!greeted) {
-    greeted = true;
-    await speak('Aqui é a IA da MR Sem Limites. Estou aqui para te ajudar. Pode falar.');
-    setTimeout(() => triggerListen(), 4200);
-    return;
+/* ---------- Reconhecimento de voz opcional ---------- */
+function toggleVoice(){
+  voiceOn = !voiceOn;
+  micBtn.classList.toggle('active', voiceOn);
+  micBtn.textContent = voiceOn ? '🎤 Ouvindo…' : '🎤 Voz';
+  if (voiceOn) {
+    setStatus('Microfone ativo. Fale sua mensagem.');
+    call('voice.start', { existingText: input.value || '', lang: 'pt-BR' }).catch(e => {
+      setStatus('Microfone: ' + e.message, true);
+      voiceOn = false; micBtn.classList.remove('active'); micBtn.textContent='🎤 Voz';
+    });
+  } else {
+    call('voice.stop').catch(()=>{});
+    setStatus('');
   }
-  triggerListen();
-}
-function triggerListen() {
-  setState('OUVINDO','Pode falar','listening');
-  setStatus('');
-  call('voice.start', { existingText: input.value || '', lang: 'pt-BR' }).catch(e => setStatus(e.message));
 }
 function handleVoice(msg) {
-  if (msg.type === 'VOICE_STATUS' && msg.status === 'started') { setState('OUVINDO','Pode falar','listening'); }
-  if (msg.type === 'VOICE_RESULT') { input.value = msg.text || ''; }
+  if (msg.type === 'VOICE_RESULT') { input.value = msg.text || ''; autoGrow(); }
   if (msg.type === 'VOICE_STATUS' && msg.status === 'ended') {
+    voiceOn = false; micBtn.classList.remove('active'); micBtn.textContent='🎤 Voz';
     const t = clean(input.value);
-    if (t) { send(); } else { setState('PRONTA','Toque na Orbe para conversar'); }
+    if (t) send();
   }
   if (msg.type === 'VOICE_ERROR') {
-    setState('PRONTA','Toque na Orbe para conversar');
-    setStatus('Microfone: ' + (msg.error || 'erro'));
+    voiceOn = false; micBtn.classList.remove('active'); micBtn.textContent='🎤 Voz';
+    setStatus('Microfone: ' + (msg.error || 'erro'), true);
   }
 }
 
-/* ---------- Detecção de gatilho ---------- */
+/* ---------- Gatilhos de envio ao Lovable ---------- */
 const TRIGGERS = [
   /\bpode\s+enviar\b/i, /\bpode\s+mandar\b/i, /\bpode\s+fazer\b/i,
   /\bmanda\s+(o\s+)?prompt\b/i, /\benvia\s+(pro|para\s+o)\s+lov/i,
@@ -216,39 +209,34 @@ function isSendTrigger(t){ return TRIGGERS.some(rx => rx.test(t)); }
 async function send() {
   if (busy) return;
   const text = clean(input.value); if (!text) { input.focus(); return; }
-  input.value = ''; addMsg('user', text);
+  input.value = ''; autoGrow();
+  addMsg('user', text);
   history.push({ role:'user', content: text });
   busy = true; sendBtn.disabled = true;
 
   if (isSendTrigger(text)) { await enviarParaLovable(); busy = false; sendBtn.disabled = false; return; }
 
-  setState('PENSANDO','IA MR pensando…');
-  setStatus('IA MR consultando…');
-  const wait = document.createElement('div'); wait.className = 'msg bot'; wait.textContent = 'Pensando…';
-  if (log.querySelector('.empty')) log.innerHTML = '';
-  log.appendChild(wait); log.scrollTop = log.scrollHeight;
+  setStatus('IA MR pensando…');
+  const wait = addMsg('bot', 'Pensando…', 'thinking');
 
   try {
-    const reply = (await askOrbe('chat')) || 'Entendi. Posso seguir nessa direção; se estiver bom, fale “pode enviar”.';
-    wait.textContent = reply;
+    const reply = (await askOrbe('chat')) || 'Entendi. Posso seguir nessa direção; se estiver bom, clique em PODE ENVIAR.';
+    wait.textContent = reply; wait.classList.remove('thinking');
     history.push({ role:'assistant', content: reply });
     setStatus('');
-    speak(reply);
     sendBtn.classList.add('ready'); sendBtn.textContent = 'PODE ENVIAR';
   } catch (e) {
-    wait.textContent = 'Erro: ' + (e.message || e);
-    setState('PRONTA','Toque na Orbe para conversar');
-    setStatus('Falha ao consultar IA MR.');
+    wait.textContent = 'Erro: ' + (e.message || e); wait.classList.remove('thinking');
+    setStatus('Falha ao consultar IA MR.', true);
   } finally {
     busy = false; sendBtn.disabled = false;
+    input.focus();
   }
 }
 
 async function enviarParaLovable() {
-  setState('MONTANDO PROMPT','Preparando envio para o Lovable');
-  setStatus('Gerando prompt final…');
-  const wait = document.createElement('div'); wait.className = 'msg final'; wait.textContent = 'Montando prompt final…';
-  log.appendChild(wait); log.scrollTop = log.scrollHeight;
+  setStatus('Montando prompt final…');
+  const wait = addMsg('final', 'Montando prompt final para o Lovable…');
 
   let finalPrompt = '';
   try { finalPrompt = clean(await askOrbe('final')); } catch (e) {
@@ -256,31 +244,29 @@ async function enviarParaLovable() {
   }
   if (!finalPrompt) { wait.textContent = 'Prompt vazio.'; return; }
 
-  wait.textContent = '📤 Prompt final enviado ao Lovable:\n\n' + finalPrompt;
-  setState('ENVIANDO','Executando no Lovable');
+  wait.textContent = '📤 Prompt enviado ao Lovable:\n\n' + finalPrompt;
   setStatus('Enviando para o Lovable…');
-  speak('Beleza. Já mandei o prompt pro Lovable executar.');
 
   try {
     await call('lovable.sendAndRead', { message: finalPrompt, timeoutMs: 70000, stableMs: 1400 });
-    addMsg('bot', 'Enviado ao Lovable. Acompanhe pela aba do projeto.');
-    setState('PRONTA','Nova conversa iniciada'); setStatus('Enviado. Memória da IA MR limpa.');
+    addMsg('bot', '✅ Enviado ao Lovable. Acompanhe pela aba do projeto.');
+    setStatus('Enviado. Memória limpa — nova conversa pronta.');
   } catch (e) {
-    addMsg('bot', 'Erro ao enviar pro Lovable: ' + (e.message || e));
-    setState('PRONTA','Toque na Orbe para conversar'); setStatus('');
+    addMsg('bot', '❌ Erro ao enviar pro Lovable: ' + (e.message || e));
+    setStatus('', true);
   } finally {
-    // Limpa memória do planejamento após execução (mantém greeted p/ não se apresentar de novo)
     history.length = 0;
-    sendBtn.classList.remove('ready'); sendBtn.textContent = 'FALAR COM IA';
+    sendBtn.classList.remove('ready'); sendBtn.textContent = 'ENVIAR';
   }
 }
 
-
 /* ---------- Wire ---------- */
 sendBtn.addEventListener('click', send);
-input.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); send(); } });
-document.getElementById('mic').addEventListener('click', startVoice);
-orb.addEventListener('click', startVoice);
+input.addEventListener('input', autoGrow);
+input.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
+});
+micBtn.addEventListener('click', toggleVoice);
 document.getElementById('support').addEventListener('click', () => call('support.open').catch(()=>{}));
 document.getElementById('supportMenu').addEventListener('click', () => call('support.open').catch(()=>{}));
 menuBtn.addEventListener('click', (e) => { e.stopPropagation(); menuPanel.classList.toggle('hidden'); });
@@ -294,14 +280,17 @@ document.getElementById('forceUpdate').addEventListener('click', async () => {
   location.replace(base + '?v=' + Date.now());
 });
 document.getElementById('reset').addEventListener('click', () => {
-  history.length = 0; greeted = false;
-  log.innerHTML = '<div class="empty">Toque na Orbe e comece a conversar</div>';
-  sendBtn.classList.remove('ready'); sendBtn.textContent = 'FALAR COM IA';
-  setStatus('Conversa reiniciada.'); setState('PRONTA','Toque na Orbe para conversar');
+  history.length = 0;
+  log.innerHTML = '<div class="empty"><b>Nova conversa iniciada</b>Como posso te ajudar agora?</div>';
+  sendBtn.classList.remove('ready'); sendBtn.textContent = 'ENVIAR';
+  setStatus('Conversa reiniciada.');
+  menuPanel.classList.add('hidden');
+  input.focus();
 });
 document.getElementById('modelBtn').addEventListener('click', cycleModel);
 document.getElementById('modelMenu').addEventListener('click', () => { cycleModel(); menuPanel.classList.add('hidden'); });
 refreshModelUI();
+input.focus();
 </script>
 </body>
 </html>

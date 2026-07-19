@@ -81,7 +81,8 @@ export const Route = createFileRoute("/api/public/orbe-chat")({
             return Response.json({ ok: false, error: "messages vazio" }, { status: 400, headers: CORS_HEADERS });
           }
           const system = mode === "final" ? SYSTEM_PROMPT_FINAL : SYSTEM_CONVERSA;
-          const reply = await callGateway([{ role: "system", content: system }, ...history]);
+          const model = typeof body?.model === "string" ? body.model : DEFAULT_MODEL;
+          const reply = await callGateway([{ role: "system", content: system }, ...history], model);
           return Response.json({ ok: true, reply }, { headers: CORS_HEADERS });
         } catch (e: any) {
           return Response.json(

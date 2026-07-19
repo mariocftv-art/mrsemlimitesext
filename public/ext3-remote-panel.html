@@ -299,6 +299,9 @@ document.getElementById('reset').addEventListener('click', () => {
   sendBtn.classList.remove('ready'); sendBtn.textContent = 'FALAR COM IA';
   setStatus('Conversa reiniciada.'); setState('PRONTA','Toque na Orbe para conversar');
 });
+document.getElementById('modelBtn').addEventListener('click', cycleModel);
+document.getElementById('modelMenu').addEventListener('click', () => { cycleModel(); menuPanel.classList.add('hidden'); });
+refreshModelUI();
 </script>
 </body>
 </html>

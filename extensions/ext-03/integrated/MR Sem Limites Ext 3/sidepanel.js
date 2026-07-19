@@ -42,6 +42,8 @@ const SUPABASE_ANON_KEY = "mrlov";
 const REMOTE_ORIGIN = SUPABASE_URL;
 const REMOTE_PANEL_ORIGIN = "https://mrsemlimitesext.lovable.app";
 const REMOTE_PANEL_URL = `${REMOTE_PANEL_ORIGIN}/ext3-remote-panel.html`;
+const ORBE_CHAT_API = `${REMOTE_PANEL_ORIGIN}/api/public/orbe-chat`;
+const ORBE_TTS_API = `${REMOTE_PANEL_ORIGIN}/api/public/orbe-tts`;
 const WHATSAPP_FALLBACK_URL = 'https://wa.me/5511956915920';
 
 let licenseSessionToken = null;
@@ -1032,6 +1034,8 @@ textarea#message {
 #sendBtn:hover{transform:scale(1.08)!important;box-shadow:0 6px 24px rgba(168,85,247,.6)!important}
 #sendBtn:active{transform:scale(.95)!important}
 #sendBtn:disabled{background:rgba(168,85,247,.12)!important;box-shadow:none!important;transform:none!important;cursor:not-allowed!important}
+#sendBtn.orbe-ready{background:linear-gradient(135deg,#16a34a,#22c55e,#86efac)!important;color:#03140a!important;font-size:20px!important;font-weight:900!important;box-shadow:0 0 0 3px rgba(34,197,94,.22),0 12px 34px rgba(34,197,94,.58)!important;animation:none!important}
+#sendBtn.orbe-ready:hover{box-shadow:0 0 0 4px rgba(34,197,94,.25),0 16px 42px rgba(34,197,94,.72)!important}
 
 /* Attach button */
 #attachBtn,button#attachBtn{background:rgba(168,85,247,.08)!important;border:1.5px solid rgba(168,85,247,.28)!important;color:#a855f7!important;border-radius:12px!important;width:38px!important;height:38px!important;min-width:38px!important;display:flex!important;align-items:center!important;justify-content:center!important;cursor:pointer!important;padding:0!important;flex-shrink:0!important;transition:all .25s cubic-bezier(.4,0,.2,1)!important;backdrop-filter:blur(4px)!important}
@@ -1359,8 +1363,108 @@ function initDirectChat() {
 
   let history = [];
   let pendingFiles = [];
+  let orbeConversation = [];
+  let orbeBusy = false;
+  let finalPromptReady = false;
+  const defaultSendHtml = sendBtn?.innerHTML || '';
+  const ORBE_FAST_MODEL = 'google/gemini-3.5-flash';
+  const ORBE_SEND_TRIGGERS = [
+    /\bpode\s+enviar\b/i,
+    /\bpode\s+mandar\b/i,
+    /\bpode\s+fazer\b/i,
+    /\bmanda\s+(o\s+)?prompt\b/i,
+    /\benvia\s+(pro|para\s+o)\s+lov/i,
+    /\benviar\s+(pro|para\s+o)\s+lov/i,
+    /\bexecuta\s+(no\s+)?lov/i,
+    /\bfaz\s+(no\s+)?lov/i,
+    /\bcan\s+send\b/i,
+  ];
 
   function updateStatus(text) { if (statusEl) statusEl.textContent = text; }
+
+  function cleanText(text) {
+    return String(text || '').replace(/\s+/g, ' ').trim();
+  }
+
+  function isFinalSendCommand(text) {
+    return ORBE_SEND_TRIGGERS.some((rx) => rx.test(String(text || '')));
+  }
+
+  function setFinalPromptReady(ready) {
+    finalPromptReady = !!ready;
+    if (!sendBtn) return;
+    sendBtn.classList.toggle('orbe-ready', finalPromptReady);
+    sendBtn.title = finalPromptReady ? 'Enviar prompt final para o Lovable' : 'Enviar mensagem para a IA MR';
+    sendBtn.innerHTML = finalPromptReady ? '✓' : defaultSendHtml;
+  }
+
+  async function askOrbe(mode) {
+    const messages = orbeConversation
+      .slice(-20)
+      .map((m) => ({ role: m.role, content: cleanText(m.content).slice(0, 4000) }))
+      .filter((m) => m.content);
+    if (!messages.length) throw new Error('Converse primeiro com a IA MR.');
+    const response = await fetch(ORBE_CHAT_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ mode, model: ORBE_FAST_MODEL, messages }),
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok || !data?.ok) throw new Error(data?.error || `IA MR HTTP ${response.status}`);
+    return cleanText(data.reply);
+  }
+
+  async function speakOrbe(text) {
+    const clean = cleanText(text).slice(0, 900);
+    if (!clean) return;
+    try {
+      const response = await fetch(ORBE_TTS_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: clean, voice: 'onyx' }),
+      });
+      if (!response.ok) throw new Error(`TTS HTTP ${response.status}`);
+      const buffer = await response.arrayBuffer();
+      let binary = '';
+      const bytes = new Uint8Array(buffer);
+      for (let i = 0; i < bytes.length; i += 1) binary += String.fromCharCode(bytes[i]);
+      const audio = new Audio(`data:audio/mpeg;base64,${btoa(binary)}`);
+      await audio.play();
+    } catch (e) {
+      const said = speakText(clean);
+      if (!said) updateStatus('🔊 Resposta pronta. Se o Chrome bloquear a fala, confira o volume/permissão.');
+    }
+  }
+
+  async function sendFinalPromptToLovable() {
+    if (orbeBusy) return;
+    if (!orbeConversation.some((m) => m.role === 'user')) {
+      updateStatus('⚠️ Converse com a IA MR antes de enviar ao Lovable.');
+      return;
+    }
+    orbeBusy = true;
+    sendBtn && (sendBtn.disabled = true);
+    updateStatus('🧠 Montando prompt final…');
+    try {
+      const finalPrompt = await askOrbe('final');
+      if (!finalPrompt) throw new Error('Prompt final vazio.');
+      addMessage('bot', '📤 Prompt final enviado ao Lovable:\n\n' + finalPrompt);
+      const res = await callCommand('lovable.sendMessage', { message: finalPrompt, files: [] });
+      if (res?.error) throw new Error(res.error);
+      addMessage('bot', '✅ Enviado ao Lovable. Acompanhe a execução na aba do projeto.');
+      speakOrbe('Pronto, Mr. Enviei o prompt final para o Lovable executar.');
+      orbeConversation = [];
+      setFinalPromptReady(false);
+      updateStatus('✅ Enviado ao Lovable');
+    } catch (e) {
+      addMessage('bot', '❌ ' + (e?.message || 'Erro ao enviar para o Lovable'));
+      updateStatus('❌ Falha ao enviar');
+    } finally {
+      orbeBusy = false;
+      sendBtn && (sendBtn.disabled = false);
+      messageEl?.focus();
+    }
+  }
 
   function addMessage(role, text) {
     history.push({ role, text });
@@ -1420,13 +1524,57 @@ function initDirectChat() {
   messageEl?.addEventListener('input', () => {
     messageEl.style.height = 'auto';
     messageEl.style.height = Math.min(messageEl.scrollHeight, 300) + 'px';
+    if (cleanText(messageEl.value)) setFinalPromptReady(false);
   });
 
   // Send
   async function handleSend() {
     if (!messageEl) return;
-    const msg = messageEl.value.trim();
-    if (!msg && pendingFiles.length === 0) return;
+    const msg = cleanText(messageEl.value);
+    if (!msg && pendingFiles.length === 0 && !finalPromptReady) return;
+
+    if (!msg && finalPromptReady && pendingFiles.length === 0) {
+      await sendFinalPromptToLovable();
+      return;
+    }
+
+    if (msg && isFinalSendCommand(msg) && pendingFiles.length === 0) {
+      messageEl.value = '';
+      messageEl.style.height = 'auto';
+      addMessage('user', msg);
+      await sendFinalPromptToLovable();
+      return;
+    }
+
+    if (pendingFiles.length === 0) {
+      if (orbeBusy) return;
+      orbeBusy = true;
+      sendBtn && (sendBtn.disabled = true);
+      messageEl.value = '';
+      messageEl.style.height = 'auto';
+      addMessage('user', msg);
+      orbeConversation.push({ role: 'user', content: msg });
+      updateStatus('🧠 IA MR pensando…');
+      try {
+        const reply = await askOrbe('chat');
+        const finalReply = reply || 'Entendi, Mr. Me passe mais um detalhe ou clique no verde quando quiser enviar.';
+        orbeConversation.push({ role: 'assistant', content: finalReply });
+        addMessage('bot', finalReply);
+        speakOrbe(finalReply);
+        setFinalPromptReady(true);
+        updateStatus('✅ Resposta pronta. Botão verde envia o prompt final.');
+      } catch (e) {
+        const err = 'Não consegui responder agora. ' + (e?.message || 'Tente novamente.');
+        addMessage('bot', '❌ ' + err);
+        speakOrbe(err);
+        updateStatus('❌ IA MR sem resposta');
+      } finally {
+        orbeBusy = false;
+        sendBtn && (sendBtn.disabled = false);
+        messageEl.focus();
+      }
+      return;
+    }
 
     sendBtn && (sendBtn.disabled = true);
     updateStatus('📤 Enviando...');
@@ -1629,6 +1777,8 @@ function initDirectChat() {
   // Clear
   clearBtn?.addEventListener('click', () => {
     history = [];
+    orbeConversation = [];
+    setFinalPromptReady(false);
     callCommand('storage.set', { data: { history: [] } });
     renderHistory();
   });
@@ -1718,8 +1868,10 @@ function initDirectChat() {
         _voiceRecognition.onend = () => {
           _voiceRecording = false;
           micBtn.classList.remove('recording');
-          updateStatus(messageEl?.value?.trim() ? '✅ Texto transcrito' : '');
+          const transcribed = cleanText(messageEl?.value || '');
+          updateStatus(transcribed ? '✅ Voz recebida. IA MR respondendo…' : '');
           messageEl?.focus();
+          if (transcribed && !orbeBusy) setTimeout(() => handleSend(), 80);
         };
 
         updateStatus('🎤 Iniciando...');
@@ -1740,8 +1892,10 @@ function initDirectChat() {
         } else if (msg.status === 'ended') {
           _voiceRecording = false;
           micBtn.classList.remove('recording');
-          updateStatus(messageEl?.value?.trim() ? '✅ Texto transcrito' : '');
+          const transcribed = cleanText(messageEl?.value || '');
+          updateStatus(transcribed ? '✅ Voz recebida. IA MR respondendo…' : '');
           messageEl?.focus();
+          if (transcribed && !orbeBusy) setTimeout(() => handleSend(), 80);
         }
       } else if (msg.type === 'VOICE_RESULT' && messageEl) {
         messageEl.value = msg.text || '';

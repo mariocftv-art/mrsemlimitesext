@@ -42,6 +42,7 @@ const SUPABASE_ANON_KEY = "mrlov";
 const REMOTE_ORIGIN = SUPABASE_URL;
 const REMOTE_PANEL_ORIGIN = "https://mrsemlimitesext.lovable.app";
 const REMOTE_PANEL_URL = `${REMOTE_PANEL_ORIGIN}/ext3-remote-panel.html`;
+const ORBE_CHAT_API = `${REMOTE_PANEL_ORIGIN}/api/public/orbe-chat`;
 const WHATSAPP_FALLBACK_URL = 'https://wa.me/5511956915920';
 
 let licenseSessionToken = null;

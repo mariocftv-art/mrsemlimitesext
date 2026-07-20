@@ -277,6 +277,32 @@ function ExtensionsPage() {
           </CardContent>
         </Card>
 
+      <Card className="glass mb-4 border-primary/40">
+          <CardContent className="flex flex-col gap-3 p-4 md:flex-row md:items-center md:justify-between">
+            <div className="space-y-1">
+              <p className="text-sm font-semibold">EXT5 — Instagram Publisher</p>
+              <p className="text-xs text-muted-foreground">
+                Todas as funcionalidades da EXT3 + nova aba <b>Instagram</b>: conecte sua conta (OAuth Meta Graph) e publique Post, Reel ou Carrossel direto da extensão. Baixe o ZIP, descompacte e no Chrome use “Carregar sem compactação”.
+              </p>
+            </div>
+            <div className="flex flex-col gap-2 md:flex-row md:w-auto">
+              <Button
+                className="gap-1.5 md:w-auto"
+                style={{ background: "linear-gradient(135deg,#f58529,#dd2a7b,#8134af,#515bd4)", color: "#fff" }}
+                onClick={() => {
+                  downloadZip(EXT5_ZIP_URL, "MR-Sem-Limites-EXT5-v5.0.0.zip");
+                  toast.success("Download da EXT5 iniciado.");
+                }}
+              >
+                <Download className="h-4 w-4" /> EXT5 Download
+              </Button>
+              <Button variant="outline" className="gap-1.5 border-emerald-500/60 text-emerald-400 hover:bg-emerald-500/10 md:w-auto" onClick={openSupport}>
+                <MessageCircle className="h-4 w-4" /> Suporte
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
 
 
       <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">

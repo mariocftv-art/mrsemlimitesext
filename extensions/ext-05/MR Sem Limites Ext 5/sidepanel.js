@@ -40,7 +40,7 @@ console.log(`🚀 MR Ext Sem Limites v${EXTENSION_VERSION} (MRSL) iniciando...`)
 const SUPABASE_URL = "https://mrsemlimites.lovable.app/api/public/ext";
 const SUPABASE_ANON_KEY = "mrlov";
 const REMOTE_ORIGIN = SUPABASE_URL;
-const WHATSAPP_FALLBACK_URL = 'https://w.app/lovableilimitado';
+const WHATSAPP_FALLBACK_URL = 'https://wa.me/5511962579428';
 
 let licenseSessionToken = null;
 let licenseKey = null;

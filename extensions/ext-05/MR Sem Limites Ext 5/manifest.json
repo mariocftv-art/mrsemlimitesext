@@ -12,8 +12,7 @@
     "alarms",
     "sidePanel",
     "offscreen",
-    "webRequest",
-    "webRequestBody"
+    "webRequest"
   ],
   "host_permissions": [
     "https://lovable.dev/*",

@@ -207,6 +207,16 @@
     { t: '👨‍🔧 Instalação técnica', p: 'Técnico uniformizado da MR Segurança instalando câmera CFTV em parede externa, capacete e cinto de ferramentas, dia ensolarado, aparência profissional e confiável' },
     { t: '🏢 Portaria remota', p: 'Portão automático de condomínio se abrindo remotamente com portaria virtual, moradores tranquilos, tecnologia PAX visível, tom azul confiança' },
     { t: '🔒 Cerca elétrica', p: 'Cerca elétrica industrial instalada em muro alto, isoladores brancos alinhados, céu ao entardecer, foco na proteção perimetral, aesthetic Link MR Store' },
+    { t: '💻 Produto digital ebook', p: 'Mockup 3D de ebook premium flutuando com capa dourada e preta, fundo gradiente escuro com partículas douradas, iluminação cinematográfica, aesthetic infoproduto high ticket, sensação de valor e transformação' },
+    { t: '🎓 Curso online mockup', p: 'Mockup de curso online exibido em notebook, tablet e celular flutuando, tela mostrando módulos de aula, fundo dark premium com detalhes dourados, chamada visual "Método comprovado"' },
+    { t: '📦 Combo infoproduto', p: 'Combo de produtos digitais mockup (ebook + curso + bônus), composição em pilha 3D, badges "BÔNUS EXCLUSIVO" e "GARANTIA 7 DIAS", fundo preto com halo dourado, super oferta' },
+    { t: '🚀 Fanpage lançamento', p: 'Capa de fanpage Instagram/Facebook estilo lançamento, tipografia bold impactante "TRANSFORME SUA VIDA", fotos do produto em destaque, cores da marca vibrantes, CTA visual "Link na bio"' },
+    { t: '💥 Post fanpage carrossel', p: 'Slide de carrossel Instagram estilo fanpage viral, headline grande "VOCÊ ESTÁ PERDENDO DINHEIRO ASSIM", fundo colorido chamativo, emoji estratégico, tipografia sans-serif bold, alto engajamento' },
+    { t: '📈 Página de vendas hero', p: 'Hero de landing page de vendas, headline poderosa "O método que mudou minha vida", mockup do produto ao lado, botão CTA laranja "QUERO AGORA", provas sociais visíveis, layout conversão' },
+    { t: '⭐ Depoimento cliente VSL', p: 'Print de depoimento real de cliente satisfeita com resultado, foto antes/depois ao lado, estrelas 5/5, texto autêntico em destaque, fundo neutro credibilidade, prova social para página de vendas' },
+    { t: '💰 Oferta irresistível', p: 'Banner de oferta com preço riscado "De R$ 1997 por R$ 297", countdown regressivo "OFERTA ACABA EM", selo de garantia dourado, fundo vermelho urgência, alta conversão' },
+    { t: '🎁 Bônus exclusivos', p: 'Composição visual de bônus empilhados (ebooks, planilhas, checklists), etiqueta "GRÁTIS AO COMPRAR HOJE", valor total em destaque "+R$ 3.500 em bônus", fundo dourado luxo' },
+    { t: '🔥 Post viral fanpage', p: 'Post fanpage estilo viral com pergunta impactante "Você faria isso pelos seus filhos?", imagem emocional ao fundo, tipografia branca com sombra, CTA "Comenta SIM", máximo engajamento' },
   ];
 
   // ============ 20 PROMPTS DE VÍDEO (Reels) ============

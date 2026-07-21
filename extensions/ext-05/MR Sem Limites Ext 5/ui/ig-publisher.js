@@ -443,8 +443,9 @@
 
   function wire() {
     if (!$('igConnectBtn')) return false;
-    $('igConnectBtn').addEventListener('click', refreshStatus);
-    const bd = $('igDisconnectBtn'); if (bd) bd.style.display = 'none';
+    $('igConnectBtn').addEventListener('click', startOAuth);
+    const bd = $('igDisconnectBtn');
+    if (bd) bd.addEventListener('click', disconnect);
     document.querySelectorAll('.igTypeBtn').forEach((b) => {
       b.addEventListener('click', () => {
         currentType = b.dataset.type;

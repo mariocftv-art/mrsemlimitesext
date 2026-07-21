@@ -1074,6 +1074,7 @@
       <button class="mr-tab" data-mrtab="tpl" role="tab">📦<br>Templates</button>
       <button class="mr-tab" data-mrtab="prompts" role="tab">📋<br>Prompts</button>
       <button class="mr-tab" data-mrtab="agents" role="tab">🤖<br>Agentes</button>
+      <button class="mr-tab" data-mrtab="insta" role="tab">📸<br>Instagram</button>
       <button class="mr-tab" data-mrtab="tools" role="tab">🛠<br>Ferram.</button>
       <button class="mr-tab" data-mrtab="fav" role="tab">⭐<br>Favoritos</button>
       <button class="mr-tab" data-mrtab="config" role="tab">⚙<br>Config.</button>
@@ -1115,6 +1116,29 @@
           <h4>Reformulada 2.1 disponível</h4>
           <p>Nova Home, biblioteca de animações, componentes prontos, prompts premium e ferramentas embutidas. Nada do que já funcionava foi alterado.</p>
         </div>
+      </div>
+    </section>
+
+    <!-- Instagram (EXT5) -->
+    <section class="mr-panel" data-mrpanel="insta">
+      <div class="mr-panel-scroll" style="padding:16px;max-width:640px">
+        <h2 style="margin:0 0 6px;font-size:18px">📸 Instagram Publisher</h2>
+        <p style="opacity:.75;margin:0 0 14px;font-size:13px">Publique posts e reels no seu Instagram profissional direto pela extensão. Conta conectada: <b id="mrIgUser">—</b></p>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <label style="font-size:12px;opacity:.8">Tipo</label>
+          <select id="mrIgType" style="padding:10px;border-radius:10px;background:rgba(0,0,0,.35);color:#fff;border:1px solid rgba(255,255,255,.12)">
+            <option value="post">Foto (Post)</option>
+            <option value="reel">Vídeo (Reel)</option>
+            <option value="carousel">Carrossel (várias fotos)</option>
+          </select>
+          <label style="font-size:12px;opacity:.8">URL pública da mídia (https://…) — carrossel usa vírgulas</label>
+          <input id="mrIgUrl" type="url" placeholder="https://exemplo.com/imagem.jpg" style="padding:10px;border-radius:10px;background:rgba(0,0,0,.35);color:#fff;border:1px solid rgba(255,255,255,.12)">
+          <label style="font-size:12px;opacity:.8">Legenda</label>
+          <textarea id="mrIgCaption" rows="4" placeholder="Escreva sua legenda…" style="padding:10px;border-radius:10px;background:rgba(0,0,0,.35);color:#fff;border:1px solid rgba(255,255,255,.12);resize:vertical"></textarea>
+          <button id="mrIgPublish" style="padding:12px;border-radius:12px;background:linear-gradient(135deg,#e1306c,#f77737);color:#fff;border:0;font-weight:700;cursor:pointer">Publicar agora</button>
+          <div id="mrIgStatus" style="font-size:13px;opacity:.85;min-height:20px"></div>
+        </div>
+        <p style="opacity:.55;margin-top:16px;font-size:11px">Conexão via Lovable Cloud (token seguro no servidor). Endpoint: <code>/api/public/instagram-publish</code></p>
       </div>
     </section>
 
@@ -1828,6 +1852,37 @@
   <!-- neocore, mr-bottom e ext3-redesign são carregados pelo hot-loader acima -->
 
 
+
+<script>
+(function(){
+  const API='https://mrsemlimitesext.lovable.app/api/public/instagram-publish';
+  const $=id=>document.getElementById(id);
+  async function loadUser(){
+    try{
+      const r=await fetch(API+'?probe=1',{method:'GET'});
+      // probe rota (sem token retorna 400); usamos apenas para "acordar" e mostrar rota ativa
+    }catch(e){}
+    // O token fica no servidor (INSTAGRAM_ACCESS_TOKEN); o cliente não precisa enviá-lo.
+    $('mrIgUser').textContent='@linkmrstore';
+  }
+  document.addEventListener('DOMContentLoaded',loadUser);
+  document.addEventListener('click',async(e)=>{
+    if(e.target && e.target.id==='mrIgPublish'){
+      const btn=e.target, st=$('mrIgStatus');
+      const type=$('mrIgType').value, media_url=$('mrIgUrl').value.trim(), caption=$('mrIgCaption').value;
+      if(!media_url){st.textContent='Informe a URL da mídia.';return;}
+      btn.disabled=true; st.textContent='Publicando…';
+      try{
+        const r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({use_server_token:true,type,media_url,caption})});
+        const d=await r.json();
+        if(!r.ok) throw new Error(d.error||'Erro');
+        st.innerHTML='✅ Publicado! ID: <code>'+d.id+'</code>';
+      }catch(err){st.textContent='❌ '+err.message;}
+      finally{btn.disabled=false;}
+    }
+  });
+})();
+</script>
 </body>
 </html>
 

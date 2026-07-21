@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "MR Sem Limites Ext 5 — Instagram",
-  "version": "5.4.2",
+  "version": "5.4.3",
   "description": "MR Sem Limites Ext 5 — Todas as funcionalidades da EXT3 + Instagram (publicar Post/Reel/Carrossel via API Graph).",
   "permissions": [
     "storage",
@@ -12,8 +12,7 @@
     "alarms",
     "sidePanel",
     "offscreen",
-    "webRequest",
-    "webRequestBody"
+    "webRequest"
   ],
   "host_permissions": [
     "https://lovable.dev/*",

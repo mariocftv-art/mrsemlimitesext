@@ -290,7 +290,7 @@ function ExtensionsPage() {
                 className="gap-1.5 md:w-auto"
                 style={{ background: "linear-gradient(135deg,#f58529,#dd2a7b,#8134af,#515bd4)", color: "#fff" }}
                 onClick={() => {
-                  downloadZip(EXT5_ZIP_URL, "MR-Sem-Limites-EXT5-v5.3.3.zip");
+                  downloadZip(EXT5_ZIP_URL, "MR-Sem-Limites-EXT5-v5.3.4.zip");
                   toast.success("Download da EXT5 iniciado.");
                 }}
               >

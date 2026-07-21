@@ -1,30 +1,47 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-// Armazenamento em memória (por isolate) — suficiente para publicar logo após gerar.
-const STORE = new Map<string, { data: Uint8Array; mime: string; createdAt: number }>()
-
-// Limpa items com mais de 30 minutos
-function gc() {
-  const now = Date.now()
-  for (const [k, v] of STORE) if (now - v.createdAt > 30 * 60 * 1000) STORE.delete(k)
-}
-
-export function putMedia(dataUrl: string): string {
-  gc()
+// Faz upload da mídia (data URL base64) para um host público persistente (catbox.moe)
+// e retorna a URL pública direta. A API do Instagram exige URL HTTPS pública acessível
+// externamente — armazenar em memória do Worker não funciona porque o pedido da Meta
+// pode cair em outro isolate. catbox.moe é anônimo, sem chave e persiste os arquivos.
+export async function putMedia(dataUrl: string, filenameHint?: string): Promise<string> {
   const m = /^data:([^;]+);base64,(.+)$/.exec(dataUrl)
   if (!m) throw new Error('data URL inválida')
   const mime = m[1]
-  const bin = atob(m[2])
+  const b64 = m[2]
+
+  // Decodifica base64 -> bytes
+  const bin = atob(b64)
   const bytes = new Uint8Array(bin.length)
   for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i)
-  const id = crypto.randomUUID().replace(/-/g, '')
-  STORE.set(id, { data: bytes, mime, createdAt: Date.now() })
-  return id
+
+  // Extensão inferida do MIME
+  const ext = mime.includes('mp4') ? 'mp4'
+    : mime.includes('webm') ? 'webm'
+    : mime.includes('mov') || mime.includes('quicktime') ? 'mov'
+    : mime.includes('png') ? 'png'
+    : mime.includes('gif') ? 'gif'
+    : 'jpg'
+  const filename = (filenameHint || `ig-${Date.now()}-${crypto.randomUUID().slice(0, 8)}`).replace(/\.[^.]+$/, '') + '.' + ext
+
+  const fd = new FormData()
+  fd.append('reqtype', 'fileupload')
+  fd.append('fileToUpload', new Blob([bytes as BlobPart], { type: mime }), filename)
+
+  const res = await fetch('https://catbox.moe/user/api.php', {
+    method: 'POST',
+    body: fd,
+  })
+  const text = (await res.text()).trim()
+  if (!res.ok || !/^https?:\/\//i.test(text)) {
+    throw new Error(`Upload público falhou: ${text || res.status}`)
+  }
+  return text
 }
 
 const cors = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, HEAD, POST, OPTIONS',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type',
 }
 
@@ -36,43 +53,25 @@ export const Route = createFileRoute('/api/public/instagram-media')({
         let body: any = {}
         try { body = await request.json() } catch {}
         const dataUrl = (body?.data_url || body?.dataUrl || '').toString()
-        if (!dataUrl) return new Response(JSON.stringify({ error: 'data_url obrigatório' }), { status: 400, headers: { ...cors, 'Content-Type': 'application/json' } })
-        try {
-          const id = putMedia(dataUrl)
-          const origin = new URL(request.url).origin
-          return new Response(JSON.stringify({ id, media_url: `${origin}/api/public/instagram-media?id=${id}` }), { status: 200, headers: { ...cors, 'Content-Type': 'application/json' } })
-        } catch (e: any) {
-          return new Response(JSON.stringify({ error: e?.message || 'Falha ao salvar mídia' }), { status: 400, headers: { ...cors, 'Content-Type': 'application/json' } })
+        const filename = (body?.filename || '').toString() || undefined
+        if (!dataUrl) {
+          return new Response(JSON.stringify({ error: 'data_url obrigatório' }), {
+            status: 400,
+            headers: { ...cors, 'Content-Type': 'application/json' },
+          })
         }
-      },
-      GET: async ({ request }) => {
-        const url = new URL(request.url)
-        const id = url.searchParams.get('id') || ''
-        const item = STORE.get(id)
-        if (!item) return new Response('Not found', { status: 404, headers: cors })
-        return new Response(item.data as BodyInit, {
-          status: 200,
-          headers: {
-            ...cors,
-            'Content-Type': item.mime,
-            'Cache-Control': 'public, max-age=1800',
-          },
-        })
-      },
-      HEAD: async ({ request }) => {
-        const url = new URL(request.url)
-        const id = url.searchParams.get('id') || ''
-        const item = STORE.get(id)
-        if (!item) return new Response(null, { status: 404, headers: cors })
-        return new Response(null, {
-          status: 200,
-          headers: {
-            ...cors,
-            'Content-Type': item.mime,
-            'Cache-Control': 'public, max-age=1800',
-            'Content-Length': String(item.data.byteLength),
-          },
-        })
+        try {
+          const publicUrl = await putMedia(dataUrl, filename)
+          return new Response(JSON.stringify({ media_url: publicUrl }), {
+            status: 200,
+            headers: { ...cors, 'Content-Type': 'application/json' },
+          })
+        } catch (e: any) {
+          return new Response(JSON.stringify({ error: e?.message || 'Falha ao salvar mídia' }), {
+            status: 500,
+            headers: { ...cors, 'Content-Type': 'application/json' },
+          })
+        }
       },
     },
   },

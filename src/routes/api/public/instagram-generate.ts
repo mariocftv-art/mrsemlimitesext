@@ -82,10 +82,9 @@ export const Route = createFileRoute('/api/public/instagram-generate')({
               return new Response(JSON.stringify({ error: 'A IA não retornou uma imagem. Tente um prompt mais direto (evite marcas ou pessoas reais).' }), { status: 502, headers: cors })
             }
             try {
-              const id = putMedia(`data:image/png;base64,${b64}`)
-              mediaUrl = `${origin}/api/public/instagram-media?id=${id}`
+              mediaUrl = await putMedia(`data:image/png;base64,${b64}`, `ig-${type}-${Date.now()}.png`)
             } catch (e: any) {
-              return new Response(JSON.stringify({ error: `Falha ao salvar prévia: ${e?.message || e}` }), { status: 500, headers: cors })
+              return new Response(JSON.stringify({ error: `Falha ao publicar prévia: ${e?.message || e}` }), { status: 500, headers: cors })
             }
           }
 

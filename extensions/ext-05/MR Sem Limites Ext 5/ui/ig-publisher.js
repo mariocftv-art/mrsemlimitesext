@@ -201,6 +201,12 @@
     { t: '📚 Curso online', p: 'Setup home office aesthetic com notebook, caneca de café, caderno aberto, luz natural, planta na mesa, minimalista e produtivo' },
     { t: '🌸 Floricultura', p: 'Buquê de peônias rosa em vaso de vidro, mesa branca, luz difusa suave, estética pinterest romântica e delicada' },
     { t: '💰 Finanças/investimento', p: 'Gráficos de investimento subindo em tela de notebook, mãos digitando, ambiente executivo, tom azul confiança e crescimento' },
+    { t: '🛡 MR Segurança Máxima', p: 'Câmera de segurança 4K premium instalada em fachada elegante de residência de alto padrão, luz noturna azul suave, foco no equipamento discreto, sensação de proteção total 24h, aesthetic profissional MR Segurança Máxima' },
+    { t: '🚔 PAX Monitoramento', p: 'Central de monitoramento PAX 24 horas, múltiplas telas HD mostrando câmeras ao vivo, operador uniformizado atento, luz azul tecnológica, ambiente sério e confiável' },
+    { t: '🚨 Alarme residencial', p: 'Kit de alarme residencial moderno com sensores, sirene e central digital, mesa branca minimalista, iluminação clean de produto, chamada para proteção da família' },
+    { t: '👨‍🔧 Instalação técnica', p: 'Técnico uniformizado da MR Segurança instalando câmera CFTV em parede externa, capacete e cinto de ferramentas, dia ensolarado, aparência profissional e confiável' },
+    { t: '🏢 Portaria remota', p: 'Portão automático de condomínio se abrindo remotamente com portaria virtual, moradores tranquilos, tecnologia PAX visível, tom azul confiança' },
+    { t: '🔒 Cerca elétrica', p: 'Cerca elétrica industrial instalada em muro alto, isoladores brancos alinhados, céu ao entardecer, foco na proteção perimetral, aesthetic Link MR Store' },
   ];
 
   // ============ 20 PROMPTS DE VÍDEO (Reels) ============
@@ -225,6 +231,10 @@
     { t: '💄 Tutorial makeup', p: 'Tutorial de maquiagem em cortes rápidos, close no olho, aplicação de produtos, resultado final glamoroso' },
     { t: '🏋️ Progresso fitness', p: 'Reel de progresso mensal de treino, split screen semanal, mesma pose e iluminação, transformação real motivacional' },
     { t: '🎁 Reveal produto', p: 'Reveal dramático de produto novo, caixa abrindo em slow motion, iluminação teatral, música building implícita, expectativa' },
+    { t: '🛡 Tour MR Segurança', p: 'Reel vertical 9:16 apresentando serviços da MR Segurança Máxima, cortes rápidos de câmeras 4K, sensores, alarmes e equipe técnica em ação, tom cinematográfico azul confiança, CTA final "Proteja sua família"' },
+    { t: '🚔 PAX 24h operação', p: 'Reel mostrando central PAX em operação 24 horas, câmera aproximando das telas ao vivo, operadores atentos, transição para viatura em ronda noturna, energia séria e profissional' },
+    { t: '🚨 Antes/depois alarme', p: 'Reel split screen residência sem proteção vs residência com alarme MR ativo, transição impactante, texto na tela "Sua casa protegida em 24h", CTA WhatsApp' },
+    { t: '👨‍🔧 Instalação em 1 dia', p: 'Timelapse vertical de instalação completa de CFTV em residência, técnicos MR trabalhando, sequência montagem/teste/entrega ao cliente sorrindo, música motivacional implícita' },
   ];
 
   async function refreshStatus() {

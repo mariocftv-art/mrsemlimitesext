@@ -67,7 +67,7 @@ export const Route = createFileRoute('/api/public/instagram-publish')({
             const children: string[] = []
             for (const u of urls) {
               const child = await j(
-                `${base}/media?image_url=${encodeURIComponent(u)}&is_carousel_item=true&access_token=${access_token}`,
+                `${base}/media?media_type=IMAGE&image_url=${encodeURIComponent(u)}&is_carousel_item=true&access_token=${access_token}`,
                 { method: 'POST' },
               )
               children.push(child.id)
@@ -79,7 +79,7 @@ export const Route = createFileRoute('/api/public/instagram-publish')({
             containerId = c.id
           } else {
             const c = await j(
-              `${base}/media?image_url=${encodeURIComponent(media_url)}&caption=${encodeURIComponent(caption)}&access_token=${access_token}`,
+              `${base}/media?media_type=IMAGE&image_url=${encodeURIComponent(media_url)}&caption=${encodeURIComponent(caption)}&access_token=${access_token}`,
               { method: 'POST' },
             )
             containerId = c.id

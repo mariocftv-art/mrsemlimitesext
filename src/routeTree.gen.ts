@@ -40,6 +40,7 @@ import { Route as LiveIdRouteImport } from './routes/live.$id'
 import { Route as ApiPublicOrbeTtsRouteImport } from './routes/api/public/orbe-tts'
 import { Route as ApiPublicOrbeChatRouteImport } from './routes/api/public/orbe-chat'
 import { Route as ApiPublicInstagramWebhookRouteImport } from './routes/api/public/instagram-webhook'
+import { Route as ApiPublicInstagramStatusRouteImport } from './routes/api/public/instagram-status'
 import { Route as ApiPublicInstagramPublishRouteImport } from './routes/api/public/instagram-publish'
 import { Route as ApiPublicInstagramOauthStartRouteImport } from './routes/api/public/instagram-oauth-start'
 import { Route as ApiPublicInstagramOauthCallbackRouteImport } from './routes/api/public/instagram-oauth-callback'
@@ -200,6 +201,12 @@ const ApiPublicInstagramWebhookRoute =
     path: '/api/public/instagram-webhook',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicInstagramStatusRoute =
+  ApiPublicInstagramStatusRouteImport.update({
+    id: '/api/public/instagram-status',
+    path: '/api/public/instagram-status',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicInstagramPublishRoute =
   ApiPublicInstagramPublishRouteImport.update({
     id: '/api/public/instagram-publish',
@@ -251,6 +258,7 @@ export interface FileRoutesByFullPath {
   '/api/public/instagram-oauth-callback': typeof ApiPublicInstagramOauthCallbackRoute
   '/api/public/instagram-oauth-start': typeof ApiPublicInstagramOauthStartRoute
   '/api/public/instagram-publish': typeof ApiPublicInstagramPublishRoute
+  '/api/public/instagram-status': typeof ApiPublicInstagramStatusRoute
   '/api/public/instagram-webhook': typeof ApiPublicInstagramWebhookRoute
   '/api/public/orbe-chat': typeof ApiPublicOrbeChatRoute
   '/api/public/orbe-tts': typeof ApiPublicOrbeTtsRoute
@@ -287,6 +295,7 @@ export interface FileRoutesByTo {
   '/api/public/instagram-oauth-callback': typeof ApiPublicInstagramOauthCallbackRoute
   '/api/public/instagram-oauth-start': typeof ApiPublicInstagramOauthStartRoute
   '/api/public/instagram-publish': typeof ApiPublicInstagramPublishRoute
+  '/api/public/instagram-status': typeof ApiPublicInstagramStatusRoute
   '/api/public/instagram-webhook': typeof ApiPublicInstagramWebhookRoute
   '/api/public/orbe-chat': typeof ApiPublicOrbeChatRoute
   '/api/public/orbe-tts': typeof ApiPublicOrbeTtsRoute
@@ -324,6 +333,7 @@ export interface FileRoutesById {
   '/api/public/instagram-oauth-callback': typeof ApiPublicInstagramOauthCallbackRoute
   '/api/public/instagram-oauth-start': typeof ApiPublicInstagramOauthStartRoute
   '/api/public/instagram-publish': typeof ApiPublicInstagramPublishRoute
+  '/api/public/instagram-status': typeof ApiPublicInstagramStatusRoute
   '/api/public/instagram-webhook': typeof ApiPublicInstagramWebhookRoute
   '/api/public/orbe-chat': typeof ApiPublicOrbeChatRoute
   '/api/public/orbe-tts': typeof ApiPublicOrbeTtsRoute
@@ -362,6 +372,7 @@ export interface FileRouteTypes {
     | '/api/public/instagram-oauth-callback'
     | '/api/public/instagram-oauth-start'
     | '/api/public/instagram-publish'
+    | '/api/public/instagram-status'
     | '/api/public/instagram-webhook'
     | '/api/public/orbe-chat'
     | '/api/public/orbe-tts'
@@ -398,6 +409,7 @@ export interface FileRouteTypes {
     | '/api/public/instagram-oauth-callback'
     | '/api/public/instagram-oauth-start'
     | '/api/public/instagram-publish'
+    | '/api/public/instagram-status'
     | '/api/public/instagram-webhook'
     | '/api/public/orbe-chat'
     | '/api/public/orbe-tts'
@@ -434,6 +446,7 @@ export interface FileRouteTypes {
     | '/api/public/instagram-oauth-callback'
     | '/api/public/instagram-oauth-start'
     | '/api/public/instagram-publish'
+    | '/api/public/instagram-status'
     | '/api/public/instagram-webhook'
     | '/api/public/orbe-chat'
     | '/api/public/orbe-tts'
@@ -471,6 +484,7 @@ export interface RootRouteChildren {
   ApiPublicInstagramOauthCallbackRoute: typeof ApiPublicInstagramOauthCallbackRoute
   ApiPublicInstagramOauthStartRoute: typeof ApiPublicInstagramOauthStartRoute
   ApiPublicInstagramPublishRoute: typeof ApiPublicInstagramPublishRoute
+  ApiPublicInstagramStatusRoute: typeof ApiPublicInstagramStatusRoute
   ApiPublicInstagramWebhookRoute: typeof ApiPublicInstagramWebhookRoute
   ApiPublicOrbeChatRoute: typeof ApiPublicOrbeChatRoute
   ApiPublicOrbeTtsRoute: typeof ApiPublicOrbeTtsRoute
@@ -695,6 +709,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicInstagramWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/instagram-status': {
+      id: '/api/public/instagram-status'
+      path: '/api/public/instagram-status'
+      fullPath: '/api/public/instagram-status'
+      preLoaderRoute: typeof ApiPublicInstagramStatusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/instagram-publish': {
       id: '/api/public/instagram-publish'
       path: '/api/public/instagram-publish'
@@ -751,6 +772,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicInstagramOauthCallbackRoute: ApiPublicInstagramOauthCallbackRoute,
   ApiPublicInstagramOauthStartRoute: ApiPublicInstagramOauthStartRoute,
   ApiPublicInstagramPublishRoute: ApiPublicInstagramPublishRoute,
+  ApiPublicInstagramStatusRoute: ApiPublicInstagramStatusRoute,
   ApiPublicInstagramWebhookRoute: ApiPublicInstagramWebhookRoute,
   ApiPublicOrbeChatRoute: ApiPublicOrbeChatRoute,
   ApiPublicOrbeTtsRoute: ApiPublicOrbeTtsRoute,

@@ -36,7 +36,7 @@ export const Route = createFileRoute('/api/public/instagram-media')({
         const id = url.searchParams.get('id') || ''
         const item = STORE.get(id)
         if (!item) return new Response('Not found', { status: 404, headers: cors })
-        return new Response(item.data, {
+        return new Response(item.data as BodyInit, {
           status: 200,
           headers: {
             ...cors,

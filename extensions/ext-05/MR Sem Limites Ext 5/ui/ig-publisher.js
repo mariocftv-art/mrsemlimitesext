@@ -593,18 +593,7 @@
     const bd = $('igDisconnectBtn');
     if (bd) bd.addEventListener('click', disconnect);
     document.querySelectorAll('.igTypeBtn').forEach((b) => {
-      b.addEventListener('click', () => {
-        currentType = b.dataset.type;
-        updateModeCopy();
-        document.querySelectorAll('.igTypeBtn').forEach((x) => {
-          x.classList.remove('active');
-          x.style.background = 'transparent';
-          x.style.border = '1px solid rgba(255,255,255,.1)';
-        });
-        b.classList.add('active');
-        b.style.background = 'rgba(225,48,108,.15)';
-        b.style.border = '1px solid rgba(225,48,108,.4)';
-      });
+      b.addEventListener('click', () => setType(b.dataset.type));
     });
     document.querySelectorAll('.igSubTab').forEach((b) => {
       b.addEventListener('click', () => switchSub(b.dataset.sub));

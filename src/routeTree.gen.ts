@@ -18,6 +18,7 @@ import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ProductsRouteImport } from './routes/products'
 import { Route as LogsRouteImport } from './routes/logs'
 import { Route as LicensesRouteImport } from './routes/licenses'
+import { Route as InstagramPreviewRouteImport } from './routes/instagram-preview'
 import { Route as ExtensionsRouteImport } from './routes/extensions'
 import { Route as EditorRouteImport } from './routes/editor'
 import { Route as DownloadsRouteImport } from './routes/downloads'
@@ -90,6 +91,11 @@ const LogsRoute = LogsRouteImport.update({
 const LicensesRoute = LicensesRouteImport.update({
   id: '/licenses',
   path: '/licenses',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InstagramPreviewRoute = InstagramPreviewRouteImport.update({
+  id: '/instagram-preview',
+  path: '/instagram-preview',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ExtensionsRoute = ExtensionsRouteImport.update({
@@ -256,6 +262,7 @@ export interface FileRoutesByFullPath {
   '/downloads': typeof DownloadsRoute
   '/editor': typeof EditorRoute
   '/extensions': typeof ExtensionsRoute
+  '/instagram-preview': typeof InstagramPreviewRoute
   '/licenses': typeof LicensesRoute
   '/logs': typeof LogsRoute
   '/products': typeof ProductsRoute
@@ -295,6 +302,7 @@ export interface FileRoutesByTo {
   '/downloads': typeof DownloadsRoute
   '/editor': typeof EditorRoute
   '/extensions': typeof ExtensionsRoute
+  '/instagram-preview': typeof InstagramPreviewRoute
   '/licenses': typeof LicensesRoute
   '/logs': typeof LogsRoute
   '/products': typeof ProductsRoute
@@ -335,6 +343,7 @@ export interface FileRoutesById {
   '/downloads': typeof DownloadsRoute
   '/editor': typeof EditorRoute
   '/extensions': typeof ExtensionsRoute
+  '/instagram-preview': typeof InstagramPreviewRoute
   '/licenses': typeof LicensesRoute
   '/logs': typeof LogsRoute
   '/products': typeof ProductsRoute
@@ -376,6 +385,7 @@ export interface FileRouteTypes {
     | '/downloads'
     | '/editor'
     | '/extensions'
+    | '/instagram-preview'
     | '/licenses'
     | '/logs'
     | '/products'
@@ -415,6 +425,7 @@ export interface FileRouteTypes {
     | '/downloads'
     | '/editor'
     | '/extensions'
+    | '/instagram-preview'
     | '/licenses'
     | '/logs'
     | '/products'
@@ -454,6 +465,7 @@ export interface FileRouteTypes {
     | '/downloads'
     | '/editor'
     | '/extensions'
+    | '/instagram-preview'
     | '/licenses'
     | '/logs'
     | '/products'
@@ -494,6 +506,7 @@ export interface RootRouteChildren {
   DownloadsRoute: typeof DownloadsRoute
   EditorRoute: typeof EditorRoute
   ExtensionsRoute: typeof ExtensionsRoute
+  InstagramPreviewRoute: typeof InstagramPreviewRoute
   LicensesRoute: typeof LicensesRoute
   LogsRoute: typeof LogsRoute
   ProductsRoute: typeof ProductsRoute
@@ -580,6 +593,13 @@ declare module '@tanstack/react-router' {
       path: '/licenses'
       fullPath: '/licenses'
       preLoaderRoute: typeof LicensesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/instagram-preview': {
+      id: '/instagram-preview'
+      path: '/instagram-preview'
+      fullPath: '/instagram-preview'
+      preLoaderRoute: typeof InstagramPreviewRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/extensions': {
@@ -798,6 +818,7 @@ const rootRouteChildren: RootRouteChildren = {
   DownloadsRoute: DownloadsRoute,
   EditorRoute: EditorRoute,
   ExtensionsRoute: ExtensionsRoute,
+  InstagramPreviewRoute: InstagramPreviewRoute,
   LicensesRoute: LicensesRoute,
   LogsRoute: LogsRoute,
   ProductsRoute: ProductsRoute,

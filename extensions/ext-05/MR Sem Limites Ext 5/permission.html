@@ -44,6 +44,18 @@
     <button id="allowBtn">Permitir Microfone</button>
     <div class="status" id="status"></div>
   </div>
-  <script src="permission.js"></script>
+  <script>
+    document.getElementById('allowBtn').addEventListener('click', async () => {
+      const statusEl = document.getElementById('status');
+      try {
+        await navigator.mediaDevices.getUserMedia({ audio: true });
+        statusEl.textContent = '✅ Permissão concedida! Pode fechar esta aba.';
+        statusEl.className = 'status success';
+      } catch (err) {
+        statusEl.textContent = '❌ Permissão negada. Verifique as configurações do navegador.';
+        statusEl.className = 'status error';
+      }
+    });
+  </script>
 </body>
 </html>

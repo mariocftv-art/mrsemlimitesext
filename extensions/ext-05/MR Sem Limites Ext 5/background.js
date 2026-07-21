@@ -73,62 +73,24 @@ function generateUlid() {
   return tsPart + randPart;
 }
 
-async function ensureVoiceOffscreen() {
-  if (!chrome.offscreen?.createDocument) return false;
-  try {
-    if (await chrome.offscreen.hasDocument()) return true;
-  } catch (_) {}
-  try {
-    await chrome.offscreen.createDocument({
-      url: 'offscreen.html',
-      reasons: ['USER_MEDIA'],
-      justification: 'Capturar comando de voz do usuário no painel da extensão.',
-    });
-    return true;
-  } catch (e) {
-    console.warn('[MRSL] Falha ao abrir offscreen de voz:', e?.message || e);
-    return false;
-  }
-}
-
-async function startVoiceInLovableTab(msg) {
-  try {
-    const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
-    const tab = tabs?.[0];
-    if (!tab?.id || !/^https:\/\/lovable\.dev\//i.test(tab.url || '')) return false;
-    const response = await chrome.tabs.sendMessage(tab.id, {
-      type: 'VOICE_START_TAB',
-      lang: msg.lang || 'pt-BR',
-      existingText: msg.existingText || ''
-    });
-    return !!response?.ok;
-  } catch (e) {
-    console.warn('[MRSL] Voz pela aba Lovable indisponível:', e?.message || e);
-    return false;
-  }
-}
-
 chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
-  if (msg?.target === 'offscreen') return false;
   
   if (msg.type === 'VOICE_START') {
     (async () => {
       try {
-        // 1) Preferir offscreen (tem permissão USER_MEDIA garantida pela extensão).
-        const ok = await ensureVoiceOffscreen();
-        if (ok) {
-          chrome.runtime.sendMessage({
-            target: 'offscreen',
-            type: 'OFFSCREEN_VOICE_START',
-            lang: msg.lang || 'pt-BR',
-            existingText: msg.existingText || ''
-          }).catch((e) => chrome.runtime.sendMessage({ type: 'VOICE_ERROR', error: e?.message || 'not-supported' }).catch(() => {}));
+        const tabs = await chrome.tabs.query({ url: ['https://lovable.dev/*', 'https://*.lovable.dev/*'] });
+        const tab = tabs?.[0];
+        if (!tab?.id) {
+          chrome.runtime.sendMessage({ type: 'VOICE_ERROR', error: 'Abra o lovable.dev primeiro' }).catch(() => {});
           return;
         }
-        // 2) Fallback: reconhecimento na aba do Lovable (só se offscreen falhar).
-        const tabStarted = await startVoiceInLovableTab(msg);
-        if (tabStarted) return;
-        chrome.runtime.sendMessage({ type: 'VOICE_ERROR', error: 'not-supported' }).catch(() => {});
+        chrome.tabs.sendMessage(tab.id, {
+          type: 'VOICE_START_TAB',
+          lang: msg.lang || 'pt-BR',
+          existingText: msg.existingText || ''
+        }).catch(() => {
+          chrome.runtime.sendMessage({ type: 'VOICE_ERROR', error: 'Content script não respondeu' }).catch(() => {});
+        });
       } catch (e) {
         chrome.runtime.sendMessage({ type: 'VOICE_ERROR', error: e.message }).catch(() => {});
       }
@@ -139,7 +101,9 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
   if (msg.type === 'VOICE_STOP') {
     (async () => {
       try {
-        chrome.runtime.sendMessage({ target: 'offscreen', type: 'OFFSCREEN_VOICE_STOP' }).catch(() => {});
+        const tabs = await chrome.tabs.query({ url: ['https://lovable.dev/*', 'https://*.lovable.dev/*'] });
+        const tab = tabs?.[0];
+        if (tab?.id) chrome.tabs.sendMessage(tab.id, { type: 'VOICE_STOP_TAB' }).catch(() => {});
       } catch(e) {}
     })();
     sendResponse({ ok: true });

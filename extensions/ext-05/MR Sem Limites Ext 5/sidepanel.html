@@ -43,12 +43,6 @@
     body::before{content:'';position:fixed;inset:0;background-image:var(--neo-bg);background-size:cover;background-position:center top;background-repeat:no-repeat;opacity:.32;z-index:0;pointer-events:none;filter:saturate(1.1)}
     body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(34,211,238,.12),transparent 55%),radial-gradient(ellipse at 50% 100%,rgba(236,72,153,.14),transparent 55%),linear-gradient(180deg,rgba(5,6,15,.55) 0%,rgba(5,6,15,.35) 40%,rgba(5,6,15,.75) 100%);z-index:0;pointer-events:none}
     #licenseScreen,#mainApp{position:relative;z-index:1;background:transparent!important}
-    /* Antes de ativar a licença, esconde toda a UI extra (home neocore, menu ⋮, cmdbar, histórico, botão flutuante). */
-    body.mr-locked #ext3-home,
-    body.mr-locked #ext3OpenHome,
-    body.mr-locked #ncMenuPanel,
-    body.mr-locked .nc-open-home{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important}
-
     .app-header,.action-bar,.tabs-bar,.mr-tabs,.input-area,.app-footer,.quick-actions{background:linear-gradient(180deg,rgba(10,12,28,.72),rgba(10,12,28,.55))!important;backdrop-filter:blur(14px) saturate(140%);-webkit-backdrop-filter:blur(14px) saturate(140%);border-color:rgba(34,211,238,.16)!important}
     .app-header-title{background:linear-gradient(135deg,#67e8f9,#f472b6,#22d3ee)!important;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
     .tab-btn.active,.mr-tab.active{color:var(--cyan2)!important;border-bottom-color:var(--cyan)!important}
@@ -118,8 +112,8 @@
     .lic-logo-ring-2{inset:-20px;animation:lic-ringPulse2 3s ease-out infinite .8s}
     .lic-logo-ring-3{inset:-30px;border-color:rgba(236,72,153,.1);animation:lic-ringPulse 4s ease-out infinite 1.5s}
 
-    .lic-logo{width:60px;height:60px;border-radius:50%;border:2px solid rgba(236,72,153,.5);padding:2px;position:relative;z-index:1;animation:lic-logoGlow 3s ease-in-out infinite;background:linear-gradient(135deg,rgba(59,130,246,.15),rgba(236,72,153,.05))}
-    .lic-logo img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+    .lic-logo{width:76px;height:76px;border-radius:50%;border:2px solid rgba(236,72,153,.5);padding:3px;position:relative;z-index:1;animation:lic-logoGlow 3s ease-in-out infinite;background:linear-gradient(135deg,rgba(59,130,246,.15),rgba(236,72,153,.05))}
+    .lic-logo img{width:100%;height:100%;object-fit:contain;border-radius:50%}
 
     /* Version badge */
     .lic-version{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;background:linear-gradient(135deg,rgba(236,72,153,.12),rgba(59,130,246,.06));border:1px solid rgba(236,72,153,.2);font-size:10px;font-weight:700;color:var(--purple3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:16px;animation:lic-fadeInUp .7s cubic-bezier(.16,1,.3,1) .25s both}
@@ -155,7 +149,7 @@
 
     .app-header{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:linear-gradient(180deg,var(--bg2),var(--bg));border-bottom:1px solid var(--border);flex-shrink:0;gap:8px}
     .app-header-left{display:flex;align-items:center;gap:10px;min-width:0}
-    .app-header-logo{width:26px;height:26px;border-radius:8px;object-fit:cover;padding:0;background:#000;box-shadow:0 0 0 1px rgba(236,72,153,.35),0 0 14px rgba(236,72,153,.28),0 0 22px rgba(59,130,246,.14);animation:neon-glow 2.8s ease-in-out infinite}
+    .app-header-logo{width:36px;height:36px;border-radius:11px;object-fit:cover;padding:2px;background:linear-gradient(135deg,rgba(236,72,153,.35),rgba(59,130,246,.28));box-shadow:0 0 0 1px rgba(236,72,153,.35),0 0 18px rgba(236,72,153,.35),0 0 30px rgba(59,130,246,.18);animation:neon-glow 2.8s ease-in-out infinite}
     .app-header-title{font-size:14px;font-weight:800;letter-spacing:.4px;background:linear-gradient(135deg,#e9d5ff,#f472b6,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
     .app-header-right{display:flex;align-items:center;gap:6px}
     .app-header-brand{width:40px;height:40px;flex-shrink:0;border-radius:12px;padding:2px;background:linear-gradient(135deg,#ec4899,#3b82f6);box-shadow:0 0 16px rgba(236,72,153,.55),0 0 28px rgba(59,130,246,.35);display:grid;place-items:center;animation:neon-glow 2.6s ease-in-out infinite;position:relative}
@@ -646,8 +640,7 @@
     .input-area{position:relative;transition:box-shadow .25s ease,border-color .25s ease;border-top-width:2px !important}
     #message{transition:border-color .25s ease,box-shadow .25s ease}
     .input-area.state-sending{border-top-color:var(--laser-green) !important;box-shadow:0 -8px 22px -8px rgba(34,255,136,.55)}
-    .input-area.state-sending #message{border-color:var(--laser-green) !important;box-shadow:0 0 0 2px var(--laser-green),0 0 16px rgba(34,255,136,.85),inset 0 0 10px rgba(34,255,136,.2) !important;animation:none !important;caret-color:var(--laser-green) !important}
-    .input-area.state-sending #message:focus{outline:none !important}
+    .input-area.state-sending #message{border-color:var(--laser-green) !important;box-shadow:0 0 0 1.5px var(--laser-green),0 0 12px rgba(34,255,136,.7),inset 0 0 8px rgba(34,255,136,.15) !important;animation:mrPulseGreen 1.2s ease-in-out infinite}
     .input-area.state-done #message{border-color:var(--laser-blue) !important;box-shadow:0 0 0 1.5px var(--laser-blue),0 0 14px rgba(0,229,255,.75),inset 0 0 8px rgba(0,229,255,.15) !important}
     .input-area.state-done{border-top-color:var(--laser-blue) !important;box-shadow:0 -8px 22px -8px rgba(0,229,255,.6)}
     .input-area.state-asking #message{border-color:var(--laser-red) !important;box-shadow:0 0 0 1.5px var(--laser-red),0 0 16px rgba(255,32,80,.9),inset 0 0 8px rgba(255,32,80,.2) !important;animation:mrPulseRed 1s ease-in-out infinite}
@@ -956,8 +949,6 @@
       transition: transform .2s ease, box-shadow .25s ease !important;
     }
     #sendBtn:hover{transform:translateY(-1px) scale(1.06) !important;box-shadow:0 12px 34px -8px rgba(34,211,238,.75), 0 12px 34px -8px rgba(236,72,153,.6) !important}
-    #sendBtn.orbe-ready{background:linear-gradient(135deg,#16a34a,#22c55e,#86efac) !important;color:#03140a !important;font-size:20px !important;font-weight:900 !important;box-shadow:0 0 0 3px rgba(34,197,94,.22),0 12px 34px rgba(34,197,94,.58) !important;animation:none !important}
-    #sendBtn.orbe-ready:hover{box-shadow:0 0 0 4px rgba(34,197,94,.25),0 16px 42px rgba(34,197,94,.72) !important}
     #attachBtn,#micBtn{
       background:linear-gradient(180deg, rgba(20,24,48,.8), rgba(12,16,36,.8)) !important;
       border:1px solid rgba(120,180,255,.18) !important;
@@ -998,7 +989,7 @@
 
 
 </head>
-<body class="mr-locked">
+<body>
   <div class="neo-grid" aria-hidden="true"></div>
 
   <!-- LICENSE SCREEN -->
@@ -1028,7 +1019,7 @@
         <div class="lic-logo"><img src="logo.png" alt="MR Ext Sem Limites"></div>
       </div>
 
-      <div class="lic-version">&#9889; EXT5 Instagram v5.1.4</div>
+      <div class="lic-version">&#9889; MR Ext Sem Limites 2.2</div>
       <div class="lic-title">MR Ext Sem Limites</div>
       <div class="lic-sub">Ative sua licença para começar</div>
 
@@ -1051,7 +1042,7 @@
   <div id="mainApp">
     <div class="app-header">
       <div class="app-header-left">
-        <img src="logo.png" class="app-header-logo" alt=""><span class="app-header-title">MR Sem Limites</span><button id="mrHeaderTabsBtn" class="mr-header-tabs-btn" title="Abrir abas">⋮</button>
+        <img src="logo.png" class="app-header-logo" alt=""><span class="app-header-title">MR Sem Limites</span>
       </div>
       <div class="app-header-right">
         <button id="mrPowerToggle" class="mr-power" title="Ativar/Desativar extensão"><span class="mr-power-dot"></span><span id="mrPowerLabel">ATIVA</span></button>
@@ -1073,11 +1064,10 @@
       <button class="mr-tab" data-mrtab="vid" role="tab">🎬<br>Vídeos IA</button>
       <button class="mr-tab" data-mrtab="tpl" role="tab">📦<br>Templates</button>
       <button class="mr-tab" data-mrtab="prompts" role="tab">📋<br>Prompts</button>
-      <button class="mr-tab" data-mrtab="agents" role="tab">🤖<br>Agentes</button>
-      <button class="mr-tab" data-mrtab="insta" role="tab">📸<br>Instagram</button>
       <button class="mr-tab" data-mrtab="tools" role="tab">🛠<br>Ferram.</button>
       <button class="mr-tab" data-mrtab="fav" role="tab">⭐<br>Favoritos</button>
       <button class="mr-tab" data-mrtab="config" role="tab">⚙<br>Config.</button>
+      <button class="mr-tab" data-mrtab="instagram" role="tab" style="background:linear-gradient(180deg,rgba(225,48,108,.10),transparent)">📸<br>Instagram</button>
       <button class="mr-tab" data-mrtab="home" role="tab">🏠<br>Início</button>
     </nav>
 
@@ -1099,7 +1089,6 @@
           <div class="mr-card" data-mrgo="chat"><div class="mr-card-icon">💬</div><h4>Nova conversa</h4><p>Ir direto para o chat</p></div>
           <div class="mr-card" data-mrgo="anim"><div class="mr-card-icon">✨</div><h4>Animações</h4><p>Galeria de efeitos prontos</p></div>
           <div class="mr-card" data-mrgo="comp"><div class="mr-card-icon">🧩</div><h4>Componentes</h4><p>Blocos reutilizáveis</p></div>
-          <div class="mr-card" data-mrgo="agents"><div class="mr-card-icon">🤖</div><h4>Agentes</h4><p>Transformar o Lovable em especialista</p></div>
           <div class="mr-card" data-mrgo="prompts"><div class="mr-card-icon">🚀</div><h4>Prompts Premium</h4><p>Templates otimizados</p></div>
           <div class="mr-card" data-mrgo="tools"><div class="mr-card-icon">🛠</div><h4>Ferramentas</h4><p>Cores, JSON, UUID…</p></div>
           <div class="mr-card" data-mrgo="chat" id="mrCardUpdate"><div class="mr-card-icon">⟳</div><h4>Atualizar</h4><p>Verificar nova versão</p></div>
@@ -1116,32 +1105,6 @@
           <h4>Reformulada 2.1 disponível</h4>
           <p>Nova Home, biblioteca de animações, componentes prontos, prompts premium e ferramentas embutidas. Nada do que já funcionava foi alterado.</p>
         </div>
-      </div>
-    </section>
-
-    <!-- Instagram (EXT5) -->
-    <section class="mr-panel" data-mrpanel="insta">
-      <div class="mr-panel-scroll" style="padding:16px;max-width:640px">
-        <h2 style="margin:0 0 6px;font-size:18px">📸 Instagram Publisher</h2>
-        <p style="opacity:.75;margin:0 0 14px;font-size:13px">Publique posts e reels no seu Instagram profissional direto pela extensão. Conta conectada: <b id="mrIgUser">—</b></p>
-        <div style="padding:10px 12px;border-radius:12px;background:rgba(34,197,94,.10);border:1px solid rgba(34,197,94,.28);color:#86efac;font-size:12px;font-weight:700">
-          ✅ Instagram já conectado no servidor seguro — não precisa abrir o login do Facebook.
-        </div>
-        <div style="display:flex;flex-direction:column;gap:10px">
-          <label style="font-size:12px;opacity:.8">Tipo</label>
-          <select id="mrIgType" style="padding:10px;border-radius:10px;background:rgba(0,0,0,.35);color:#fff;border:1px solid rgba(255,255,255,.12)">
-            <option value="post">Foto (Post)</option>
-            <option value="reel">Vídeo (Reel)</option>
-            <option value="carousel">Carrossel (várias fotos)</option>
-          </select>
-          <label style="font-size:12px;opacity:.8">URL pública da mídia (https://…) — carrossel usa vírgulas</label>
-          <input id="mrIgUrl" type="url" placeholder="https://exemplo.com/imagem.jpg" style="padding:10px;border-radius:10px;background:rgba(0,0,0,.35);color:#fff;border:1px solid rgba(255,255,255,.12)">
-          <label style="font-size:12px;opacity:.8">Legenda</label>
-          <textarea id="mrIgCaption" rows="4" placeholder="Escreva sua legenda…" style="padding:10px;border-radius:10px;background:rgba(0,0,0,.35);color:#fff;border:1px solid rgba(255,255,255,.12);resize:vertical"></textarea>
-          <button id="mrIgPublish" style="padding:12px;border-radius:12px;background:linear-gradient(135deg,#e1306c,#f77737);color:#fff;border:0;font-weight:700;cursor:pointer">Publicar agora</button>
-          <div id="mrIgStatus" style="font-size:13px;opacity:.85;min-height:20px"></div>
-        </div>
-        <p style="opacity:.55;margin-top:16px;font-size:11px">Conexão via Lovable Cloud (token seguro no servidor). Endpoint: <code>/api/public/instagram-publish</code></p>
       </div>
     </section>
 
@@ -1192,11 +1155,11 @@
               <button id="attachBtn" title="Anexar arquivo">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
               </button>
-              <input type="file" id="fileInput" multiple accept="image/*,video/*,audio/*,.pdf,.zip,.txt,.md,.json,.csv,.doc,.docx,.xls,.xlsx,.ppt,.pptx" style="display:none">
+              <input type="file" id="fileInput" multiple style="display:none">
               <button id="micBtn" title="Comando de voz">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
               </button>
-              <textarea id="message" placeholder="Digite sua mensagem para o Lovable... (pode anexar imagem, vídeo até 400MB, PDF, ZIP)" rows="1"></textarea>
+              <textarea id="message" placeholder="Digite sua mensagem..." rows="1"></textarea>
               <button id="sendBtn" title="Enviar">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
               </button>
@@ -1311,18 +1274,6 @@
       </div>
     </section>
 
-    <!-- Seus Agentes -->
-    <section class="mr-panel" data-mrpanel="agents">
-      <div class="mr-panel-scroll">
-        <div class="mr-section-title">🤖 Seus Agentes — prontos para usar</div>
-        <div class="mr-toolbar">
-          <input class="mr-search" id="mrAgentSearch" placeholder="🔍 Buscar agente (ex: backend, designer, QA)...">
-        </div>
-        <div class="mr-toolbar" id="mrAgentCats"></div>
-        <div class="mr-grid" id="mrAgentGrid"></div>
-      </div>
-    </section>
-
     <!-- Ferramentas -->
 
     <section class="mr-panel" data-mrpanel="tools">
@@ -1339,7 +1290,7 @@
         </div>
         <div class="mr-tool-block">
           <h4>✳️ Ícones</h4>
-          <p style="margin:0;font-size:11px;color:rgba(255,255,255,.55)">Clique em um ícone para enviar ao Lovable um prompt de botão/ícone personalizado.</p>
+          <p style="margin:0;font-size:11px;color:rgba(255,255,255,.55)">Clique para copiar o nome (biblioteca lucide-react).</p>
           <div class="mr-tool-row" id="mrIconRow"></div>
         </div>
         <div class="mr-tool-block">
@@ -1400,6 +1351,52 @@
       </div>
     </section>
 
+    <!-- Instagram (EXT5) -->
+    <section class="mr-panel" data-mrpanel="instagram">
+      <div class="mr-panel-scroll" style="padding:16px;color:#e8faff">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+          <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#f58529,#dd2a7b,#8134af,#515bd4);display:flex;align-items:center;justify-content:center;font-size:22px">📸</div>
+          <div>
+            <div style="font-size:16px;font-weight:700;background:linear-gradient(135deg,#f58529,#dd2a7b,#8134af);-webkit-background-clip:text;background-clip:text;color:transparent">Instagram Publisher</div>
+            <div style="font-size:12px;opacity:.7">Publique Post, Reel e Carrossel diretamente da extensão</div>
+          </div>
+        </div>
+
+        <div id="igStatusCard" style="background:rgba(255,255,255,.04);border:1px solid rgba(225,48,108,.25);border-radius:14px;padding:14px;margin-bottom:14px">
+          <div style="font-size:12px;opacity:.7;margin-bottom:6px">Status da conta</div>
+          <div id="igStatusText" style="font-weight:600">🔴 Não conectado</div>
+          <div id="igAccountInfo" style="font-size:12px;opacity:.8;margin-top:6px;display:none"></div>
+          <button id="igConnectBtn" style="margin-top:12px;width:100%;padding:12px;border:0;border-radius:10px;background:linear-gradient(135deg,#f58529,#dd2a7b,#8134af,#515bd4);color:#fff;font-weight:700;cursor:pointer">Conectar Instagram</button>
+          <button id="igDisconnectBtn" style="margin-top:8px;width:100%;padding:10px;border:1px solid rgba(255,255,255,.15);border-radius:10px;background:transparent;color:#fff;cursor:pointer;display:none">Desconectar</button>
+        </div>
+
+        <div id="igPublishCard" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px;display:none">
+          <div style="font-size:13px;font-weight:700;margin-bottom:10px">✨ Nova publicação</div>
+
+          <div style="display:flex;gap:6px;margin-bottom:10px">
+            <button class="igTypeBtn active" data-type="post" style="flex:1;padding:8px;border-radius:8px;border:1px solid rgba(225,48,108,.4);background:rgba(225,48,108,.15);color:#fff;cursor:pointer;font-size:12px">📷 Post</button>
+            <button class="igTypeBtn" data-type="reel" style="flex:1;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:transparent;color:#fff;cursor:pointer;font-size:12px">🎬 Reel</button>
+            <button class="igTypeBtn" data-type="carousel" style="flex:1;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:transparent;color:#fff;cursor:pointer;font-size:12px">🖼 Carrossel</button>
+          </div>
+
+          <label style="font-size:11px;opacity:.7">URL da mídia (imagem/vídeo público)</label>
+          <input id="igMediaUrl" type="url" placeholder="https://…" style="width:100%;padding:10px;margin:4px 0 10px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:#fff" />
+
+          <label style="font-size:11px;opacity:.7">Legenda</label>
+          <textarea id="igCaption" rows="4" placeholder="Escreva sua legenda… #hashtags" style="width:100%;padding:10px;margin:4px 0 10px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:#fff;resize:vertical"></textarea>
+
+          <button id="igPublishBtn" style="width:100%;padding:12px;border:0;border-radius:10px;background:linear-gradient(135deg,#f58529,#dd2a7b);color:#fff;font-weight:700;cursor:pointer">🚀 Publicar agora</button>
+
+          <div id="igPublishLog" style="margin-top:10px;font-size:12px;opacity:.85;max-height:120px;overflow:auto"></div>
+        </div>
+
+        <div style="margin-top:14px;font-size:11px;opacity:.55;text-align:center">
+          Requer App Meta configurada + secrets no Lovable Cloud.<br>
+          Tokens armazenados localmente na extensão.
+        </div>
+      </div>
+    </section>
+
 
 
 
@@ -1410,14 +1407,17 @@
   <div id="toast" class="toast"></div>
   <script src="jszip.min.js"></script>
   <script src="sidepanel.js"></script>
-  <script type="module" src="ui/sidepanel-ui.js"></script>
-  <!-- Scripts locais (Chrome MV3 bloqueia execução de código remoto) -->
   <script src="ui/sound-settings.js"></script>
+  <script type="module" src="ui/sidepanel-ui.js"></script>
+
+  <!-- V5 — Painel "IAs": seletor de modo (UI-only, não altera backend/licença) -->
   <script src="ui/ia-picker.js"></script>
+
+
+
+  <!-- V6 — Beeps + input status colors -->
   <script src="ui/input-status.js"></script>
-  <script src="ui/mr-bottom.js"></script>
-  <script src="ui/ext3-redesign.js"></script>
-  <script src="ui/ext3-luxury.js"></script>
+  <script src="ui/ig-publisher.js"></script>
 
   <!-- ============================================================= -->
   <!-- EXT3 NEO-CORE HOME OVERLAY — Clock + Countdown Timer + AI Orb -->
@@ -1672,7 +1672,7 @@
     }
   </style>
 
-  <div id="ext3-home" class="hidden">
+  <div id="ext3-home">
     <!-- HEADER -->
     <div class="nc-header">
       <div class="nc-logo-mr">MR</div>
@@ -1763,14 +1763,6 @@
         </div>
         <div class="nc-item-chev">›</div>
       </div>
-      <div class="nc-item" data-tab="agents">
-        <div class="nc-item-icon green">🤖</div>
-        <div class="nc-item-body">
-          <div class="nc-item-title">Agentes</div>
-          <div class="nc-item-sub">Ative especialistas com um toque</div>
-        </div>
-        <div class="nc-item-chev">›</div>
-      </div>
 
       <div class="nc-group-title">Mídia</div>
       <div class="nc-item" data-tab="img">
@@ -1786,14 +1778,6 @@
         <div class="nc-item-body">
           <div class="nc-item-title">Vídeos IA</div>
           <div class="nc-item-sub">Motion e clipes gerados</div>
-        </div>
-        <div class="nc-item-chev">›</div>
-      </div>
-      <div class="nc-item" data-tab="insta">
-        <div class="nc-item-icon pink">📸</div>
-        <div class="nc-item-body">
-          <div class="nc-item-title">Instagram</div>
-          <div class="nc-item-sub">Publicar post, reel e carrossel</div>
         </div>
         <div class="nc-item-chev">›</div>
       </div>
@@ -1838,8 +1822,8 @@
       <div class="nc-work-title">Work Status</div>
       <div class="nc-orb" id="ncOrb" title="Clique para conversar por voz"></div>
       <div class="nc-work-caption" id="ncOrbCaption">
-        <h3 id="ncOrbTitle">PRONTA</h3>
-        <p id="ncOrbStatus">Toque na Orbe para falar</p>
+        <h3 id="ncOrbTitle">STANDBY</h3>
+        <p id="ncOrbStatus">Clique na Orbe para ativar</p>
       </div>
 
       <!-- Barra de comandos (visível com Orbe desativada) -->
@@ -1859,9 +1843,9 @@
   </div>
   <button class="nc-open-home" id="ext3OpenHome" title="Abrir painel EXT3">☰</button>
 
-  <!-- neocore, mr-bottom e ext3-redesign são carregados pelo hot-loader acima -->
-  <script src="ui/neocore.js"></script>
   <script src="ui/instagram.js"></script>
+  <script src="ui/neocore.js"></script>
+
 </body>
 </html>
 

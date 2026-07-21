@@ -224,8 +224,8 @@
 
     .app-footer{text-align:center;padding:6px;font-size:10px;color:var(--text3);flex-shrink:0;border-top:1px solid var(--border)}
 
-    .banner{width:100%;flex-shrink:0;overflow:hidden;border-bottom:1px solid var(--border)}
-    .banner img{width:100%;height:auto;display:block}
+    .banner{width:100%;flex-shrink:0;overflow:hidden;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:center;padding:10px 0;background:radial-gradient(ellipse at center, rgba(236,72,153,.08), transparent 70%)}
+    .banner img{max-width:70%;height:auto;max-height:90px;display:block;object-fit:contain;filter:drop-shadow(0 4px 18px rgba(236,72,153,.35))}
 
     /* .quick-actions e .qa-btn base — redefinidos abaixo com estilo premium */
     .quick-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:12px 12px 10px;flex-shrink:0;border-bottom:1px solid var(--border);background:radial-gradient(ellipse at top,rgba(236,72,153,.06),transparent 70%)}

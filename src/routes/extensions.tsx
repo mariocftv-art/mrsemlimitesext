@@ -294,7 +294,7 @@ function ExtensionsPage() {
                   toast.success("Download da EXT5 iniciado.");
                 }}
               >
-                <Download className="h-4 w-4" /> EXT5 v5.3.3 Download
+                <Download className="h-4 w-4" /> EXT5 v5.3.4 Download
               </Button>
               <Button variant="outline" className="gap-1.5 border-emerald-500/60 text-emerald-400 hover:bg-emerald-500/10 md:w-auto" onClick={openSupport}>
                 <MessageCircle className="h-4 w-4" /> Suporte

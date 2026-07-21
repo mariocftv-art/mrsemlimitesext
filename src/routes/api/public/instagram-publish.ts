@@ -13,24 +13,43 @@ const cors = {
   'Content-Type': 'application/json',
 }
 
+// Instagram Login API (tokens IGAA...) usa graph.instagram.com
+const API = 'https://graph.instagram.com/v20.0'
+
 export const Route = createFileRoute('/api/public/instagram-publish')({
   server: {
     handlers: {
       OPTIONS: async () => new Response(null, { status: 204, headers: cors }),
+      GET: async ({ request }) => {
+        // Descobrir ig_user_id a partir do access_token
+        const url = new URL(request.url)
+        const token = url.searchParams.get('access_token')
+        if (!token) return new Response(JSON.stringify({ error: 'access_token requerido' }), { status: 400, headers: cors })
+        try {
+          const me = await j(`${API}/me?fields=id,username,account_type&access_token=${token}`)
+          return new Response(JSON.stringify(me), { status: 200, headers: cors })
+        } catch (e: any) {
+          return new Response(JSON.stringify({ error: e?.message || 'Erro' }), { status: 500, headers: cors })
+        }
+      },
       POST: async ({ request }) => {
         try {
           const body = (await request.json()) as {
             access_token: string
-            ig_user_id: string
+            ig_user_id?: string
             type: 'post' | 'reel' | 'carousel'
             media_url: string
             caption?: string
           }
-          const { access_token, ig_user_id, type, media_url, caption = '' } = body
-          if (!access_token || !ig_user_id || !media_url) {
+          let { access_token, ig_user_id, type, media_url, caption = '' } = body
+          if (!access_token || !media_url) {
             return new Response(JSON.stringify({ error: 'Parâmetros incompletos' }), { status: 400, headers: cors })
           }
-          const base = `https://graph.facebook.com/v20.0/${ig_user_id}`
+          if (!ig_user_id) {
+            const me = await j(`${API}/me?fields=id&access_token=${access_token}`)
+            ig_user_id = me.id
+          }
+          const base = `${API}/${ig_user_id}`
           let containerId: string
 
           if (type === 'reel') {
@@ -40,7 +59,6 @@ export const Route = createFileRoute('/api/public/instagram-publish')({
             )
             containerId = c.id
           } else if (type === 'carousel') {
-            // media_url = URLs separadas por vírgula
             const urls = media_url.split(',').map((u) => u.trim()).filter(Boolean)
             const children: string[] = []
             for (const u of urls) {
@@ -63,9 +81,9 @@ export const Route = createFileRoute('/api/public/instagram-publish')({
             containerId = c.id
           }
 
-          // Aguardar processamento (reels/carrossel podem demorar)
-          for (let i = 0; i < 10; i++) {
-            const st = await j(`https://graph.facebook.com/v20.0/${containerId}?fields=status_code&access_token=${access_token}`)
+          // Aguardar processamento (reels podem demorar)
+          for (let i = 0; i < 20; i++) {
+            const st = await j(`${API}/${containerId}?fields=status_code&access_token=${access_token}`)
             if (st.status_code === 'FINISHED') break
             if (st.status_code === 'ERROR') throw new Error('Falha ao processar mídia')
             await new Promise((r) => setTimeout(r, 2000))
@@ -75,7 +93,7 @@ export const Route = createFileRoute('/api/public/instagram-publish')({
             `${base}/media_publish?creation_id=${containerId}&access_token=${access_token}`,
             { method: 'POST' },
           )
-          return new Response(JSON.stringify({ id: pub.id }), { status: 200, headers: cors })
+          return new Response(JSON.stringify({ id: pub.id, ig_user_id }), { status: 200, headers: cors })
         } catch (e: any) {
           return new Response(JSON.stringify({ error: e?.message || 'Erro' }), { status: 500, headers: cors })
         }

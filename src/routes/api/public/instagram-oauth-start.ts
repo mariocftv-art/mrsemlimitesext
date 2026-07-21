@@ -1,5 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 
+const CANONICAL_ORIGIN = 'https://mrsemlimitesext.lovable.app'
+
 export const Route = createFileRoute('/api/public/instagram-oauth-start')({
   server: {
     handlers: {
@@ -13,7 +15,7 @@ export const Route = createFileRoute('/api/public/instagram-oauth-start')({
         }
         const url = new URL(request.url)
         const extReturn = url.searchParams.get('ext_return') || ''
-        const redirectUri = `${url.origin}/api/public/instagram-oauth-callback`
+        const redirectUri = `${CANONICAL_ORIGIN}/api/public/instagram-oauth-callback`
         const state = Buffer.from(JSON.stringify({ ext_return: extReturn })).toString('base64url')
         const scope = [
           'instagram_basic',

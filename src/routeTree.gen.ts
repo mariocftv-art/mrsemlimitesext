@@ -39,6 +39,7 @@ import { Route as PreviewIdRouteImport } from './routes/preview.$id'
 import { Route as LiveIdRouteImport } from './routes/live.$id'
 import { Route as ApiPublicOrbeTtsRouteImport } from './routes/api/public/orbe-tts'
 import { Route as ApiPublicOrbeChatRouteImport } from './routes/api/public/orbe-chat'
+import { Route as ApiPublicInstagramWebhookRouteImport } from './routes/api/public/instagram-webhook'
 import { Route as ApiPublicInstagramPublishRouteImport } from './routes/api/public/instagram-publish'
 import { Route as ApiPublicInstagramOauthStartRouteImport } from './routes/api/public/instagram-oauth-start'
 import { Route as ApiPublicInstagramOauthCallbackRouteImport } from './routes/api/public/instagram-oauth-callback'
@@ -193,6 +194,12 @@ const ApiPublicOrbeChatRoute = ApiPublicOrbeChatRouteImport.update({
   path: '/api/public/orbe-chat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicInstagramWebhookRoute =
+  ApiPublicInstagramWebhookRouteImport.update({
+    id: '/api/public/instagram-webhook',
+    path: '/api/public/instagram-webhook',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicInstagramPublishRoute =
   ApiPublicInstagramPublishRouteImport.update({
     id: '/api/public/instagram-publish',
@@ -244,6 +251,7 @@ export interface FileRoutesByFullPath {
   '/api/public/instagram-oauth-callback': typeof ApiPublicInstagramOauthCallbackRoute
   '/api/public/instagram-oauth-start': typeof ApiPublicInstagramOauthStartRoute
   '/api/public/instagram-publish': typeof ApiPublicInstagramPublishRoute
+  '/api/public/instagram-webhook': typeof ApiPublicInstagramWebhookRoute
   '/api/public/orbe-chat': typeof ApiPublicOrbeChatRoute
   '/api/public/orbe-tts': typeof ApiPublicOrbeTtsRoute
 }
@@ -279,6 +287,7 @@ export interface FileRoutesByTo {
   '/api/public/instagram-oauth-callback': typeof ApiPublicInstagramOauthCallbackRoute
   '/api/public/instagram-oauth-start': typeof ApiPublicInstagramOauthStartRoute
   '/api/public/instagram-publish': typeof ApiPublicInstagramPublishRoute
+  '/api/public/instagram-webhook': typeof ApiPublicInstagramWebhookRoute
   '/api/public/orbe-chat': typeof ApiPublicOrbeChatRoute
   '/api/public/orbe-tts': typeof ApiPublicOrbeTtsRoute
 }
@@ -315,6 +324,7 @@ export interface FileRoutesById {
   '/api/public/instagram-oauth-callback': typeof ApiPublicInstagramOauthCallbackRoute
   '/api/public/instagram-oauth-start': typeof ApiPublicInstagramOauthStartRoute
   '/api/public/instagram-publish': typeof ApiPublicInstagramPublishRoute
+  '/api/public/instagram-webhook': typeof ApiPublicInstagramWebhookRoute
   '/api/public/orbe-chat': typeof ApiPublicOrbeChatRoute
   '/api/public/orbe-tts': typeof ApiPublicOrbeTtsRoute
 }
@@ -352,6 +362,7 @@ export interface FileRouteTypes {
     | '/api/public/instagram-oauth-callback'
     | '/api/public/instagram-oauth-start'
     | '/api/public/instagram-publish'
+    | '/api/public/instagram-webhook'
     | '/api/public/orbe-chat'
     | '/api/public/orbe-tts'
   fileRoutesByTo: FileRoutesByTo
@@ -387,6 +398,7 @@ export interface FileRouteTypes {
     | '/api/public/instagram-oauth-callback'
     | '/api/public/instagram-oauth-start'
     | '/api/public/instagram-publish'
+    | '/api/public/instagram-webhook'
     | '/api/public/orbe-chat'
     | '/api/public/orbe-tts'
   id:
@@ -422,6 +434,7 @@ export interface FileRouteTypes {
     | '/api/public/instagram-oauth-callback'
     | '/api/public/instagram-oauth-start'
     | '/api/public/instagram-publish'
+    | '/api/public/instagram-webhook'
     | '/api/public/orbe-chat'
     | '/api/public/orbe-tts'
   fileRoutesById: FileRoutesById
@@ -458,6 +471,7 @@ export interface RootRouteChildren {
   ApiPublicInstagramOauthCallbackRoute: typeof ApiPublicInstagramOauthCallbackRoute
   ApiPublicInstagramOauthStartRoute: typeof ApiPublicInstagramOauthStartRoute
   ApiPublicInstagramPublishRoute: typeof ApiPublicInstagramPublishRoute
+  ApiPublicInstagramWebhookRoute: typeof ApiPublicInstagramWebhookRoute
   ApiPublicOrbeChatRoute: typeof ApiPublicOrbeChatRoute
   ApiPublicOrbeTtsRoute: typeof ApiPublicOrbeTtsRoute
 }
@@ -674,6 +688,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicOrbeChatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/instagram-webhook': {
+      id: '/api/public/instagram-webhook'
+      path: '/api/public/instagram-webhook'
+      fullPath: '/api/public/instagram-webhook'
+      preLoaderRoute: typeof ApiPublicInstagramWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/instagram-publish': {
       id: '/api/public/instagram-publish'
       path: '/api/public/instagram-publish'
@@ -730,19 +751,10 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicInstagramOauthCallbackRoute: ApiPublicInstagramOauthCallbackRoute,
   ApiPublicInstagramOauthStartRoute: ApiPublicInstagramOauthStartRoute,
   ApiPublicInstagramPublishRoute: ApiPublicInstagramPublishRoute,
+  ApiPublicInstagramWebhookRoute: ApiPublicInstagramWebhookRoute,
   ApiPublicOrbeChatRoute: ApiPublicOrbeChatRoute,
   ApiPublicOrbeTtsRoute: ApiPublicOrbeTtsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

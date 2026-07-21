@@ -60,32 +60,32 @@ export const Route = createFileRoute('/api/public/instagram-generate')({
 
           let mediaUrl = ''
           if (wantMedia) {
-            // 2) Imagem/capa via Gateway de imagens
+            // 2) Imagem/capa via Gateway de imagens (Nano Banana 2)
             const imgPrompt = `Instagram ${type === 'reel' ? 'vertical 9:16 cover frame for an animated Reel preview' : 'square 1:1'} image. ${prompt}. Ultra realistic, cinematic lighting, vibrant colors, professional composition, high engagement social media aesthetic.`
             const imgRes = await fetch('https://ai.gateway.lovable.dev/v1/images/generations', {
               method: 'POST',
               headers: { Authorization: `Bearer ${KEY}`, 'Content-Type': 'application/json' },
               body: JSON.stringify({
-                model: 'google/gemini-2.5-flash-image',
+                model: 'google/gemini-3.1-flash-image',
                 messages: [{ role: 'user', content: imgPrompt }],
                 modalities: ['image', 'text'],
               }),
             })
             const imgData: any = await imgRes.json().catch(() => ({}))
-            if (imgRes.ok) {
-              const b64 = imgData?.data?.[0]?.b64_json
-              if (b64) {
-                try {
-                  const id = putMedia(`data:image/png;base64,${b64}`)
-                  mediaUrl = `${origin}/api/public/instagram-media?id=${id}`
-                } catch {}
-              }
-            } else {
+            if (!imgRes.ok) {
               const msg = imgData?.error?.message || imgData?.error || `HTTP ${imgRes.status}`
               return new Response(JSON.stringify({ error: `Falha ao gerar imagem: ${msg}` }), { status: imgRes.status, headers: cors })
             }
-            if (!mediaUrl) {
-              return new Response(JSON.stringify({ error: 'A IA não retornou uma imagem para prévia. Tente um prompt mais simples.' }), { status: 502, headers: cors })
+            const b64 = imgData?.data?.[0]?.b64_json
+              || imgData?.choices?.[0]?.message?.images?.[0]?.image_url?.url?.replace(/^data:[^;]+;base64,/, '')
+            if (!b64) {
+              return new Response(JSON.stringify({ error: 'A IA não retornou uma imagem. Tente um prompt mais direto (evite marcas ou pessoas reais).' }), { status: 502, headers: cors })
+            }
+            try {
+              const id = putMedia(`data:image/png;base64,${b64}`)
+              mediaUrl = `${origin}/api/public/instagram-media?id=${id}`
+            } catch (e: any) {
+              return new Response(JSON.stringify({ error: `Falha ao salvar prévia: ${e?.message || e}` }), { status: 500, headers: cors })
             }
           }
 

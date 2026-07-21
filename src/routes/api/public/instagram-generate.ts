@@ -60,9 +60,9 @@ export const Route = createFileRoute('/api/public/instagram-generate')({
 
           let mediaUrl = ''
           if (wantMedia) {
-            // 2) Imagem via Gemini 2.5 Flash Image
+            // 2) Imagem/capa via Gateway de imagens
             const imgPrompt = `Instagram ${type === 'reel' ? 'vertical 9:16 cover frame for an animated Reel preview' : 'square 1:1'} image. ${prompt}. Ultra realistic, cinematic lighting, vibrant colors, professional composition, high engagement social media aesthetic.`
-            const imgRes = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+            const imgRes = await fetch('https://ai.gateway.lovable.dev/v1/images/generations', {
               method: 'POST',
               headers: { Authorization: `Bearer ${KEY}`, 'Content-Type': 'application/json' },
               body: JSON.stringify({
@@ -73,14 +73,19 @@ export const Route = createFileRoute('/api/public/instagram-generate')({
             })
             const imgData: any = await imgRes.json().catch(() => ({}))
             if (imgRes.ok) {
-              const b64 = imgData?.choices?.[0]?.message?.images?.[0]?.image_url?.url
-                || imgData?.choices?.[0]?.message?.content?.match?.(/data:image[^\s"')]+/)?.[0]
+              const b64 = imgData?.data?.[0]?.b64_json
               if (b64) {
                 try {
-                  const id = putMedia(b64)
+                  const id = putMedia(`data:image/png;base64,${b64}`)
                   mediaUrl = `${origin}/api/public/instagram-media?id=${id}`
                 } catch {}
               }
+            } else {
+              const msg = imgData?.error?.message || imgData?.error || `HTTP ${imgRes.status}`
+              return new Response(JSON.stringify({ error: `Falha ao gerar imagem: ${msg}` }), { status: imgRes.status, headers: cors })
+            }
+            if (!mediaUrl) {
+              return new Response(JSON.stringify({ error: 'A IA não retornou uma imagem para prévia. Tente um prompt mais simples.' }), { status: 502, headers: cors })
             }
           }
 

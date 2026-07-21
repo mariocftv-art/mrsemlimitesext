@@ -1,12 +1,13 @@
 /**
  * MR Sem Limites EXT5 — Instagram Publisher V2
- * Fluxo: usuário descreve → IA gera imagem + legenda → prévia → publica.
+ * Fluxo: usuário descreve → IA gera prévia + legenda → confirma → publica.
  * Conta @linkmrstore usa token do servidor (Lovable Cloud).
  */
 (function () {
   const BASE = 'https://mrsemlimitesext.lovable.app';
   const STATUS_URL = BASE + '/api/public/instagram-status';
   const GEN_URL = BASE + '/api/public/instagram-generate';
+  const MEDIA_URL = BASE + '/api/public/instagram-media';
   const PUBLISH_URL = BASE + '/api/public/instagram-publish';
 
   const $ = (id) => document.getElementById(id);
@@ -17,6 +18,166 @@
   };
 
   let currentType = 'post';
+  let lastGeneratedMime = '';
+  let lastPreviewObjectUrl = '';
+
+  function setBusy(btn, busy, text) {
+    if (!btn) return;
+    if (busy) {
+      btn.dataset.origText = btn.textContent || '';
+      btn.disabled = true;
+      btn.textContent = text;
+    } else {
+      btn.disabled = false;
+      btn.textContent = btn.dataset.origText || btn.textContent || '';
+    }
+  }
+
+  function updateModeCopy() {
+    const label = document.querySelector('label[for="igPrompt"]') || $('igPromptLabel');
+    const prompt = $('igPrompt');
+    const btn = $('igGenerateBtn');
+    if (currentType === 'reel') {
+      if (label) label.textContent = 'Descreva o Reel que você quer (a IA gera capa, prévia animada, título, legenda e hashtags)';
+      if (prompt) prompt.placeholder = 'Ex: um Reel cinematográfico da minha loja Link MR Store, mostrando tecnologia, luxo e confiança, com movimento de câmera e final chamando para seguir…';
+      if (btn) btn.textContent = '🎬 Gerar vídeo + legenda';
+    } else {
+      if (label) label.textContent = 'Descreva o que você quer (a IA gera a prévia, título, legenda e hashtags)';
+      if (prompt) prompt.placeholder = 'Ex: um café expresso fumegante em mesa de mármore, luz de manhã, estética minimalista para minha cafeteria…';
+      if (btn) btn.textContent = currentType === 'carousel' ? '🖼 Gerar carrossel + legenda' : '🎨 Gerar imagem + legenda';
+    }
+  }
+
+  function loadImage(src) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => resolve(img);
+      img.onerror = () => reject(new Error('Não consegui carregar a imagem da prévia'));
+      img.src = src;
+    });
+  }
+
+  function blobToDataUrl(blob) {
+    return new Promise((resolve, reject) => {
+      const fr = new FileReader();
+      fr.onload = () => resolve(String(fr.result || ''));
+      fr.onerror = () => reject(new Error('Falha ao preparar o vídeo gerado'));
+      fr.readAsDataURL(blob);
+    });
+  }
+
+  function bestVideoMime() {
+    const types = [
+      'video/mp4;codecs=avc1.42E01E',
+      'video/mp4;codecs=h264',
+      'video/mp4',
+      'video/webm;codecs=vp9',
+      'video/webm;codecs=vp8',
+      'video/webm',
+    ];
+    return types.find((t) => window.MediaRecorder && MediaRecorder.isTypeSupported(t)) || '';
+  }
+
+  async function makeReelPreviewFromImage(imageUrl, title) {
+    if (!HTMLCanvasElement.prototype.captureStream || !window.MediaRecorder) {
+      throw new Error('Seu navegador não liberou gravação de vídeo no painel. Atualize o Chrome e tente de novo.');
+    }
+    const img = await loadImage(imageUrl);
+    const canvas = document.createElement('canvas');
+    canvas.width = 540;
+    canvas.height = 960;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) throw new Error('Canvas indisponível para gerar vídeo');
+
+    const durationMs = 6200;
+    const fps = 30;
+    const mimeType = bestVideoMime();
+    if (!mimeType) throw new Error('Seu Chrome não suporta geração de vídeo no painel.');
+
+    const chunks = [];
+    const stream = canvas.captureStream(fps);
+    const recorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 3_200_000 });
+    recorder.ondataavailable = (ev) => { if (ev.data && ev.data.size) chunks.push(ev.data); };
+
+    const done = new Promise((resolve, reject) => {
+      recorder.onerror = () => reject(new Error('Falha ao gravar a prévia do Reel'));
+      recorder.onstop = async () => {
+        try {
+          stream.getTracks().forEach((t) => t.stop());
+          const blob = new Blob(chunks, { type: mimeType });
+          const dataUrl = await blobToDataUrl(blob);
+          resolve({ blob, dataUrl, mimeType });
+        } catch (e) { reject(e); }
+      };
+    });
+
+    const drawCover = (progress) => {
+      const scale = Math.max(canvas.width / img.width, canvas.height / img.height) * (1 + progress * 0.12);
+      const w = img.width * scale;
+      const h = img.height * scale;
+      const driftX = Math.sin(progress * Math.PI * 2) * 18;
+      const driftY = -progress * 24;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, (canvas.width - w) / 2 + driftX, (canvas.height - h) / 2 + driftY, w, h);
+      const g = ctx.createLinearGradient(0, 0, 0, canvas.height);
+      g.addColorStop(0, 'rgba(0,0,0,.18)');
+      g.addColorStop(0.62, 'rgba(0,0,0,.05)');
+      g.addColorStop(1, 'rgba(0,0,0,.55)');
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = 'rgba(255,255,255,.96)';
+      ctx.font = '700 28px system-ui, -apple-system, Segoe UI, sans-serif';
+      ctx.textAlign = 'center';
+      const safeTitle = (title || 'MR Sem Limites').slice(0, 44);
+      wrapCanvasText(ctx, safeTitle, canvas.width / 2, canvas.height - 112, canvas.width - 80, 34);
+      ctx.font = '600 20px system-ui, -apple-system, Segoe UI, sans-serif';
+      ctx.fillStyle = 'rgba(255,219,232,.95)';
+      ctx.fillText('@linkmrstore', canvas.width / 2, canvas.height - 48);
+    };
+
+    recorder.start(250);
+    const started = performance.now();
+    await new Promise((resolve) => {
+      const tick = (now) => {
+        const p = Math.min(1, (now - started) / durationMs);
+        drawCover(p);
+        if (p < 1) requestAnimationFrame(tick);
+        else resolve();
+      };
+      requestAnimationFrame(tick);
+    });
+    recorder.stop();
+    return done;
+  }
+
+  function wrapCanvasText(ctx, text, x, y, maxWidth, lineHeight) {
+    const words = String(text || '').split(/\s+/);
+    const lines = [];
+    let line = '';
+    words.forEach((word) => {
+      const test = line ? `${line} ${word}` : word;
+      if (ctx.measureText(test).width > maxWidth && line) {
+        lines.push(line);
+        line = word;
+      } else {
+        line = test;
+      }
+    });
+    if (line) lines.push(line);
+    lines.slice(0, 2).forEach((l, i) => ctx.fillText(l, x, y + i * lineHeight));
+  }
+
+  async function publishGeneratedMedia(dataUrl) {
+    const r = await fetch(MEDIA_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ data_url: dataUrl }),
+    });
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(d.error || `Falha ao preparar URL pública da mídia (${r.status})`);
+    return d.media_url;
+  }
 
   // ============ 20 PROMPTS DE IMAGEM ============
   const IMG_PROMPTS = [
@@ -96,9 +257,8 @@
     const prompt = ($('igPrompt')?.value || '').trim();
     if (!prompt) return log('❌ Descreva o que você quer gerar', false);
     const btn = $('igGenerateBtn');
-    const orig = btn.textContent;
-    btn.disabled = true; btn.textContent = '⏳ Gerando imagem + legenda…';
-    log('⏳ Gerando com IA (pode levar ~15s)…');
+    setBusy(btn, true, currentType === 'reel' ? '⏳ Gerando vídeo + legenda…' : '⏳ Gerando imagem + legenda…');
+    log(currentType === 'reel' ? '⏳ Gerando capa, roteiro e vídeo curto…' : '⏳ Gerando com IA (pode levar ~15s)…');
     try {
       // Viral é tratado como post com prompt mais chamativo
       const apiType = currentType === 'viral' ? 'post' : currentType;
@@ -106,34 +266,59 @@
       const r = await fetch(GEN_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt: finalPrompt, type: apiType, media: currentType !== 'reel' }),
+        body: JSON.stringify({ prompt: finalPrompt, type: apiType, media: true }),
       });
       const d = await r.json();
       if (!r.ok) throw new Error(d.error || `HTTP ${r.status}`);
+      const img = $('igPreviewImg');
+      const vid = $('igPreviewVideo');
+      const wrap = $('igPreviewImgWrap');
+      const plan = $('igVideoPlan');
+      lastGeneratedMime = '';
+      $('igMediaUrl').value = '';
+      if (lastPreviewObjectUrl) {
+        URL.revokeObjectURL(lastPreviewObjectUrl);
+        lastPreviewObjectUrl = '';
+      }
+      if (img) { img.style.display = 'none'; img.removeAttribute('src'); }
+      if (vid) { vid.pause(); vid.style.display = 'none'; vid.removeAttribute('src'); }
+      if (wrap) wrap.style.minHeight = currentType === 'reel' ? '240px' : '100px';
+      if (plan) { plan.style.display = 'none'; plan.textContent = ''; }
+
       // Preencher preview
       if (d.media_url) {
-        $('igPreviewImg').src = d.media_url;
-        $('igPreviewImgWrap').style.display = 'flex';
-        $('igMediaUrl').value = d.media_url;
-      } else if (currentType === 'reel') {
-        $('igPreviewImg').removeAttribute('src');
-        $('igPreviewImgWrap').innerHTML = '<div style="padding:20px;text-align:center;opacity:.7;font-size:12px">🎬 Reel: cole a URL do vídeo MP4 no campo abaixo para publicar</div>';
-        // Para Reel, mostrar campo de URL manual
-        if (!document.getElementById('igReelUrl')) {
-          const inp = document.createElement('input');
-          inp.id = 'igReelUrl'; inp.type = 'url'; inp.placeholder = 'https://…vídeo.mp4';
-          inp.style.cssText = 'width:100%;padding:10px;margin:8px 0;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:#fff';
-          inp.addEventListener('input', () => { $('igMediaUrl').value = inp.value.trim(); });
-          $('igPreview').insertBefore(inp, $('igPreview').querySelector('label'));
+        if (currentType === 'reel') {
+          if (plan && d.video_script) {
+            plan.textContent = '🎬 Roteiro gerado para o Reel:\n' + d.video_script;
+            plan.style.display = 'block';
+          }
+          const reel = await makeReelPreviewFromImage(d.media_url, d.title || prompt);
+          lastGeneratedMime = reel.mimeType;
+          lastPreviewObjectUrl = URL.createObjectURL(reel.blob);
+          if (vid) {
+            vid.src = lastPreviewObjectUrl;
+            vid.style.display = 'block';
+            vid.load();
+          }
+          if (!reel.mimeType.startsWith('video/mp4')) {
+            log('⚠️ Prévia gerada, mas este Chrome criou WebM. Para publicar Reel, tente atualizar o Chrome; se falhar, publique como Post.', false);
+          }
+          $('igMediaUrl').value = await publishGeneratedMedia(reel.dataUrl);
+        } else {
+          if (img) {
+            img.src = d.media_url;
+            img.style.display = 'block';
+          }
+          $('igMediaUrl').value = d.media_url;
         }
       }
       $('igCaption').value = d.caption || '';
       $('igPreview').style.display = 'block';
-      log('✅ Prévia pronta. Edite se quiser e clique em Publicar.', true);
+      log(currentType === 'reel' ? '✅ Vídeo/preview pronto. Confira, edite a legenda e clique em Publicar.' : '✅ Prévia pronta. Edite se quiser e clique em Publicar.', true);
     } catch (e) {
       log('❌ ' + (e?.message || e), false);
     } finally {
-      btn.disabled = false; btn.textContent = orig;
+      setBusy(btn, false);
     }
   }
 
@@ -141,9 +326,11 @@
     const media_url = ($('igMediaUrl')?.value || '').trim();
     const caption = ($('igCaption')?.value || '').trim();
     if (!media_url) return log('❌ Gere a mídia antes de publicar', false);
+    if (currentType === 'reel' && lastGeneratedMime && !lastGeneratedMime.startsWith('video/mp4')) {
+      return log('❌ A prévia foi gerada em WebM. O Instagram costuma exigir MP4 para Reel. Atualize o Chrome ou publique como Post.', false);
+    }
     const btn = $('igPublishBtn');
-    const orig = btn.textContent;
-    btn.disabled = true; btn.textContent = '⏳ Publicando…';
+    setBusy(btn, true, '⏳ Publicando…');
     log('⏳ Enviando ao Instagram…');
     try {
       const apiType = currentType === 'viral' ? 'post' : currentType;
@@ -161,7 +348,7 @@
     } catch (e) {
       log('❌ ' + (e?.message || e), false);
     } finally {
-      btn.disabled = false; btn.textContent = orig;
+      setBusy(btn, false);
     }
   }
 
@@ -215,6 +402,7 @@
     document.querySelectorAll('.igTypeBtn').forEach((b) => {
       b.addEventListener('click', () => {
         currentType = b.dataset.type;
+        updateModeCopy();
         document.querySelectorAll('.igTypeBtn').forEach((x) => {
           x.classList.remove('active');
           x.style.background = 'transparent';
@@ -235,6 +423,7 @@
     renderPromptGrid('igImgPromptGrid', IMG_PROMPTS);
     renderPromptGrid('igVidPromptGrid', VID_PROMPTS);
 
+    updateModeCopy();
     refreshStatus();
     return true;
   }

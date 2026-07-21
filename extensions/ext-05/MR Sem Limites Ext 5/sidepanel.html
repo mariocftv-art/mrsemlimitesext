@@ -1388,17 +1388,19 @@
             <button class="igTypeBtn" data-type="viral" style="flex:1;min-width:70px;padding:6px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:transparent;color:#fff;cursor:pointer;font-size:11px">🔥 Viral</button>
           </div>
 
-          <label style="font-size:11px;opacity:.7">Descreva o que você quer (a IA gera a imagem e a legenda)</label>
+          <label id="igPromptLabel" for="igPrompt" style="font-size:11px;opacity:.7">Descreva o que você quer (a IA gera a prévia, título, legenda e hashtags)</label>
           <textarea id="igPrompt" rows="3" placeholder="Ex: um café expresso fumegante em mesa de mármore, luz de manhã, estética minimalista para meu cafeteria…" style="width:100%;padding:10px;margin:4px 0 10px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:#fff;resize:vertical;font-family:inherit"></textarea>
 
-          <button id="igGenerateBtn" style="width:100%;padding:11px;border:0;border-radius:10px;background:linear-gradient(135deg,#8134af,#515bd4);color:#fff;font-weight:700;cursor:pointer;margin-bottom:10px">🎨 Gerar imagem + legenda</button>
+          <button id="igGenerateBtn" style="width:100%;padding:11px;border:0;border-radius:10px;background:linear-gradient(135deg,#8134af,#515bd4);color:#fff;font-weight:700;cursor:pointer;margin-bottom:10px">🎨 Gerar prévia + legenda</button>
 
           <!-- Preview -->
           <div id="igPreview" style="display:none;margin-bottom:10px">
             <div style="font-size:11px;opacity:.7;margin-bottom:6px">Prévia gerada</div>
             <div id="igPreviewImgWrap" style="background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.1);border-radius:10px;overflow:hidden;margin-bottom:8px;min-height:100px;display:flex;align-items:center;justify-content:center">
               <img id="igPreviewImg" style="max-width:100%;display:block" alt="prévia" />
+              <video id="igPreviewVideo" controls playsinline style="width:100%;display:none;background:#000" aria-label="Prévia do Reel gerado"></video>
             </div>
+            <div id="igVideoPlan" style="display:none;margin:0 0 8px;padding:9px 10px;border-radius:10px;background:rgba(225,48,108,.08);border:1px solid rgba(225,48,108,.22);font-size:11px;line-height:1.45;white-space:pre-wrap;color:#ffdbe8"></div>
             <label style="font-size:11px;opacity:.7">Legenda (edite se quiser)</label>
             <textarea id="igCaption" rows="8" placeholder="Legenda será gerada aqui…" style="width:100%;padding:10px;margin:4px 0 10px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:#fff;resize:vertical;font-family:inherit"></textarea>
             <div style="display:flex;gap:6px;margin-bottom:6px">
@@ -1877,7 +1879,6 @@
   </div>
   <button class="nc-open-home" id="ext3OpenHome" title="Abrir painel EXT3">☰</button>
 
-  <script src="ui/instagram.js"></script>
   <script src="ui/neocore.js"></script>
 
 </body>

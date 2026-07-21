@@ -37,16 +37,98 @@
     const label = document.querySelector('label[for="igPrompt"]') || $('igPromptLabel');
     const prompt = $('igPrompt');
     const btn = $('igGenerateBtn');
+    const stWrap = $('igSoundtrackWrap');
+    if (stWrap) stWrap.style.display = currentType === 'reel' ? 'block' : 'none';
     if (currentType === 'reel') {
-      if (label) label.textContent = 'Descreva o Reel que você quer (a IA gera capa, prévia animada, título, legenda e hashtags)';
+      if (label) label.textContent = 'Descreva o Reel que você quer (a IA gera capa, prévia animada com trilha, título, legenda e hashtags)';
       if (prompt) prompt.placeholder = 'Ex: um Reel cinematográfico da minha loja Link MR Store, mostrando tecnologia, luxo e confiança, com movimento de câmera e final chamando para seguir…';
-      if (btn) btn.textContent = '🎬 Gerar vídeo + legenda';
+      if (btn) btn.textContent = '🎬 Gerar vídeo + trilha + legenda';
     } else {
       if (label) label.textContent = 'Descreva o que você quer (a IA gera a prévia, título, legenda e hashtags)';
       if (prompt) prompt.placeholder = 'Ex: um café expresso fumegante em mesa de mármore, luz de manhã, estética minimalista para minha cafeteria…';
       if (btn) btn.textContent = currentType === 'carousel' ? '🖼 Gerar carrossel + legenda' : '🎨 Gerar imagem + legenda';
     }
   }
+
+  function setType(type) {
+    currentType = type;
+    document.querySelectorAll('.igTypeBtn').forEach((b) => {
+      const active = b.dataset.type === type;
+      b.classList.toggle('active', active);
+      b.style.background = active ? 'rgba(225,48,108,.15)' : 'transparent';
+      b.style.border = active ? '1px solid rgba(225,48,108,.4)' : '1px solid rgba(255,255,255,.1)';
+    });
+    updateModeCopy();
+  }
+
+  // ============ Trilha sonora sintetizada (Web Audio) ============
+  function buildSoundtrack(audioCtx, destination, durationSec, style) {
+    const now = audioCtx.currentTime;
+    const end = now + durationSec;
+    const master = audioCtx.createGain();
+    master.gain.setValueAtTime(0.0001, now);
+    master.gain.exponentialRampToValueAtTime(0.55, now + 0.6);
+    master.gain.setValueAtTime(0.55, end - 0.8);
+    master.gain.exponentialRampToValueAtTime(0.0001, end);
+    master.connect(destination);
+
+    const presets = {
+      cinematic: { root: 55, chord: [0, 7, 12, 16], wave: 'sawtooth', bpm: 80, kick: true, lead: [0, 7, 10, 12] },
+      upbeat:    { root: 65, chord: [0, 4, 7, 12], wave: 'square',   bpm: 124, kick: true, lead: [0, 4, 7, 12, 7, 4] },
+      chill:     { root: 49, chord: [0, 3, 7, 10], wave: 'sine',     bpm: 70,  kick: false, lead: [0, 7, 3, 10] },
+      luxury:    { root: 58, chord: [0, 4, 7, 11], wave: 'triangle', bpm: 78,  kick: false, lead: [12, 11, 7, 4, 0] },
+    };
+    const p = presets[style] || presets.cinematic;
+    const freq = (semi) => p.root * Math.pow(2, semi / 12);
+
+    // Pad harmônico
+    p.chord.forEach((semi) => {
+      const osc = audioCtx.createOscillator();
+      osc.type = p.wave;
+      osc.frequency.value = freq(semi);
+      const g = audioCtx.createGain();
+      g.gain.value = 0.08;
+      const lp = audioCtx.createBiquadFilter();
+      lp.type = 'lowpass'; lp.frequency.value = 1400;
+      osc.connect(lp).connect(g).connect(master);
+      osc.start(now); osc.stop(end + 0.1);
+    });
+
+    // Lead melódico
+    const stepDur = 60 / p.bpm / 2;
+    let t = now + 0.4;
+    let i = 0;
+    while (t < end - 0.2) {
+      const semi = p.lead[i % p.lead.length] + 12;
+      const osc = audioCtx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.value = freq(semi);
+      const g = audioCtx.createGain();
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(0.22, t + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + stepDur * 0.9);
+      osc.connect(g).connect(master);
+      osc.start(t); osc.stop(t + stepDur);
+      t += stepDur; i++;
+    }
+
+    // Kick simples
+    if (p.kick) {
+      const beat = 60 / p.bpm;
+      for (let k = now + 0.2; k < end - 0.1; k += beat) {
+        const osc = audioCtx.createOscillator();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(140, k);
+        osc.frequency.exponentialRampToValueAtTime(40, k + 0.15);
+        const g = audioCtx.createGain();
+        g.gain.setValueAtTime(0.5, k);
+        g.gain.exponentialRampToValueAtTime(0.0001, k + 0.2);
+        osc.connect(g).connect(master);
+        osc.start(k); osc.stop(k + 0.22);
+      }
+    }
+  }
+
 
   function loadImage(src) {
     return new Promise((resolve, reject) => {
@@ -79,7 +161,7 @@
     return types.find((t) => window.MediaRecorder && MediaRecorder.isTypeSupported(t)) || '';
   }
 
-  async function makeReelPreviewFromImage(imageUrl, title) {
+  async function makeReelPreviewFromImage(imageUrl, title, soundtrack) {
     if (!HTMLCanvasElement.prototype.captureStream || !window.MediaRecorder) {
       throw new Error('Seu navegador não liberou gravação de vídeo no painel. Atualize o Chrome e tente de novo.');
     }
@@ -96,8 +178,26 @@
     if (!mimeType) throw new Error('Seu Chrome não suporta geração de vídeo no painel.');
 
     const chunks = [];
-    const stream = canvas.captureStream(fps);
-    const recorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 3_200_000 });
+    const videoStream = canvas.captureStream(fps);
+    const stream = new MediaStream();
+    videoStream.getVideoTracks().forEach((t) => stream.addTrack(t));
+
+    // Trilha sonora sintetizada (opcional)
+    let audioCtx = null;
+    const wantsAudio = soundtrack && soundtrack !== 'none';
+    if (wantsAudio) {
+      try {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AC();
+        const dest = audioCtx.createMediaStreamDestination();
+        buildSoundtrack(audioCtx, dest, durationMs / 1000, soundtrack);
+        dest.stream.getAudioTracks().forEach((t) => stream.addTrack(t));
+      } catch (e) {
+        console.warn('Trilha sonora indisponível:', e);
+      }
+    }
+
+    const recorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 3_200_000, audioBitsPerSecond: 128_000 });
     recorder.ondataavailable = (ev) => { if (ev.data && ev.data.size) chunks.push(ev.data); };
 
     const done = new Promise((resolve, reject) => {
@@ -105,6 +205,7 @@
       recorder.onstop = async () => {
         try {
           stream.getTracks().forEach((t) => t.stop());
+          if (audioCtx) { try { await audioCtx.close(); } catch(_){} }
           const blob = new Blob(chunks, { type: mimeType });
           const dataUrl = await blobToDataUrl(blob);
           resolve({ blob, dataUrl, mimeType });
@@ -150,6 +251,7 @@
     recorder.stop();
     return done;
   }
+
 
   function wrapCanvasText(ctx, text, x, y, maxWidth, lineHeight) {
     const words = String(text || '').split(/\s+/);
@@ -350,7 +452,8 @@
           try {
             // Usa base64 direto (sem CORS) pra carregar no canvas sem taint
             const canvasSrc = d.media_b64 ? `data:image/png;base64,${d.media_b64}` : d.media_url;
-            const rec = await makeReelPreviewFromImage(canvasSrc, d.title || '');
+            const soundtrack = ($('igSoundtrack')?.value) || 'cinematic';
+            const rec = await makeReelPreviewFromImage(canvasSrc, d.title || '', soundtrack);
             const publicUrl = await publishGeneratedMedia(rec.dataUrl);
             lastGeneratedMime = rec.mimeType;
             $('igMediaUrl').value = publicUrl;
@@ -462,16 +565,8 @@
       card.addEventListener('mouseleave', () => { card.style.background = 'rgba(255,255,255,.03)'; card.style.borderColor = 'rgba(255,255,255,.1)'; });
       card.addEventListener('click', () => {
         $('igPrompt').value = it.p;
-        // Se for prompt de vídeo, marca Reel
-        if (gridId === 'igVidPromptGrid') {
-          document.querySelectorAll('.igTypeBtn').forEach((b) => {
-            const isReel = b.dataset.type === 'reel';
-            b.classList.toggle('active', isReel);
-            b.style.background = isReel ? 'rgba(225,48,108,.15)' : 'transparent';
-            b.style.border = isReel ? '1px solid rgba(225,48,108,.4)' : '1px solid rgba(255,255,255,.1)';
-          });
-          currentType = 'reel';
-        }
+        // Auto-seleciona o tipo: vídeo → Reel; imagem → Post
+        setType(gridId === 'igVidPromptGrid' ? 'reel' : 'post');
         // Volta pra sub-aba Criar
         switchSub('create');
         $('igPrompt').focus();
@@ -498,18 +593,7 @@
     const bd = $('igDisconnectBtn');
     if (bd) bd.addEventListener('click', disconnect);
     document.querySelectorAll('.igTypeBtn').forEach((b) => {
-      b.addEventListener('click', () => {
-        currentType = b.dataset.type;
-        updateModeCopy();
-        document.querySelectorAll('.igTypeBtn').forEach((x) => {
-          x.classList.remove('active');
-          x.style.background = 'transparent';
-          x.style.border = '1px solid rgba(255,255,255,.1)';
-        });
-        b.classList.add('active');
-        b.style.background = 'rgba(225,48,108,.15)';
-        b.style.border = '1px solid rgba(225,48,108,.4)';
-      });
+      b.addEventListener('click', () => setType(b.dataset.type));
     });
     document.querySelectorAll('.igSubTab').forEach((b) => {
       b.addEventListener('click', () => switchSub(b.dataset.sub));

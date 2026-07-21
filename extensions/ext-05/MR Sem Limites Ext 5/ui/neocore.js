@@ -9,7 +9,9 @@
   const openHome = document.getElementById('ext3OpenHome');
   const IA_PICK_KEY = 'mr_ia_pick_v1';
   const ORBE_SILENCE_DELAY_MS = 2000;
-  let userLeftHome = false;
+  // EXT5 precisa abrir direto no painel com abas visíveis. A Orbe/Home Neo-Core
+  // fica disponível pelo botão ☰, mas não cobre o Instagram na inicialização.
+  let userLeftHome = true;
   let micGranted = false;
 
   function openMicPermissionTab() {
@@ -844,8 +846,8 @@
       home.classList.add('hidden');
       return;
     }
-    // Depois da licença, a tela principal correta é a Home Neo-Core (print novo).
-    // Só não reabre se o usuário saiu dela clicando em uma aba real.
+    // Não reabrir automaticamente a Orbe/Home: ela estava cobrindo as abas da EXT5.
+    // O usuário abre manualmente pelo botão ☰ ou pela aba Início.
     if (appVisible && !userLeftHome) home.classList.remove('hidden');
   }
   setInterval(syncOverlay, 1500);

@@ -1,5 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 
+const CANONICAL_ORIGIN = 'https://mrsemlimitesext.lovable.app'
+
 async function j(url: string, init?: RequestInit) {
   const r = await fetch(url, init)
   const d = await r.json().catch(() => ({}))
@@ -16,7 +18,7 @@ export const Route = createFileRoute('/api/public/instagram-oauth-callback')({
         const url = new URL(request.url)
         const code = url.searchParams.get('code')
         const error = url.searchParams.get('error_description') || url.searchParams.get('error')
-        const redirectUri = `${url.origin}/api/public/instagram-oauth-callback`
+        const redirectUri = `${CANONICAL_ORIGIN}/api/public/instagram-oauth-callback`
 
         const html = (payload: any, err?: string) => `<!doctype html>
 <html><head><meta charset="utf-8"><title>Instagram — MR Sem Limites</title>

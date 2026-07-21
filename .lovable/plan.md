@@ -1,78 +1,83 @@
+## Objetivo
 
-# FASE 4 — Backend real com Lovable Cloud
+Refazer a aba **Instagram** da EXT5 para:
+1. Cada usuário conectar a **própria conta** do Instagram (não @linkmrstore).
+2. IA gerar a mídia (imagem/vídeo), título, descrição e hashtags — usuário só digita o tema.
+3. Mostrar **preview** antes de publicar. Após aprovar, publica no IG do usuário.
 
-Objetivo: sair 100% do mock e ligar painel + extensão a um backend real, mantendo o formato de chave `XXXXX-XXXXX-XXXXX-XXXXX` e os contratos que a extensão já consome.
+---
 
-## 1. Ativar Lovable Cloud
-- `supabase--enable` (cria projeto, injeta env vars, habilita Auth/DB/Storage/Server Functions).
-- Nada de Edge Functions: toda API vai em `createServerFn` + rotas `src/routes/api/public/ext/*` (TanStack Start).
+## O que muda
 
-## 2. Migrations (schema mínimo viável da Fase 2, enxugado p/ 1ª onda)
-Ordem, cada uma com `CREATE TABLE → GRANT → ENABLE RLS → CREATE POLICY`:
+### 1. Login no painel (novo)
+- Ativar auth Email/senha + Google no Lovable Cloud (`supabase--configure_social_auth`).
+- Criar `/auth` (login/signup) e mover a home do painel para `_authenticated/`.
+- Cada usuário fica com sessão própria → seus tokens IG ficam isolados.
 
-1. `0001_roles.sql` — enum `app_role`, `profiles`, `user_roles`, `has_role()`, trigger `handle_new_user`.
-2. `0002_products.sql` — `products`, `product_license_config` (mensagens + defaults + `runtime_config`).
-3. `0003_customers.sql` — `customers`.
-4. `0004_licenses.sql` — enums `license_type` / `license_status`, `licenses`.
-5. `0005_license_keys.sql` — `license_keys` (`key_hash` SHA-256 único, `key_last4`, `key_ciphertext` opcional).
-6. `0006_devices.sql` — `devices` (UNIQUE `license_key_id + hwid`), `device_sessions` (`session_token_hash`).
-7. `0007_events.sql` — `activations`, `heartbeats`, `blocks`, `blacklist`.
-8. `0008_audit.sql` — `audit_logs`, `api_logs`.
-9. `0009_indexes_rls.sql` — índices + policies definitivas (`admin`/`staff` no painel; público via service-role dentro das rotas).
+### 2. Instagram OAuth por usuário
+- Nova tabela `public.instagram_connections` (server-only, criptografada):
+  - `user_id`, `ig_user_id`, `ig_username`, `access_token_ciphertext`, `expires_at`.
+- Server functions:
+  - `startInstagramConnect` → devolve URL OAuth Meta com `state=userId`.
+  - `/api/public/instagram-callback` → recebe code, troca por long-lived token, salva na tabela do usuário logado.
+  - `getMyInstagramStatus` → retorna `{connected, username}`.
+  - `disconnectInstagram` → apaga registro.
+- Segredo `INSTAGRAM_APP_SECRET` (já temos App ID 1985407092142827 e access token global — este último vira legado, só para fallback interno).
 
-Sem seeds automáticos. Sem `anon` grant nas tabelas sensíveis.
+### 3. Geração de conteúdo por IA
+Server function `generateInstagramContent({tema, tipo})`:
+- **Post/Carrossel** → `google/gemini-3.1-flash-image` (Nano Banana 2) gera 1 ou 3-5 imagens.
+- **Reel** → gera imagem base + `videogen` (5-10s).
+- **Legenda + hashtags** → `google/gemini-2.5-flash` (texto).
+- Retorna `{mediaUrls[], caption, hashtags[]}` para o frontend.
 
-## 3. Endpoints públicos consumidos pela extensão
-Base: `/api/public/ext/functions/v1/...` (mesmos paths de hoje, só muda o host):
+### 4. UI Instagram (redesenhada)
+Substitui os campos de URL/legenda por:
+```
+[ Tema/descrição do post ]         (textarea)
+[ Post ] [ Reel ] [ Carrossel ]    (tipo)
+[ ✨ Gerar com IA ]                (botão)
+      ↓
+[ Preview: mídia gerada + legenda editável + hashtags ]
+[ ✏️ Regerar ]  [ 🚀 Publicar no meu Instagram ]
+```
+- Sem input de URL, sem "@linkmrstore". Só mostra `@username` do usuário logado.
 
-| Rota | Descrição |
-|---|---|
-| `POST inject-config` | valida chave + email, devolve `{ config, license }` |
-| `POST validate-license-v2` | valida chave + HWID, cria/atualiza device, devolve `session_token` |
-| `POST heartbeat` | keepalive; atualiza `last_seen`, grava evento |
-| `POST proxy/prompt` | revalida sessão, repassa ao Lovable, grava `api_logs` |
-| `POST proxy/upload` | idem para upload |
-| `GET  version?product=slug` | versão atual (opcional, para auto-update) |
+### 5. Publicação
+`publishToMyInstagram({mediaUrls, caption})`:
+- Lê token do usuário logado (via `requireSupabaseAuth` + tabela).
+- Chama Graph API v20 (`/media` + `/media_publish`) em nome do usuário.
+- Retorna link do post publicado.
 
-Cada rota: Zod, checagem de `blacklist`/`blocks`, rate-limit simples por IP+key_hash, respostas com `reason` compatível (`invalid_key`, `expired`, `revoked`, `device_mismatch`, `transient`).
+### 6. Extensão (ZIP)
+Atualizar `ui/ig-publisher.js`:
+- Botão "Conectar Instagram" → abre popup OAuth (URL vinda do painel).
+- Após conectar, mostra `@username` do usuário.
+- Formulário passa a ser: tema → gerar → preview → publicar.
+- Empacotar como `MR-Sem-Limites-EXT5-v5.1.0.zip`.
 
-## 4. Server functions do painel (`createServerFn` + `requireSupabaseAuth` + `has_role('admin'|'staff')`)
-- Clientes: create/update/delete/list.
-- Licenças: create (trial/definitiva), renew, block, unblock, revoke, changeExpiry, transfer.
-- Chaves: generate (formato `XXXXX-XXXXX-XXXXX-XXXXX`, Crockford), regenerate, revealKey (admin).
-- Dispositivos: reset, revoke.
-- Blacklist: add/remove.
-- Logs/auditoria: list.
+---
 
-## 5. Painel — troca do mock pelo real
-- Substituir `useStore` (Zustand + localStorage) por hooks TanStack Query que chamam as server functions.
-- Rotas admin migram para `src/routes/_authenticated/` (gate gerenciado). Login/logout via Supabase (email/senha; Google opcional depois).
-- Primeiro usuário cadastrado recebe role `admin` (função SQL `grant_first_admin`).
-- Remover botões “MODO TESTE” e “Limpar dados de teste” do settings — não fazem sentido com dados reais (ou mantê-los apenas em modo dev, atrás de flag).
+## Detalhes técnicos
 
-## 6. Extensão — mudança mínima (Fase 4b)
-- Alterar apenas `lib/constants.js` (e `manifest.json` se necessário) para apontar `SUPABASE_URL` → `https://<projeto>.lovable.app`.
-- Nenhum outro arquivo da extensão é tocado. Contratos byte-a-byte preservados.
+**Criptografia do token IG**: AES-256-GCM com `APP_USER_CONNECTION_KEY_SECRET` (auto-provisionado). Nunca em texto puro no DB.
 
-## 7. Segurança
-- Chave nunca aparece em log (apenas `key_last4` + `key_hash`).
-- `session_token` armazenado como hash.
-- RLS restritivo; rotas públicas usam `supabaseAdmin` **somente após** validar entrada.
-- `LOVABLE_API_KEY` provisionado; nada exposto no browser.
+**Redirect URI OAuth**: `https://mrsemlimitesext.lovable.app/api/public/instagram-callback` (fixo, já autorizado no Meta App).
 
-## 8. Ordem de execução
-1. Ativar Cloud.
-2. Rodar as 9 migrations.
-3. Implementar rotas públicas `/api/public/ext/*` + server functions do painel.
-4. Migrar telas do painel (Auth, Clientes, Licenças, Dispositivos, Ativações, Blacklist, Logs, Produtos).
-5. Trocar `SUPABASE_URL` na extensão e testar ponta-a-ponta (ativar chave real gerada no painel).
-6. Publicar.
+**Modo Dev do App Meta**: enquanto não passar em App Review, só contas adicionadas como testadoras conseguem conectar. Vou avisar isso na UI.
 
-## Perguntas antes de começar
+**Segredos necessários**:
+- `INSTAGRAM_APP_ID` = 1985407092142827 (código)
+- `INSTAGRAM_APP_SECRET` (secreto — preciso pedir)
+- `APP_USER_CONNECTION_KEY_SECRET` (auto)
 
-1. **Auth do painel**: só email/senha nesta fase, ou já habilito Google também?
-2. **Primeiro admin**: crio via SQL fixando um email seu (qual?) ou promovo o primeiro cadastro automaticamente?
-3. **Modo TESTE**: removo do painel ou mantenho como toggle dev (não afeta banco real)?
-4. **Extensão**: posso já atualizar `lib/constants.js` na pasta `Reformulada 2.1` (a mais nova) ou você prefere tocar só depois que o backend estiver de pé?
+**Sem quebrar as outras extensões**: mudanças só em `src/routes/api/instagram-*`, `src/routes/_authenticated/`, aba Instagram do painel, e ZIP EXT5. EXT1–EXT4 intactas.
 
-Assim que responder, executo na ordem: Cloud → migrations → rotas → painel → extensão.
+---
+
+## Fora do escopo (desta rodada)
+- App Review Meta (você faz depois no dashboard Meta).
+- Agendamento de posts.
+- Analytics de posts publicados.
+
+Se aprovar, começo pedindo o `INSTAGRAM_APP_SECRET`, ativo auth e sigo os passos 1→6.

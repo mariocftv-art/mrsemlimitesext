@@ -1,4 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { putMedia } from './instagram-media'
 
 const cors = {
   'Access-Control-Allow-Origin': '*',
@@ -7,7 +8,7 @@ const cors = {
   'Content-Type': 'application/json',
 }
 
-// Gera mídia (imagem) + legenda viral para o Instagram, a partir de um tema em PT-BR.
+// Gera imagem + legenda viral (título, corpo e hashtags) a partir de um prompt em PT-BR.
 export const Route = createFileRoute('/api/public/instagram-generate')({
   server: {
     handlers: {
@@ -19,25 +20,28 @@ export const Route = createFileRoute('/api/public/instagram-generate')({
         }
         let body: any = {}
         try { body = await request.json() } catch {}
-        const theme = (body?.theme || '').toString().trim()
-        const type = (body?.type || 'post').toString()
+        const prompt = (body?.prompt || body?.theme || '').toString().trim()
+        const type = (body?.type || 'post').toString() // post | reel | carousel
         const wantMedia = body?.media !== false
-        if (!theme) {
-          return new Response(JSON.stringify({ error: 'Informe o tema' }), { status: 400, headers: cors })
+        if (!prompt) {
+          return new Response(JSON.stringify({ error: 'Informe o prompt' }), { status: 400, headers: cors })
         }
 
+        const origin = new URL(request.url).origin
+
         try {
-          // 1) Legenda viral em PT-BR via Gemini Flash Lite (rápido)
+          // 1) Copy viral (título + legenda + hashtags) em JSON
           const capRes = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
             method: 'POST',
             headers: { Authorization: `Bearer ${KEY}`, 'Content-Type': 'application/json' },
             body: JSON.stringify({
               model: 'google/gemini-2.5-flash',
               messages: [
-                { role: 'system', content: 'Você é um copywriter viral de Instagram brasileiro. Escreva legendas curtas (máx 8 linhas), com gancho forte na 1ª linha, storytelling, CTA e 15-20 hashtags relevantes no final. Sempre em PT-BR.' },
-                { role: 'user', content: `Tema: ${theme}\nTipo: ${type === 'reel' ? 'Reel de vídeo' : type === 'carousel' ? 'Carrossel de imagens' : 'Post de imagem'}\n\nGere APENAS a legenda pronta para publicar (sem explicações, sem "aqui está", direto ao ponto).` },
+                { role: 'system', content: 'Você é copywriter viral de Instagram brasileiro. Responda APENAS em JSON válido: {"title":"...","caption":"...","hashtags":["#..","#.."]}. Título curto (máx 60 chars) com gancho. Legenda 4–8 linhas com storytelling e CTA. 15–20 hashtags relevantes em PT-BR sem repetição.' },
+                { role: 'user', content: `Prompt: ${prompt}\nTipo: ${type === 'reel' ? 'Reel de vídeo' : type === 'carousel' ? 'Carrossel de imagens' : 'Post de imagem'}` },
               ],
-              temperature: 0.9,
+              temperature: 0.85,
+              response_format: { type: 'json_object' },
             }),
           })
           const capData: any = await capRes.json().catch(() => ({}))
@@ -45,12 +49,18 @@ export const Route = createFileRoute('/api/public/instagram-generate')({
             const msg = capData?.error?.message || capData?.error || `HTTP ${capRes.status}`
             return new Response(JSON.stringify({ error: `Falha ao gerar legenda: ${msg}` }), { status: capRes.status, headers: cors })
           }
-          const caption = capData?.choices?.[0]?.message?.content?.trim() || ''
+          const raw = capData?.choices?.[0]?.message?.content?.trim() || '{}'
+          let parsed: any = {}
+          try { parsed = JSON.parse(raw) } catch { parsed = { caption: raw } }
+          const title = (parsed.title || '').toString().trim()
+          const captionBody = (parsed.caption || '').toString().trim()
+          const hashtags = Array.isArray(parsed.hashtags) ? parsed.hashtags.join(' ') : ''
+          const caption = [title, captionBody, hashtags].filter(Boolean).join('\n\n').trim()
 
           let mediaUrl = ''
           if (wantMedia) {
-            // 2) Imagem via Gemini 2.5 Flash Image (Nano Banana) — retorna base64
-            const imgPrompt = `Instagram-ready ${type === 'reel' ? 'vertical 9:16' : 'square 1:1'} photo. ${theme}. Ultra realistic, cinematic lighting, vibrant colors, professional composition, high engagement social media aesthetic.`
+            // 2) Imagem via Gemini 2.5 Flash Image
+            const imgPrompt = `Instagram ${type === 'reel' ? 'vertical 9:16' : 'square 1:1'} image. ${prompt}. Ultra realistic, cinematic lighting, vibrant colors, professional composition, high engagement social media aesthetic.`
             const imgRes = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
               method: 'POST',
               headers: { Authorization: `Bearer ${KEY}`, 'Content-Type': 'application/json' },
@@ -64,11 +74,16 @@ export const Route = createFileRoute('/api/public/instagram-generate')({
             if (imgRes.ok) {
               const b64 = imgData?.choices?.[0]?.message?.images?.[0]?.image_url?.url
                 || imgData?.choices?.[0]?.message?.content?.match?.(/data:image[^\s"')]+/)?.[0]
-              if (b64) mediaUrl = b64
+              if (b64) {
+                try {
+                  const id = putMedia(b64)
+                  mediaUrl = `${origin}/api/public/instagram-media?id=${id}`
+                } catch {}
+              }
             }
           }
 
-          return new Response(JSON.stringify({ caption, media_url: mediaUrl, theme, type }), { status: 200, headers: cors })
+          return new Response(JSON.stringify({ title, caption, media_url: mediaUrl, prompt, type }), { status: 200, headers: cors })
         } catch (e: any) {
           return new Response(JSON.stringify({ error: e?.message || 'Erro' }), { status: 500, headers: cors })
         }

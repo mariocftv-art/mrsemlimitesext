@@ -44,6 +44,7 @@ import { Route as ApiPublicInstagramStatusRouteImport } from './routes/api/publi
 import { Route as ApiPublicInstagramPublishRouteImport } from './routes/api/public/instagram-publish'
 import { Route as ApiPublicInstagramOauthStartRouteImport } from './routes/api/public/instagram-oauth-start'
 import { Route as ApiPublicInstagramOauthCallbackRouteImport } from './routes/api/public/instagram-oauth-callback'
+import { Route as ApiPublicInstagramGenerateRouteImport } from './routes/api/public/instagram-generate'
 
 const VersionsRoute = VersionsRouteImport.update({
   id: '/versions',
@@ -225,6 +226,12 @@ const ApiPublicInstagramOauthCallbackRoute =
     path: '/api/public/instagram-oauth-callback',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicInstagramGenerateRoute =
+  ApiPublicInstagramGenerateRouteImport.update({
+    id: '/api/public/instagram-generate',
+    path: '/api/public/instagram-generate',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -255,6 +262,7 @@ export interface FileRoutesByFullPath {
   '/live/$id': typeof LiveIdRoute
   '/preview/$id': typeof PreviewIdRoute
   '/runtime/$id': typeof RuntimeIdRoute
+  '/api/public/instagram-generate': typeof ApiPublicInstagramGenerateRoute
   '/api/public/instagram-oauth-callback': typeof ApiPublicInstagramOauthCallbackRoute
   '/api/public/instagram-oauth-start': typeof ApiPublicInstagramOauthStartRoute
   '/api/public/instagram-publish': typeof ApiPublicInstagramPublishRoute
@@ -292,6 +300,7 @@ export interface FileRoutesByTo {
   '/live/$id': typeof LiveIdRoute
   '/preview/$id': typeof PreviewIdRoute
   '/runtime/$id': typeof RuntimeIdRoute
+  '/api/public/instagram-generate': typeof ApiPublicInstagramGenerateRoute
   '/api/public/instagram-oauth-callback': typeof ApiPublicInstagramOauthCallbackRoute
   '/api/public/instagram-oauth-start': typeof ApiPublicInstagramOauthStartRoute
   '/api/public/instagram-publish': typeof ApiPublicInstagramPublishRoute
@@ -330,6 +339,7 @@ export interface FileRoutesById {
   '/live/$id': typeof LiveIdRoute
   '/preview/$id': typeof PreviewIdRoute
   '/runtime/$id': typeof RuntimeIdRoute
+  '/api/public/instagram-generate': typeof ApiPublicInstagramGenerateRoute
   '/api/public/instagram-oauth-callback': typeof ApiPublicInstagramOauthCallbackRoute
   '/api/public/instagram-oauth-start': typeof ApiPublicInstagramOauthStartRoute
   '/api/public/instagram-publish': typeof ApiPublicInstagramPublishRoute
@@ -369,6 +379,7 @@ export interface FileRouteTypes {
     | '/live/$id'
     | '/preview/$id'
     | '/runtime/$id'
+    | '/api/public/instagram-generate'
     | '/api/public/instagram-oauth-callback'
     | '/api/public/instagram-oauth-start'
     | '/api/public/instagram-publish'
@@ -406,6 +417,7 @@ export interface FileRouteTypes {
     | '/live/$id'
     | '/preview/$id'
     | '/runtime/$id'
+    | '/api/public/instagram-generate'
     | '/api/public/instagram-oauth-callback'
     | '/api/public/instagram-oauth-start'
     | '/api/public/instagram-publish'
@@ -443,6 +455,7 @@ export interface FileRouteTypes {
     | '/live/$id'
     | '/preview/$id'
     | '/runtime/$id'
+    | '/api/public/instagram-generate'
     | '/api/public/instagram-oauth-callback'
     | '/api/public/instagram-oauth-start'
     | '/api/public/instagram-publish'
@@ -481,6 +494,7 @@ export interface RootRouteChildren {
   LiveIdRoute: typeof LiveIdRoute
   PreviewIdRoute: typeof PreviewIdRoute
   RuntimeIdRoute: typeof RuntimeIdRoute
+  ApiPublicInstagramGenerateRoute: typeof ApiPublicInstagramGenerateRoute
   ApiPublicInstagramOauthCallbackRoute: typeof ApiPublicInstagramOauthCallbackRoute
   ApiPublicInstagramOauthStartRoute: typeof ApiPublicInstagramOauthStartRoute
   ApiPublicInstagramPublishRoute: typeof ApiPublicInstagramPublishRoute
@@ -737,6 +751,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicInstagramOauthCallbackRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/instagram-generate': {
+      id: '/api/public/instagram-generate'
+      path: '/api/public/instagram-generate'
+      fullPath: '/api/public/instagram-generate'
+      preLoaderRoute: typeof ApiPublicInstagramGenerateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -769,6 +790,7 @@ const rootRouteChildren: RootRouteChildren = {
   LiveIdRoute: LiveIdRoute,
   PreviewIdRoute: PreviewIdRoute,
   RuntimeIdRoute: RuntimeIdRoute,
+  ApiPublicInstagramGenerateRoute: ApiPublicInstagramGenerateRoute,
   ApiPublicInstagramOauthCallbackRoute: ApiPublicInstagramOauthCallbackRoute,
   ApiPublicInstagramOauthStartRoute: ApiPublicInstagramOauthStartRoute,
   ApiPublicInstagramPublishRoute: ApiPublicInstagramPublishRoute,
@@ -780,13 +802,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

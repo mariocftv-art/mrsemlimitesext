@@ -207,6 +207,16 @@
     { t: '👨‍🔧 Instalação técnica', p: 'Técnico uniformizado da MR Segurança instalando câmera CFTV em parede externa, capacete e cinto de ferramentas, dia ensolarado, aparência profissional e confiável' },
     { t: '🏢 Portaria remota', p: 'Portão automático de condomínio se abrindo remotamente com portaria virtual, moradores tranquilos, tecnologia PAX visível, tom azul confiança' },
     { t: '🔒 Cerca elétrica', p: 'Cerca elétrica industrial instalada em muro alto, isoladores brancos alinhados, céu ao entardecer, foco na proteção perimetral, aesthetic Link MR Store' },
+    { t: '💻 Produto digital ebook', p: 'Mockup 3D de ebook premium flutuando com capa dourada e preta, fundo gradiente escuro com partículas douradas, iluminação cinematográfica, aesthetic infoproduto high ticket, sensação de valor e transformação' },
+    { t: '🎓 Curso online mockup', p: 'Mockup de curso online exibido em notebook, tablet e celular flutuando, tela mostrando módulos de aula, fundo dark premium com detalhes dourados, chamada visual "Método comprovado"' },
+    { t: '📦 Combo infoproduto', p: 'Combo de produtos digitais mockup (ebook + curso + bônus), composição em pilha 3D, badges "BÔNUS EXCLUSIVO" e "GARANTIA 7 DIAS", fundo preto com halo dourado, super oferta' },
+    { t: '🚀 Fanpage lançamento', p: 'Capa de fanpage Instagram/Facebook estilo lançamento, tipografia bold impactante "TRANSFORME SUA VIDA", fotos do produto em destaque, cores da marca vibrantes, CTA visual "Link na bio"' },
+    { t: '💥 Post fanpage carrossel', p: 'Slide de carrossel Instagram estilo fanpage viral, headline grande "VOCÊ ESTÁ PERDENDO DINHEIRO ASSIM", fundo colorido chamativo, emoji estratégico, tipografia sans-serif bold, alto engajamento' },
+    { t: '📈 Página de vendas hero', p: 'Hero de landing page de vendas, headline poderosa "O método que mudou minha vida", mockup do produto ao lado, botão CTA laranja "QUERO AGORA", provas sociais visíveis, layout conversão' },
+    { t: '⭐ Depoimento cliente VSL', p: 'Print de depoimento real de cliente satisfeita com resultado, foto antes/depois ao lado, estrelas 5/5, texto autêntico em destaque, fundo neutro credibilidade, prova social para página de vendas' },
+    { t: '💰 Oferta irresistível', p: 'Banner de oferta com preço riscado "De R$ 1997 por R$ 297", countdown regressivo "OFERTA ACABA EM", selo de garantia dourado, fundo vermelho urgência, alta conversão' },
+    { t: '🎁 Bônus exclusivos', p: 'Composição visual de bônus empilhados (ebooks, planilhas, checklists), etiqueta "GRÁTIS AO COMPRAR HOJE", valor total em destaque "+R$ 3.500 em bônus", fundo dourado luxo' },
+    { t: '🔥 Post viral fanpage', p: 'Post fanpage estilo viral com pergunta impactante "Você faria isso pelos seus filhos?", imagem emocional ao fundo, tipografia branca com sombra, CTA "Comenta SIM", máximo engajamento' },
   ];
 
   // ============ 20 PROMPTS DE VÍDEO (Reels) ============
@@ -235,6 +245,15 @@
     { t: '🚔 PAX 24h operação', p: 'Reel mostrando central PAX em operação 24 horas, câmera aproximando das telas ao vivo, operadores atentos, transição para viatura em ronda noturna, energia séria e profissional' },
     { t: '🚨 Antes/depois alarme', p: 'Reel split screen residência sem proteção vs residência com alarme MR ativo, transição impactante, texto na tela "Sua casa protegida em 24h", CTA WhatsApp' },
     { t: '👨‍🔧 Instalação em 1 dia', p: 'Timelapse vertical de instalação completa de CFTV em residência, técnicos MR trabalhando, sequência montagem/teste/entrega ao cliente sorrindo, música motivacional implícita' },
+    { t: '💻 VSL produto digital', p: 'Reel vertical 9:16 estilo VSL (video sales letter), abertura com pergunta impactante em texto grande "E se em 30 dias você pudesse...", cortes rápidos mostrando ebook/curso mockup, depoimentos flutuando, CTA final "Link na bio, corre!"' },
+    { t: '🚀 Lançamento infoproduto', p: 'Reel de lançamento de produto digital, countdown 3-2-1, reveal do mockup com efeito de brilho dourado, cortes rítmicos, tipografia bold pulsando, música building implícita, aesthetic high ticket' },
+    { t: '📱 Fanpage post viral', p: 'Reel formato fanpage viral, headline provocativa aparecendo em texto grande frame a frame, imagens de apoio em cortes rápidos, ritmo alucinante 30fps, CTA "Salva esse Reel", máximo alcance orgânico' },
+    { t: '📈 Antes/depois método', p: 'Reel split screen antes/depois usando o método/produto digital, transformação real com prints de resultado, texto na tela "Em 7 dias eu consegui isso", credibilidade máxima, conversão' },
+    { t: '⭐ Depoimento em vídeo', p: 'Reel de depoimento de cliente falando resultado real do infoproduto, câmera selfie natural, legendas grandes na tela destacando trechos, autenticidade total, prova social poderosa' },
+    { t: '💰 Oferta relâmpago', p: 'Reel de oferta relâmpago com countdown gigante na tela, animação de preço caindo "R$ 1997 → R$ 297", zoom no botão "COMPRAR AGORA", urgência máxima, CTA final "Link na bio ANTES QUE ACABE"' },
+    { t: '🎁 Reveal bônus curso', p: 'Reel revelando bônus exclusivos do curso um a um, cada bônus surge com efeito de brilho e valor "+R$ 497", contador acumulando "VOCÊ RECEBE +R$ 3.500", CTA "Garante o seu"' },
+    { t: '🔥 Story de venda direta', p: 'Reel formato story de vendas, host aparecendo na tela falando direto para câmera, cortes com prints do produto, prova social piscando, energia alta, encerramento "Bora mudar sua vida? Link na bio"' },
+    { t: '📄 Página de vendas walkthrough', p: 'Reel scrollando por landing page de vendas real, mostrando headline, prova social, bônus e botão CTA, tipografia em destaque, aesthetic profissional, ensinando o funil de conversão' },
   ];
 
   async function refreshStatus() {

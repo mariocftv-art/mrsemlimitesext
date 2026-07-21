@@ -161,7 +161,7 @@
     return types.find((t) => window.MediaRecorder && MediaRecorder.isTypeSupported(t)) || '';
   }
 
-  async function makeReelPreviewFromImage(imageUrl, title) {
+  async function makeReelPreviewFromImage(imageUrl, title, soundtrack) {
     if (!HTMLCanvasElement.prototype.captureStream || !window.MediaRecorder) {
       throw new Error('Seu navegador não liberou gravação de vídeo no painel. Atualize o Chrome e tente de novo.');
     }
@@ -178,8 +178,26 @@
     if (!mimeType) throw new Error('Seu Chrome não suporta geração de vídeo no painel.');
 
     const chunks = [];
-    const stream = canvas.captureStream(fps);
-    const recorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 3_200_000 });
+    const videoStream = canvas.captureStream(fps);
+    const stream = new MediaStream();
+    videoStream.getVideoTracks().forEach((t) => stream.addTrack(t));
+
+    // Trilha sonora sintetizada (opcional)
+    let audioCtx = null;
+    const wantsAudio = soundtrack && soundtrack !== 'none';
+    if (wantsAudio) {
+      try {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AC();
+        const dest = audioCtx.createMediaStreamDestination();
+        buildSoundtrack(audioCtx, dest, durationMs / 1000, soundtrack);
+        dest.stream.getAudioTracks().forEach((t) => stream.addTrack(t));
+      } catch (e) {
+        console.warn('Trilha sonora indisponível:', e);
+      }
+    }
+
+    const recorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 3_200_000, audioBitsPerSecond: 128_000 });
     recorder.ondataavailable = (ev) => { if (ev.data && ev.data.size) chunks.push(ev.data); };
 
     const done = new Promise((resolve, reject) => {
@@ -187,6 +205,7 @@
       recorder.onstop = async () => {
         try {
           stream.getTracks().forEach((t) => t.stop());
+          if (audioCtx) { try { await audioCtx.close(); } catch(_){} }
           const blob = new Blob(chunks, { type: mimeType });
           const dataUrl = await blobToDataUrl(blob);
           resolve({ blob, dataUrl, mimeType });
@@ -232,6 +251,7 @@
     recorder.stop();
     return done;
   }
+
 
   function wrapCanvasText(ctx, text, x, y, maxWidth, lineHeight) {
     const words = String(text || '').split(/\s+/);

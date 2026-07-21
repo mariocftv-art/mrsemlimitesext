@@ -366,8 +366,9 @@
     const media_url = ($('igMediaUrl')?.value || '').trim();
     const caption = ($('igCaption')?.value || '').trim();
     if (!media_url) return log('❌ Gere a mídia antes de publicar', false);
-    if (currentType === 'reel' && lastGeneratedMime && !lastGeneratedMime.startsWith('video/mp4')) {
-      return log('❌ A prévia foi gerada em WebM. O Instagram costuma exigir MP4 para Reel. Atualize o Chrome ou publique como Post.', false);
+    const acc = await loadAccount();
+    if (!acc || !acc.access_token) {
+      return log('❌ Conecte sua conta do Instagram primeiro', false);
     }
     const btn = $('igPublishBtn');
     setBusy(btn, true, '⏳ Publicando…');
@@ -377,12 +378,17 @@
       const r = await fetch(PUBLISH_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ use_server_token: true, type: apiType, media_url, caption }),
+        body: JSON.stringify({
+          access_token: acc.access_token,
+          ig_user_id: acc.ig_user_id,
+          type: apiType,
+          media_url,
+          caption,
+        }),
       });
       const d = await r.json();
       if (!r.ok) throw new Error(d.error || `HTTP ${r.status}`);
       log(`✅ Publicado! ID ${d.id}`, true);
-      // reset
       $('igPrompt').value = ''; $('igCaption').value = ''; $('igMediaUrl').value = '';
       $('igPreview').style.display = 'none';
     } catch (e) {

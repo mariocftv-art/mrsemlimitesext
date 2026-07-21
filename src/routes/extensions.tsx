@@ -88,7 +88,7 @@ const EXT1_ZIP_URL = "/MR%20Sem%20Limites%20EXT1.zip";
 const EXT2_ZIP_URL = "/__l5e/assets-v1/ce8b8538-9670-4dc9-80ef-8143186ab254/MR Sem Limites EXT2.zip";
 const EXT3_ZIP_URL = "/__l5e/assets-v1/e5691ba7-8515-4004-bb77-b0df44b06628/MR-Sem-Limites-EXT3-v3.2.6.zip";
 const EXT4_ZIP_URL = "/__l5e/assets-v1/a9e2a317-8481-456e-9dc6-5df018c0cc59/MR Sem Limite Manus.zip";
-const EXT5_ZIP_URL = "/__l5e/assets-v1/cffc1b1f-9dd3-4695-9a80-d080105e2dfc/MR-Sem-Limites-EXT5-v5.2.0.zip";
+const EXT5_ZIP_URL = "/__l5e/assets-v1/9d6aa44c-7db8-4610-9a2f-8de16734cf2b/MR-Sem-Limites-EXT5-v5.3.0.zip";
 
 type Filter = "all" | ExtensionStatus;
 type Sort = "name" | "version" | "updated" | "status";
@@ -282,7 +282,7 @@ function ExtensionsPage() {
             <div className="space-y-1">
               <p className="text-sm font-semibold">EXT5 — Instagram Publisher</p>
               <p className="text-xs text-muted-foreground">
-                Todas as funcionalidades da EXT3 + nova aba <b>Instagram</b>: conta já conectada no servidor seguro e publicação de Post, Reel ou Carrossel direto da extensão. Baixe o ZIP, descompacte e no Chrome use “Carregar sem compactação”.
+                Todas as funcionalidades da EXT3 + aba <b>Instagram</b> com IA: descreva o post → gera imagem + legenda + hashtags → você aprova → publica direto no @linkmrstore. Inclui biblioteca de 20 prompts de imagem e 20 de vídeo.
               </p>
             </div>
             <div className="flex flex-col gap-2 md:flex-row md:w-auto">
@@ -290,11 +290,11 @@ function ExtensionsPage() {
                 className="gap-1.5 md:w-auto"
                 style={{ background: "linear-gradient(135deg,#f58529,#dd2a7b,#8134af,#515bd4)", color: "#fff" }}
                 onClick={() => {
-                  downloadZip(EXT5_ZIP_URL, "MR-Sem-Limites-EXT5-v5.2.0.zip");
+                  downloadZip(EXT5_ZIP_URL, "MR-Sem-Limites-EXT5-v5.3.0.zip");
                   toast.success("Download da EXT5 iniciado.");
                 }}
               >
-                <Download className="h-4 w-4" /> EXT5 v5.2.0 Download
+                <Download className="h-4 w-4" /> EXT5 v5.3.0 Download
               </Button>
               <Button variant="outline" className="gap-1.5 border-emerald-500/60 text-emerald-400 hover:bg-emerald-500/10 md:w-auto" onClick={openSupport}>
                 <MessageCircle className="h-4 w-4" /> Suporte

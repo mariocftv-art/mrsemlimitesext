@@ -24,19 +24,48 @@ export async function putMedia(dataUrl: string, filenameHint?: string): Promise<
     : 'jpg'
   const filename = (filenameHint || `ig-${Date.now()}-${crypto.randomUUID().slice(0, 8)}`).replace(/\.[^.]+$/, '') + '.' + ext
 
-  const fd = new FormData()
-  fd.append('reqtype', 'fileupload')
-  fd.append('fileToUpload', new Blob([bytes as BlobPart], { type: mime }), filename)
+  const blob = new Blob([bytes as BlobPart], { type: mime })
 
-  const res = await fetch('https://catbox.moe/user/api.php', {
-    method: 'POST',
-    body: fd,
-  })
-  const text = (await res.text()).trim()
-  if (!res.ok || !/^https?:\/\//i.test(text)) {
-    throw new Error(`Upload público falhou: ${text || res.status}`)
-  }
-  return text
+  // Tenta múltiplos hosts públicos até um funcionar.
+  const errors: string[] = []
+
+  // 1) tmpfiles.org — JSON, sem chave, persistente
+  try {
+    const fd = new FormData()
+    fd.append('file', blob, filename)
+    const r = await fetch('https://tmpfiles.org/api/v1/upload', { method: 'POST', body: fd })
+    const j: any = await r.json().catch(() => ({}))
+    const url: string | undefined = j?.data?.url
+    if (r.ok && url) {
+      // converte /dl/ para download direto
+      return url.replace('tmpfiles.org/', 'tmpfiles.org/dl/')
+    }
+    errors.push(`tmpfiles: ${r.status} ${JSON.stringify(j).slice(0,200)}`)
+  } catch (e: any) { errors.push(`tmpfiles: ${e?.message || e}`) }
+
+  // 2) 0x0.st — retorna URL em texto
+  try {
+    const fd = new FormData()
+    fd.append('file', blob, filename)
+    const r = await fetch('https://0x0.st', { method: 'POST', body: fd, headers: { 'User-Agent': 'MR-Sem-Limites/1.0' } })
+    const text = (await r.text()).trim()
+    if (r.ok && /^https?:\/\//i.test(text)) return text
+    errors.push(`0x0: ${r.status} ${text.slice(0,200)}`)
+  } catch (e: any) { errors.push(`0x0: ${e?.message || e}`) }
+
+  // 3) catbox.moe — fallback final
+  try {
+    const fd = new FormData()
+    fd.append('reqtype', 'fileupload')
+    fd.append('fileToUpload', blob, filename)
+    const r = await fetch('https://catbox.moe/user/api.php', { method: 'POST', body: fd })
+    const text = (await r.text()).trim()
+    if (r.ok && /^https?:\/\//i.test(text)) return text
+    errors.push(`catbox: ${r.status} ${text.slice(0,200)}`)
+  } catch (e: any) { errors.push(`catbox: ${e?.message || e}`) }
+
+  throw new Error(`Todos os hosts falharam. ${errors.join(' | ')}`)
+
 }
 
 const cors = {

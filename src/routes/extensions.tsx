@@ -105,52 +105,10 @@ function ExtensionsPage() {
   const extensions = useFactoryExtensions();
   const ext1 = extensions.find((e) => e.code === "EXT1");
   const ext1Zip = ext1?.packagedZip ?? EXT1_ZIP_URL;
-  const [filter, setFilter] = useState<Filter>("all");
-  const [query, setQuery] = useState("");
-  const [sort, setSort] = useState<Sort>("updated");
   const [wizardOpen, setWizardOpen] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
   const [editing, setEditing] = useState<ExtensionRecord | null>(null);
 
-
-  const filtered = useMemo(() => {
-    let list = extensions.slice();
-    if (filter !== "all") list = list.filter((e) => e.status === filter);
-    if (query.trim()) {
-      const q = query.toLowerCase();
-      list = list.filter(
-        (e) =>
-          e.name.toLowerCase().includes(q) ||
-          e.code.toLowerCase().includes(q) ||
-          e.slug.toLowerCase().includes(q),
-      );
-    }
-    list.sort((a, b) => {
-      switch (sort) {
-        case "name":
-          return a.name.localeCompare(b.name);
-        case "version":
-          return b.version.localeCompare(a.version);
-        case "status":
-          return a.status.localeCompare(b.status);
-        default:
-          return b.updatedAt.localeCompare(a.updatedAt);
-      }
-    });
-    return list;
-  }, [extensions, filter, query, sort]);
-
-  const counts = useMemo(() => {
-    const c: Record<Filter, number> = {
-      all: extensions.length,
-      production: 0,
-      development: 0,
-      testing: 0,
-      archived: 0,
-    };
-    for (const e of extensions) c[e.status]++;
-    return c;
-  }, [extensions]);
 
   const downloadExt1 = () => {
     downloadZip(ext1Zip, "MR Sem Limites EXT1.zip");

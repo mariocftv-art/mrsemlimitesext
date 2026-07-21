@@ -88,7 +88,7 @@ const EXT1_ZIP_URL = "/MR%20Sem%20Limites%20EXT1.zip";
 const EXT2_ZIP_URL = "/__l5e/assets-v1/ce8b8538-9670-4dc9-80ef-8143186ab254/MR Sem Limites EXT2.zip";
 const EXT3_ZIP_URL = "/__l5e/assets-v1/e5691ba7-8515-4004-bb77-b0df44b06628/MR-Sem-Limites-EXT3-v3.2.6.zip";
 const EXT4_ZIP_URL = "/__l5e/assets-v1/a9e2a317-8481-456e-9dc6-5df018c0cc59/MR Sem Limite Manus.zip";
-const EXT5_ZIP_URL = "/__l5e/assets-v1/f7b0013d-d9b2-43f5-aac1-7779d1407f1d/MR-Sem-Limites-EXT5-v5.3.3.zip";
+const EXT5_ZIP_URL = "/__l5e/assets-v1/6fb6681f-fb5e-4160-9f67-5873bdffba3d/MR-Sem-Limites-EXT5-v5.3.4.zip";
 
 type Filter = "all" | ExtensionStatus;
 type Sort = "name" | "version" | "updated" | "status";

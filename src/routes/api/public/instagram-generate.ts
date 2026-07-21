@@ -59,6 +59,7 @@ export const Route = createFileRoute('/api/public/instagram-generate')({
           const videoScript = (parsed.video_script || '').toString().trim()
 
           let mediaUrl = ''
+          let mediaB64 = ''
           if (wantMedia) {
             // 2) Imagem/capa via Gateway de imagens (Nano Banana 2)
             const imgPrompt = `Instagram ${type === 'reel' ? 'vertical 9:16 cover frame for an animated Reel preview' : 'square 1:1'} image. ${prompt}. Ultra realistic, cinematic lighting, vibrant colors, professional composition, high engagement social media aesthetic.`
@@ -81,6 +82,7 @@ export const Route = createFileRoute('/api/public/instagram-generate')({
             if (!b64) {
               return new Response(JSON.stringify({ error: 'A IA não retornou uma imagem. Tente um prompt mais direto (evite marcas ou pessoas reais).' }), { status: 502, headers: cors })
             }
+            mediaB64 = b64
             try {
               mediaUrl = await putMedia(`data:image/png;base64,${b64}`, `ig-${type}-${Date.now()}.png`)
             } catch (e: any) {
@@ -88,7 +90,7 @@ export const Route = createFileRoute('/api/public/instagram-generate')({
             }
           }
 
-          return new Response(JSON.stringify({ title, caption, media_url: mediaUrl, prompt, type, video_script: videoScript }), { status: 200, headers: cors })
+          return new Response(JSON.stringify({ title, caption, media_url: mediaUrl, media_b64: mediaB64 || null, prompt, type, video_script: videoScript }), { status: 200, headers: cors })
         } catch (e: any) {
           return new Response(JSON.stringify({ error: e?.message || 'Erro' }), { status: 500, headers: cors })
         }

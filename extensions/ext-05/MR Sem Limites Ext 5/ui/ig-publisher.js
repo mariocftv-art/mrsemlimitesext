@@ -348,7 +348,9 @@
           if (img) { img.src = d.media_url; img.style.display = 'block'; }
           log('🎬 Gerando prévia animada do Reel (canvas)…');
           try {
-            const rec = await makeReelPreviewFromImage(d.media_url, d.title || '');
+            // Usa base64 direto (sem CORS) pra carregar no canvas sem taint
+            const canvasSrc = d.media_b64 ? `data:image/png;base64,${d.media_b64}` : d.media_url;
+            const rec = await makeReelPreviewFromImage(canvasSrc, d.title || '');
             const publicUrl = await publishGeneratedMedia(rec.dataUrl);
             lastGeneratedMime = rec.mimeType;
             $('igMediaUrl').value = publicUrl;

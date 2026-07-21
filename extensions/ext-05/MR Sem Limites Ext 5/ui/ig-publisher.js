@@ -565,16 +565,8 @@
       card.addEventListener('mouseleave', () => { card.style.background = 'rgba(255,255,255,.03)'; card.style.borderColor = 'rgba(255,255,255,.1)'; });
       card.addEventListener('click', () => {
         $('igPrompt').value = it.p;
-        // Se for prompt de vídeo, marca Reel
-        if (gridId === 'igVidPromptGrid') {
-          document.querySelectorAll('.igTypeBtn').forEach((b) => {
-            const isReel = b.dataset.type === 'reel';
-            b.classList.toggle('active', isReel);
-            b.style.background = isReel ? 'rgba(225,48,108,.15)' : 'transparent';
-            b.style.border = isReel ? '1px solid rgba(225,48,108,.4)' : '1px solid rgba(255,255,255,.1)';
-          });
-          currentType = 'reel';
-        }
+        // Auto-seleciona o tipo: vídeo → Reel; imagem → Post
+        setType(gridId === 'igVidPromptGrid' ? 'reel' : 'post');
         // Volta pra sub-aba Criar
         switchSub('create');
         $('igPrompt').focus();

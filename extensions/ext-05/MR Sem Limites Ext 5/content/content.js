@@ -669,8 +669,6 @@
 
   function bindExtensionMessages() {
     chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
-      if (msg?.type === 'MRSL_PING') { sendResponse({ ok: true, pong: true }); return; }
-      
       
       if (msg?.type === 'VOICE_START_TAB') {
         if (window._lovVoiceRec) { try { window._lovVoiceRec.abort(); } catch(e) {} }
@@ -685,12 +683,6 @@
         rec.continuous = true;
         rec.interimResults = true;
         let finalText = msg.existingText || '';
-        let silenceTimer = null;
-        const clearSilenceTimer = () => { if (silenceTimer) clearTimeout(silenceTimer); silenceTimer = null; };
-        const armSilenceTimer = () => {
-          clearSilenceTimer();
-          silenceTimer = setTimeout(() => { try { rec.stop(); } catch(e) {} }, 2000);
-        };
         rec.onstart = () => chrome.runtime.sendMessage({ type: 'VOICE_STATUS', status: 'started' }).catch(() => {});
         rec.onresult = (event) => {
           let interim = '';
@@ -700,24 +692,16 @@
             else { interim += t; }
           }
           chrome.runtime.sendMessage({ type: 'VOICE_RESULT', text: finalText + (interim ? ' ' + interim : '') }).catch(() => {});
-          if ((finalText || interim).trim()) armSilenceTimer();
         };
         rec.onerror = (event) => {
           if (event.error !== 'aborted') chrome.runtime.sendMessage({ type: 'VOICE_ERROR', error: event.error }).catch(() => {});
         };
         rec.onend = () => {
-          clearSilenceTimer();
           chrome.runtime.sendMessage({ type: 'VOICE_STATUS', status: 'ended' }).catch(() => {});
           window._lovVoiceRec = null;
         };
         window._lovVoiceRec = rec;
-        try { rec.start(); }
-        catch (e) {
-          window._lovVoiceRec = null;
-          chrome.runtime.sendMessage({ type: 'VOICE_ERROR', error: e?.message || 'start-failed' }).catch(() => {});
-          sendResponse({ ok: false });
-          return;
-        }
+        rec.start();
         sendResponse({ ok: true });
         return;
       }
@@ -775,16 +759,10 @@
             // Encontrar textarea do chat do Lovable
             const findInput = () => {
               const sels = [
-                '[data-testid*="chat" i] textarea',
-                '[data-testid*="composer" i] textarea',
                 'textarea[placeholder*="adorável" i]',
                 'textarea[placeholder*="Pergunte" i]',
-                'textarea[placeholder*="Ask" i]',
-                'textarea[placeholder*="message" i]',
                 'form textarea',
                 'textarea',
-                'div[role="textbox"]',
-                '[contenteditable="plaintext-only"]',
                 '[contenteditable="true"]',
               ];
               for (const s of sels) {
@@ -855,22 +833,9 @@
                 el.dispatchEvent(new Event('input', { bubbles: true }));
                 el.dispatchEvent(new Event('change', { bubbles: true }));
               } else {
-                // contenteditable / ProseMirror: inserir como digitação real para o React perceber.
-                try {
-                  const sel = window.getSelection();
-                  const range = document.createRange();
-                  range.selectNodeContents(el);
-                  range.collapse(false);
-                  sel.removeAllRanges();
-                  sel.addRange(range);
-                  document.execCommand('selectAll', false, null);
-                  document.execCommand('insertText', false, text);
-                } catch (_) {
-                  el.textContent = text;
-                }
-                el.dispatchEvent(new InputEvent('beforeinput', { bubbles: true, cancelable: true, inputType: 'insertText', data: text }));
+                // contenteditable
+                el.innerText = text;
                 el.dispatchEvent(new InputEvent('input', { bubbles: true, inputType: 'insertText', data: text }));
-                el.dispatchEvent(new Event('change', { bubbles: true }));
               }
             }
 
@@ -886,9 +851,6 @@
               if (cand) return cand;
               // 2) aria-label enviar/send
               cand = btns.find(b => /enviar|send/i.test((b.getAttribute('aria-label') || '') + ' ' + (b.textContent || '')));
-              if (cand) return cand;
-              // 2.5) botões próximos ao composer com title/data-testid de envio
-              cand = btns.find(b => /send|submit|enviar|arrow/i.test((b.getAttribute('title') || '') + ' ' + (b.getAttribute('data-testid') || '') + ' ' + (b.className || '')));
               if (cand) return cand;
               // 3) botão que contém svg de "arrow-up" / "send"
               cand = btns.find(b => {
@@ -934,89 +896,7 @@
             if (stillHasText) {
               if (!tryRequestSubmit()) tryEnter();
             }
-            await new Promise(r => setTimeout(r, 500));
-            const textAfterRetry = (el.value ?? el.innerText ?? el.textContent ?? '').trim();
-            if (textAfterRetry.length > 0 && (!btn || btn.disabled || btn.getAttribute('aria-disabled') === 'true')) {
-              sendResponse({ ok: false, error: 'texto digitado, mas botão Enviar não habilitou no Lovable' });
-              return;
-            }
             sendResponse({ ok: true, via });
-          } catch (e) {
-            sendResponse({ ok: false, error: e?.message || String(e) });
-          }
-        })();
-        return true;
-      }
-      if (msg?.type === 'READ_LOVABLE_LAST_REPLY') {
-        (async () => {
-          try {
-            const sentMarker = String(msg.sentText || '').trim().slice(0, 120);
-            const timeoutMs = Math.min(Number(msg.timeoutMs) || 45000, 90000);
-            const stableMs = Math.min(Number(msg.stableMs) || 1200, 6000);
-            const start = Date.now();
-
-            const findChatContainer = () => {
-              const candidates = Array.from(document.querySelectorAll('main, section, div, article'));
-              let best = null, bestScore = 0;
-              for (const el of candidates) {
-                const style = getComputedStyle(el);
-                if (style.overflowY !== 'auto' && style.overflowY !== 'scroll') continue;
-                if (el.scrollHeight <= el.clientHeight + 20) continue;
-                const txt = el.innerText || '';
-                if (sentMarker && !txt.includes(sentMarker)) continue;
-                if (el.scrollHeight > bestScore) { bestScore = el.scrollHeight; best = el; }
-              }
-              return best || document.querySelector('main') || document.body;
-            };
-
-            // Aguarda o texto enviado aparecer no DOM
-            let container = null;
-            for (let i = 0; i < 18; i++) {
-              container = findChatContainer();
-              const t = container?.innerText || '';
-              if (!sentMarker || t.includes(sentMarker)) break;
-              await new Promise(r => setTimeout(r, 350));
-            }
-            container = container || document.body;
-
-            const cleanAssistantTail = (raw) => {
-              let text = String(raw || '').replace(/\r/g, '\n');
-              const marker = text.match(/ORBE[_\s-]*RESPOSTA\s*:\s*/i);
-              if (marker) text = text.slice((marker.index || 0) + marker[0].length);
-              text = text.replace(/\[[^\]]*ORBE_TURN_[^\]]*\]/gi, ' ');
-              const blocked = /(claude|gpt|gemini|lovable)\s+(?:encontrou|achou|detectou|usou|selecionou|selection|page|página|pagina)|\b(selection|uber page|tool|ferramenta|arquivo|comando enviado|executando|modificando|aplicando|editou|alterou)\b|modo conversa|direcionamento ia|mr sem limites|orbe_turn/i;
-              return text
-                .split('\n')
-                .map((line) => line.trim())
-                .filter((line) => line && !blocked.test(line))
-                .join(' ')
-                .replace(/```[\s\S]*?```/g, ' ')
-                .replace(/\s+/g, ' ')
-                .trim();
-            };
-
-            const extractTail = () => {
-              const liveContainer = findChatContainer() || container || document.body;
-              const full = liveContainer.innerText || '';
-              const idx = sentMarker ? full.lastIndexOf(sentMarker) : -1;
-              const tail = idx >= 0 ? full.slice(idx + sentMarker.length) : full.slice(-6000);
-              return cleanAssistantTail(tail);
-            };
-
-            let lastLen = 0, lastText = '', stableStart = Date.now();
-            while (Date.now() - start < timeoutMs) {
-              const tail = extractTail();
-              if (tail.length !== lastLen) {
-                lastLen = tail.length;
-                lastText = tail;
-                stableStart = Date.now();
-              } else if (tail.length > 15 && Date.now() - stableStart >= stableMs) {
-                sendResponse({ ok: true, reply: lastText });
-                return;
-              }
-              await new Promise(r => setTimeout(r, 350));
-            }
-            sendResponse({ ok: !!lastText, reply: lastText, error: lastText ? undefined : 'timeout aguardando resposta' });
           } catch (e) {
             sendResponse({ ok: false, error: e?.message || String(e) });
           }

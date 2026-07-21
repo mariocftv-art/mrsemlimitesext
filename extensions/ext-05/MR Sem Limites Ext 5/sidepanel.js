@@ -32,19 +32,15 @@
  * ╚══════════════════════════════════════════════════════════════════════════════╝
  */
 
-const EXTENSION_VERSION = '5.1.4-EXT5-INSTAGRAM'; 
-const EXTENSION_API_VERSION = '5.1.4';      
+const EXTENSION_VERSION = '5.1.0-NEON-NOIR'; 
+const EXTENSION_API_VERSION = '5.1.0';      
 console.log(`🚀 MR Ext Sem Limites v${EXTENSION_VERSION} (MRSL) iniciando...`);
 
 
 const SUPABASE_URL = "https://mrsemlimites.lovable.app/api/public/ext";
 const SUPABASE_ANON_KEY = "mrlov";
 const REMOTE_ORIGIN = SUPABASE_URL;
-const REMOTE_PANEL_ORIGIN = "https://mrsemlimitesext.lovable.app";
-const REMOTE_PANEL_URL = `${REMOTE_PANEL_ORIGIN}/ext3-remote-panel.html`;
-const ORBE_CHAT_API = `${REMOTE_PANEL_ORIGIN}/api/public/orbe-chat`;
-const ORBE_TTS_API = `${REMOTE_PANEL_ORIGIN}/api/public/orbe-tts`;
-const WHATSAPP_FALLBACK_URL = 'https://wa.me/5511956915920';
+const WHATSAPP_FALLBACK_URL = 'https://w.app/lovableilimitado';
 
 let licenseSessionToken = null;
 let licenseKey = null;
@@ -233,56 +229,6 @@ function openWhatsAppSupport() {
     });
   } catch { window.open(url || WHATSAPP_FALLBACK_URL, '_blank'); }
 }
-
-let _mrMaleVoice = null;
-function pickMaleVoice() {
-  try {
-    const synth = window.speechSynthesis;
-    if (!synth) return null;
-    const voices = synth.getVoices() || [];
-    if (!voices.length) return null;
-    // eSpeak soa robotizado — evita sempre que possível
-    const isBad = (v) => /espeak|festival/i.test(v.name);
-    const pt = voices.filter(v => /pt(-|_)?BR|portuguese|português/i.test(v.lang + ' ' + v.name) && !isBad(v));
-    // Preferência: Google (natural neural) > Microsoft > outros; masculino > neutro
-    const rank = (v) => {
-      let s = 0;
-      if (/google/i.test(v.name)) s += 100;
-      if (/microsoft.*(antonio|daniel|fabio)/i.test(v.name)) s += 90;
-      if (/microsoft/i.test(v.name)) s += 60;
-      if (/natural|neural|online/i.test(v.name)) s += 40;
-      if (/(antonio|daniel|ricardo|felipe|luciano|thiago|paulo|fabio|male|masc)/i.test(v.name)) s += 30;
-      if (/(helena|luciana|maria|fernanda|camila|female|fem)/i.test(v.name)) s -= 20;
-      if (/pt-BR/i.test(v.lang)) s += 10;
-      return s;
-    };
-    const sorted = pt.slice().sort((a, b) => rank(b) - rank(a));
-    return sorted[0] || voices.find(v => /pt/i.test(v.lang) && !isBad(v)) || null;
-  } catch { return null; }
-}
-function speakText(text) {
-  const clean = String(text || '').trim();
-  if (!clean) return false;
-  try {
-    const synth = window.speechSynthesis;
-    if (!synth) return false;
-    synth.cancel();
-    const utterance = new SpeechSynthesisUtterance(clean);
-    utterance.lang = 'pt-BR';
-    utterance.rate = 1.0;
-    utterance.pitch = 1.0;
-    utterance.volume = 1;
-    const v = _mrMaleVoice || pickMaleVoice();
-    if (v) { _mrMaleVoice = v; utterance.voice = v; }
-    synth.speak(utterance);
-    return true;
-  } catch (e) {
-    console.warn('[MRSL] Falha no TTS:', e?.message || e);
-    return false;
-  }
-}
-try { window.speechSynthesis?.addEventListener?.('voiceschanged', () => { _mrMaleVoice = pickMaleVoice(); }); } catch {}
-
 
 async function getAuthData() {
   try {
@@ -490,11 +436,9 @@ async function getProjectFromActiveTab() {
 }
 
 function setupBridge(iframe) {
-  const ALLOWED_ORIGIN = REMOTE_PANEL_ORIGIN;
+  const ALLOWED_ORIGIN = REMOTE_ORIGIN;
 
   window.addEventListener('message', async (event) => {
-    if (event.source !== iframe.contentWindow) return;
-    if (event.origin && event.origin !== ALLOWED_ORIGIN) return;
     const { requestId, command, payload } = event.data || {};
     if (!requestId || !command) return;
 
@@ -574,8 +518,6 @@ function setupBridge(iframe) {
         if (!tab?.id || !/lovable\.dev|lovableproject\.com/.test(tab.url || '')) {
           error = 'Abra a aba da plataforma com o projeto antes de enviar.'; break;
         }
-        try { await ensureLovableContentScript(tab.id); }
-        catch (e) { error = e?.message || 'Não consegui carregar o content script na aba Lovable.'; break; }
         const injected = await new Promise((resolve) => {
           chrome.tabs.sendMessage(tab.id, { type: 'TYPE_AND_SEND_IN_LOVABLE', text: msgText }, (resp) => {
             void chrome.runtime.lastError;
@@ -587,18 +529,6 @@ function setupBridge(iframe) {
         } else {
           error = injected.error || 'Falha ao digitar no chat';
         }
-        break;
-      }
-      case 'lovable.sendAndRead': {
-        const msgText = String(payload?.message || '').trim();
-        if (!msgText) { error = 'Mensagem vazia'; break; }
-        const check = await revalidateLicense();
-        if (!check.valid) { error = check.message || 'Licença inválida'; break; }
-        const reply = await sendAndReadLovableReply(msgText, {
-          timeoutMs: payload?.timeoutMs || 60000,
-          stableMs: payload?.stableMs || 1200,
-        });
-        result = { reply };
         break;
       }
       case 'lovable.publish': {
@@ -818,47 +748,6 @@ function setupBridge(iframe) {
           break;
         }
 
-        case 'support.open': {
-          openWhatsAppSupport();
-          result = { ok: true };
-          break;
-        }
-
-        case 'extension.forceUpdate': {
-          result = { ok: true, message: 'Atualizando painel remoto...' };
-          try {
-            if (typeof caches !== 'undefined') {
-              const keys = await caches.keys();
-              await Promise.all(keys.map((key) => caches.delete(key)));
-            }
-          } catch (_) {}
-          setTimeout(() => {
-            try { iframe.src = `${REMOTE_PANEL_URL}?v=${Date.now()}`; } catch (_) {}
-          }, 80);
-          break;
-        }
-
-        case 'voice.start': {
-          chrome.runtime.sendMessage({
-            type: 'VOICE_START',
-            lang: payload?.lang || 'pt-BR',
-            existingText: payload?.existingText || ''
-          }, () => { void chrome.runtime.lastError; });
-          result = { ok: true };
-          break;
-        }
-
-        case 'voice.stop': {
-          chrome.runtime.sendMessage({ type: 'VOICE_STOP' }, () => { void chrome.runtime.lastError; });
-          result = { ok: true };
-          break;
-        }
-
-        case 'voice.speak': {
-          result = { ok: speakText(payload?.text || '') };
-          break;
-        }
-
         default:
           error = `Unknown command: ${command}`;
       }
@@ -878,21 +767,14 @@ function setupBridge(iframe) {
         requestId: 'capture_' + Date.now(),
         command: 'chat.captured',
         payload: { content: message.content, source: message.source, timestamp: message.timestamp }
-      }, ALLOWED_ORIGIN);
+      }, '*');
     }
     if (message.action === 'suggestionsCapturedRelay' && Array.isArray(message.items)) {
       iframe.contentWindow?.postMessage({
         requestId: 'sugg_' + Date.now(),
         command: 'lovable.suggestions',
         payload: { items: message.items }
-      }, ALLOWED_ORIGIN);
-    }
-    if (message.type === 'VOICE_STATUS' || message.type === 'VOICE_RESULT' || message.type === 'VOICE_ERROR') {
-      iframe.contentWindow?.postMessage({
-        requestId: 'voice_' + Date.now(),
-        command: 'voice.event',
-        payload: message
-      }, ALLOWED_ORIGIN);
+      }, '*');
     }
     // Repassa revogação de licença para o iframe
     if (message.type === 'LICENSE_REVOKED') {
@@ -900,7 +782,7 @@ function setupBridge(iframe) {
         requestId: 'license_' + Date.now(),
         command: 'license.revoked',
         payload: {}
-      }, ALLOWED_ORIGIN);
+      }, '*');
     }
   });
 
@@ -914,9 +796,7 @@ function showLicenseScreen() {
   const mainApp = document.getElementById('mainApp');
   if (ls) ls.style.display = 'flex';
   if (mainApp) { mainApp.style.display = 'none'; }
-  try { document.body.classList.add('mr-locked'); } catch(_){}
 }
-
 
 async function fetchRemoteUiHtml() {
   const url = `${SUPABASE_URL}/functions/v1/serve-extension-ui?sessionToken=${encodeURIComponent(licenseSessionToken)}&extVersion=${EXTENSION_API_VERSION}`;
@@ -1034,8 +914,6 @@ textarea#message {
 #sendBtn:hover{transform:scale(1.08)!important;box-shadow:0 6px 24px rgba(168,85,247,.6)!important}
 #sendBtn:active{transform:scale(.95)!important}
 #sendBtn:disabled{background:rgba(168,85,247,.12)!important;box-shadow:none!important;transform:none!important;cursor:not-allowed!important}
-#sendBtn.orbe-ready{background:linear-gradient(135deg,#16a34a,#22c55e,#86efac)!important;color:#03140a!important;font-size:20px!important;font-weight:900!important;box-shadow:0 0 0 3px rgba(34,197,94,.22),0 12px 34px rgba(34,197,94,.58)!important;animation:none!important}
-#sendBtn.orbe-ready:hover{box-shadow:0 0 0 4px rgba(34,197,94,.25),0 16px 42px rgba(34,197,94,.72)!important}
 
 /* Attach button */
 #attachBtn,button#attachBtn{background:rgba(168,85,247,.08)!important;border:1.5px solid rgba(168,85,247,.28)!important;color:#a855f7!important;border-radius:12px!important;width:38px!important;height:38px!important;min-width:38px!important;display:flex!important;align-items:center!important;justify-content:center!important;cursor:pointer!important;padding:0!important;flex-shrink:0!important;transition:all .25s cubic-bezier(.4,0,.2,1)!important;backdrop-filter:blur(4px)!important}
@@ -1102,52 +980,10 @@ async function showMainApp() {
 
   if (ls) ls.style.display = 'none';
   mainApp.style.display = 'flex';
-  try { document.body.classList.remove('mr-locked'); } catch(_){}
 
-  // UI LOCAL (com todas as abas: Componentes, Imagens IA, Vídeos IA, Templates, Ferramentas, etc.)
-  // O painel remoto por iframe foi desativado a pedido do usuário — as abas ficavam ocultas.
-  // Atualizações do layout/scripts vêm dos arquivos em public/ext3-live/* via hot-loader.
+  // Inicializa a UI do chat diretamente (sem iframe)
   initDirectChat();
 }
-
-function mountRemotePanel(mainApp) {
-  try {
-    if (document.getElementById('mrRemotePanel')) return true;
-    try {
-      document.body.classList.add('mr-remote-mode');
-      ['ext3-home', 'ext3OpenHome', 'ncMenuPanel'].forEach((id) => {
-        const el = document.getElementById(id);
-        if (!el) return;
-        el.setAttribute('aria-hidden', 'true');
-        el.style.display = 'none';
-        el.style.visibility = 'hidden';
-        el.style.pointerEvents = 'none';
-      });
-    } catch (_) {}
-    mainApp.innerHTML = '';
-    mainApp.style.display = 'flex';
-    mainApp.style.padding = '0';
-    mainApp.style.margin = '0';
-    mainApp.style.width = '100%';
-    mainApp.style.height = '100vh';
-    mainApp.style.background = '#05060f';
-
-    const iframe = document.createElement('iframe');
-    iframe.id = 'mrRemotePanel';
-    iframe.title = 'MR Sem Limites painel atualizável';
-    iframe.allow = 'microphone; clipboard-read; clipboard-write';
-    iframe.referrerPolicy = 'no-referrer';
-    iframe.style.cssText = 'border:0;width:100%;height:100vh;display:block;background:#05060f;';
-    iframe.src = `${REMOTE_PANEL_URL}?v=${Date.now()}`;
-    mainApp.appendChild(iframe);
-    setupBridge(iframe);
-    return true;
-  } catch (e) {
-    console.warn('[MRSL] Falha ao montar painel remoto:', e?.message || e);
-    return false;
-  }
-}
-
 
 // ========== DIRECT CHAT UI (no iframe, no bridge) ==========
 let _chatInitialized = false;
@@ -1363,115 +1199,14 @@ function initDirectChat() {
 
   let history = [];
   let pendingFiles = [];
-  let orbeConversation = [];
-  let orbeBusy = false;
-  let finalPromptReady = false;
-  const defaultSendHtml = sendBtn?.innerHTML || '';
-  const ORBE_FAST_MODEL = 'google/gemini-3.5-flash';
-  const ORBE_SEND_TRIGGERS = [
-    /\bpode\s+enviar\b/i,
-    /\bpode\s+mandar\b/i,
-    /\bpode\s+fazer\b/i,
-    /\bmanda\s+(o\s+)?prompt\b/i,
-    /\benvia\s+(pro|para\s+o)\s+lov/i,
-    /\benviar\s+(pro|para\s+o)\s+lov/i,
-    /\bexecuta\s+(no\s+)?lov/i,
-    /\bfaz\s+(no\s+)?lov/i,
-    /\bcan\s+send\b/i,
-  ];
 
   function updateStatus(text) { if (statusEl) statusEl.textContent = text; }
-
-  function cleanText(text) {
-    return String(text || '').replace(/\s+/g, ' ').trim();
-  }
-
-  function isFinalSendCommand(text) {
-    return ORBE_SEND_TRIGGERS.some((rx) => rx.test(String(text || '')));
-  }
-
-  function setFinalPromptReady(ready) {
-    finalPromptReady = !!ready;
-    if (!sendBtn) return;
-    sendBtn.classList.toggle('orbe-ready', finalPromptReady);
-    sendBtn.title = finalPromptReady ? 'Enviar prompt final para o Lovable' : 'Enviar mensagem para a IA MR';
-    sendBtn.innerHTML = finalPromptReady ? '✓' : defaultSendHtml;
-  }
-
-  async function askOrbe(mode) {
-    const messages = orbeConversation
-      .slice(-20)
-      .map((m) => ({ role: m.role, content: cleanText(m.content).slice(0, 4000) }))
-      .filter((m) => m.content);
-    if (!messages.length) throw new Error('Converse primeiro com a IA MR.');
-    const response = await fetch(ORBE_CHAT_API, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ mode, model: ORBE_FAST_MODEL, messages }),
-    });
-    const data = await response.json().catch(() => ({}));
-    if (!response.ok || !data?.ok) throw new Error(data?.error || `IA MR HTTP ${response.status}`);
-    return cleanText(data.reply);
-  }
-
-  async function speakOrbe(text) {
-    const clean = cleanText(text).slice(0, 900);
-    if (!clean) return;
-    try {
-      const response = await fetch(ORBE_TTS_API, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: clean, voice: 'onyx' }),
-      });
-      if (!response.ok) throw new Error(`TTS HTTP ${response.status}`);
-      const buffer = await response.arrayBuffer();
-      let binary = '';
-      const bytes = new Uint8Array(buffer);
-      for (let i = 0; i < bytes.length; i += 1) binary += String.fromCharCode(bytes[i]);
-      const audio = new Audio(`data:audio/mpeg;base64,${btoa(binary)}`);
-      await audio.play();
-    } catch (e) {
-      const said = speakText(clean);
-      if (!said) updateStatus('🔊 Resposta pronta. Se o Chrome bloquear a fala, confira o volume/permissão.');
-    }
-  }
-
-  async function sendFinalPromptToLovable() {
-    if (orbeBusy) return;
-    if (!orbeConversation.some((m) => m.role === 'user')) {
-      updateStatus('⚠️ Converse com a IA MR antes de enviar ao Lovable.');
-      return;
-    }
-    orbeBusy = true;
-    sendBtn && (sendBtn.disabled = true);
-    updateStatus('🧠 Montando prompt final…');
-    try {
-      const finalPrompt = await askOrbe('final');
-      if (!finalPrompt) throw new Error('Prompt final vazio.');
-      addMessage('bot', '📤 Prompt final enviado ao Lovable:\n\n' + finalPrompt);
-      const res = await callCommand('lovable.sendMessage', { message: finalPrompt, files: [] });
-      if (res?.error) throw new Error(res.error);
-      addMessage('bot', '✅ Enviado ao Lovable. Acompanhe a execução na aba do projeto.');
-      speakOrbe('Pronto, Mr. Enviei o prompt final para o Lovable executar.');
-      orbeConversation = [];
-      setFinalPromptReady(false);
-      updateStatus('✅ Enviado ao Lovable');
-    } catch (e) {
-      addMessage('bot', '❌ ' + (e?.message || 'Erro ao enviar para o Lovable'));
-      updateStatus('❌ Falha ao enviar');
-    } finally {
-      orbeBusy = false;
-      sendBtn && (sendBtn.disabled = false);
-      messageEl?.focus();
-    }
-  }
 
   function addMessage(role, text) {
     history.push({ role, text });
     callCommand('storage.set', { data: { history } });
     renderHistory();
   }
-  window.mrAppendPromptToChat = (text, role = 'user') => addMessage(role, String(text || ''));
 
   function renderHistory() {
     if (!historyEl) return;
@@ -1524,57 +1259,13 @@ function initDirectChat() {
   messageEl?.addEventListener('input', () => {
     messageEl.style.height = 'auto';
     messageEl.style.height = Math.min(messageEl.scrollHeight, 300) + 'px';
-    if (cleanText(messageEl.value)) setFinalPromptReady(false);
   });
 
   // Send
   async function handleSend() {
     if (!messageEl) return;
-    const msg = cleanText(messageEl.value);
-    if (!msg && pendingFiles.length === 0 && !finalPromptReady) return;
-
-    if (!msg && finalPromptReady && pendingFiles.length === 0) {
-      await sendFinalPromptToLovable();
-      return;
-    }
-
-    if (msg && isFinalSendCommand(msg) && pendingFiles.length === 0) {
-      messageEl.value = '';
-      messageEl.style.height = 'auto';
-      addMessage('user', msg);
-      await sendFinalPromptToLovable();
-      return;
-    }
-
-    if (pendingFiles.length === 0) {
-      if (orbeBusy) return;
-      orbeBusy = true;
-      sendBtn && (sendBtn.disabled = true);
-      messageEl.value = '';
-      messageEl.style.height = 'auto';
-      addMessage('user', msg);
-      orbeConversation.push({ role: 'user', content: msg });
-      updateStatus('🧠 IA MR pensando…');
-      try {
-        const reply = await askOrbe('chat');
-        const finalReply = reply || 'Entendi, Mr. Me passe mais um detalhe ou clique no verde quando quiser enviar.';
-        orbeConversation.push({ role: 'assistant', content: finalReply });
-        addMessage('bot', finalReply);
-        speakOrbe(finalReply);
-        setFinalPromptReady(true);
-        updateStatus('✅ Resposta pronta. Botão verde envia o prompt final.');
-      } catch (e) {
-        const err = 'Não consegui responder agora. ' + (e?.message || 'Tente novamente.');
-        addMessage('bot', '❌ ' + err);
-        speakOrbe(err);
-        updateStatus('❌ IA MR sem resposta');
-      } finally {
-        orbeBusy = false;
-        sendBtn && (sendBtn.disabled = false);
-        messageEl.focus();
-      }
-      return;
-    }
+    const msg = messageEl.value.trim();
+    if (!msg && pendingFiles.length === 0) return;
 
     sendBtn && (sendBtn.disabled = true);
     updateStatus('📤 Enviando...');
@@ -1614,43 +1305,18 @@ function initDirectChat() {
     }
   });
 
-  // Attach — suporta arquivos grandes (imagens, vídeos até 400MB, PDF, ZIP, etc.)
-  const MAX_FILE_BYTES = 400 * 1024 * 1024; // 400 MB
+  // Attach
   attachBtn?.addEventListener('click', () => fileInput?.click());
   fileInput?.addEventListener('change', async () => {
     if (!fileInput.files?.length) return;
     for (const file of fileInput.files) {
-      if (file.size > MAX_FILE_BYTES) {
-        alert(`❌ "${file.name}" tem ${(file.size/1024/1024).toFixed(1)}MB. Limite: 400MB.`);
-        continue;
-      }
-      const sizeMB = (file.size / 1024 / 1024).toFixed(1);
-      const isBig = file.size > 25 * 1024 * 1024;
-      if (isBig) {
-        try { statusEl && (statusEl.textContent = `📦 Preparando ${file.name} (${sizeMB}MB)…`); } catch {}
-      }
-      // Para arquivos grandes (>25MB) guardamos como Blob para evitar estouro de memória do base64.
-      // Arquivos pequenos continuam como base64 para compatibilidade com o fluxo atual.
-      if (isBig) {
-        pendingFiles.push({
-          blob: file, name: file.name, mime: file.type || 'application/octet-stream',
-          size: file.size, large: true
-        });
+      const reader = new FileReader();
+      reader.onload = () => {
+        const base64 = reader.result.split(',')[1] || '';
+        pendingFiles.push({ dataB64: base64, name: file.name, mime: file.type || 'application/octet-stream' });
         renderFilePreview();
-        try { statusEl && (statusEl.textContent = `✅ ${file.name} (${sizeMB}MB) pronto para envio.`); } catch {}
-      } else {
-        await new Promise((resolve) => {
-          const reader = new FileReader();
-          reader.onload = () => {
-            const base64 = reader.result.split(',')[1] || '';
-            pendingFiles.push({ dataB64: base64, name: file.name, mime: file.type || 'application/octet-stream', size: file.size });
-            renderFilePreview();
-            resolve();
-          };
-          reader.onerror = () => resolve();
-          reader.readAsDataURL(file);
-        });
-      }
+      };
+      reader.readAsDataURL(file);
     }
     fileInput.value = '';
   });
@@ -1777,8 +1443,6 @@ function initDirectChat() {
   // Clear
   clearBtn?.addEventListener('click', () => {
     history = [];
-    orbeConversation = [];
-    setFinalPromptReady(false);
     callCommand('storage.set', { data: { history: [] } });
     renderHistory();
   });
@@ -1786,100 +1450,25 @@ function initDirectChat() {
   // Logout
   logoutBtn?.addEventListener('click', () => callCommand('license.logout', {}));
 
-  // ========== VOICE TO TEXT (direto no clique, sem bridge assíncrono) ==========
+  // ========== VOICE TO TEXT (via Offscreen Document) ==========
   const micBtn = document.getElementById('micBtn');
   if (micBtn) {
     let _voiceRecording = false;
-    let _voiceRecognition = null;
-    let _voiceBaseText = '';
-
-    const stopNativeVoice = () => {
-      try { _voiceRecognition && _voiceRecognition.stop(); } catch (_) {}
-      _voiceRecognition = null;
-      _voiceRecording = false;
-      micBtn.classList.remove('recording');
-    };
-
-    const writeVoiceText = (text) => {
-      if (!messageEl) return;
-      messageEl.value = text || '';
-      messageEl.dispatchEvent(new Event('input', { bubbles: true }));
-      messageEl.style.height = 'auto';
-      messageEl.style.height = Math.min(messageEl.scrollHeight, 300) + 'px';
-    };
 
     micBtn.addEventListener('click', () => {
       if (_voiceRecording) {
-        stopNativeVoice();
+        chrome.runtime.sendMessage({ type: 'VOICE_STOP' }, () => void chrome.runtime.lastError);
+        _voiceRecording = false;
+        micBtn.classList.remove('recording');
         updateStatus('');
       } else {
-        const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (!SR) {
-          updateStatus('❌ Navegador não suporta reconhecimento de voz');
-          return;
-        }
-
-        try { _voiceRecognition && _voiceRecognition.abort(); } catch (_) {}
-        _voiceBaseText = (messageEl?.value || '').trim();
-        _voiceRecognition = new SR();
-        _voiceRecognition.lang = 'pt-BR';
-        _voiceRecognition.continuous = false;
-        _voiceRecognition.interimResults = true;
-
-        _voiceRecognition.onstart = () => {
-          _voiceRecording = true;
-          micBtn.classList.add('recording');
-          updateStatus('🎤 Ouvindo... fale agora');
-        };
-
-        _voiceRecognition.onresult = (event) => {
-          let transcript = '';
-          for (let i = 0; i < event.results.length; i++) {
-            transcript += event.results[i][0].transcript;
-          }
-          const nextText = [_voiceBaseText, transcript.trim()].filter(Boolean).join(' ');
-          writeVoiceText(nextText);
-          messageEl?.focus();
-        };
-
-        _voiceRecognition.onerror = async (event) => {
-          stopNativeVoice();
-          if (event?.error === 'not-allowed' || event?.error === 'service-not-allowed') {
-            let state = 'unknown';
-            try {
-              const p = await navigator.permissions.query({ name: 'microphone' });
-              state = p.state || 'unknown';
-            } catch (_) {}
-            if (state !== 'denied') {
-              updateStatus('🎤 Microfone ativo. Toque novamente e fale após o aviso de ouvindo.');
-              return;
-            }
-          }
-          const errMap = {
-            'not-allowed': '🎤 Microfone sem acesso. Permita no Chrome e tente novamente.',
-            'service-not-allowed': '🎤 Microfone bloqueado pelo Chrome. Permita no site/extensão.',
-            'no-speech': '⚠️ Nenhuma fala detectada. Tente novamente.',
-            'audio-capture': '❌ Microfone não encontrado',
-            'not-supported': '❌ Navegador não suporta reconhecimento de voz',
-          };
-          updateStatus(errMap[event?.error] || '❌ Erro: ' + (event?.error || 'voz'));
-        };
-
-        _voiceRecognition.onend = () => {
-          _voiceRecording = false;
-          micBtn.classList.remove('recording');
-          const transcribed = cleanText(messageEl?.value || '');
-          updateStatus(transcribed ? '✅ Voz recebida. IA MR respondendo…' : '');
-          messageEl?.focus();
-          if (transcribed && !orbeBusy) setTimeout(() => handleSend(), 80);
-        };
-
         updateStatus('🎤 Iniciando...');
         micBtn.classList.add('recording');
-        try { _voiceRecognition.start(); } catch (e) {
-          stopNativeVoice();
-          updateStatus('❌ Erro ao iniciar microfone');
-        }
+        chrome.runtime.sendMessage({
+          type: 'VOICE_START',
+          lang: 'pt-BR',
+          existingText: messageEl?.value || ''
+        }, () => void chrome.runtime.lastError);
       }
     });
 
@@ -1892,10 +1481,8 @@ function initDirectChat() {
         } else if (msg.status === 'ended') {
           _voiceRecording = false;
           micBtn.classList.remove('recording');
-          const transcribed = cleanText(messageEl?.value || '');
-          updateStatus(transcribed ? '✅ Voz recebida. IA MR respondendo…' : '');
+          updateStatus(messageEl?.value?.trim() ? '✅ Texto transcrito' : '');
           messageEl?.focus();
-          if (transcribed && !orbeBusy) setTimeout(() => handleSend(), 80);
         }
       } else if (msg.type === 'VOICE_RESULT' && messageEl) {
         messageEl.value = msg.text || '';
@@ -1904,12 +1491,8 @@ function initDirectChat() {
       } else if (msg.type === 'VOICE_ERROR') {
         _voiceRecording = false;
         micBtn.classList.remove('recording');
-        if (msg.error === 'not-allowed' || msg.error === 'service-not-allowed') {
-          updateStatus('🎤 Microfone ativo. Toque novamente e fale após o aviso de ouvindo.');
-          return;
-        }
         const errMap = {
-          'not-allowed': '🎤 Microfone sem acesso. Permita no Chrome e tente novamente.',
+          'not-allowed': '❌ Microfone bloqueado. Permita em chrome://settings/content/microphone',
           'no-speech': '⚠️ Nenhuma fala detectada. Tente novamente.',
           'audio-capture': '❌ Microfone não encontrado',
           'not-supported': '❌ Navegador não suporta reconhecimento de voz',
@@ -2215,41 +1798,6 @@ Regras: NÃO quebrar funcionalidades, NÃO remover features, NÃO alterar design
   console.log('[MRSL] Chat direto inicializado — sem iframe');
 }
 
-// Garante que o content script da EXT3 esteja injetado na aba do Lovable.
-// Se o ping falhar, injeta inject.js + content.js + sound-detector.js
-// programaticamente — evita o erro "sem resposta do content script"
-// quando a aba foi aberta antes da extensão ser instalada/atualizada.
-async function ensureLovableContentScript(tabId) {
-  const ping = () => new Promise((resolve) => {
-    try {
-      chrome.tabs.sendMessage(tabId, { type: 'MRSL_PING' }, (r) => {
-        void chrome.runtime.lastError;
-        resolve(!!(r && r.ok));
-      });
-    } catch (_) { resolve(false); }
-  });
-  if (await ping()) return true;
-  try {
-    await chrome.scripting.executeScript({
-      target: { tabId, allFrames: false },
-      world: 'MAIN',
-      files: ['content/inject.js'],
-    });
-  } catch (_) {}
-  try {
-    await chrome.scripting.executeScript({
-      target: { tabId, allFrames: false },
-      files: ['content/content.js', 'content/sound-detector.js'],
-    });
-  } catch (e) {
-    throw new Error('Não consegui carregar o content script na aba Lovable: ' + (e?.message || e));
-  }
-  // pequeno delay pro listener registrar
-  await new Promise((r) => setTimeout(r, 250));
-  return await ping();
-}
-window.ensureLovableContentScript = ensureLovableContentScript;
-
 async function sendDirectLovableMessage(messageText) {
   const check = await revalidateLicense();
   if (!check.valid) throw new Error(check.message || 'Licença inválida');
@@ -2259,8 +1807,10 @@ async function sendDirectLovableMessage(messageText) {
     throw new Error('Abra um projeto na aba ativa primeiro.');
   }
 
-  await ensureLovableContentScript(tab.id);
-
+  // Segue exatamente o mesmo caminho da bolinha verde: manda o content script
+  // digitar no chat nativo do Lovable e clicar Enviar. O interceptor de fetch
+  // (inject.js) aplica o fluxo ativo no envio real. O handler também reativa
+  // a bolinha caso ela tenha sumido.
   const resp = await new Promise((resolve) => {
     try {
       chrome.tabs.sendMessage(tab.id, { type: 'TYPE_AND_SEND_IN_LOVABLE', text: messageText }, (r) => {
@@ -2277,42 +1827,6 @@ async function sendDirectLovableMessage(messageText) {
 }
 
 window.sendDirectLovableMessage = sendDirectLovableMessage;
-
-
-// Envia uma mensagem para o Lovable e aguarda a resposta do assistente
-// aparecer no chat. Usado pela Orbe no MODO CONVERSA para trocar ideias
-// com a IA escolhida no ia-picker antes de mandar o prompt final.
-async function sendAndReadLovableReply(messageText, opts = {}) {
-  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  if (!tab?.id || !/lovable\.dev|lovableproject\.com/.test(tab.url || '')) {
-    throw new Error('Abra um projeto Lovable na aba ativa primeiro.');
-  }
-  await ensureLovableContentScript(tab.id);
-  const sendResp = await new Promise((resolve) => {
-    try {
-      chrome.tabs.sendMessage(tab.id, { type: 'TYPE_AND_SEND_IN_LOVABLE', text: messageText }, (r) => {
-        void chrome.runtime.lastError;
-        resolve(r || { ok: false, error: 'sem resposta do content script' });
-      });
-    } catch (e) { resolve({ ok: false, error: e?.message || String(e) }); }
-  });
-  if (!sendResp?.ok) throw new Error(sendResp?.error || 'Falha ao enviar mensagem.');
-
-  const marker = String(opts.marker || messageText).trim().slice(0, 120);
-  const readResp = await new Promise((resolve) => {
-    try {
-      chrome.tabs.sendMessage(tab.id, {
-        type: 'READ_LOVABLE_LAST_REPLY',
-        sentText: marker,
-        timeoutMs: opts.timeoutMs || 45000,
-        stableMs: opts.stableMs || 1200,
-      }, (r) => { void chrome.runtime.lastError; resolve(r || { ok: false, error: 'sem resposta' }); });
-    } catch (e) { resolve({ ok: false, error: e?.message || String(e) }); }
-  });
-  if (!readResp?.ok && !readResp?.reply) throw new Error(readResp?.error || 'Não consegui ler a resposta.');
-  return String(readResp.reply || '').trim();
-}
-window.sendAndReadLovableReply = sendAndReadLovableReply;
 
 document.addEventListener('DOMContentLoaded', async () => {
   const activateBtn = document.getElementById('activateBtn');

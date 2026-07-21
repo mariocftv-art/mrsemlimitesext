@@ -9,9 +9,8 @@ import { ANIMATIONS, buildAnimationPrompt } from '../data/animations.js';
 import { COMPONENTS, buildComponentPrompt } from '../data/components.js';
 import { PROMPTS, buildPromptForChat } from '../data/prompts.js';
 import { IMAGES_AI, buildImageAIPrompt } from '../data/images-ai.js';
-import { VIDEOS_AI, VIDEO_DURATIONS, buildVideoAIPrompt } from '../data/videos-ai.js';
+import { VIDEOS_AI, buildVideoAIPrompt } from '../data/videos-ai.js';
 import { TEMPLATES_SAAS, buildTemplateSaaSPrompt } from '../data/templates-saas.js';
-import { AGENTS, buildAgentPrompt } from '../data/agents.js';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
@@ -35,7 +34,7 @@ const state = {
 function loadFavoritesV2() {
   let raw = null;
   try { raw = JSON.parse(localStorage.getItem(LS_FAV_V2) || 'null'); } catch (_) {}
-  const base = { prompt: [], anim: [], comp: [], img: [], vid: [], tpl: [], agent: [] };
+  const base = { prompt: [], anim: [], comp: [], img: [], vid: [], tpl: [] };
   if (raw && typeof raw === 'object') Object.assign(base, raw);
   // migração do legado (favoritos antigos = ids de prompts)
   if (!base.prompt.length) {
@@ -72,13 +71,6 @@ function toggleFavV2(type, id) {
 /* ============================================================
  * Núcleo: enviar prompt para o chat SEM disparar envio
  * ============================================================ */
-function rememberRecent(label) {
-  if (!label) return;
-  state.recents = [{ label, at: Date.now() }, ...state.recents.filter(r => r.label !== label)].slice(0, 6);
-  saveRecents();
-  renderRecents();
-}
-
 function sendToChat(text, { switchTab = true, label = '' } = {}) {
   const ta = $('#message');
   if (!ta) { toast('Chat indisponível'); return; }
@@ -88,30 +80,11 @@ function sendToChat(text, { switchTab = true, label = '' } = {}) {
   ta.focus();
   try { ta.setSelectionRange(ta.value.length, ta.value.length); } catch (_) {}
   toast(label ? `Prompt "${label}" copiado no chat` : 'Prompt copiado no chat');
-  rememberRecent(label);
-}
-
-async function sendPromptNow(text, { label = '', source = 'tab' } = {}) {
-  const prompt = String(text || '').trim();
-  if (!prompt) return;
-  try { window.mrPromptHistory?.push(prompt, source); } catch (_) {}
-
-  if (typeof window.sendDirectLovableMessage === 'function') {
-    try {
-      window.mrAppendPromptToChat?.(prompt, 'user');
-      await window.sendDirectLovableMessage(prompt);
-      window.mrAppendPromptToChat?.('✅ Prompt enviado para o Lovable.', 'bot');
-      rememberRecent(label);
-      toast(label ? `Prompt "${label}" enviado` : 'Prompt enviado');
-      return;
-    } catch (err) {
-      window.mrAppendPromptToChat?.('❌ ' + (err?.message || 'Falha ao enviar prompt.'), 'bot');
-      toast('Falha ao enviar — deixei no chat');
-    }
+  if (label) {
+    state.recents = [{ label, at: Date.now() }, ...state.recents.filter(r => r.label !== label)].slice(0, 6);
+    saveRecents();
+    renderRecents();
   }
-
-  sendToChat(prompt, { switchTab: true, label });
-  setTimeout(() => document.getElementById('sendBtn')?.click(), 220);
 }
 
 /* ============================================================
@@ -451,45 +424,6 @@ function initPrompts() {
 }
 
 /* ============================================================
- * Seus Agentes (prompts prontos, plug-and-play)
- * ============================================================ */
-function initAgents() {
-  const gridEl = $('#mrAgentGrid'), catsEl = $('#mrAgentCats'), searchEl = $('#mrAgentSearch');
-  if (!gridEl) return;
-  const gallery = renderGallery({
-    items: AGENTS, catsEl, gridEl, searchEl,
-    getCat: a => a.cat,
-    renderItem: (a) => {
-      const fav = isFavV2('agent', a.id);
-      return `
-        <div class="mr-item">
-          <button class="mr-fav ${fav ? 'on' : ''}" data-fav-agent="${a.id}" title="Favoritar">★</button>
-          <div class="mr-preview prev-generic" style="font-size:26px">${escapeHtml(a.icon || '🤖')}</div>
-          <div class="mr-item-head"><span class="mr-item-title">${escapeHtml(a.name)}</span><span class="mr-item-cat">${escapeHtml(a.cat)}</span></div>
-          <div class="mr-item-desc">${escapeHtml(a.desc)}</div>
-          <div class="mr-item-actions">
-            <button class="mr-btn primary" data-agent-use="${a.id}">Usar agente</button>
-            <button class="mr-btn" data-agent-copy="${a.id}" title="Copiar prompt">📋</button>
-          </div>
-        </div>`;
-    },
-  });
-  gridEl.addEventListener('click', async (e) => {
-    const favBtn = e.target.closest('[data-fav-agent]');
-    if (favBtn) { toggleFavV2('agent', favBtn.dataset.favAgent); gallery.repaint(); return; }
-    const useBtn = e.target.closest('[data-agent-use]');
-    const copyBtn = e.target.closest('[data-agent-copy]');
-    const id = useBtn?.dataset.agentUse || copyBtn?.dataset.agentCopy;
-    if (!id) return;
-    const a = AGENTS.find(x => x.id === id);
-    if (!a) return;
-    const prompt = buildAgentPrompt(a);
-    if (useBtn) sendPromptNow(prompt, { label: `Agente: ${a.name}`, source: 'agent' });
-    else { try { await navigator.clipboard.writeText(prompt); toast('Prompt copiado'); } catch { toast('Falha ao copiar'); } }
-  });
-}
-
-/* ============================================================
  * Imagens IA
  * ============================================================ */
 function previewFromKey(k) {
@@ -544,16 +478,13 @@ function initVideos() {
     getCat: v => v.category,
     renderItem: (v) => {
       const fav = isFavV2('vid', v.id);
-      const durOpts = VIDEO_DURATIONS.map((d, i) => `<option value="${d.id}"${i===1?' selected':''}>${escapeHtml(d.label)}</option>`).join('');
       return `
         <div class="mr-item">
           <button class="mr-fav ${fav ? 'on' : ''}" data-fav-vid="${v.id}" title="Favoritar">★</button>
           <div class="mr-preview ${previewFromKey(v.preview)}"><span class="mr-preview-icon">${escapeHtml(v.icon || '🎬')}</span></div>
           <div class="mr-item-head"><span class="mr-item-title">${escapeHtml(v.name)}</span><span class="mr-item-cat">${escapeHtml(v.category)}</span></div>
           <div class="mr-item-desc">${escapeHtml(v.desc)}</div>
-          <div class="mr-item-actions" style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
-            <label style="font-size:11px;opacity:.75">⏱</label>
-            <select class="mr-btn mr-vid-dur" data-vid-dur="${v.id}" style="padding:4px 6px;font-size:11px">${durOpts}</select>
+          <div class="mr-item-actions">
             <button class="mr-btn primary" data-vid-use="${v.id}">Usar</button>
             <button class="mr-btn" data-vid-copy="${v.id}">📋</button>
           </div>
@@ -569,11 +500,8 @@ function initVideos() {
     if (!id) return;
     const it = VIDEOS_AI.find(x => x.id === id);
     if (!it) return;
-    const durSel = gridEl.querySelector(`select[data-vid-dur="${id}"]`);
-    const duration = durSel?.value || '30s';
-    const durLabel = durSel?.selectedOptions?.[0]?.textContent || duration;
-    const prompt = buildVideoAIPrompt(it, duration);
-    if (useBtn) sendToChat(prompt, { label: `Vídeo: ${it.name} (${durLabel})` });
+    const prompt = buildVideoAIPrompt(it);
+    if (useBtn) sendToChat(prompt, { label: `Vídeo: ${it.name}` });
     else { try { await navigator.clipboard.writeText(prompt); toast('Prompt copiado'); } catch {} }
   });
 }
@@ -628,7 +556,6 @@ const FAV_TYPES = [
   { key:'img', label:'Imagens IA' },
   { key:'vid', label:'Vídeos IA' },
   { key:'tpl', label:'Templates' },
-  { key:'agent', label:'Agentes' },
 ];
 let favActive = 'all';
 
@@ -647,7 +574,6 @@ function collectFavorites() {
   add('img',    IMAGES_AI, 'i', i => i.icon || '🎨', i => i.name, i => i.category);
   add('vid',    VIDEOS_AI, 'v', v => v.icon || '🎬', v => v.name, v => v.category);
   add('tpl',    TEMPLATES_SAAS, 't', t => t.icon || '📦', t => t.name, t => t.category);
-  add('agent',  AGENTS, 'g', a => a.icon || '🤖', a => a.name, a => a.cat);
   return out;
 }
 
@@ -658,7 +584,6 @@ function runFavorite(type, id) {
   if (type === 'img')    { const i = IMAGES_AI.find(x => x.id === id); if (i) sendToChat(buildImageAIPrompt(i), { label: `Imagem: ${i.name}` }); return; }
   if (type === 'vid')    { const v = VIDEOS_AI.find(x => x.id === id); if (v) sendToChat(buildVideoAIPrompt(v), { label: `Vídeo: ${v.name}` }); return; }
   if (type === 'tpl')    { const t = TEMPLATES_SAAS.find(x => x.id === id); if (t) sendToChat(buildTemplateSaaSPrompt(t), { label: `SaaS: ${t.name}` }); return; }
-  if (type === 'agent')  { const a = AGENTS.find(x => x.id === id); if (a) sendPromptNow(buildAgentPrompt(a), { label: `Agente: ${a.name}`, source: 'agent' }); return; }
 }
 
 function renderFavoritesPanel() {
@@ -696,48 +621,6 @@ function renderFavoritesPanel() {
     const run = e.target.closest('[data-favrun]');
     if (run) { const [t, id] = run.dataset.favrun.split(':'); runFavorite(t, id); }
   };
-}
-
-function initHeaderTabsMenu() {
-  const btn = $('#mrHeaderTabsBtn');
-  if (!btn || $('#mrHeaderTabsMenu')) return;
-
-  const style = document.createElement('style');
-  style.textContent = `
-    .mr-header-tabs-btn{width:30px;height:30px;border-radius:10px;border:1px solid rgba(34,211,238,.25);background:rgba(255,255,255,.04);color:#eaf6ff;cursor:pointer;font-size:18px;line-height:1;display:grid;place-items:center;flex:0 0 auto;transition:.18s}
-    .mr-header-tabs-btn:hover{border-color:rgba(34,211,238,.65);box-shadow:0 0 14px rgba(34,211,238,.28)}
-    .mr-header-tabs-menu{position:fixed;top:54px;left:10px;z-index:1200;width:min(300px,calc(100vw - 20px));max-height:72vh;overflow:auto;padding:10px;border-radius:14px;background:linear-gradient(180deg,rgba(8,14,36,.98),rgba(4,8,22,.98));border:1px solid rgba(75,214,255,.38);box-shadow:0 18px 50px rgba(0,0,0,.58),0 0 28px rgba(75,214,255,.18);display:grid;grid-template-columns:1fr;gap:7px}
-    .mr-header-tabs-menu.hidden{display:none}
-    .mr-header-tabs-menu button{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.08);color:#e8ecff;text-align:left;cursor:pointer;font-size:12px;font-weight:700}
-    .mr-header-tabs-menu button:hover{border-color:rgba(75,214,255,.55);background:rgba(75,214,255,.09)}
-  `;
-  document.head.appendChild(style);
-
-  const menu = document.createElement('div');
-  menu.id = 'mrHeaderTabsMenu';
-  menu.className = 'mr-header-tabs-menu hidden';
-  document.body.appendChild(menu);
-
-  const labels = {
-    chat: '💬 Chat', ias: '🧠 IAs', comp: '🧩 Componentes', anim: '✨ Animações', img: '🎨 Imagens IA',
-    vid: '🎬 Vídeos IA', tpl: '📦 Templates', prompts: '📋 Prompts', agents: '🤖 Agentes', tools: '🛠 Ferramentas',
-    fav: '⭐ Favoritos', config: '⚙ Configurações', home: '🏠 Início'
-  };
-  menu.innerHTML = Object.entries(labels).map(([key, label]) => `<button type="button" data-head-tab="${key}"><span>${escapeHtml(label)}</span><span>›</span></button>`).join('');
-
-  btn.addEventListener('click', (e) => { e.stopPropagation(); menu.classList.toggle('hidden'); });
-  menu.addEventListener('click', (e) => {
-    const item = e.target.closest('[data-head-tab]');
-    if (!item) return;
-    activateTab(item.dataset.headTab);
-    document.querySelectorAll('.mr-tab').forEach(t => t.classList.toggle('active', t.dataset.mrtab === item.dataset.headTab));
-    menu.classList.add('hidden');
-  });
-  document.addEventListener('click', (e) => {
-    if (menu.classList.contains('hidden')) return;
-    if (menu.contains(e.target) || btn.contains(e.target)) return;
-    menu.classList.add('hidden');
-  });
 }
 
 /* ============================================================
@@ -780,19 +663,12 @@ function initTools() {
   $('#mrGradGen')?.addEventListener('click', paintGrads);
 
   const icons = ['Sparkles','Zap','Rocket','Star','Heart','Home','Settings','User','Search','Bell','Mail','Cloud','Sun','Moon','Wifi','Lock','Key','Shield','Code','Terminal','Palette','Camera','Music','Video','Play','Pause','Download','Upload','Trash','Edit','Copy','Check','X','Plus','Minus','ChevronRight','ArrowRight','BarChart','PieChart','TrendingUp'];
-  const iconPrompt = (name) => {
-    const lower = String(name || '').toLowerCase();
-    if (lower === 'zap') {
-      return 'No projeto atual, adicione um botão personalizado de WhatsApp/Zap com ícone, texto curto, estado hover, responsivo e usando os tokens semânticos do design system. O botão deve abrir uma conversa no WhatsApp em nova aba com número/link configurável e ficar integrado ao layout existente sem quebrar nada.';
-    }
-    return `No projeto atual, adicione um botão/ícone personalizado usando o ícone lucide-react "${name}". Ele deve combinar com o design existente, usar tokens semânticos do design system, ter hover/focus acessível, ser responsivo e ficar integrado ao local mais adequado sem quebrar o layout.`;
-  };
   const iconRow = $('#mrIconRow');
   if (iconRow) {
     iconRow.innerHTML = icons.map(i => `<span class="mr-chip" data-icon="${i}">${i}</span>`).join('');
-    iconRow.addEventListener('click', (e) => {
+    iconRow.addEventListener('click', async (e) => {
       const c = e.target.closest('[data-icon]'); if (!c) return;
-      sendPromptNow(iconPrompt(c.dataset.icon), { label: `Ícone/Botão: ${c.dataset.icon}`, source: 'tool-icon' });
+      try { await navigator.clipboard.writeText(c.dataset.icon); toast(`Copiado: ${c.dataset.icon}`); } catch {}
     });
   }
 
@@ -868,7 +744,6 @@ function escapeAttr(s) { return escapeHtml(s).replace(/`/g, '&#96;'); }
 function boot() {
   if (!$('#mrTabs')) return;
   initPowerToggle();
-  initHeaderTabsMenu();
   initHome();
   initAnimations();
   initComponents();
@@ -877,7 +752,6 @@ function boot() {
   initVideos();
   initTemplates();
   initTools();
-  initAgents();
   initQaPro();
   initRefHint();
   initTabs(); // por último: aplica última aba salva (default: chat)

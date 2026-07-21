@@ -343,11 +343,34 @@
       if (plan) { plan.style.display = 'none'; plan.textContent = ''; }
 
       if (d.media_url) {
-        if (img) { img.src = d.media_url; img.style.display = 'block'; }
-        $('igMediaUrl').value = d.media_url;
-        if (currentType === 'reel' && plan && d.video_script) {
-          plan.textContent = '🎬 Roteiro sugerido para o Reel:\n' + d.video_script;
-          plan.style.display = 'block';
+        if (currentType === 'reel') {
+          // Reel: mostra capa temporariamente, grava vídeo animado a partir dela e sobe pra URL pública
+          if (img) { img.src = d.media_url; img.style.display = 'block'; }
+          log('🎬 Gerando prévia animada do Reel (canvas)…');
+          try {
+            const rec = await makeReelPreviewFromImage(d.media_url, d.title || '');
+            const publicUrl = await publishGeneratedMedia(rec.dataUrl);
+            lastGeneratedMime = rec.mimeType;
+            $('igMediaUrl').value = publicUrl;
+            if (img) { img.style.display = 'none'; img.removeAttribute('src'); }
+            if (vid) {
+              lastPreviewObjectUrl = URL.createObjectURL(rec.blob);
+              vid.src = lastPreviewObjectUrl;
+              vid.style.display = 'block';
+              try { vid.play(); } catch(_){}
+            }
+            if (plan && d.video_script) {
+              plan.textContent = '🎬 Roteiro sugerido para o Reel:\n' + d.video_script;
+              plan.style.display = 'block';
+            }
+          } catch (err) {
+            // Fallback: publica só a capa como imagem
+            log('⚠️ Vídeo indisponível no navegador; usando capa. ' + (err?.message || ''), false);
+            $('igMediaUrl').value = d.media_url;
+          }
+        } else {
+          if (img) { img.src = d.media_url; img.style.display = 'block'; }
+          $('igMediaUrl').value = d.media_url;
         }
       } else {
         throw new Error('A IA não retornou uma imagem. Tente um prompt mais simples.');

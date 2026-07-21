@@ -105,52 +105,10 @@ function ExtensionsPage() {
   const extensions = useFactoryExtensions();
   const ext1 = extensions.find((e) => e.code === "EXT1");
   const ext1Zip = ext1?.packagedZip ?? EXT1_ZIP_URL;
-  const [filter, setFilter] = useState<Filter>("all");
-  const [query, setQuery] = useState("");
-  const [sort, setSort] = useState<Sort>("updated");
   const [wizardOpen, setWizardOpen] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
   const [editing, setEditing] = useState<ExtensionRecord | null>(null);
 
-
-  const filtered = useMemo(() => {
-    let list = extensions.slice();
-    if (filter !== "all") list = list.filter((e) => e.status === filter);
-    if (query.trim()) {
-      const q = query.toLowerCase();
-      list = list.filter(
-        (e) =>
-          e.name.toLowerCase().includes(q) ||
-          e.code.toLowerCase().includes(q) ||
-          e.slug.toLowerCase().includes(q),
-      );
-    }
-    list.sort((a, b) => {
-      switch (sort) {
-        case "name":
-          return a.name.localeCompare(b.name);
-        case "version":
-          return b.version.localeCompare(a.version);
-        case "status":
-          return a.status.localeCompare(b.status);
-        default:
-          return b.updatedAt.localeCompare(a.updatedAt);
-      }
-    });
-    return list;
-  }, [extensions, filter, query, sort]);
-
-  const counts = useMemo(() => {
-    const c: Record<Filter, number> = {
-      all: extensions.length,
-      production: 0,
-      development: 0,
-      testing: 0,
-      archived: 0,
-    };
-    for (const e of extensions) c[e.status]++;
-    return c;
-  }, [extensions]);
 
   const downloadExt1 = () => {
     downloadZip(ext1Zip, "MR Sem Limites EXT1.zip");
@@ -305,70 +263,6 @@ function ExtensionsPage() {
 
 
 
-      <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-        <div className="flex flex-wrap gap-1.5">
-
-          {(["all", "production", "development", "testing", "archived"] as Filter[]).map((f) => (
-            <Button
-              key={f}
-              size="sm"
-              variant={filter === f ? "default" : "outline"}
-              onClick={() => setFilter(f)}
-              className="h-8 gap-1.5 text-xs"
-            >
-              {f === "all" ? "Todas" : statusMeta[f].label}
-              <span className="rounded bg-background/40 px-1.5 text-[10px] text-muted-foreground">
-                {counts[f]}
-              </span>
-            </Button>
-          ))}
-        </div>
-
-        <div className="flex gap-2">
-          <div className="relative w-full min-w-[240px]">
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Buscar por nome, código ou slug..."
-              className="h-9 border-border/60 bg-secondary/40 pl-9 text-sm"
-            />
-          </div>
-          <Select value={sort} onValueChange={(v) => setSort(v as Sort)}>
-            <SelectTrigger className="h-9 w-[180px] border-border/60 bg-secondary/40 text-sm">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="updated">Última atualização</SelectItem>
-              <SelectItem value="name">Nome</SelectItem>
-              <SelectItem value="version">Versão</SelectItem>
-              <SelectItem value="status">Status</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-
-      {filtered.length === 0 ? (
-        <Card className="glass border-border/60">
-          <CardContent className="flex flex-col items-center justify-center gap-3 py-16 text-center text-sm text-muted-foreground">
-            <Puzzle className="h-8 w-8 text-primary" />
-            <p>Nenhuma extensão corresponde aos filtros.</p>
-            <Button variant="outline" size="sm" onClick={() => setWizardOpen(true)}>
-              <Plus className="mr-1.5 h-4 w-4" /> Criar nova extensão
-            </Button>
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {filtered.map((e) => (
-            <ExtensionCard
-              key={e.id}
-              ext={e}
-              onEdit={() => setEditing(e)}
-            />
-          ))}
-        </div>
-      )}
 
       <NewExtensionWizard open={wizardOpen} onOpenChange={setWizardOpen} />
       <ImportExtensionDialog open={importOpen} onOpenChange={setImportOpen} />

@@ -452,7 +452,8 @@
           try {
             // Usa base64 direto (sem CORS) pra carregar no canvas sem taint
             const canvasSrc = d.media_b64 ? `data:image/png;base64,${d.media_b64}` : d.media_url;
-            const rec = await makeReelPreviewFromImage(canvasSrc, d.title || '');
+            const soundtrack = ($('igSoundtrack')?.value) || 'cinematic';
+            const rec = await makeReelPreviewFromImage(canvasSrc, d.title || '', soundtrack);
             const publicUrl = await publishGeneratedMedia(rec.dataUrl);
             lastGeneratedMime = rec.mimeType;
             $('igMediaUrl').value = publicUrl;

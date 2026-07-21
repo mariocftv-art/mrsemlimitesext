@@ -32,8 +32,8 @@
  * ╚══════════════════════════════════════════════════════════════════════════════╝
  */
 
-const EXTENSION_VERSION = '5.1.3-EXT5-INSTAGRAM'; 
-const EXTENSION_API_VERSION = '5.1.3';      
+const EXTENSION_VERSION = '5.1.4-EXT5-INSTAGRAM'; 
+const EXTENSION_API_VERSION = '5.1.4';      
 console.log(`🚀 MR Ext Sem Limites v${EXTENSION_VERSION} (MRSL) iniciando...`);
 
 

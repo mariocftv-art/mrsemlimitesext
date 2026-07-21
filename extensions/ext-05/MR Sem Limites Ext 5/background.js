@@ -39,6 +39,8 @@ import {
   clearLicense,
   emptyLicenseState,
 } from './lib/license.js';
+import { initAntiTamper } from './lib/anti-tamper.js';
+try { initAntiTamper(); } catch (e) { /* silencioso */ }
 
 const _PULSE_RUNTIME_OK = (() => {
   try {

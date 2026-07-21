@@ -88,7 +88,7 @@ export const Route = createFileRoute('/api/public/instagram-generate')({
             }
           }
 
-          return new Response(JSON.stringify({ title, caption, media_url: mediaUrl, prompt, type, video_script: videoScript }), { status: 200, headers: cors })
+          return new Response(JSON.stringify({ title, caption, media_url: mediaUrl, media_b64: media ? (imgB64 || null) : null, prompt, type, video_script: videoScript }), { status: 200, headers: cors })
         } catch (e: any) {
           return new Response(JSON.stringify({ error: e?.message || 'Erro' }), { status: 500, headers: cors })
         }

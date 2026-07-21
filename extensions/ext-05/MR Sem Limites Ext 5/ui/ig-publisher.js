@@ -37,16 +37,98 @@
     const label = document.querySelector('label[for="igPrompt"]') || $('igPromptLabel');
     const prompt = $('igPrompt');
     const btn = $('igGenerateBtn');
+    const stWrap = $('igSoundtrackWrap');
+    if (stWrap) stWrap.style.display = currentType === 'reel' ? 'block' : 'none';
     if (currentType === 'reel') {
-      if (label) label.textContent = 'Descreva o Reel que você quer (a IA gera capa, prévia animada, título, legenda e hashtags)';
+      if (label) label.textContent = 'Descreva o Reel que você quer (a IA gera capa, prévia animada com trilha, título, legenda e hashtags)';
       if (prompt) prompt.placeholder = 'Ex: um Reel cinematográfico da minha loja Link MR Store, mostrando tecnologia, luxo e confiança, com movimento de câmera e final chamando para seguir…';
-      if (btn) btn.textContent = '🎬 Gerar vídeo + legenda';
+      if (btn) btn.textContent = '🎬 Gerar vídeo + trilha + legenda';
     } else {
       if (label) label.textContent = 'Descreva o que você quer (a IA gera a prévia, título, legenda e hashtags)';
       if (prompt) prompt.placeholder = 'Ex: um café expresso fumegante em mesa de mármore, luz de manhã, estética minimalista para minha cafeteria…';
       if (btn) btn.textContent = currentType === 'carousel' ? '🖼 Gerar carrossel + legenda' : '🎨 Gerar imagem + legenda';
     }
   }
+
+  function setType(type) {
+    currentType = type;
+    document.querySelectorAll('.igTypeBtn').forEach((b) => {
+      const active = b.dataset.type === type;
+      b.classList.toggle('active', active);
+      b.style.background = active ? 'rgba(225,48,108,.15)' : 'transparent';
+      b.style.border = active ? '1px solid rgba(225,48,108,.4)' : '1px solid rgba(255,255,255,.1)';
+    });
+    updateModeCopy();
+  }
+
+  // ============ Trilha sonora sintetizada (Web Audio) ============
+  function buildSoundtrack(audioCtx, destination, durationSec, style) {
+    const now = audioCtx.currentTime;
+    const end = now + durationSec;
+    const master = audioCtx.createGain();
+    master.gain.setValueAtTime(0.0001, now);
+    master.gain.exponentialRampToValueAtTime(0.55, now + 0.6);
+    master.gain.setValueAtTime(0.55, end - 0.8);
+    master.gain.exponentialRampToValueAtTime(0.0001, end);
+    master.connect(destination);
+
+    const presets = {
+      cinematic: { root: 55, chord: [0, 7, 12, 16], wave: 'sawtooth', bpm: 80, kick: true, lead: [0, 7, 10, 12] },
+      upbeat:    { root: 65, chord: [0, 4, 7, 12], wave: 'square',   bpm: 124, kick: true, lead: [0, 4, 7, 12, 7, 4] },
+      chill:     { root: 49, chord: [0, 3, 7, 10], wave: 'sine',     bpm: 70,  kick: false, lead: [0, 7, 3, 10] },
+      luxury:    { root: 58, chord: [0, 4, 7, 11], wave: 'triangle', bpm: 78,  kick: false, lead: [12, 11, 7, 4, 0] },
+    };
+    const p = presets[style] || presets.cinematic;
+    const freq = (semi) => p.root * Math.pow(2, semi / 12);
+
+    // Pad harmônico
+    p.chord.forEach((semi) => {
+      const osc = audioCtx.createOscillator();
+      osc.type = p.wave;
+      osc.frequency.value = freq(semi);
+      const g = audioCtx.createGain();
+      g.gain.value = 0.08;
+      const lp = audioCtx.createBiquadFilter();
+      lp.type = 'lowpass'; lp.frequency.value = 1400;
+      osc.connect(lp).connect(g).connect(master);
+      osc.start(now); osc.stop(end + 0.1);
+    });
+
+    // Lead melódico
+    const stepDur = 60 / p.bpm / 2;
+    let t = now + 0.4;
+    let i = 0;
+    while (t < end - 0.2) {
+      const semi = p.lead[i % p.lead.length] + 12;
+      const osc = audioCtx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.value = freq(semi);
+      const g = audioCtx.createGain();
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(0.22, t + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + stepDur * 0.9);
+      osc.connect(g).connect(master);
+      osc.start(t); osc.stop(t + stepDur);
+      t += stepDur; i++;
+    }
+
+    // Kick simples
+    if (p.kick) {
+      const beat = 60 / p.bpm;
+      for (let k = now + 0.2; k < end - 0.1; k += beat) {
+        const osc = audioCtx.createOscillator();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(140, k);
+        osc.frequency.exponentialRampToValueAtTime(40, k + 0.15);
+        const g = audioCtx.createGain();
+        g.gain.setValueAtTime(0.5, k);
+        g.gain.exponentialRampToValueAtTime(0.0001, k + 0.2);
+        osc.connect(g).connect(master);
+        osc.start(k); osc.stop(k + 0.22);
+      }
+    }
+  }
+
 
   function loadImage(src) {
     return new Promise((resolve, reject) => {

@@ -1392,6 +1392,17 @@
           <label id="igPromptLabel" for="igPrompt" style="font-size:11px;opacity:.7">Descreva o que você quer (a IA gera a prévia, título, legenda e hashtags)</label>
           <textarea id="igPrompt" rows="3" placeholder="Ex: um café expresso fumegante em mesa de mármore, luz de manhã, estética minimalista para meu cafeteria…" style="width:100%;padding:10px;margin:4px 0 10px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:#fff;resize:vertical;font-family:inherit"></textarea>
 
+          <div id="igSoundtrackWrap" style="display:none;margin-bottom:10px">
+            <label for="igSoundtrack" style="font-size:11px;opacity:.7">🎵 Trilha sonora do Reel</label>
+            <select id="igSoundtrack" style="width:100%;padding:9px;margin-top:4px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:#fff;font-family:inherit">
+              <option value="cinematic">🎬 Cinematográfica (pad épico)</option>
+              <option value="upbeat">⚡ Upbeat (batida energética)</option>
+              <option value="chill">🌙 Chill (lo-fi suave)</option>
+              <option value="luxury">💎 Luxury (piano elegante)</option>
+              <option value="none">🔇 Sem trilha</option>
+            </select>
+          </div>
+
           <button id="igGenerateBtn" style="width:100%;padding:11px;border:0;border-radius:10px;background:linear-gradient(135deg,#8134af,#515bd4);color:#fff;font-weight:700;cursor:pointer;margin-bottom:10px">🎨 Gerar prévia + legenda</button>
 
           <!-- Preview -->

@@ -256,40 +256,71 @@
     { t: '📄 Página de vendas walkthrough', p: 'Reel scrollando por landing page de vendas real, mostrando headline, prova social, bônus e botão CTA, tipografia em destaque, aesthetic profissional, ensinando o funil de conversão' },
   ];
 
+  const IG_ACCOUNT_KEY = 'mrsl_ig_account';
+  function loadAccount() {
+    return new Promise((r) => {
+      try { chrome.storage.local.get([IG_ACCOUNT_KEY], (d) => r(d[IG_ACCOUNT_KEY] || null)); }
+      catch (_) { r(null); }
+    });
+  }
+  function saveAccount(a) {
+    return new Promise((r) => { try { chrome.storage.local.set({ [IG_ACCOUNT_KEY]: a }, r); } catch(_){ r(); } });
+  }
+  function clearAccount() {
+    return new Promise((r) => { try { chrome.storage.local.remove([IG_ACCOUNT_KEY], r); } catch(_){ r(); } });
+  }
+
   async function refreshStatus() {
     const st = $('igStatusText'), info = $('igAccountInfo'), pub = $('igPublishCard');
     const bc = $('igConnectBtn'), bd = $('igDisconnectBtn');
-    try {
-      const r = await fetch(STATUS_URL, { cache: 'no-store' });
-      const d = await r.json();
-      if (d.connected) {
-        st.textContent = '🟢 Conectado';
-        info.style.display = 'block';
-        info.innerHTML = `<b>@${d.username || '-'}</b> · ${d.account_type || 'IG'}<br><span style="opacity:.6">ID ${d.id}</span>`;
-        if (pub) pub.style.display = 'block';
-        if (bc) { bc.textContent = '✓ Conectado via servidor'; bc.disabled = true; bc.style.opacity = '.6'; bc.style.cursor = 'default'; }
-        if (bd) bd.style.display = 'none';
-      } else {
-        st.textContent = '🔴 Não conectado';
-        info.style.display = 'block';
-        info.textContent = d.error || 'Token não configurado';
-        if (pub) pub.style.display = 'none';
-      }
-    } catch (e) {
-      st.textContent = '⚠️ Erro ao verificar';
-      info.style.display = 'block';
-      info.textContent = String(e?.message || e);
+    const acc = await loadAccount();
+    if (acc && acc.access_token) {
+      if (st) st.textContent = '🟢 Conectado';
+      if (info) { info.style.display = 'block'; info.innerHTML = `<b>@${acc.username || '-'}</b><br><span style="opacity:.6">ID ${acc.ig_user_id || '-'}</span>`; }
+      if (pub) pub.style.display = 'block';
+      if (bc) { bc.textContent = '🔄 Reconectar Instagram'; bc.disabled = false; bc.style.opacity = '1'; bc.style.cursor = 'pointer'; }
+      if (bd) bd.style.display = 'block';
+    } else {
+      if (st) st.textContent = '🔴 Não conectado';
+      if (info) { info.style.display = 'block'; info.textContent = 'Faça login com sua conta do Instagram para publicar.'; }
+      if (pub) pub.style.display = 'none';
+      if (bc) { bc.textContent = '📸 Conectar Instagram'; bc.disabled = false; bc.style.opacity = '1'; bc.style.cursor = 'pointer'; }
+      if (bd) bd.style.display = 'none';
     }
+  }
+
+  async function startOAuth() {
+    try {
+      const returnUrl = chrome.runtime.getURL('sidepanel.html');
+      const url = `${BASE}/api/public/instagram-oauth-start?ext_return=${encodeURIComponent(returnUrl)}`;
+      const w = window.open(url, 'ig_oauth', 'width=560,height=720');
+      const handler = async (ev) => {
+        if (!ev.data || ev.data.type !== 'MRSL_IG_CONNECTED') return;
+        window.removeEventListener('message', handler);
+        await saveAccount(ev.data.account);
+        await refreshStatus();
+        try { w && w.close(); } catch(_){}
+        log('✅ Instagram conectado', true);
+      };
+      window.addEventListener('message', handler);
+    } catch (e) {
+      log('❌ ' + (e?.message || e), false);
+    }
+  }
+
+  async function disconnect() {
+    await clearAccount();
+    await refreshStatus();
+    log('🔌 Desconectado do Instagram');
   }
 
   async function generate() {
     const prompt = ($('igPrompt')?.value || '').trim();
     if (!prompt) return log('❌ Descreva o que você quer gerar', false);
     const btn = $('igGenerateBtn');
-    setBusy(btn, true, currentType === 'reel' ? '⏳ Gerando vídeo + legenda…' : '⏳ Gerando imagem + legenda…');
-    log(currentType === 'reel' ? '⏳ Gerando capa, roteiro e vídeo curto…' : '⏳ Gerando com IA (pode levar ~15s)…');
+    setBusy(btn, true, '⏳ Gerando imagem + legenda…');
+    log('⏳ Gerando com IA (pode levar ~15s)…');
     try {
-      // Viral é tratado como post com prompt mais chamativo
       const apiType = currentType === 'viral' ? 'post' : currentType;
       const finalPrompt = currentType === 'viral' ? `[Foco em máximo engajamento viral] ${prompt}` : prompt;
       const r = await fetch(GEN_URL, {
@@ -305,45 +336,25 @@
       const plan = $('igVideoPlan');
       lastGeneratedMime = '';
       $('igMediaUrl').value = '';
-      if (lastPreviewObjectUrl) {
-        URL.revokeObjectURL(lastPreviewObjectUrl);
-        lastPreviewObjectUrl = '';
-      }
+      if (lastPreviewObjectUrl) { URL.revokeObjectURL(lastPreviewObjectUrl); lastPreviewObjectUrl = ''; }
+      if (vid) { try { vid.pause(); } catch(_){} vid.style.display = 'none'; vid.removeAttribute('src'); }
       if (img) { img.style.display = 'none'; img.removeAttribute('src'); }
-      if (vid) { vid.pause(); vid.style.display = 'none'; vid.removeAttribute('src'); }
-      if (wrap) wrap.style.minHeight = currentType === 'reel' ? '240px' : '100px';
+      if (wrap) wrap.style.minHeight = '100px';
       if (plan) { plan.style.display = 'none'; plan.textContent = ''; }
 
-      // Preencher preview
       if (d.media_url) {
-        if (currentType === 'reel') {
-          if (plan && d.video_script) {
-            plan.textContent = '🎬 Roteiro gerado para o Reel:\n' + d.video_script;
-            plan.style.display = 'block';
-          }
-          const reel = await makeReelPreviewFromImage(d.media_url, d.title || prompt);
-          lastGeneratedMime = reel.mimeType;
-          lastPreviewObjectUrl = URL.createObjectURL(reel.blob);
-          if (vid) {
-            vid.src = lastPreviewObjectUrl;
-            vid.style.display = 'block';
-            vid.load();
-          }
-          if (!reel.mimeType.startsWith('video/mp4')) {
-            log('⚠️ Prévia gerada, mas este Chrome criou WebM. Para publicar Reel, tente atualizar o Chrome; se falhar, publique como Post.', false);
-          }
-          $('igMediaUrl').value = await publishGeneratedMedia(reel.dataUrl);
-        } else {
-          if (img) {
-            img.src = d.media_url;
-            img.style.display = 'block';
-          }
-          $('igMediaUrl').value = d.media_url;
+        if (img) { img.src = d.media_url; img.style.display = 'block'; }
+        $('igMediaUrl').value = d.media_url;
+        if (currentType === 'reel' && plan && d.video_script) {
+          plan.textContent = '🎬 Roteiro sugerido para o Reel:\n' + d.video_script;
+          plan.style.display = 'block';
         }
+      } else {
+        throw new Error('A IA não retornou uma imagem. Tente um prompt mais simples.');
       }
       $('igCaption').value = d.caption || '';
       $('igPreview').style.display = 'block';
-      log(currentType === 'reel' ? '✅ Vídeo/preview pronto. Confira, edite a legenda e clique em Publicar.' : '✅ Prévia pronta. Edite se quiser e clique em Publicar.', true);
+      log('✅ Prévia pronta. Confira, edite a legenda e clique em Publicar.', true);
     } catch (e) {
       log('❌ ' + (e?.message || e), false);
     } finally {
@@ -355,8 +366,9 @@
     const media_url = ($('igMediaUrl')?.value || '').trim();
     const caption = ($('igCaption')?.value || '').trim();
     if (!media_url) return log('❌ Gere a mídia antes de publicar', false);
-    if (currentType === 'reel' && lastGeneratedMime && !lastGeneratedMime.startsWith('video/mp4')) {
-      return log('❌ A prévia foi gerada em WebM. O Instagram costuma exigir MP4 para Reel. Atualize o Chrome ou publique como Post.', false);
+    const acc = await loadAccount();
+    if (!acc || !acc.access_token) {
+      return log('❌ Conecte sua conta do Instagram primeiro', false);
     }
     const btn = $('igPublishBtn');
     setBusy(btn, true, '⏳ Publicando…');
@@ -366,12 +378,17 @@
       const r = await fetch(PUBLISH_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ use_server_token: true, type: apiType, media_url, caption }),
+        body: JSON.stringify({
+          access_token: acc.access_token,
+          ig_user_id: acc.ig_user_id,
+          type: apiType,
+          media_url,
+          caption,
+        }),
       });
       const d = await r.json();
       if (!r.ok) throw new Error(d.error || `HTTP ${r.status}`);
       log(`✅ Publicado! ID ${d.id}`, true);
-      // reset
       $('igPrompt').value = ''; $('igCaption').value = ''; $('igMediaUrl').value = '';
       $('igPreview').style.display = 'none';
     } catch (e) {
@@ -426,8 +443,9 @@
 
   function wire() {
     if (!$('igConnectBtn')) return false;
-    $('igConnectBtn').addEventListener('click', refreshStatus);
-    const bd = $('igDisconnectBtn'); if (bd) bd.style.display = 'none';
+    $('igConnectBtn').addEventListener('click', startOAuth);
+    const bd = $('igDisconnectBtn');
+    if (bd) bd.addEventListener('click', disconnect);
     document.querySelectorAll('.igTypeBtn').forEach((b) => {
       b.addEventListener('click', () => {
         currentType = b.dataset.type;

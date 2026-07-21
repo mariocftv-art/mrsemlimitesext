@@ -35,13 +35,17 @@ export const Route = createFileRoute('/api/public/instagram-publish')({
       POST: async ({ request }) => {
         try {
           const body = (await request.json()) as {
-            access_token: string
+            access_token?: string
+            use_server_token?: boolean
             ig_user_id?: string
             type: 'post' | 'reel' | 'carousel'
             media_url: string
             caption?: string
           }
           let { access_token, ig_user_id, type, media_url, caption = '' } = body
+          if (body.use_server_token && !access_token) {
+            access_token = process.env.INSTAGRAM_ACCESS_TOKEN
+          }
           if (!access_token || !media_url) {
             return new Response(JSON.stringify({ error: 'Parâmetros incompletos' }), { status: 400, headers: cors })
           }

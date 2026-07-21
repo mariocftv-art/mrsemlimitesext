@@ -489,6 +489,8 @@
     $('igGenerateBtn')?.addEventListener('click', generate);
     $('igRegenBtn')?.addEventListener('click', generate);
     $('igPublishBtn')?.addEventListener('click', publish);
+    $('igOpenPreviewBtn')?.addEventListener('click', openBigPreview);
+
 
     renderPromptGrid('igImgPromptGrid', IMG_PROMPTS);
     renderPromptGrid('igVidPromptGrid', VID_PROMPTS);

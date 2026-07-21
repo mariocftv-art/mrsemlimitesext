@@ -385,6 +385,32 @@
     }
   }
 
+  function openBigPreview() {
+    const media_url = ($('igMediaUrl')?.value || '').trim();
+    if (!media_url) {
+      log('❌ Gere a mídia primeiro para abrir a prévia grande', false);
+      return;
+    }
+    const caption = ($('igCaption')?.value || '').trim();
+    // Extrai título (primeira linha) se estiver no formato título + \n\n + resto
+    const parts = caption.split(/\n\n+/);
+    const title = parts.length > 1 ? parts[0] : '';
+    const body = parts.length > 1 ? parts.slice(1).join('\n\n') : caption;
+    const base = 'https://mrsemlimitesext.lovable.app/instagram-preview';
+    const url = base
+      + '?media=' + encodeURIComponent(media_url)
+      + '&type=' + encodeURIComponent(currentType === 'viral' ? 'post' : currentType)
+      + '&title=' + encodeURIComponent(title)
+      + '&caption=' + encodeURIComponent(body);
+    try {
+      window.open(url, '_blank', 'noopener,noreferrer');
+      log('🔍 Prévia aberta em nova aba do painel', true);
+    } catch (e) {
+      log('❌ Não foi possível abrir a prévia: ' + (e?.message || e), false);
+    }
+  }
+
+
   async function publish() {
     const media_url = ($('igMediaUrl')?.value || '').trim();
     const caption = ($('igCaption')?.value || '').trim();
@@ -489,6 +515,8 @@
     $('igGenerateBtn')?.addEventListener('click', generate);
     $('igRegenBtn')?.addEventListener('click', generate);
     $('igPublishBtn')?.addEventListener('click', publish);
+    $('igOpenPreviewBtn')?.addEventListener('click', openBigPreview);
+
 
     renderPromptGrid('igImgPromptGrid', IMG_PROMPTS);
     renderPromptGrid('igVidPromptGrid', VID_PROMPTS);

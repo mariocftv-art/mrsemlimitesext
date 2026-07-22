@@ -34,6 +34,7 @@ function InstagramPreviewPage() {
   const [title, setTitle] = useState(q.title || '')
   const [caption, setCaption] = useState(q.caption || '')
   const [copied, setCopied] = useState<string>('')
+  const [mediaError, setMediaError] = useState(false)
 
   const fullText = [title, caption].filter(Boolean).join('\n\n')
 
@@ -74,14 +75,34 @@ function InstagramPreviewPage() {
 
       <main className="max-w-[1800px] mx-auto px-4 md:px-6 py-5 grid xl:grid-cols-[minmax(420px,1.7fr)_minmax(360px,.8fr)] gap-6">
         <section className="space-y-3 min-h-0">
-          <div className="rounded-2xl overflow-hidden bg-black border border-amber-500/20 shadow-2xl shadow-amber-900/20 flex items-center justify-center min-h-[72vh]">
-            {isVideo ? (
+          <div className="rounded-2xl overflow-hidden bg-black border border-amber-500/20 shadow-2xl shadow-amber-900/20 flex items-center justify-center min-h-[72vh] relative">
+            {mediaError ? (
+              <div className="text-center p-8 space-y-4 max-w-lg">
+                <div className="text-5xl">🖼</div>
+                <h2 className="text-lg font-serif text-amber-400">O host da mídia bloqueou a exibição aqui</h2>
+                <p className="text-sm text-neutral-400">
+                  A extensão gerou o arquivo e enviou pra um host público, mas esse host não permite exibir dentro desta página (hotlink bloqueado ou arquivo expirado). Abra o link direto abaixo — ele funciona normalmente no Instagram na hora de publicar.
+                </p>
+                <a
+                  href={media}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-block px-6 py-3 rounded-lg bg-amber-500 hover:bg-amber-400 text-black font-medium transition"
+                >
+                  Abrir mídia em nova aba →
+                </a>
+                <div className="text-[11px] text-neutral-500 break-all pt-2 border-t border-neutral-800">
+                  {media}
+                </div>
+              </div>
+            ) : isVideo ? (
               <video
                 src={media}
                 controls
                 autoPlay
                 loop
                 playsInline
+                onError={() => setMediaError(true)}
                 className="block bg-black"
                 style={{ width: type === 'reel' ? 'auto' : '100%', maxWidth: '100%', height: type === 'reel' ? '86vh' : 'auto', maxHeight: '86vh', objectFit: 'contain' }}
               />
@@ -89,6 +110,7 @@ function InstagramPreviewPage() {
               <img
                 src={media}
                 alt="Prévia da mídia gerada"
+                onError={() => setMediaError(true)}
                 className="block"
                 style={{ width: type === 'reel' ? 'auto' : '100%', maxWidth: '100%', height: type === 'reel' ? '86vh' : 'auto', maxHeight: '86vh', objectFit: 'contain' }}
               />
@@ -111,6 +133,7 @@ function InstagramPreviewPage() {
             </button>
           </div>
         </section>
+
 
         <section className="space-y-4">
           <div>

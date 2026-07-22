@@ -179,33 +179,103 @@
     return null;
   }
 
+  function detectNiche(prompt) {
+    const p = String(prompt || '').toLowerCase();
+    if (/seguran|cftv|c[âa]mera|alarme|monitoramento|portaria|cerca el[eé]trica/.test(p)) return 'seguranca';
+    if (/pax|funer|plano|assist[eê]ncia/.test(p)) return 'pax';
+    if (/curso|ebook|infoproduto|lan[çc]amento|fanpage|vsl|landing|funil/.test(p)) return 'infoproduto';
+    if (/caf[eé]|comida|pizza|hamb[uú]rguer|restaurante|drink|confeit/.test(p)) return 'gastronomia';
+    if (/beleza|cabelo|corte|maqui|est[eé]tica|sal[aã]o/.test(p)) return 'beleza';
+    if (/im[oó]vel|casa|apartamento|corretor/.test(p)) return 'imoveis';
+    if (/moda|look|roupa|editorial/.test(p)) return 'moda';
+    return 'oferta';
+  }
+
   function titleFromPrompt(prompt, isReel) {
     const clean = String(prompt || '').replace(/\s+/g, ' ').trim();
-    const base = clean.split(/[.!?]/)[0].slice(0, 58).trim();
-    return base || (isReel ? 'Reel premium MR Sem Limites' : 'Post premium MR Sem Limites');
+    const niche = detectNiche(prompt);
+    const hooksReel = {
+      seguranca: ['🚨 A verdade que ninguém te contou sobre proteger sua casa', '🔒 Se você tem família, precisa VER isso', '📹 O detalhe que separa uma casa segura de uma casa vulnerável'],
+      pax: ['🕊 O que ninguém quer pensar — mas TODO mundo precisa', '💙 Proteja quem você ama antes que seja tarde', '⚠️ 90% das famílias descobrem isso tarde demais'],
+      infoproduto: ['🚀 O método que mudou minha vida em 30 dias', '💰 Ninguém te contou isso sobre ganhar dinheiro online', '🔥 Fiz isso e mudou TUDO — assista até o fim'],
+      gastronomia: ['🤤 Isso aqui é PROIBIDO pra quem tá de dieta', '🔥 O segredo por trás do sabor perfeito', '✨ Você precisa provar isso pelo menos uma vez'],
+      beleza: ['💇 A transformação que travou o Instagram inteiro', '✨ Antes x depois que ninguém acreditou', '💄 O segredo das mulheres mais admiradas'],
+      imoveis: ['🏠 Por dentro do imóvel dos sonhos', '💎 Você não vai acreditar no preço deste imóvel', '🔑 A oportunidade que some em 24h'],
+      moda: ['👗 O look que virou meta de todo mundo', '✨ Estilo que impõe respeito na primeira vista'],
+      oferta: ['🔥 Você precisa ver isso agora', '⚡ Isso vai mudar o jogo pra você', '✨ A novidade que todo mundo quer'],
+    };
+    const hooksPost = {
+      seguranca: ['🛡 Proteção real começa aqui', '📸 Segurança 24h que você merece', '🔒 Sua família merece o máximo em proteção'],
+      pax: ['💙 Amor também é cuidar do amanhã', '🕊 Tranquilidade pra quem você ama'],
+      infoproduto: ['🚀 O próximo nível está a um clique', '💡 Método comprovado, resultado real'],
+      gastronomia: ['🤤 Sabor que vicia', '✨ Feito com amor, servido com arte'],
+      beleza: ['💇 Autoestima em cada detalhe', '✨ Você mais bonita a cada dia'],
+      imoveis: ['🏠 O lar dos seus sonhos existe', '🔑 Realize esse desejo hoje'],
+      moda: ['👗 Estilo que fala por você', '✨ Look que impressiona'],
+      oferta: ['✨ Premium em cada detalhe', '🔥 A escolha certa está aqui'],
+    };
+    const pool = isReel ? hooksReel[niche] : hooksPost[niche];
+    const pick = pool[Math.floor(Math.random() * pool.length)];
+    const short = clean.split(/[.!?]/)[0].slice(0, 70).trim();
+    return short ? `${pick} — ${short}` : pick;
   }
 
   function buildLocalCaption(prompt, type) {
     const isReel = type === 'reel';
     const title = titleFromPrompt(prompt, isReel);
-    const niche = /seguran|cftv|c[âa]mera|alarme|monitoramento/i.test(prompt) ? 'segurança' : /pax|funer|plano/i.test(prompt) ? 'pax' : 'oferta';
-    const hashtags = niche === 'segurança'
-      ? '#MRSemLimites #MRSecurity #SegurançaMáxima #CFTV #Monitoramento #Proteção24h #CasaSegura #EmpresaSegura'
-      : niche === 'pax'
-        ? '#MRSemLimites #PAX #Cuidado #FamíliaProtegida #AssistênciaFamiliar #Tranquilidade'
-        : '#MRSemLimites #MarketingDigital #InstagramBrasil #ConteúdoPremium #ReelsBrasil #Empreendedorismo';
-    return `✨ ${title}\n\n🔥 Conteúdo criado com foco em impacto visual, autoridade e conversão.\n\n✅ Visual premium\n🎯 Mensagem direta\n🚀 Chamada para ação clara\n\n📲 Quer uma versão ainda mais forte? Ajuste a legenda aqui antes de publicar.\n\n${hashtags}`;
+    const niche = detectNiche(prompt);
+    const bulletsMap = {
+      seguranca: ['🛡 Câmeras 4K premium com visão noturna real', '📡 Monitoramento profissional 24h todos os dias', '⚡ Instalação rápida por equipe uniformizada', '📱 Acesso ao vivo direto no seu celular', '✅ Garantia total e suporte imediato'],
+      pax: ['💙 Proteção completa pra toda a família', '🕊 Assistência funeral 24h em qualquer lugar', '✅ Planos que cabem no seu orçamento', '📞 Atendimento humano quando você mais precisa'],
+      infoproduto: ['🚀 Método passo a passo comprovado', '🎁 Bônus exclusivos por tempo limitado', '💎 Comunidade fechada de alto nível', '🛡 Garantia incondicional de 7 dias', '⭐ Depoimentos reais de alunos transformados'],
+      gastronomia: ['🍽 Ingredientes selecionados', '🔥 Preparo artesanal do início ao fim', '✨ Apresentação impecável', '📍 Peça já pelo WhatsApp'],
+      beleza: ['💇 Técnica exclusiva com resultado real', '✨ Produtos premium importados', '💆 Atendimento personalizado', '📅 Agende seu horário agora'],
+      imoveis: ['🏠 Imóvel selecionado a dedo pra você', '💰 Condições especiais de financiamento', '📍 Localização estratégica', '📞 Fale com um especialista'],
+      moda: ['👗 Peça exclusiva, poucas unidades', '✨ Caimento perfeito', '💳 Parcele sem juros', '🚚 Entrega pra todo Brasil'],
+      oferta: ['✅ Qualidade premium em cada detalhe', '🎯 Feito pra quem exige o melhor', '🚀 Resultado que fala por si', '💎 Diferencial que ninguém oferece'],
+    };
+    const bullets = bulletsMap[niche] || bulletsMap.oferta;
+    const ctaMap = {
+      seguranca: '👉 Chama no WhatsApp e blinde sua casa hoje mesmo. Sua família merece o MÁXIMO em proteção.',
+      pax: '👉 Fale com a nossa equipe e conheça o plano ideal pra sua família. Amanhã pode ser tarde.',
+      infoproduto: '👉 Clica no link da bio e garanta sua vaga com desconto. As vagas somem RÁPIDO.',
+      gastronomia: '👉 Peça agora pelo WhatsApp e receba no conforto de casa 🔥',
+      beleza: '👉 Agende seu horário no direct. Sua transformação começa hoje ✨',
+      imoveis: '👉 Chama no WhatsApp pra visitar. Imóvel assim não espera.',
+      moda: '👉 Toca no link da bio e garanta o seu. Últimas peças!',
+      oferta: '👉 Chama no direct ou toca no link da bio pra saber mais 💬',
+    };
+    const cta = ctaMap[niche] || ctaMap.oferta;
+    const hashtagsMap = {
+      seguranca: '#MRSemLimites #MRSecurity #SegurançaMáxima #CFTV #Câmeras4K #Monitoramento24h #Proteção #CasaSegura #EmpresaSegura #AlarmeResidencial #PAX #LinkMRStore',
+      pax: '#MRSemLimites #PAX #AssistênciaFamiliar #FamíliaProtegida #Tranquilidade #CuidadoQueTransforma #PlanoFamiliar #MRSegurançaMáxima',
+      infoproduto: '#MRSemLimites #InfoProduto #MarketingDigital #Empreendedorismo #NegócioOnline #RendaExtra #MétodoComprovado #Lançamento #Escala #Resultado',
+      gastronomia: '#MRSemLimites #Gastronomia #ComidaBoa #FoodPorn #SaboresQueMarcam #DeliveryBrasil #PedeAgora',
+      beleza: '#MRSemLimites #Beleza #Autoestima #Transformação #Cabelo #Estética #SalãoPremium #BelezaFeminina',
+      imoveis: '#MRSemLimites #Imóveis #ImóvelDosSonhos #Investimento #Corretor #ComprarCasa #FinanciamentoImobiliário',
+      moda: '#MRSemLimites #Moda #Estilo #Look #Fashion #TendênciaBrasil #ModaFeminina',
+      oferta: '#MRSemLimites #Premium #Qualidade #Autoridade #MarketingDigital #InstagramBrasil #ConteúdoPremium #ReelsBrasil #Empreendedorismo',
+    };
+    const hashtags = hashtagsMap[niche] || hashtagsMap.oferta;
+    const bulletBlock = bullets.map((b) => b).join('\n');
+    const emojiBar = isReel ? '🎬✨🔥💎🚀' : '✨💎🔥🚀💫';
+    return `${title}\n\n${emojiBar}\n\n💡 O que ninguém te disse:\n${bulletBlock}\n\n📌 Salve esse post pra não perder\n📤 Compartilha com quem precisa ver isso\n💬 Comenta aqui embaixo o que achou\n\n${cta}\n\n━━━━━━━━━━━━━━\n${hashtags}`;
   }
 
   function buildLocalScript(prompt, duration) {
     const title = titleFromPrompt(prompt, true);
+    const d = Math.max(20, Number(duration) || 20);
+    const seg = d / 5;
+    const t = (n) => Math.round(seg * n);
     return [
-      `0-4s: abertura forte com destaque para “${title}”.`,
-      '4-10s: mostrar o benefício principal com movimento cinematográfico.',
-      '10-16s: reforçar confiança, resultado e diferenciais premium.',
-      `16-${duration}s: CTA final para chamar no WhatsApp / seguir o perfil.`
+      `0-${t(1)}s: ABERTURA IMPACTANTE — gancho forte "${title}", texto entrando com zoom cinematográfico.`,
+      `${t(1)}-${t(2)}s: CONTEXTO — mostre o problema que o público sente todo dia, close nos detalhes.`,
+      `${t(2)}-${t(3)}s: SOLUÇÃO — apresente o produto/serviço em movimento suave, luz premium.`,
+      `${t(3)}-${t(4)}s: PROVA — depoimento visual, número, resultado real, transição rítmica com a trilha.`,
+      `${t(4)}-${d}s: CTA FINAL — chamada direta pro WhatsApp/link da bio, logo MR Sem Limites em destaque.`,
     ].join('\n');
   }
+
 
   function makeLocalPosterDataUrl(prompt, type) {
     const isReel = type === 'reel';
@@ -284,8 +354,8 @@
     }
     const img = await loadImage(imageUrl);
     const canvas = document.createElement('canvas');
-    canvas.width = 540;
-    canvas.height = 960;
+    canvas.width = 720;
+    canvas.height = 1280;
     const ctx = canvas.getContext('2d');
     if (!ctx) throw new Error('Canvas indisponível para gerar vídeo');
 
@@ -303,12 +373,14 @@
     let audioCtx = null;
     let voiceBuffer = null;
     const wantsAudio = soundtrack && soundtrack !== 'none';
+    const stylePreset = soundtrack === 'auto' ? 'cinematic' : soundtrack;
+    const bpm = ({ cinematic: 80, upbeat: 124, chill: 70, luxury: 78 })[stylePreset] || 90;
     if (wantsAudio || voiceover) {
       try {
         const AC = window.AudioContext || window.webkitAudioContext;
         audioCtx = new AC();
         const dest = audioCtx.createMediaStreamDestination();
-        if (wantsAudio) buildSoundtrack(audioCtx, dest, durationMs / 1000, soundtrack);
+        if (wantsAudio) buildSoundtrack(audioCtx, dest, durationMs / 1000, stylePreset);
         voiceBuffer = await loadVoiceoverBuffer(audioCtx, voiceover);
         if (voiceBuffer) {
           const src = audioCtx.createBufferSource();
@@ -325,7 +397,7 @@
       }
     }
 
-    const recorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 3_200_000, audioBitsPerSecond: 128_000 });
+    const recorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 5_500_000, audioBitsPerSecond: 160_000 });
     recorder.ondataavailable = (ev) => { if (ev.data && ev.data.size) chunks.push(ev.data); };
 
     const done = new Promise((resolve, reject) => {
@@ -342,51 +414,90 @@
     });
 
     const sceneTexts = makeSceneTexts(title, script);
-    const drawCover = (progress) => {
-      const sceneIndex = Math.min(sceneTexts.length - 1, Math.floor(progress * sceneTexts.length));
-      const sceneProgress = (progress * sceneTexts.length) % 1;
-      const scale = Math.max(canvas.width / img.width, canvas.height / img.height) * (1 + progress * 0.18);
+    // Distribui as cenas uniformemente pela duração real (>= 20s)
+    const sceneCount = sceneTexts.length;
+    const beatSec = 60 / bpm; // 1 beat da trilha
+    const W = canvas.width, H = canvas.height;
+    const drawCover = (elapsedMs, progress) => {
+      const sceneIndex = Math.min(sceneCount - 1, Math.floor(progress * sceneCount));
+      const sceneProgress = (progress * sceneCount) % 1;
+      // Ken Burns por cena — recomeça o zoom a cada cena pra sensação de corte
+      const zoom = 1.05 + sceneProgress * 0.22;
+      const scale = Math.max(W / img.width, H / img.height) * zoom;
       const w = img.width * scale;
       const h = img.height * scale;
-      const driftX = Math.sin(progress * Math.PI * 4) * 26;
-      const driftY = -progress * 42 + Math.cos(progress * Math.PI * 3) * 10;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(img, (canvas.width - w) / 2 + driftX, (canvas.height - h) / 2 + driftY, w, h);
-      const g = ctx.createLinearGradient(0, 0, 0, canvas.height);
-      g.addColorStop(0, 'rgba(0,0,0,.18)');
-      g.addColorStop(0.62, 'rgba(0,0,0,.05)');
-      g.addColorStop(1, 'rgba(0,0,0,.55)');
+      const driftX = Math.sin(sceneProgress * Math.PI) * 40 * (sceneIndex % 2 ? 1 : -1);
+      const driftY = -sceneProgress * 60;
+      ctx.fillStyle = '#000';
+      ctx.fillRect(0, 0, W, H);
+      ctx.drawImage(img, (W - w) / 2 + driftX, (H - h) / 2 + driftY, w, h);
+      // Vinheta cinematográfica
+      const g = ctx.createLinearGradient(0, 0, 0, H);
+      g.addColorStop(0, 'rgba(0,0,0,.55)');
+      g.addColorStop(0.35, 'rgba(0,0,0,.05)');
+      g.addColorStop(0.7, 'rgba(0,0,0,.15)');
+      g.addColorStop(1, 'rgba(0,0,0,.75)');
       ctx.fillStyle = g;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = 'rgba(245, 133, 41, .92)';
-      ctx.fillRect(38, 56, 118, 28);
-      ctx.fillStyle = '#fff';
-      ctx.font = '800 16px system-ui, -apple-system, Segoe UI, sans-serif';
+      ctx.fillRect(0, 0, W, H);
+      // Flash sincronizado com o beat da trilha
+      const beatPhase = (elapsedMs / 1000) % beatSec;
+      const flashAlpha = Math.max(0, 0.18 - beatPhase * 1.6);
+      if (flashAlpha > 0.001) {
+        ctx.fillStyle = `rgba(255,255,255,${flashAlpha.toFixed(3)})`;
+        ctx.fillRect(0, 0, W, H);
+      }
+      // Badge REEL IA
+      ctx.fillStyle = 'rgba(212,175,55,.95)';
+      ctx.fillRect(38, 60, 150, 40);
+      ctx.fillStyle = '#0a0a0a';
+      ctx.font = '900 22px system-ui, -apple-system, Segoe UI, sans-serif';
       ctx.textAlign = 'left';
-      ctx.fillText('REEL IA', 52, 76);
-      ctx.fillStyle = 'rgba(255,255,255,.96)';
-      ctx.font = '800 30px system-ui, -apple-system, Segoe UI, sans-serif';
+      ctx.fillText('★ REEL IA', 52, 88);
+      // Progress bar top
+      ctx.fillStyle = 'rgba(255,255,255,.15)';
+      ctx.fillRect(38, 38, W - 76, 6);
+      ctx.fillStyle = '#d4af37';
+      ctx.fillRect(38, 38, (W - 76) * progress, 6);
+      // Contador de cena
+      ctx.fillStyle = 'rgba(255,255,255,.85)';
+      ctx.font = '700 18px system-ui, -apple-system, Segoe UI, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText(`${sceneIndex + 1} / ${sceneCount}`, W - 40, 88);
+      // Texto principal (aparece com bounce sincronizado)
+      const enterProg = Math.min(1, sceneProgress * 3);
+      const easeOut = 1 - Math.pow(1 - enterProg, 3);
+      const textOpacity = enterProg;
+      const textY = H * 0.55 + (1 - easeOut) * 40;
+      const safeText = sceneTexts[sceneIndex] || title || 'MR Sem Limites';
+      // Caixa
+      ctx.fillStyle = `rgba(0,0,0,${(0.55 * textOpacity).toFixed(3)})`;
+      ctx.fillRect(40, textY - 100, W - 80, 200);
+      ctx.strokeStyle = `rgba(212,175,55,${(0.75 * textOpacity).toFixed(3)})`;
+      ctx.lineWidth = 3;
+      ctx.strokeRect(40, textY - 100, W - 80, 200);
+      ctx.fillStyle = `rgba(255,255,255,${textOpacity.toFixed(3)})`;
+      ctx.font = '900 44px system-ui, -apple-system, Segoe UI, sans-serif';
       ctx.textAlign = 'center';
-      const safeTitle = sceneTexts[sceneIndex] || title || 'MR Sem Limites';
-      const y = 672 + Math.sin(sceneProgress * Math.PI) * 18;
-      ctx.fillStyle = 'rgba(0,0,0,.48)';
-      ctx.fillRect(30, y - 72, canvas.width - 60, 132);
-      ctx.strokeStyle = 'rgba(245, 133, 41, .75)';
-      ctx.lineWidth = 2;
-      ctx.strokeRect(30, y - 72, canvas.width - 60, 132);
-      ctx.fillStyle = 'rgba(255,255,255,.98)';
-      wrapCanvasText(ctx, safeTitle, canvas.width / 2, y - 26, canvas.width - 96, 36, 3);
-      ctx.font = '700 20px system-ui, -apple-system, Segoe UI, sans-serif';
-      ctx.fillStyle = 'rgba(255,219,232,.95)';
-      ctx.fillText('🎙️ fala + trilha • @linkmrstore', canvas.width / 2, canvas.height - 50);
+      wrapCanvasText(ctx, safeText, W / 2, textY - 40, W - 120, 52, 3);
+      // Rodapé fixo
+      ctx.fillStyle = 'rgba(0,0,0,.7)';
+      ctx.fillRect(0, H - 110, W, 110);
+      ctx.fillStyle = '#d4af37';
+      ctx.font = '900 26px system-ui, -apple-system, Segoe UI, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('MR SEM LIMITES', W / 2, H - 70);
+      ctx.fillStyle = 'rgba(255,255,255,.85)';
+      ctx.font = '600 20px system-ui, -apple-system, Segoe UI, sans-serif';
+      ctx.fillText('🎙 fala + trilha • @linkmrstore', W / 2, H - 38);
     };
 
     recorder.start(250);
     const started = performance.now();
     await new Promise((resolve) => {
       const tick = (now) => {
-        const p = Math.min(1, (now - started) / durationMs);
-        drawCover(p);
+        const elapsed = now - started;
+        const p = Math.min(1, elapsed / durationMs);
+        drawCover(elapsed, p);
         if (p < 1) requestAnimationFrame(tick);
         else resolve();
       };
@@ -395,6 +506,7 @@
     recorder.stop();
     return done;
   }
+
 
 
   function wrapCanvasText(ctx, text, x, y, maxWidth, lineHeight, maxLines = 2) {

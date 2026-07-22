@@ -68,7 +68,7 @@ export const Route = createFileRoute('/api/public/instagram-generate')({
           let mediaB64 = ''
           if (wantMedia) {
             // 2) Imagem/capa via Gateway de imagens (Nano Banana 2)
-            const imgPrompt = `Instagram ${type === 'reel' ? `vertical 9:16 first frame for a ${duration}s AI video/Reel with speaking characters, cinematic scene, clear subject, no text overlays` : 'square 1:1 high-quality post image'}. ${prompt}. Ultra realistic, cinematic lighting, vibrant colors, professional composition, high engagement social media aesthetic.`
+            const imgPrompt = `${type === 'reel' ? `Vertical 9:16 cinematic first frame for a ${duration}s Instagram Reel` : type === 'carousel' ? 'Square 1:1 Instagram carousel cover' : 'Square 1:1 Instagram post image'}. Subject: ${prompt}. ABSOLUTELY NO TEXT, NO LETTERS, NO WORDS, NO TYPOGRAPHY, NO CAPTIONS, NO SUBTITLES, NO LOGOS anywhere in the image — pure photographic scene only. Leave clean empty space at top and bottom for future text overlay. Ultra realistic photo, cinematic lighting, shallow depth of field, vibrant natural colors, professional composition, premium Brazilian social media aesthetic.`
             const imgRes = await fetch('https://ai.gateway.lovable.dev/v1/images/generations', {
               method: 'POST',
               headers: { Authorization: `Bearer ${KEY}`, 'Content-Type': 'application/json' },

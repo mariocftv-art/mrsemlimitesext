@@ -1844,6 +1844,57 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
+  // ─── Sistema de auto-atualização remota ────────────────────────────────
+  const CURRENT_EXT_VERSION = (chrome.runtime.getManifest?.().version) || '0.0.0';
+  const UPDATE_ENDPOINT = 'https://mrsemlimitesext.lovable.app/api/public/ext-version';
+
+  function vgt(a, b) {
+    const A = a.split('.').map(Number), B = b.split('.').map(Number);
+    for (let i = 0; i < Math.max(A.length, B.length); i++) {
+      const x = A[i] || 0, y = B[i] || 0;
+      if (x > y) return true; if (x < y) return false;
+    }
+    return false;
+  }
+
+  async function checkForUpdate(interactive) {
+    const badge = document.getElementById('mrUpdateBadge');
+    const btn = document.getElementById('mrUpdateBtn');
+    try {
+      if (interactive && btn) { btn.style.opacity = '0.5'; btn.textContent = '…'; }
+      const r = await fetch(UPDATE_ENDPOINT, { cache: 'no-store' });
+      const d = await r.json();
+      const hasNew = vgt(d.latest_version || '0', CURRENT_EXT_VERSION);
+      // Aplicar hotfix (dados em runtime) sempre — não requer reinstalar
+      if (d.hotfix?.hotfix_id) {
+        const cur = await chrome.storage.local.get(['mrHotfix']);
+        if (!cur.mrHotfix || cur.mrHotfix.hotfix_id !== d.hotfix.hotfix_id) {
+          await chrome.storage.local.set({ mrHotfix: d.hotfix });
+          if (interactive) showToast('✨ Hotfix aplicado: ' + d.hotfix.hotfix_id, 'success');
+        }
+      }
+      if (hasNew) {
+        if (badge) badge.style.display = 'block';
+        if (interactive) {
+          const notes = (d.notes || []).map(n => '• ' + n).join('\n');
+          const go = confirm(`🎉 Nova versão disponível: v${d.latest_version}\n\n${notes}\n\nBaixar agora?`);
+          if (go && d.download_url) chrome.tabs.create({ url: d.download_url });
+        }
+      } else if (interactive) {
+        showToast('✅ Você já está na versão mais recente (v' + CURRENT_EXT_VERSION + ')', 'success');
+      }
+    } catch (e) {
+      if (interactive) showToast('❌ Falha ao checar atualização: ' + (e?.message || e), 'error');
+    } finally {
+      if (btn) { btn.style.opacity = '1'; btn.textContent = '⟳'; }
+    }
+  }
+
+  const updBtn = document.getElementById('mrUpdateBtn');
+  if (updBtn) updBtn.addEventListener('click', () => checkForUpdate(true));
+  // Check silencioso na abertura
+  setTimeout(() => checkForUpdate(false), 3000);
+
   chrome.runtime.onMessage.addListener((message) => {
     if (message.type === 'LICENSE_REVOKED') {
       console.log('[Sidepanel] LICENSE_REVOKED — voltando para tela de licença');

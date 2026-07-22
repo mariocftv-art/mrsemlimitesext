@@ -17,21 +17,21 @@ const cors = {
 }
 
 const LATEST = {
-  latest_version: '5.4.11',
+  latest_version: '5.4.12',
   download_url:
-    'https://mrsemlimitesext.lovable.app/__l5e/assets-v1/fe13e8cc-d9aa-4daa-b490-ae293010867b/MR-Sem-Limites-EXT5-v5.4.11.zip',
+    'https://mrsemlimitesext.lovable.app/__l5e/assets-v1/2ac8fb84-42e2-4808-bb52-d05b91ad542a/MR-Sem-Limites-EXT5-v5.4.12.zip',
   notes: [
-    'Correção de abertura no Chrome Manifest V3.',
-    'Scripts de microfone externalizados para não quebrar a política de segurança.',
-    'Modo AUTO mantido para escolher a melhor IA do sistema da extensão.',
+    'Título e legenda muito mais fortes, virais e adaptados ao nicho (segurança, PAX, infoproduto, gastronomia, beleza, imóveis, moda).',
+    'Reel agora em 720x1280, com cenas sincronizadas ao beat da trilha, progress bar e Ken Burns por cena.',
+    'Prévia grande com mensagem clara quando o host bloqueia hotlink, com link direto pra abrir a mídia.',
   ],
-  // Hotfix aplicado em runtime pela extensão. Incrementar hotfix_id para forçar reaplicação.
   hotfix: {
-    hotfix_id: '2026-07-22-05',
+    hotfix_id: '2026-07-22-06',
     caption_style: 'premium-emoji-viral-video-20s',
     ia_picker_v: 'auto-tts-v1',
   },
 }
+
 
 export const Route = createFileRoute('/api/public/ext-version')({
   server: {

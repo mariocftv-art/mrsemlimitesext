@@ -70,13 +70,26 @@ function InstagramPreviewPage() {
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-6 py-8 grid md:grid-cols-2 gap-8">
+      <main className="max-w-7xl mx-auto px-6 py-8 grid lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] gap-8">
         <section className="space-y-3">
           <div className="rounded-2xl overflow-hidden bg-black border border-amber-500/20 shadow-2xl shadow-amber-900/20">
             {isVideo ? (
-              <video src={media} controls playsInline className="w-full h-auto block bg-black" />
+              <video
+                src={media}
+                controls
+                autoPlay
+                loop
+                playsInline
+                className="w-full block bg-black"
+                style={{ maxHeight: '82vh', objectFit: 'contain' }}
+              />
             ) : (
-              <img src={media} alt="Prévia da mídia gerada" className="w-full h-auto block" />
+              <img
+                src={media}
+                alt="Prévia da mídia gerada"
+                className="w-full block"
+                style={{ maxHeight: '82vh', objectFit: 'contain' }}
+              />
             )}
           </div>
           <div className="flex gap-2">
@@ -112,8 +125,8 @@ function InstagramPreviewPage() {
             <textarea
               value={caption}
               onChange={(e) => setCaption(e.target.value)}
-              rows={14}
-              className="mt-1 w-full px-3 py-3 rounded-lg bg-black/60 border border-neutral-800 focus:border-amber-500/60 outline-none text-neutral-100 font-mono text-sm leading-relaxed resize-vertical"
+              rows={16}
+              className="mt-1 w-full px-3 py-3 rounded-lg bg-black/60 border border-neutral-800 focus:border-amber-500/60 outline-none text-neutral-100 text-[15px] leading-relaxed resize-vertical"
             />
           </div>
 
@@ -137,6 +150,7 @@ function InstagramPreviewPage() {
           </div>
         </section>
       </main>
+
     </div>
   )
 }

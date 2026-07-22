@@ -1,0 +1,78 @@
+// Offscreen document for Web Speech API — MV3 requires external scripts.
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+let recognition = null;
+
+function broadcast(data) {
+  chrome.runtime.sendMessage(data).catch(() => {});
+}
+
+chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+  if (msg.target !== 'offscreen') return;
+
+  if (msg.type === 'OFFSCREEN_VOICE_START') {
+    if (recognition) { try { recognition.abort(); } catch(e) {} recognition = null; }
+
+    if (!SpeechRecognition) {
+      broadcast({ type: 'VOICE_ERROR', error: 'not-supported' });
+      sendResponse({ ok: false });
+      return;
+    }
+
+    navigator.mediaDevices.getUserMedia({ audio: true })
+      .then((stream) => {
+        stream.getTracks().forEach(t => t.stop());
+
+        recognition = new SpeechRecognition();
+        recognition.lang = msg.lang || 'pt-BR';
+        recognition.continuous = true;
+        recognition.interimResults = true;
+
+        let finalText = msg.existingText || '';
+
+        recognition.onstart = () => {
+          broadcast({ type: 'VOICE_STATUS', status: 'started' });
+        };
+
+        recognition.onresult = (event) => {
+          let interim = '';
+          for (let i = event.resultIndex; i < event.results.length; i++) {
+            const t = event.results[i][0].transcript;
+            if (event.results[i].isFinal) {
+              finalText += (finalText ? ' ' : '') + t;
+            } else {
+              interim += t;
+            }
+          }
+          broadcast({
+            type: 'VOICE_RESULT',
+            text: finalText + (interim ? ' ' + interim : ''),
+            finalText: finalText
+          });
+        };
+
+        recognition.onerror = (event) => {
+          if (event.error !== 'aborted') {
+            broadcast({ type: 'VOICE_ERROR', error: event.error });
+          }
+        };
+
+        recognition.onend = () => {
+          broadcast({ type: 'VOICE_STATUS', status: 'ended', finalText });
+          recognition = null;
+        };
+
+        recognition.start();
+      })
+      .catch(() => {
+        broadcast({ type: 'VOICE_ERROR', error: 'not-allowed' });
+      });
+
+    sendResponse({ ok: true });
+    return;
+  }
+
+  if (msg.type === 'OFFSCREEN_VOICE_STOP') {
+    if (recognition) { try { recognition.stop(); } catch(e) {} recognition = null; }
+    sendResponse({ ok: true });
+  }
+});

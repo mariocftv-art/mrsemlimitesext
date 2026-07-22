@@ -19,7 +19,7 @@ const cors = {
 const LATEST = {
   latest_version: '5.4.11',
   download_url:
-    'https://mrsemlimitesext.lovable.app/__l5e/assets-v1/4c70e11f-e431-4df1-b0fd-86a705f62499/MR-Sem-Limites-EXT5-v5.4.11.zip',
+    'https://mrsemlimitesext.lovable.app/__l5e/assets-v1/fe13e8cc-d9aa-4daa-b490-ae293010867b/MR-Sem-Limites-EXT5-v5.4.11.zip',
   notes: [
     'Correção de abertura no Chrome Manifest V3.',
     'Scripts de microfone externalizados para não quebrar a política de segurança.',

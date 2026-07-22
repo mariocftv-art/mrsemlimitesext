@@ -67,6 +67,16 @@ import {
 } from "@/factory";
 
 export const Route = createFileRoute("/extensions")({
+  head: () => ({
+    meta: [
+      { title: "Extensões MR Sem Limites" },
+      { name: "description", content: "Downloads e suporte das extensões MR Sem Limites, incluindo a EXT5 Instagram." },
+      { property: "og:title", content: "Extensões MR Sem Limites" },
+      { property: "og:description", content: "Baixe as versões atualizadas das extensões MR Sem Limites." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
   component: ExtensionsPage,
 });
 

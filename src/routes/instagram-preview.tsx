@@ -8,6 +8,8 @@ export const Route = createFileRoute('/instagram-preview')({
       { name: 'description', content: 'Prévia grande do post/reel gerado pela EXT5 antes de publicar no Instagram.' },
       { property: 'og:title', content: 'Prévia Instagram — MR Sem Limites' },
       { property: 'og:description', content: 'Revise mídia, título, legenda e hashtags antes de publicar.' },
+      { property: 'og:type', content: 'website' },
+      { name: 'twitter:card', content: 'summary' },
       { name: 'robots', content: 'noindex' },
     ],
   }),

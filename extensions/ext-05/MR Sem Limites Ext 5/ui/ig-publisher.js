@@ -305,16 +305,10 @@
     ctx.fillStyle = '#d4af37';
     ctx.font = '900 44px system-ui, -apple-system, Segoe UI, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('MR SEM LIMITES', w / 2, isReel ? 210 : 150);
-    ctx.fillStyle = 'rgba(255,255,255,.94)';
-    ctx.font = `900 ${isReel ? 76 : 62}px system-ui, -apple-system, Segoe UI, sans-serif`;
-    wrapCanvasText(ctx, titleFromPrompt(prompt, isReel), w / 2, isReel ? 770 : 450, w - 180, isReel ? 86 : 72, 4);
-    ctx.fillStyle = 'rgba(212,175,55,.96)';
-    ctx.font = `800 ${isReel ? 34 : 28}px system-ui, -apple-system, Segoe UI, sans-serif`;
-    ctx.fillText(isReel ? 'REEL COM ÁUDIO • PRÉVIA LOCAL' : 'POST PREMIUM • PRÉVIA LOCAL', w / 2, h - 170);
-    ctx.fillStyle = 'rgba(255,255,255,.72)';
-    ctx.font = `600 ${isReel ? 28 : 24}px system-ui, -apple-system, Segoe UI, sans-serif`;
-    ctx.fillText('Use a aba IAs para gerar a arte final na IA escolhida', w / 2, h - 112);
+    ctx.fillText('MR SEM LIMITES', w / 2, h - 90);
+    ctx.fillStyle = 'rgba(255,255,255,.55)';
+    ctx.font = `600 ${isReel ? 26 : 22}px system-ui, -apple-system, Segoe UI, sans-serif`;
+    ctx.fillText('Prévia local • gere na IA da aba para arte final', w / 2, h - 50);
     return canvas.toDataURL('image/png');
   }
 
@@ -333,17 +327,27 @@
     };
   }
 
+  function cleanSceneLine(raw) {
+    let s = String(raw || '').trim();
+    s = s.replace(/^\s*\d+\s*[-–—]\s*\d+\s*s?\s*:?\s*/i, '');
+    s = s.replace(/^\s*\d+\s*s\s*:?\s*/i, '');
+    s = s.replace(/^\s*[A-ZÁÉÍÓÚÂÊÔÃÕÇ0-9 ]{3,40}\s*[-–—]\s*/, '');
+    s = s.replace(/^["“”'`]+|["“”'`]+$/g, '').trim();
+    const cut = s.split(/(?<=[.!?])\s+/)[0] || s;
+    return cut.length > 70 ? cut.slice(0, 67).trim() + '…' : cut;
+  }
+
   function makeSceneTexts(title, script) {
     const lines = String(script || '')
       .split(/\n+/)
-      .map((l) => l.replace(/^\s*\d+[.)-]?\s*/, '').trim())
-      .filter(Boolean);
+      .map(cleanSceneLine)
+      .filter((l) => l && l.length > 3);
     const fallback = [
       title || 'A transformação começa agora',
-      'Veja como essa solução muda o jogo',
-      'Mais confiança, presença e resultado',
-      'Detalhes premium que prendem atenção',
-      'Chama no WhatsApp e vem com a MR',
+      'Veja como muda o jogo',
+      'Mais confiança e resultado',
+      'Detalhes premium que prendem',
+      'Chama no WhatsApp e vem',
     ];
     return (lines.length ? lines : fallback).slice(0, 5);
   }

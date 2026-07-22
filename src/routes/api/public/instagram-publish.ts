@@ -103,7 +103,7 @@ export const Route = createFileRoute('/api/public/instagram-publish')({
           for (let i = 0; i < 20; i++) {
             const st = await j(`${API}/${containerId}?fields=status_code&access_token=${access_token}`)
             if (st.status_code === 'FINISHED') break
-            if (st.status_code === 'ERROR') throw new Error(`Meta rejeitou a mídia. URL enviada: ${media_url}. Ela precisa ser HTTPS pública, aberta direto no navegador, e no formato certo (JPEG para Post, MP4 H.264/AAC para Reel).`)
+            if (st.status_code === 'ERROR') throw new Error(`A Meta rejeitou a mídia. Isso NÃO tem relação com a análise/aprovação do app — em modo de teste o publish funciona pra contas de teste normalmente. O motivo real é o LINK público (${media_url}): a Meta baixa a mídia dos servidores dela e a URL precisa (1) abrir DIRETO no navegador anônimo sem redirecionar pra HTML, (2) ser HTTPS, (3) MP4 H.264 + AAC pra Reel, JPEG pra Post, (4) menos de 100MB e menor que 90s pra Reel. Tente clicar em "Regerar" — o app troca de host (catbox → 0x0 → tmpfiles) automaticamente.`)
             await new Promise((r) => setTimeout(r, 2000))
           }
 

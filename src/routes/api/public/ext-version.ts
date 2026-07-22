@@ -19,7 +19,7 @@ const cors = {
 const LATEST = {
   latest_version: '5.4.13',
   download_url:
-    'https://mrsemlimitesext.lovable.app/MR-Sem-Limites-EXT5-v5.4.13.zip',
+    'https://mrsemlimitesext.lovable.app/__l5e/assets-v1/e042e539-d351-4756-83d8-8d7d21352415/MR-Sem-Limites-EXT5-v5.4.13.zip',
   notes: [
     'Correção do botão da extensão: agora abre o painel lateral direto, sem conflito de popup.',
     'Título e legenda muito mais fortes, virais e adaptados ao nicho (segurança, PAX, infoproduto, gastronomia, beleza, imóveis, moda).',

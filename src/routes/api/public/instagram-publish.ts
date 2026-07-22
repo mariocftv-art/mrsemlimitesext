@@ -3,7 +3,7 @@ import { createFileRoute } from '@tanstack/react-router'
 async function j(url: string, init?: RequestInit) {
   const r = await fetch(url, init)
   const d = await r.json().catch(() => ({}))
-  if (!r.ok) throw new Error((d as any)?.error?.message || `HTTP ${r.status}`)
+  if (!r.ok) throw new Error((d as any)?.error?.message || (d as any)?.error || `HTTP ${r.status}`)
   return d as any
 }
 const cors = {
@@ -57,6 +57,9 @@ export const Route = createFileRoute('/api/public/instagram-publish')({
           let containerId: string
 
           if (type === 'reel') {
+            if (!/\.(mp4|mov)(\?|$)/i.test(media_url)) {
+              return new Response(JSON.stringify({ error: 'Reel precisa ser vídeo MP4/MOV público. Gere o Reel novamente antes de publicar.' }), { status: 400, headers: cors })
+            }
             const c = await j(
               `${base}/media?media_type=REELS&video_url=${encodeURIComponent(media_url)}&caption=${encodeURIComponent(caption)}&access_token=${access_token}`,
               { method: 'POST' },
@@ -89,7 +92,7 @@ export const Route = createFileRoute('/api/public/instagram-publish')({
           for (let i = 0; i < 20; i++) {
             const st = await j(`${API}/${containerId}?fields=status_code&access_token=${access_token}`)
             if (st.status_code === 'FINISHED') break
-            if (st.status_code === 'ERROR') throw new Error('Falha ao processar mídia')
+            if (st.status_code === 'ERROR') throw new Error('Falha ao processar mídia no Instagram. Verifique se a URL é direta, pública e em formato compatível.')
             await new Promise((r) => setTimeout(r, 2000))
           }
 

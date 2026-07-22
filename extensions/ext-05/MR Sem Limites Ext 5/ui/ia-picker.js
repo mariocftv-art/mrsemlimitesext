@@ -1,6 +1,7 @@
 /* MR Sem Limites — Painel IAs (seletor de modo). UI-only, não altera backend/licença. */
 (function(){
   var IAS = [
+    {group:'auto', id:'auto',      emoji:'✨', title:'AUTO — Melhor para o comando', score:10, power:'A extensão detecta se o pedido é texto, imagem, vídeo ou voz e escolhe SEMPRE o melhor modelo disponível.', tag:'INTELIGENTE', directive:'MODO AUTO: analise o pedido do usuário e escolha SEMPRE o melhor modelo disponível para a tarefa — GPT-5 / Claude Opus 4 para código pesado, Claude Sonnet 4.5 para código sério, Gemini 2.5 Pro para contexto grande, Nano Banana / GPT-Image para imagem premium, Veo 3 para vídeo com áudio, ElevenLabs para voz humana premium, Lovable TTS OpenAI/Gemini para narração rápida. Escolha e execute com a máxima qualidade.'},
     {group:'text', id:'gpt5',      emoji:'🚀', title:'GPT-5 / Claude Opus 4', score:10, power:'Tarefa complexa, código difícil, raciocínio pesado. Máximo poder (mais caro).',      tag:'CÓDIGO PESADO',    directive:'Use o modelo de MAIS ALTO poder disponível (nível 10 — GPT-5 / Claude Opus 4). Tarefa complexa, exige raciocínio profundo e código de altíssima qualidade.'},
     {group:'text', id:'sonnet',    emoji:'🧠', title:'Claude Sonnet 4.5',      score:9,  power:'Código sério, análise longa. Equilíbrio top entre qualidade e custo.',              tag:'EQUILÍBRIO TOP',   directive:'Use o modelo Claude Sonnet 4.5 (nível 9). Ideal para código sério e análise longa com equilíbrio de custo e qualidade.'},
     {group:'text', id:'gempro',    emoji:'🔮', title:'Gemini 2.5 Pro',         score:8,  power:'Raciocínio + contexto gigante. Ótimo para arquivos grandes e análise ampla.',       tag:'CONTEXTO GIGANTE', directive:'Use o modelo Gemini 2.5 Pro (nível 8). Priorize raciocínio profundo com contexto grande.'},
@@ -12,8 +13,23 @@
     {group:'img',  id:'gptimg',    emoji:'🖼️', title:'GPT-Image',              score:10, power:'Texto legível, marketing, ativos polidos.',                                        tag:'ALTA FIDELIDADE',  directive:'MODO IMAGEM: gere imagem com GPT-Image — foque em texto legível e ativos polidos.'},
     {group:'img',  id:'flux',      emoji:'🎨', title:'Flux',                   score:7,  power:'Imagem geral rápida, boa base para arte conceitual.',                                tag:'RÁPIDO',           directive:'MODO IMAGEM: gere imagem com Flux — imagem geral rápida.'},
     {group:'vid',  id:'veo3',      emoji:'🎬', title:'Veo 3 (Google)',         score:9,  power:'Vídeo com ÁUDIO. Máxima qualidade cinematográfica.',                                 tag:'COM ÁUDIO',        directive:'MODO VÍDEO: gere vídeo com Veo 3 (Google), sempre com ÁUDIO. Máxima qualidade cinematográfica.'},
-    {group:'vid',  id:'veo3fast',  emoji:'⚡', title:'Veo 3 Fast',             score:7,  power:'Mais rápido e barato, ainda com áudio.',                                             tag:'RÁPIDO/BARATO',    directive:'MODO VÍDEO: gere vídeo com Veo 3 Fast — mais rápido e barato, com áudio.'}
+    {group:'vid',  id:'veo3fast',  emoji:'⚡', title:'Veo 3 Fast',             score:7,  power:'Mais rápido e barato, ainda com áudio.',                                             tag:'RÁPIDO/BARATO',    directive:'MODO VÍDEO: gere vídeo com Veo 3 Fast — mais rápido e barato, com áudio.'},
+    {group:'tts',  id:'eleven',    emoji:'🎙️', title:'ElevenLabs (voz humana premium)', score:10, power:'Voz humana ultra-realista PT-BR, entonação natural, ideal para locução profissional e Reels.', tag:'VOZ PREMIUM', directive:'MODO VOZ: gere narração/locução com ElevenLabs (voz humana premium PT-BR). Máxima naturalidade, use para vídeos profissionais e Reels.'},
+    {group:'tts',  id:'ttsopenai', emoji:'🗣️', title:'Lovable TTS · OpenAI GPT-4o mini', score:9, power:'TTS premium OpenAI via Lovable AI. Rápido, PT-BR natural, com streaming.', tag:'PREMIUM RÁPIDO', directive:'MODO VOZ: gere narração com Lovable AI TTS (OpenAI gpt-4o-mini-tts). Rápido, PT-BR natural, ótimo para prévias e vídeos.'},
+    {group:'tts',  id:'ttsgempro', emoji:'🎧', title:'Lovable TTS · Gemini 2.5 Pro', score:9, power:'TTS Gemini Pro via Lovable AI. Alta qualidade, entonação cinematográfica.', tag:'CINEMATOGRÁFICA', directive:'MODO VOZ: gere narração com Lovable AI TTS (Gemini 2.5 Pro TTS). Entonação cinematográfica, use para trailers e conteúdo premium.'},
+    {group:'tts',  id:'ttsgem',    emoji:'💬', title:'Lovable TTS · Gemini 2.5 Flash', score:7, power:'TTS Gemini Flash via Lovable AI. Muito rápido e barato.', tag:'ULTRA RÁPIDO', directive:'MODO VOZ: gere narração com Lovable AI TTS (Gemini 2.5 Flash TTS). Rápido e econômico para prévias.'}
   ];
+
+  // Detecta melhor IA com base no texto do usuário (modo AUTO)
+  function detectBest(text){
+    var t = String(text||'').toLowerCase();
+    if (/\b(voz|narra|locu|fala|áudio|audio|dubl|tts|podcast)\b/.test(t)) return IAS.find(function(x){return x.id==='eleven';});
+    if (/\b(reel|v[íi]deo|filme|trailer|cena|clipe|cinemato)\b/.test(t)) return IAS.find(function(x){return x.id==='veo3';});
+    if (/\b(imagem|foto|logo|poster|banner|thumb|arte|desenho|ilustra)\b/.test(t)) return IAS.find(function(x){return x.id==='nano';});
+    if (/\b(código|codigo|refator|bug|arquitetura|algoritmo|typescript|python|react)\b/.test(t)) return IAS.find(function(x){return x.id==='gpt5';});
+    if (/\b(contexto|documento|pdf|planilha|arquivo grande|resumo longo)\b/.test(t)) return IAS.find(function(x){return x.id==='gempro';});
+    return IAS.find(function(x){return x.id==='sonnet';});
+  }
 
   var KEY = 'mr_ia_pick_v1';
   function scoreClass(s){ return s>=9?'hi':(s>=6?'mid':''); }
@@ -21,13 +37,19 @@
 
   function render(){
     var pick = getPick();
-    var groups = {text:document.getElementById('mrIaGridText'), img:document.getElementById('mrIaGridImg'), vid:document.getElementById('mrIaGridVid')};
+    var groups = {
+      auto: document.getElementById('mrIaGridAuto'),
+      text: document.getElementById('mrIaGridText'),
+      img:  document.getElementById('mrIaGridImg'),
+      vid:  document.getElementById('mrIaGridVid'),
+      tts:  document.getElementById('mrIaGridTts')
+    };
     var quick = document.getElementById('mrIaQuick');
     if (!groups.text) return;
-    Object.keys(groups).forEach(function(k){ groups[k].innerHTML=''; });
+    Object.keys(groups).forEach(function(k){ if (groups[k]) groups[k].innerHTML=''; });
     if (quick) quick.innerHTML='';
 
-    var quickPicks = ['sonnet','gpt5','gempro','nano','veo3','flux'];
+    var quickPicks = ['auto','sonnet','gpt5','nano','veo3','eleven'];
     if (quick){
       quickPicks.forEach(function(id){
         var ia = IAS.find(function(x){return x.id===id;}); if(!ia) return;
@@ -61,7 +83,7 @@
         ev.stopPropagation(); setPick(ia); goChat(true);
       });
       el.addEventListener('click', function(){ setPick(ia); });
-      groups[ia.group].appendChild(el);
+      if (groups[ia.group]) groups[ia.group].appendChild(el);
     });
     updateBadge();
   }
@@ -102,7 +124,12 @@
       var pick = getPick();
       var ta = document.getElementById('message');
       if (pick && ta){
-        var prefix = '[MR SEM LIMITES — DIRECIONAMENTO IA]\n'+pick.directive+'\n\n';
+        var effective = pick;
+        if (pick.id === 'auto'){
+          var best = detectBest(ta.value||'');
+          if (best) effective = { emoji: best.emoji, title: best.title, directive: '[AUTO] Analisei o pedido e escolhi: '+best.title+'.\n'+best.directive };
+        }
+        var prefix = '[MR SEM LIMITES — DIRECIONAMENTO IA]\n'+effective.directive+'\n\n';
         if (!ta.value || !ta.value.startsWith('[MR SEM LIMITES — DIRECIONAMENTO IA]')){
           ta.value = prefix + (ta.value||'');
         }

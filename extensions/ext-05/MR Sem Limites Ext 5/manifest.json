@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "MR Sem Limites Ext 5 — Instagram",
-  "version": "5.4.7",
+  "version": "5.4.8",
   "description": "MR Sem Limites Ext 5 — Todas as funcionalidades da EXT3 + Instagram (publicar Post/Reel/Carrossel via API Graph).",
   "permissions": [
     "storage",
@@ -107,7 +107,7 @@
     }
   ],
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; frame-src blob: https://mrsemlimites.lovable.app https://mrsemlimitesext.lovable.app;"
+    "extension_pages": "script-src 'self'; object-src 'self'; connect-src https:; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; frame-src blob: https://mrsemlimites.lovable.app https://mrsemlimitesext.lovable.app;"
   },
   "commands": {
     "toggle-enabled": {

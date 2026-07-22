@@ -17,18 +17,18 @@ const cors = {
 }
 
 const LATEST = {
-  latest_version: '5.4.7',
+  latest_version: '5.4.8',
   download_url:
-    'https://mrsemlimitesext.lovable.app/__l5e/assets-v1/4cdcf3d0-fa9d-451a-8161-b523aefbf198/MR-Sem-Limites-EXT5-v5.4.7.zip',
+    'https://mrsemlimitesext.lovable.app/MR-Sem-Limites-EXT5-v5.4.8.zip',
   notes: [
-    'Prévia da mídia agora usa link direto (catbox.moe) — não quebra mais.',
-    'Novo botão "Atualizar" no painel lateral: aplica hotfix sem reinstalar.',
-    'Legendas virais premium com emojis coloridos permanecem ativas.',
+    'Imagem convertida obrigatoriamente para JPEG antes da publicação.',
+    'Reels agora exigem no mínimo 20s, com roteiro, fala/locução e trilha configurável.',
+    'Prévia grande ampliada para vídeo vertical e post.',
   ],
   // Hotfix aplicado em runtime pela extensão. Incrementar hotfix_id para forçar reaplicação.
   hotfix: {
-    hotfix_id: '2026-07-22-01',
-    caption_style: 'premium-emoji-viral',
+    hotfix_id: '2026-07-22-02',
+    caption_style: 'premium-emoji-viral-video-20s',
   },
 }
 

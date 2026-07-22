@@ -147,7 +147,7 @@
   function loadImage(src) {
     return new Promise((resolve, reject) => {
       const img = new Image();
-      img.crossOrigin = 'anonymous';
+      if (!String(src).startsWith('data:')) img.crossOrigin = 'anonymous';
       img.onload = () => resolve(img);
       img.onerror = () => reject(new Error('Não consegui carregar a imagem da prévia'));
       img.src = src;
@@ -208,7 +208,7 @@
     return (lines.length ? lines : fallback).slice(0, 5);
   }
 
-  async function makeReelPreviewFromImage(imageUrl, title, soundtrack, voiceover, script) {
+  async function makeReelPreviewFromImage(imageUrl, title, soundtrack, voiceover, script, durationSec) {
     if (!HTMLCanvasElement.prototype.captureStream || !window.MediaRecorder) {
       throw new Error('Seu navegador não liberou gravação de vídeo no painel. Atualize o Chrome e tente de novo.');
     }
@@ -219,7 +219,8 @@
     const ctx = canvas.getContext('2d');
     if (!ctx) throw new Error('Canvas indisponível para gerar vídeo');
 
-    const durationMs = REEL_MIN_DURATION_SEC * 1000;
+    const safeDuration = Math.max(REEL_MIN_DURATION_SEC, Number(durationSec || REEL_MIN_DURATION_SEC) || REEL_MIN_DURATION_SEC);
+    const durationMs = safeDuration * 1000;
     const fps = 30;
     const mimeType = bestVideoMime();
     if (!mimeType) throw new Error('Seu Chrome não suporta geração de vídeo no painel.');
@@ -538,7 +539,10 @@
           try {
             // Usa base64 direto (sem CORS) pra carregar no canvas sem taint
             const canvasSrc = d.media_b64 ? `data:image/png;base64,${d.media_b64}` : d.media_url;
-            const rec = await makeReelPreviewFromImage(canvasSrc, d.title || '', soundtrack === 'auto' ? 'cinematic' : soundtrack, d.voiceover || d.caption || '', d.video_script || '');
+            const rec = await makeReelPreviewFromImage(canvasSrc, d.title || '', soundtrack === 'auto' ? 'cinematic' : soundtrack, d.voiceover || d.caption || '', d.video_script || '', duration);
+            if (!/^video\/(mp4|quicktime)/i.test(rec.mimeType)) {
+              throw new Error('Seu Chrome gerou vídeo WebM, mas o Instagram só aceita MP4/MOV para Reel. Atualize o Chrome e tente de novo.');
+            }
             const publicUrl = await publishGeneratedMedia(rec.dataUrl);
             lastGeneratedMime = rec.mimeType;
             $('igMediaUrl').value = publicUrl;
@@ -584,7 +588,7 @@
             $('igMediaUrl').value = jpegUrl;
           } catch (err) {
             log('⚠️ Falha ao converter para JPEG, usando URL original. ' + (err?.message || ''), false);
-            $('igMediaUrl').value = d.media_url;
+            throw new Error('A imagem precisa ser convertida para JPEG antes de publicar. Gere novamente para evitar “formato não suportado”.');
           }
         }
       } else {

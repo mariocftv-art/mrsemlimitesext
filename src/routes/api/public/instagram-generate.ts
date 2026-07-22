@@ -22,6 +22,10 @@ export const Route = createFileRoute('/api/public/instagram-generate')({
         try { body = await request.json() } catch {}
         const prompt = (body?.prompt || body?.theme || '').toString().trim()
         const type = (body?.type || 'post').toString() // post | reel | carousel
+        const duration = Math.max(20, Math.min(90, Number(body?.duration || 20) || 20))
+        const aiMode = (body?.ai_mode || body?.aiMode || '').toString().trim()
+        const soundtrack = (body?.soundtrack || '').toString().trim()
+        const voiceMode = (body?.voice_mode || body?.voiceMode || 'male').toString().trim()
         const wantMedia = body?.media !== false
         if (!prompt) {
           return new Response(JSON.stringify({ error: 'Informe o prompt' }), { status: 400, headers: cors })
@@ -37,8 +41,8 @@ export const Route = createFileRoute('/api/public/instagram-generate')({
             body: JSON.stringify({
               model: 'google/gemini-2.5-flash',
               messages: [
-                { role: 'system', content: 'Você é copywriter viral de Instagram brasileiro premium. Responda APENAS em JSON válido: {"title":"...","caption":"...","hashtags":["#..","#.."],"video_script":"..."}. REGRAS OBRIGATÓRIAS de estilo da caption: (1) comece com um emoji forte + gancho impactante em CAIXA ALTA parcial. (2) use MUITOS emojis coloridos ao longo do texto (mínimo 1 por linha) — 🔥✨💎🚀💰🎯👑⚡🏆🎁📲💫🌟❤️‍🔥. (3) quebre em blocos curtos separados por linha em branco (storytelling → prova → oferta → CTA). (4) use bullets com ✅ ou ➡️ para benefícios. (5) termine com CTA forte + emoji de mão apontando 👉 e frase tipo "Link na bio 🔗" ou "Chama no WhatsApp 📲". (6) NUNCA escreva parágrafo corrido sem emoji. Título curto (máx 60 chars) com gancho + 1 emoji. 15–20 hashtags relevantes em PT-BR, sem repetição, misturando nicho + amplas. Se for Reel, preencha video_script com 4 cenas curtas numeradas, movimento de câmera e texto na tela; se não for Reel, deixe vazio.' },
-                { role: 'user', content: `Prompt: ${prompt}\nTipo: ${type === 'reel' ? 'Reel de vídeo' : type === 'carousel' ? 'Carrossel de imagens' : 'Post de imagem'}` },
+                { role: 'system', content: 'Você é consultor premium de Instagram brasileiro, diretor de vídeo e copywriter viral. Responda APENAS em JSON válido: {"title":"...","caption":"...","hashtags":["#.."],"video_script":"...","voiceover":"...","soundtrack_suggestion":"..."}. REGRAS OBRIGATÓRIAS da legenda: (1) comece com emoji forte + gancho em CAIXA ALTA parcial. (2) use MUITOS emojis coloridos, mínimo 1 por linha — 🔥✨💎🚀💰🎯👑⚡🏆🎁📲💫🌟❤️‍🔥. (3) blocos curtos separados por linha em branco: gancho → história → prova → oferta → CTA. (4) bullets com ✅ ou ➡️. (5) termine com CTA forte + 👉 + "Link na bio 🔗" ou "Chama no WhatsApp 📲". (6) nunca parágrafo corrido sem emoji. Título curto, máx. 60 caracteres, com 1 emoji. 15–20 hashtags PT-BR sem repetição. Para Reel: video_script deve ter 5 cenas numeradas para no mínimo 20 segundos, com movimento de câmera, ação visual, texto na tela e fala/personagem falando em cada cena; voiceover deve ser uma narração/falas pronta para locução masculina natural em PT-BR, com duração compatível; soundtrack_suggestion deve dizer estilo de música/trilha. Para Post/Carrossel, deixe video_script, voiceover e soundtrack_suggestion vazios.' },
+                { role: 'user', content: `Prompt: ${prompt}\nTipo: ${type === 'reel' ? 'Reel de vídeo vertical 9:16' : type === 'carousel' ? 'Carrossel de imagens' : 'Post de imagem'}\nDuração mínima do Reel: ${duration}s\nIA de vídeo/imagem escolhida no painel: ${aiMode || 'padrão premium'}\nTrilha escolhida: ${soundtrack || 'cinematográfica'}\nVoz/fala: ${voiceMode}` },
               ],
               temperature: 0.85,
               response_format: { type: 'json_object' },
@@ -57,12 +61,14 @@ export const Route = createFileRoute('/api/public/instagram-generate')({
           const hashtags = Array.isArray(parsed.hashtags) ? parsed.hashtags.join(' ') : ''
           const caption = [title, captionBody, hashtags].filter(Boolean).join('\n\n').trim()
           const videoScript = (parsed.video_script || '').toString().trim()
+          const voiceover = (parsed.voiceover || '').toString().trim()
+          const soundtrackSuggestion = (parsed.soundtrack_suggestion || '').toString().trim()
 
           let mediaUrl = ''
           let mediaB64 = ''
           if (wantMedia) {
             // 2) Imagem/capa via Gateway de imagens (Nano Banana 2)
-            const imgPrompt = `Instagram ${type === 'reel' ? 'vertical 9:16 cover frame for an animated Reel preview' : 'square 1:1'} image. ${prompt}. Ultra realistic, cinematic lighting, vibrant colors, professional composition, high engagement social media aesthetic.`
+            const imgPrompt = `Instagram ${type === 'reel' ? `vertical 9:16 first frame for a ${duration}s AI video/Reel with speaking characters, cinematic scene, clear subject, no text overlays` : 'square 1:1 high-quality post image'}. ${prompt}. Ultra realistic, cinematic lighting, vibrant colors, professional composition, high engagement social media aesthetic.`
             const imgRes = await fetch('https://ai.gateway.lovable.dev/v1/images/generations', {
               method: 'POST',
               headers: { Authorization: `Bearer ${KEY}`, 'Content-Type': 'application/json' },
@@ -90,7 +96,7 @@ export const Route = createFileRoute('/api/public/instagram-generate')({
             }
           }
 
-          return new Response(JSON.stringify({ title, caption, media_url: mediaUrl, media_b64: mediaB64 || null, prompt, type, video_script: videoScript }), { status: 200, headers: cors })
+          return new Response(JSON.stringify({ title, caption, media_url: mediaUrl, media_b64: mediaB64 || null, prompt, type, video_script: videoScript, voiceover, soundtrack_suggestion: soundtrackSuggestion, duration }), { status: 200, headers: cors })
         } catch (e: any) {
           return new Response(JSON.stringify({ error: e?.message || 'Erro' }), { status: 500, headers: cors })
         }

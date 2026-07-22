@@ -354,8 +354,8 @@
     }
     const img = await loadImage(imageUrl);
     const canvas = document.createElement('canvas');
-    canvas.width = 540;
-    canvas.height = 960;
+    canvas.width = 720;
+    canvas.height = 1280;
     const ctx = canvas.getContext('2d');
     if (!ctx) throw new Error('Canvas indisponível para gerar vídeo');
 
@@ -373,12 +373,14 @@
     let audioCtx = null;
     let voiceBuffer = null;
     const wantsAudio = soundtrack && soundtrack !== 'none';
+    const stylePreset = soundtrack === 'auto' ? 'cinematic' : soundtrack;
+    const bpm = ({ cinematic: 80, upbeat: 124, chill: 70, luxury: 78 })[stylePreset] || 90;
     if (wantsAudio || voiceover) {
       try {
         const AC = window.AudioContext || window.webkitAudioContext;
         audioCtx = new AC();
         const dest = audioCtx.createMediaStreamDestination();
-        if (wantsAudio) buildSoundtrack(audioCtx, dest, durationMs / 1000, soundtrack);
+        if (wantsAudio) buildSoundtrack(audioCtx, dest, durationMs / 1000, stylePreset);
         voiceBuffer = await loadVoiceoverBuffer(audioCtx, voiceover);
         if (voiceBuffer) {
           const src = audioCtx.createBufferSource();
@@ -395,7 +397,7 @@
       }
     }
 
-    const recorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 3_200_000, audioBitsPerSecond: 128_000 });
+    const recorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 5_500_000, audioBitsPerSecond: 160_000 });
     recorder.ondataavailable = (ev) => { if (ev.data && ev.data.size) chunks.push(ev.data); };
 
     const done = new Promise((resolve, reject) => {
@@ -412,51 +414,90 @@
     });
 
     const sceneTexts = makeSceneTexts(title, script);
-    const drawCover = (progress) => {
-      const sceneIndex = Math.min(sceneTexts.length - 1, Math.floor(progress * sceneTexts.length));
-      const sceneProgress = (progress * sceneTexts.length) % 1;
-      const scale = Math.max(canvas.width / img.width, canvas.height / img.height) * (1 + progress * 0.18);
+    // Distribui as cenas uniformemente pela duração real (>= 20s)
+    const sceneCount = sceneTexts.length;
+    const beatSec = 60 / bpm; // 1 beat da trilha
+    const W = canvas.width, H = canvas.height;
+    const drawCover = (elapsedMs, progress) => {
+      const sceneIndex = Math.min(sceneCount - 1, Math.floor(progress * sceneCount));
+      const sceneProgress = (progress * sceneCount) % 1;
+      // Ken Burns por cena — recomeça o zoom a cada cena pra sensação de corte
+      const zoom = 1.05 + sceneProgress * 0.22;
+      const scale = Math.max(W / img.width, H / img.height) * zoom;
       const w = img.width * scale;
       const h = img.height * scale;
-      const driftX = Math.sin(progress * Math.PI * 4) * 26;
-      const driftY = -progress * 42 + Math.cos(progress * Math.PI * 3) * 10;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(img, (canvas.width - w) / 2 + driftX, (canvas.height - h) / 2 + driftY, w, h);
-      const g = ctx.createLinearGradient(0, 0, 0, canvas.height);
-      g.addColorStop(0, 'rgba(0,0,0,.18)');
-      g.addColorStop(0.62, 'rgba(0,0,0,.05)');
-      g.addColorStop(1, 'rgba(0,0,0,.55)');
+      const driftX = Math.sin(sceneProgress * Math.PI) * 40 * (sceneIndex % 2 ? 1 : -1);
+      const driftY = -sceneProgress * 60;
+      ctx.fillStyle = '#000';
+      ctx.fillRect(0, 0, W, H);
+      ctx.drawImage(img, (W - w) / 2 + driftX, (H - h) / 2 + driftY, w, h);
+      // Vinheta cinematográfica
+      const g = ctx.createLinearGradient(0, 0, 0, H);
+      g.addColorStop(0, 'rgba(0,0,0,.55)');
+      g.addColorStop(0.35, 'rgba(0,0,0,.05)');
+      g.addColorStop(0.7, 'rgba(0,0,0,.15)');
+      g.addColorStop(1, 'rgba(0,0,0,.75)');
       ctx.fillStyle = g;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = 'rgba(245, 133, 41, .92)';
-      ctx.fillRect(38, 56, 118, 28);
-      ctx.fillStyle = '#fff';
-      ctx.font = '800 16px system-ui, -apple-system, Segoe UI, sans-serif';
+      ctx.fillRect(0, 0, W, H);
+      // Flash sincronizado com o beat da trilha
+      const beatPhase = (elapsedMs / 1000) % beatSec;
+      const flashAlpha = Math.max(0, 0.18 - beatPhase * 1.6);
+      if (flashAlpha > 0.001) {
+        ctx.fillStyle = `rgba(255,255,255,${flashAlpha.toFixed(3)})`;
+        ctx.fillRect(0, 0, W, H);
+      }
+      // Badge REEL IA
+      ctx.fillStyle = 'rgba(212,175,55,.95)';
+      ctx.fillRect(38, 60, 150, 40);
+      ctx.fillStyle = '#0a0a0a';
+      ctx.font = '900 22px system-ui, -apple-system, Segoe UI, sans-serif';
       ctx.textAlign = 'left';
-      ctx.fillText('REEL IA', 52, 76);
-      ctx.fillStyle = 'rgba(255,255,255,.96)';
-      ctx.font = '800 30px system-ui, -apple-system, Segoe UI, sans-serif';
+      ctx.fillText('★ REEL IA', 52, 88);
+      // Progress bar top
+      ctx.fillStyle = 'rgba(255,255,255,.15)';
+      ctx.fillRect(38, 38, W - 76, 6);
+      ctx.fillStyle = '#d4af37';
+      ctx.fillRect(38, 38, (W - 76) * progress, 6);
+      // Contador de cena
+      ctx.fillStyle = 'rgba(255,255,255,.85)';
+      ctx.font = '700 18px system-ui, -apple-system, Segoe UI, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText(`${sceneIndex + 1} / ${sceneCount}`, W - 40, 88);
+      // Texto principal (aparece com bounce sincronizado)
+      const enterProg = Math.min(1, sceneProgress * 3);
+      const easeOut = 1 - Math.pow(1 - enterProg, 3);
+      const textOpacity = enterProg;
+      const textY = H * 0.55 + (1 - easeOut) * 40;
+      const safeText = sceneTexts[sceneIndex] || title || 'MR Sem Limites';
+      // Caixa
+      ctx.fillStyle = `rgba(0,0,0,${(0.55 * textOpacity).toFixed(3)})`;
+      ctx.fillRect(40, textY - 100, W - 80, 200);
+      ctx.strokeStyle = `rgba(212,175,55,${(0.75 * textOpacity).toFixed(3)})`;
+      ctx.lineWidth = 3;
+      ctx.strokeRect(40, textY - 100, W - 80, 200);
+      ctx.fillStyle = `rgba(255,255,255,${textOpacity.toFixed(3)})`;
+      ctx.font = '900 44px system-ui, -apple-system, Segoe UI, sans-serif';
       ctx.textAlign = 'center';
-      const safeTitle = sceneTexts[sceneIndex] || title || 'MR Sem Limites';
-      const y = 672 + Math.sin(sceneProgress * Math.PI) * 18;
-      ctx.fillStyle = 'rgba(0,0,0,.48)';
-      ctx.fillRect(30, y - 72, canvas.width - 60, 132);
-      ctx.strokeStyle = 'rgba(245, 133, 41, .75)';
-      ctx.lineWidth = 2;
-      ctx.strokeRect(30, y - 72, canvas.width - 60, 132);
-      ctx.fillStyle = 'rgba(255,255,255,.98)';
-      wrapCanvasText(ctx, safeTitle, canvas.width / 2, y - 26, canvas.width - 96, 36, 3);
-      ctx.font = '700 20px system-ui, -apple-system, Segoe UI, sans-serif';
-      ctx.fillStyle = 'rgba(255,219,232,.95)';
-      ctx.fillText('🎙️ fala + trilha • @linkmrstore', canvas.width / 2, canvas.height - 50);
+      wrapCanvasText(ctx, safeText, W / 2, textY - 40, W - 120, 52, 3);
+      // Rodapé fixo
+      ctx.fillStyle = 'rgba(0,0,0,.7)';
+      ctx.fillRect(0, H - 110, W, 110);
+      ctx.fillStyle = '#d4af37';
+      ctx.font = '900 26px system-ui, -apple-system, Segoe UI, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('MR SEM LIMITES', W / 2, H - 70);
+      ctx.fillStyle = 'rgba(255,255,255,.85)';
+      ctx.font = '600 20px system-ui, -apple-system, Segoe UI, sans-serif';
+      ctx.fillText('🎙 fala + trilha • @linkmrstore', W / 2, H - 38);
     };
 
     recorder.start(250);
     const started = performance.now();
     await new Promise((resolve) => {
       const tick = (now) => {
-        const p = Math.min(1, (now - started) / durationMs);
-        drawCover(p);
+        const elapsed = now - started;
+        const p = Math.min(1, elapsed / durationMs);
+        drawCover(elapsed, p);
         if (p < 1) requestAnimationFrame(tick);
         else resolve();
       };
@@ -465,6 +506,7 @@
     recorder.stop();
     return done;
   }
+
 
 
   function wrapCanvasText(ctx, text, x, y, maxWidth, lineHeight, maxLines = 2) {

@@ -124,7 +124,12 @@
       var pick = getPick();
       var ta = document.getElementById('message');
       if (pick && ta){
-        var prefix = '[MR SEM LIMITES — DIRECIONAMENTO IA]\n'+pick.directive+'\n\n';
+        var effective = pick;
+        if (pick.id === 'auto'){
+          var best = detectBest(ta.value||'');
+          if (best) effective = { emoji: best.emoji, title: best.title, directive: '[AUTO] Analisei o pedido e escolhi: '+best.title+'.\n'+best.directive };
+        }
+        var prefix = '[MR SEM LIMITES — DIRECIONAMENTO IA]\n'+effective.directive+'\n\n';
         if (!ta.value || !ta.value.startsWith('[MR SEM LIMITES — DIRECIONAMENTO IA]')){
           ta.value = prefix + (ta.value||'');
         }

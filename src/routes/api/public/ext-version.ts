@@ -19,7 +19,7 @@ const cors = {
 const LATEST = {
   latest_version: '5.4.8',
   download_url:
-    'https://mrsemlimitesext.lovable.app/MR-Sem-Limites-EXT5-v5.4.8.zip',
+    'https://mrsemlimitesext.lovable.app/__l5e/assets-v1/b46b531c-b2c1-44a6-a2ae-e5ecc1dbcf91/MR-Sem-Limites-EXT5-v5.4.8.zip',
   notes: [
     'Imagem convertida obrigatoriamente para JPEG antes da publicação.',
     'Reels agora exigem no mínimo 20s, com roteiro, fala/locução e trilha configurável.',

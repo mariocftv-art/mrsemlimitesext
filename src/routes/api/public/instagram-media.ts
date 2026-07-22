@@ -18,16 +18,42 @@ export async function putMedia(dataUrl: string, filenameHint?: string): Promise<
   const bytes = new Uint8Array(bin.length)
   for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i)
 
-  // Extensão inferida do MIME
-  const ext = mime.includes('mp4') ? 'mp4'
+  // Instagram é bem mais confiável com JPEG em posts/feed. A IA costuma retornar PNG;
+  // convertemos no servidor antes de hospedar para evitar "The image format is not supported".
+  let uploadBytes: Uint8Array = bytes
+  let uploadMime = mime
+  let ext = mime.includes('mp4') ? 'mp4'
     : mime.includes('webm') ? 'webm'
     : mime.includes('mov') || mime.includes('quicktime') ? 'mov'
-    : mime.includes('png') ? 'png'
     : mime.includes('gif') ? 'gif'
+    : mime.includes('png') ? 'png'
     : 'jpg'
+
+  if (mime.includes('png')) {
+    try {
+      const { PNG } = await import('pngjs')
+      const jpeg = await import('jpeg-js')
+      const png = PNG.sync.read(Buffer.from(bytes))
+      const rgba = new Uint8Array(png.width * png.height * 4)
+      for (let i = 0; i < png.width * png.height; i++) {
+        const a = png.data[i * 4 + 3] / 255
+        rgba[i * 4] = Math.round(png.data[i * 4] * a + 255 * (1 - a))
+        rgba[i * 4 + 1] = Math.round(png.data[i * 4 + 1] * a + 255 * (1 - a))
+        rgba[i * 4 + 2] = Math.round(png.data[i * 4 + 2] * a + 255 * (1 - a))
+        rgba[i * 4 + 3] = 255
+      }
+      const jpg = jpeg.encode({ data: Buffer.from(rgba), width: png.width, height: png.height }, 92)
+      uploadBytes = jpg.data
+      uploadMime = 'image/jpeg'
+      ext = 'jpg'
+    } catch (e: any) {
+      throw new Error(`Falha ao converter PNG para JPEG: ${e?.message || e}`)
+    }
+  }
+
   const filename = (filenameHint || `ig-${Date.now()}-${crypto.randomUUID().slice(0, 8)}`).replace(/\.[^.]+$/, '') + '.' + ext
 
-  const blob = new Blob([bytes as BlobPart], { type: mime })
+  const blob = new Blob([uploadBytes as BlobPart], { type: uploadMime })
 
 
   // catbox.moe primeiro: retorna URL DIRETA (https://files.catbox.moe/xxx.jpg) que

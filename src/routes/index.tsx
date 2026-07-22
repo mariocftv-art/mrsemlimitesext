@@ -17,7 +17,19 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { factoryStats, listSummaries, type NeonTone } from "@/factory";
 
-export const Route = createFileRoute("/")({ component: FactoryDashboard });
+export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "MR Extension Factory" },
+      { name: "description", content: "Painel profissional para gerenciar extensões Chrome MR Sem Limites." },
+      { property: "og:title", content: "MR Extension Factory" },
+      { property: "og:description", content: "Gerencie builds, extensões e downloads da MR Sem Limites." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
+  component: FactoryDashboard,
+});
 
 const glow: Record<NeonTone, string> = {
   cyan: "var(--neon-cyan)",

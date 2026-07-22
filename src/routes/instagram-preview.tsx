@@ -8,6 +8,8 @@ export const Route = createFileRoute('/instagram-preview')({
       { name: 'description', content: 'Prévia grande do post/reel gerado pela EXT5 antes de publicar no Instagram.' },
       { property: 'og:title', content: 'Prévia Instagram — MR Sem Limites' },
       { property: 'og:description', content: 'Revise mídia, título, legenda e hashtags antes de publicar.' },
+      { property: 'og:type', content: 'website' },
+      { name: 'twitter:card', content: 'summary' },
       { name: 'robots', content: 'noindex' },
     ],
   }),
@@ -70,9 +72,9 @@ function InstagramPreviewPage() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-6 py-8 grid lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] gap-8">
-        <section className="space-y-3">
-          <div className="rounded-2xl overflow-hidden bg-black border border-amber-500/20 shadow-2xl shadow-amber-900/20">
+      <main className="max-w-[1800px] mx-auto px-4 md:px-6 py-5 grid xl:grid-cols-[minmax(420px,1.7fr)_minmax(360px,.8fr)] gap-6">
+        <section className="space-y-3 min-h-0">
+          <div className="rounded-2xl overflow-hidden bg-black border border-amber-500/20 shadow-2xl shadow-amber-900/20 flex items-center justify-center min-h-[72vh]">
             {isVideo ? (
               <video
                 src={media}
@@ -80,15 +82,15 @@ function InstagramPreviewPage() {
                 autoPlay
                 loop
                 playsInline
-                className="w-full block bg-black"
-                style={{ maxHeight: '82vh', objectFit: 'contain' }}
+                className="block bg-black"
+                style={{ width: type === 'reel' ? 'auto' : '100%', maxWidth: '100%', height: type === 'reel' ? '86vh' : 'auto', maxHeight: '86vh', objectFit: 'contain' }}
               />
             ) : (
               <img
                 src={media}
                 alt="Prévia da mídia gerada"
-                className="w-full block"
-                style={{ maxHeight: '82vh', objectFit: 'contain' }}
+                className="block"
+                style={{ width: type === 'reel' ? 'auto' : '100%', maxWidth: '100%', height: type === 'reel' ? '86vh' : 'auto', maxHeight: '86vh', objectFit: 'contain' }}
               />
             )}
           </div>

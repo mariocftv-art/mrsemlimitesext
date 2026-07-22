@@ -9,6 +9,7 @@
   const GEN_URL = BASE + '/api/public/instagram-generate';
   const MEDIA_URL = BASE + '/api/public/instagram-media';
   const PUBLISH_URL = BASE + '/api/public/instagram-publish';
+  const TTS_URL = BASE + '/api/public/orbe-tts';
 
   const $ = (id) => document.getElementById(id);
   const log = (m, ok) => {
@@ -20,6 +21,7 @@
   let currentType = 'post';
   let lastGeneratedMime = '';
   let lastPreviewObjectUrl = '';
+  const REEL_MIN_DURATION_SEC = 20;
 
   function setBusy(btn, busy, text) {
     if (!btn) return;
@@ -40,14 +42,24 @@
     const stWrap = $('igSoundtrackWrap');
     if (stWrap) stWrap.style.display = currentType === 'reel' ? 'block' : 'none';
     if (currentType === 'reel') {
-      if (label) label.textContent = 'Descreva o Reel que você quer (a IA gera capa, prévia animada com trilha, título, legenda e hashtags)';
-      if (prompt) prompt.placeholder = 'Ex: um Reel cinematográfico da minha loja Link MR Store, mostrando tecnologia, luxo e confiança, com movimento de câmera e final chamando para seguir…';
-      if (btn) btn.textContent = '🎬 Gerar vídeo + trilha + legenda';
+      if (label) label.textContent = 'Descreva o Reel que você quer (mín. 20s, com roteiro, personagem falando, voz, trilha, título, legenda e hashtags)';
+      if (prompt) prompt.placeholder = 'Ex: um Reel cinematográfico da minha loja Link MR Store, pessoa falando para câmera, cenas de tecnologia/luxo/confiança, trilha premium e CTA final…';
+      if (btn) btn.textContent = '🎬 Gerar Reel 20s + fala + trilha';
     } else {
       if (label) label.textContent = 'Descreva o que você quer (a IA gera a prévia, título, legenda e hashtags)';
       if (prompt) prompt.placeholder = 'Ex: um café expresso fumegante em mesa de mármore, luz de manhã, estética minimalista para minha cafeteria…';
       if (btn) btn.textContent = currentType === 'carousel' ? '🖼 Gerar carrossel + legenda' : '🎨 Gerar imagem + legenda';
     }
+  }
+
+  function getAiPick() {
+    try { return JSON.parse(localStorage.getItem('mr_ia_pick_v1') || 'null'); }
+    catch (_) { return null; }
+  }
+
+  function aiModeLabel() {
+    const pick = getAiPick();
+    return pick && pick.title ? `${pick.emoji || '🤖'} ${pick.title}` : '🎬 Veo 3 / IA de vídeo premium';
   }
 
   function setType(type) {
@@ -161,7 +173,40 @@
     return types.find((t) => window.MediaRecorder && MediaRecorder.isTypeSupported(t)) || '';
   }
 
-  async function makeReelPreviewFromImage(imageUrl, title, soundtrack) {
+  async function loadVoiceoverBuffer(audioCtx, text) {
+    const clean = String(text || '').replace(/[#*_`>]/g, '').slice(0, 1400).trim();
+    if (!clean) return null;
+    try {
+      const r = await fetch(TTS_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: clean, voice: 'onyx' }),
+      });
+      if (!r.ok) throw new Error('TTS ' + r.status);
+      const ab = await r.arrayBuffer();
+      return await audioCtx.decodeAudioData(ab.slice(0));
+    } catch (e) {
+      console.warn('Locução IA indisponível:', e);
+      return null;
+    }
+  }
+
+  function makeSceneTexts(title, script) {
+    const lines = String(script || '')
+      .split(/\n+/)
+      .map((l) => l.replace(/^\s*\d+[.)-]?\s*/, '').trim())
+      .filter(Boolean);
+    const fallback = [
+      title || 'A transformação começa agora',
+      'Veja como essa solução muda o jogo',
+      'Mais confiança, presença e resultado',
+      'Detalhes premium que prendem atenção',
+      'Chama no WhatsApp e vem com a MR',
+    ];
+    return (lines.length ? lines : fallback).slice(0, 5);
+  }
+
+  async function makeReelPreviewFromImage(imageUrl, title, soundtrack, voiceover, script) {
     if (!HTMLCanvasElement.prototype.captureStream || !window.MediaRecorder) {
       throw new Error('Seu navegador não liberou gravação de vídeo no painel. Atualize o Chrome e tente de novo.');
     }
@@ -172,7 +217,7 @@
     const ctx = canvas.getContext('2d');
     if (!ctx) throw new Error('Canvas indisponível para gerar vídeo');
 
-    const durationMs = 6200;
+    const durationMs = REEL_MIN_DURATION_SEC * 1000;
     const fps = 30;
     const mimeType = bestVideoMime();
     if (!mimeType) throw new Error('Seu Chrome não suporta geração de vídeo no painel.');
@@ -182,18 +227,28 @@
     const stream = new MediaStream();
     videoStream.getVideoTracks().forEach((t) => stream.addTrack(t));
 
-    // Trilha sonora sintetizada (opcional)
     let audioCtx = null;
+    let voiceBuffer = null;
     const wantsAudio = soundtrack && soundtrack !== 'none';
-    if (wantsAudio) {
+    if (wantsAudio || voiceover) {
       try {
         const AC = window.AudioContext || window.webkitAudioContext;
         audioCtx = new AC();
         const dest = audioCtx.createMediaStreamDestination();
-        buildSoundtrack(audioCtx, dest, durationMs / 1000, soundtrack);
+        if (wantsAudio) buildSoundtrack(audioCtx, dest, durationMs / 1000, soundtrack);
+        voiceBuffer = await loadVoiceoverBuffer(audioCtx, voiceover);
+        if (voiceBuffer) {
+          const src = audioCtx.createBufferSource();
+          src.buffer = voiceBuffer;
+          const gain = audioCtx.createGain();
+          gain.gain.value = wantsAudio ? 1.15 : 1.35;
+          src.connect(gain).connect(dest);
+          src.start(audioCtx.currentTime + 0.35);
+          src.stop(audioCtx.currentTime + Math.min(durationMs / 1000 - 0.25, voiceBuffer.duration + 0.35));
+        }
         dest.stream.getAudioTracks().forEach((t) => stream.addTrack(t));
       } catch (e) {
-        console.warn('Trilha sonora indisponível:', e);
+        console.warn('Áudio do Reel indisponível:', e);
       }
     }
 
@@ -213,12 +268,15 @@
       };
     });
 
+    const sceneTexts = makeSceneTexts(title, script);
     const drawCover = (progress) => {
-      const scale = Math.max(canvas.width / img.width, canvas.height / img.height) * (1 + progress * 0.12);
+      const sceneIndex = Math.min(sceneTexts.length - 1, Math.floor(progress * sceneTexts.length));
+      const sceneProgress = (progress * sceneTexts.length) % 1;
+      const scale = Math.max(canvas.width / img.width, canvas.height / img.height) * (1 + progress * 0.18);
       const w = img.width * scale;
       const h = img.height * scale;
-      const driftX = Math.sin(progress * Math.PI * 2) * 18;
-      const driftY = -progress * 24;
+      const driftX = Math.sin(progress * Math.PI * 4) * 26;
+      const driftY = -progress * 42 + Math.cos(progress * Math.PI * 3) * 10;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.drawImage(img, (canvas.width - w) / 2 + driftX, (canvas.height - h) / 2 + driftY, w, h);
       const g = ctx.createLinearGradient(0, 0, 0, canvas.height);
@@ -227,14 +285,27 @@
       g.addColorStop(1, 'rgba(0,0,0,.55)');
       ctx.fillStyle = g;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = 'rgba(245, 133, 41, .92)';
+      ctx.fillRect(38, 56, 118, 28);
+      ctx.fillStyle = '#fff';
+      ctx.font = '800 16px system-ui, -apple-system, Segoe UI, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('REEL IA', 52, 76);
       ctx.fillStyle = 'rgba(255,255,255,.96)';
-      ctx.font = '700 28px system-ui, -apple-system, Segoe UI, sans-serif';
+      ctx.font = '800 30px system-ui, -apple-system, Segoe UI, sans-serif';
       ctx.textAlign = 'center';
-      const safeTitle = (title || 'MR Sem Limites').slice(0, 44);
-      wrapCanvasText(ctx, safeTitle, canvas.width / 2, canvas.height - 112, canvas.width - 80, 34);
-      ctx.font = '600 20px system-ui, -apple-system, Segoe UI, sans-serif';
+      const safeTitle = sceneTexts[sceneIndex] || title || 'MR Sem Limites';
+      const y = 672 + Math.sin(sceneProgress * Math.PI) * 18;
+      ctx.fillStyle = 'rgba(0,0,0,.48)';
+      ctx.fillRect(30, y - 72, canvas.width - 60, 132);
+      ctx.strokeStyle = 'rgba(245, 133, 41, .75)';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(30, y - 72, canvas.width - 60, 132);
+      ctx.fillStyle = 'rgba(255,255,255,.98)';
+      wrapCanvasText(ctx, safeTitle, canvas.width / 2, y - 26, canvas.width - 96, 36, 3);
+      ctx.font = '700 20px system-ui, -apple-system, Segoe UI, sans-serif';
       ctx.fillStyle = 'rgba(255,219,232,.95)';
-      ctx.fillText('@linkmrstore', canvas.width / 2, canvas.height - 48);
+      ctx.fillText('🎙️ fala + trilha • @linkmrstore', canvas.width / 2, canvas.height - 50);
     };
 
     recorder.start(250);
@@ -253,7 +324,7 @@
   }
 
 
-  function wrapCanvasText(ctx, text, x, y, maxWidth, lineHeight) {
+  function wrapCanvasText(ctx, text, x, y, maxWidth, lineHeight, maxLines = 2) {
     const words = String(text || '').split(/\s+/);
     const lines = [];
     let line = '';
@@ -267,7 +338,7 @@
       }
     });
     if (line) lines.push(line);
-    lines.slice(0, 2).forEach((l, i) => ctx.fillText(l, x, y + i * lineHeight));
+    lines.slice(0, maxLines).forEach((l, i) => ctx.fillText(l, x, y + i * lineHeight));
   }
 
   async function publishGeneratedMedia(dataUrl) {

@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "MR Sem Limites Ext 5 — Instagram",
-  "version": "5.4.3",
+  "version": "5.4.4",
   "description": "MR Sem Limites Ext 5 — Todas as funcionalidades da EXT3 + Instagram (publicar Post/Reel/Carrossel via API Graph).",
   "permissions": [
     "storage",

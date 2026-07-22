@@ -474,8 +474,27 @@
             $('igMediaUrl').value = d.media_url;
           }
         } else {
+          // Instagram só aceita JPEG para imagens. Converte PNG->JPEG no canvas e re-envia.
           if (img) { img.src = d.media_url; img.style.display = 'block'; }
-          $('igMediaUrl').value = d.media_url;
+          try {
+            const srcData = d.media_b64 ? `data:image/png;base64,${d.media_b64}` : d.media_url;
+            const im = new Image();
+            im.crossOrigin = 'anonymous';
+            await new Promise((res, rej) => { im.onload = res; im.onerror = rej; im.src = srcData; });
+            const cv = document.createElement('canvas');
+            cv.width = im.naturalWidth || 1080;
+            cv.height = im.naturalHeight || 1080;
+            const cx = cv.getContext('2d');
+            cx.fillStyle = '#ffffff';
+            cx.fillRect(0, 0, cv.width, cv.height);
+            cx.drawImage(im, 0, 0);
+            const jpegDataUrl = cv.toDataURL('image/jpeg', 0.92);
+            const jpegUrl = await publishGeneratedMedia(jpegDataUrl);
+            $('igMediaUrl').value = jpegUrl;
+          } catch (err) {
+            log('⚠️ Falha ao converter para JPEG, usando URL original. ' + (err?.message || ''), false);
+            $('igMediaUrl').value = d.media_url;
+          }
         }
       } else {
         throw new Error('A IA não retornou uma imagem. Tente um prompt mais simples.');

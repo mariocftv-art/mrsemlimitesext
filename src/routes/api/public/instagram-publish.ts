@@ -47,7 +47,17 @@ export const Route = createFileRoute('/api/public/instagram-publish')({
             access_token = process.env.INSTAGRAM_ACCESS_TOKEN
           }
           if (!access_token || !media_url) {
-            return new Response(JSON.stringify({ error: 'Parâmetros incompletos' }), { status: 400, headers: cors })
+            return new Response(JSON.stringify({ error: 'Parâmetros incompletos', media_url }), { status: 400, headers: cors })
+          }
+          // Preflight: garante que a URL é pública, HTTPS e acessível
+          if (!/^https:\/\//i.test(media_url)) {
+            return new Response(JSON.stringify({ error: `URL da mídia não é HTTPS pública. Recebi: ${media_url || '(vazia)'}`, media_url }), { status: 400, headers: cors })
+          }
+          try {
+            const head = await fetch(media_url, { method: 'GET', headers: { Range: 'bytes=0-1' } })
+            if (!head.ok) throw new Error(`HTTP ${head.status}`)
+          } catch (e: any) {
+            return new Response(JSON.stringify({ error: `A URL gerada não abriu no servidor da Meta: ${media_url} (${e?.message || 'sem resposta'}). Gere a mídia novamente.`, media_url }), { status: 400, headers: cors })
           }
           if (!ig_user_id) {
             const me = await j(`${API}/me?fields=id&access_token=${access_token}`)
@@ -58,8 +68,9 @@ export const Route = createFileRoute('/api/public/instagram-publish')({
 
           if (type === 'reel') {
             if (!/\.(mp4|mov)(\?|$)/i.test(media_url)) {
-              return new Response(JSON.stringify({ error: 'Reel precisa ser vídeo MP4/MOV público. Gere o Reel novamente antes de publicar.' }), { status: 400, headers: cors })
+              return new Response(JSON.stringify({ error: `Reel precisa ser vídeo MP4/MOV público. URL atual: ${media_url}`, media_url }), { status: 400, headers: cors })
             }
+
             const c = await j(
               `${base}/media?media_type=REELS&video_url=${encodeURIComponent(media_url)}&caption=${encodeURIComponent(caption)}&access_token=${access_token}`,
               { method: 'POST' },
@@ -92,7 +103,7 @@ export const Route = createFileRoute('/api/public/instagram-publish')({
           for (let i = 0; i < 20; i++) {
             const st = await j(`${API}/${containerId}?fields=status_code&access_token=${access_token}`)
             if (st.status_code === 'FINISHED') break
-            if (st.status_code === 'ERROR') throw new Error('Falha ao processar mídia no Instagram. Verifique se a URL é direta, pública e em formato compatível.')
+            if (st.status_code === 'ERROR') throw new Error(`Meta rejeitou a mídia. URL enviada: ${media_url}. Ela precisa ser HTTPS pública, aberta direto no navegador, e no formato certo (JPEG para Post, MP4 H.264/AAC para Reel).`)
             await new Promise((r) => setTimeout(r, 2000))
           }
 
@@ -100,7 +111,7 @@ export const Route = createFileRoute('/api/public/instagram-publish')({
             `${base}/media_publish?creation_id=${containerId}&access_token=${access_token}`,
             { method: 'POST' },
           )
-          return new Response(JSON.stringify({ id: pub.id, ig_user_id }), { status: 200, headers: cors })
+          return new Response(JSON.stringify({ id: pub.id, ig_user_id, media_url }), { status: 200, headers: cors })
         } catch (e: any) {
           return new Response(JSON.stringify({ error: e?.message || 'Erro' }), { status: 500, headers: cors })
         }
@@ -108,3 +119,4 @@ export const Route = createFileRoute('/api/public/instagram-publish')({
     },
   },
 })
+

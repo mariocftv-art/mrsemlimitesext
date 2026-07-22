@@ -693,15 +693,37 @@ async function checkLocalExpiry() {
   return false;
 }
 
-try {
-  chrome.sidePanel?.setPanelBehavior({ openPanelOnActionClick: true }).catch(() => {});
-} catch (_) {}
+async function enableMrSidePanel() {
+  try {
+    await chrome.sidePanel?.setOptions?.({ path: 'sidepanel.html', enabled: true });
+  } catch (_) {}
+  try {
+    await chrome.sidePanel?.setPanelBehavior?.({ openPanelOnActionClick: true });
+  } catch (_) {}
+}
+
+enableMrSidePanel();
+
+chrome.action?.onClicked?.addListener(async (tab) => {
+  await enableMrSidePanel();
+  try {
+    if (tab?.id) {
+      await chrome.sidePanel.open({ tabId: tab.id });
+      return;
+    }
+  } catch (_) {}
+  try {
+    if (tab?.windowId) await chrome.sidePanel.open({ windowId: tab.windowId });
+  } catch (e) {
+    console.warn('[MRSL] não foi possível abrir o painel lateral:', e?.message || e);
+  }
+});
 
 chrome.runtime.onInstalled.addListener(async () => {
   const s = await getSettings();
   updateBadge(s);
   await checkLocalExpiry();
-  try { chrome.sidePanel?.setPanelBehavior({ openPanelOnActionClick: true }); } catch (_) {}
+  await enableMrSidePanel();
 
   if (!s.deviceId) {
     const deviceId = crypto.randomUUID();
@@ -716,7 +738,7 @@ chrome.runtime.onStartup?.addListener(async () => {
   const s = await getSettings();
   updateBadge(s);
   await checkLocalExpiry();
-  try { chrome.sidePanel?.setPanelBehavior({ openPanelOnActionClick: true }); } catch (_) {}
+  await enableMrSidePanel();
   chrome.alarms?.create('license-revalidate', { periodInMinutes: 5 });
   
   if (!s.deviceId) {

@@ -98,7 +98,7 @@ const EXT1_ZIP_URL = "/MR%20Sem%20Limites%20EXT1.zip";
 const EXT2_ZIP_URL = "/__l5e/assets-v1/ce8b8538-9670-4dc9-80ef-8143186ab254/MR Sem Limites EXT2.zip";
 const EXT3_ZIP_URL = "/__l5e/assets-v1/e5691ba7-8515-4004-bb77-b0df44b06628/MR-Sem-Limites-EXT3-v3.2.6.zip";
 const EXT4_ZIP_URL = "/__l5e/assets-v1/a9e2a317-8481-456e-9dc6-5df018c0cc59/MR Sem Limite Manus.zip";
-const EXT5_ZIP_URL = "/__l5e/assets-v1/2ac8fb84-42e2-4808-bb52-d05b91ad542a/MR-Sem-Limites-EXT5-v5.4.12.zip";
+const EXT5_ZIP_URL = "/MR-Sem-Limites-EXT5-v5.4.13.zip";
 
 type Filter = "all" | ExtensionStatus;
 type Sort = "name" | "version" | "updated" | "status";
@@ -258,11 +258,11 @@ function ExtensionsPage() {
                 className="gap-1.5 md:w-auto"
                 style={{ background: "linear-gradient(135deg,#f58529,#dd2a7b,#8134af,#515bd4)", color: "#fff" }}
                 onClick={() => {
-                  downloadZip(EXT5_ZIP_URL, "MR-Sem-Limites-EXT5-v5.4.12.zip");
+                  downloadZip(EXT5_ZIP_URL, "MR-Sem-Limites-EXT5-v5.4.13.zip");
                   toast.success("Download da EXT5 iniciado.");
                 }}
               >
-                <Download className="h-4 w-4" /> EXT5 v5.4.12 Download
+                <Download className="h-4 w-4" /> EXT5 v5.4.13 Download
               </Button>
               <Button variant="outline" className="gap-1.5 border-emerald-500/60 text-emerald-400 hover:bg-emerald-500/10 md:w-auto" onClick={openSupport}>
                 <MessageCircle className="h-4 w-4" /> Suporte

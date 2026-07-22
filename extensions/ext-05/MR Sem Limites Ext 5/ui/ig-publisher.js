@@ -40,7 +40,9 @@
     const prompt = $('igPrompt');
     const btn = $('igGenerateBtn');
     const stWrap = $('igSoundtrackWrap');
+    const hint = $('igAiModeHint');
     if (stWrap) stWrap.style.display = currentType === 'reel' ? 'block' : 'none';
+    if (hint) hint.textContent = 'IA ativa: ' + aiModeLabel() + ' • todos os Reels saem com no mínimo 20s, fala e trilha.';
     if (currentType === 'reel') {
       if (label) label.textContent = 'Descreva o Reel que você quer (mín. 20s, com roteiro, personagem falando, voz, trilha, título, legenda e hashtags)';
       if (prompt) prompt.placeholder = 'Ex: um Reel cinematográfico da minha loja Link MR Store, pessoa falando para câmera, cenas de tecnologia/luxo/confiança, trilha premium e CTA final…';
@@ -491,15 +493,28 @@
     const prompt = ($('igPrompt')?.value || '').trim();
     if (!prompt) return log('❌ Descreva o que você quer gerar', false);
     const btn = $('igGenerateBtn');
-    setBusy(btn, true, '⏳ Gerando imagem + legenda…');
-    log('⏳ Gerando com IA (pode levar ~15s)…');
+    const isReel = currentType === 'reel';
+    const duration = Math.max(REEL_MIN_DURATION_SEC, Number($('igDuration')?.value || REEL_MIN_DURATION_SEC) || REEL_MIN_DURATION_SEC);
+    const soundtrack = ($('igSoundtrack')?.value) || 'auto';
+    const voiceMode = ($('igVoiceMode')?.value) || 'male_consultant';
+    const aiPick = getAiPick();
+    setBusy(btn, true, isReel ? '⏳ Gerando Reel 20s com fala…' : '⏳ Gerando imagem + legenda…');
+    log(isReel ? `⏳ Gerando roteiro, fala, trilha e vídeo de ${duration}s com ${aiModeLabel()}…` : '⏳ Gerando com IA (pode levar ~15s)…');
     try {
       const apiType = currentType === 'viral' ? 'post' : currentType;
       const finalPrompt = currentType === 'viral' ? `[Foco em máximo engajamento viral] ${prompt}` : prompt;
       const r = await fetch(GEN_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt: finalPrompt, type: apiType, media: true }),
+        body: JSON.stringify({
+          prompt: finalPrompt,
+          type: apiType,
+          media: true,
+          duration,
+          soundtrack,
+          voice_mode: voiceMode,
+          ai_mode: aiPick ? `${aiPick.emoji || ''} ${aiPick.title || aiPick.id || ''}`.trim() : 'Veo 3 / IA de vídeo premium',
+        }),
       });
       const d = await r.json();
       if (!r.ok) throw new Error(d.error || `HTTP ${r.status}`);
@@ -517,14 +532,13 @@
 
       if (d.media_url) {
         if (currentType === 'reel') {
-          // Reel: mostra capa temporariamente, grava vídeo animado a partir dela e sobe pra URL pública
+          // Reel: gera um vídeo vertical de no mínimo 20s com fala/voz + trilha, usando a capa IA como frame base.
           if (img) { img.src = d.media_url; img.style.display = 'block'; }
-          log('🎬 Gerando prévia animada do Reel (canvas)…');
+          log(`🎬 Montando Reel de ${duration}s com roteiro, fala e trilha…`);
           try {
             // Usa base64 direto (sem CORS) pra carregar no canvas sem taint
             const canvasSrc = d.media_b64 ? `data:image/png;base64,${d.media_b64}` : d.media_url;
-            const soundtrack = ($('igSoundtrack')?.value) || 'cinematic';
-            const rec = await makeReelPreviewFromImage(canvasSrc, d.title || '', soundtrack);
+            const rec = await makeReelPreviewFromImage(canvasSrc, d.title || '', soundtrack === 'auto' ? 'cinematic' : soundtrack, d.voiceover || d.caption || '', d.video_script || '');
             const publicUrl = await publishGeneratedMedia(rec.dataUrl);
             lastGeneratedMime = rec.mimeType;
             $('igMediaUrl').value = publicUrl;
@@ -536,13 +550,19 @@
               try { vid.play(); } catch(_){}
             }
             if (plan && d.video_script) {
-              plan.textContent = '🎬 Roteiro sugerido para o Reel:\n' + d.video_script;
+              plan.textContent = '🎬 Roteiro sugerido para o Reel:\n' + d.video_script
+                + (d.voiceover ? '\n\n🎙️ Fala/locução:\n' + d.voiceover : '')
+                + (d.soundtrack_suggestion ? '\n\n🎵 Trilha sugerida:\n' + d.soundtrack_suggestion : '');
               plan.style.display = 'block';
             }
           } catch (err) {
-            // Fallback: publica só a capa como imagem
-            log('⚠️ Vídeo indisponível no navegador; usando capa. ' + (err?.message || ''), false);
-            $('igMediaUrl').value = d.media_url;
+            if (img) { img.src = d.media_url; img.style.display = 'block'; }
+            if (plan) {
+              plan.textContent = '⚠️ A capa e o roteiro foram gerados, mas o navegador bloqueou a montagem do vídeo completo.\n\n' + (d.video_script || '') + (d.voiceover ? '\n\n🎙️ Fala/locução:\n' + d.voiceover : '');
+              plan.style.display = 'block';
+            }
+            $('igMediaUrl').value = '';
+            throw new Error('Não consegui finalizar o vídeo de 20s neste navegador. Gere novamente ou selecione Veo 3 na aba IAs antes de publicar. ' + (err?.message || ''));
           }
         } else {
           // Instagram só aceita JPEG para imagens. Converte PNG->JPEG no canvas e re-envia.

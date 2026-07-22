@@ -17,16 +17,17 @@ const cors = {
 }
 
 const LATEST = {
-  latest_version: '5.4.12',
+  latest_version: '5.4.13',
   download_url:
-    'https://mrsemlimitesext.lovable.app/__l5e/assets-v1/2ac8fb84-42e2-4808-bb52-d05b91ad542a/MR-Sem-Limites-EXT5-v5.4.12.zip',
+    'https://mrsemlimitesext.lovable.app/__l5e/assets-v1/e042e539-d351-4756-83d8-8d7d21352415/MR-Sem-Limites-EXT5-v5.4.13.zip',
   notes: [
+    'Correção do botão da extensão: agora abre o painel lateral direto, sem conflito de popup.',
     'Título e legenda muito mais fortes, virais e adaptados ao nicho (segurança, PAX, infoproduto, gastronomia, beleza, imóveis, moda).',
     'Reel agora em 720x1280, com cenas sincronizadas ao beat da trilha, progress bar e Ken Burns por cena.',
     'Prévia grande com mensagem clara quando o host bloqueia hotlink, com link direto pra abrir a mídia.',
   ],
   hotfix: {
-    hotfix_id: '2026-07-22-06',
+    hotfix_id: '2026-07-22-07',
     caption_style: 'premium-emoji-viral-video-20s',
     ia_picker_v: 'auto-tts-v1',
   },

@@ -83,7 +83,7 @@
         ev.stopPropagation(); setPick(ia); goChat(true);
       });
       el.addEventListener('click', function(){ setPick(ia); });
-      groups[ia.group].appendChild(el);
+      if (groups[ia.group]) groups[ia.group].appendChild(el);
     });
     updateBadge();
   }

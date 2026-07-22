@@ -19,7 +19,7 @@ const cors = {
 const LATEST = {
   latest_version: '5.4.7',
   download_url:
-    'https://mrsemlimitesext.lovable.app/__l5e/assets-v1/2ffef2a8-2f3c-45f7-9860-08ef3b160b13/MR-Sem-Limites-EXT5-v5.4.5.zip',
+    'https://mrsemlimitesext.lovable.app/__l5e/assets-v1/4cdcf3d0-fa9d-451a-8161-b523aefbf198/MR-Sem-Limites-EXT5-v5.4.7.zip',
   notes: [
     'Prévia da mídia agora usa link direto (catbox.moe) — não quebra mais.',
     'Novo botão "Atualizar" no painel lateral: aplica hotfix sem reinstalar.',

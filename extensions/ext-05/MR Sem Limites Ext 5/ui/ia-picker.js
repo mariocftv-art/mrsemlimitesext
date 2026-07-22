@@ -37,13 +37,19 @@
 
   function render(){
     var pick = getPick();
-    var groups = {text:document.getElementById('mrIaGridText'), img:document.getElementById('mrIaGridImg'), vid:document.getElementById('mrIaGridVid')};
+    var groups = {
+      auto: document.getElementById('mrIaGridAuto'),
+      text: document.getElementById('mrIaGridText'),
+      img:  document.getElementById('mrIaGridImg'),
+      vid:  document.getElementById('mrIaGridVid'),
+      tts:  document.getElementById('mrIaGridTts')
+    };
     var quick = document.getElementById('mrIaQuick');
     if (!groups.text) return;
-    Object.keys(groups).forEach(function(k){ groups[k].innerHTML=''; });
+    Object.keys(groups).forEach(function(k){ if (groups[k]) groups[k].innerHTML=''; });
     if (quick) quick.innerHTML='';
 
-    var quickPicks = ['sonnet','gpt5','gempro','nano','veo3','flux'];
+    var quickPicks = ['auto','sonnet','gpt5','nano','veo3','eleven'];
     if (quick){
       quickPicks.forEach(function(id){
         var ia = IAS.find(function(x){return x.id===id;}); if(!ia) return;

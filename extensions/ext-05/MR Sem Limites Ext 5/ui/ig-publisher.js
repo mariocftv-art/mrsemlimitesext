@@ -333,17 +333,27 @@
     };
   }
 
+  function cleanSceneLine(raw) {
+    let s = String(raw || '').trim();
+    s = s.replace(/^\s*\d+\s*[-–—]\s*\d+\s*s?\s*:?\s*/i, '');
+    s = s.replace(/^\s*\d+\s*s\s*:?\s*/i, '');
+    s = s.replace(/^\s*[A-ZÁÉÍÓÚÂÊÔÃÕÇ0-9 ]{3,40}\s*[-–—]\s*/, '');
+    s = s.replace(/^["“”'`]+|["“”'`]+$/g, '').trim();
+    const cut = s.split(/(?<=[.!?])\s+/)[0] || s;
+    return cut.length > 70 ? cut.slice(0, 67).trim() + '…' : cut;
+  }
+
   function makeSceneTexts(title, script) {
     const lines = String(script || '')
       .split(/\n+/)
-      .map((l) => l.replace(/^\s*\d+[.)-]?\s*/, '').trim())
-      .filter(Boolean);
+      .map(cleanSceneLine)
+      .filter((l) => l && l.length > 3);
     const fallback = [
       title || 'A transformação começa agora',
-      'Veja como essa solução muda o jogo',
-      'Mais confiança, presença e resultado',
-      'Detalhes premium que prendem atenção',
-      'Chama no WhatsApp e vem com a MR',
+      'Veja como muda o jogo',
+      'Mais confiança e resultado',
+      'Detalhes premium que prendem',
+      'Chama no WhatsApp e vem',
     ];
     return (lines.length ? lines : fallback).slice(0, 5);
   }

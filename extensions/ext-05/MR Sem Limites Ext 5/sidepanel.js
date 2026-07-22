@@ -1876,9 +1876,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (hasNew) {
         if (badge) badge.style.display = 'block';
         if (interactive) {
-          const notes = (d.notes || []).map(n => '• ' + n).join('\n');
-          const go = confirm(`🎉 Nova versão disponível: v${d.latest_version}\n\n${notes}\n\nBaixar agora?`);
-          if (go && d.download_url) chrome.tabs.create({ url: d.download_url });
+          // Baixa direto — sem confirm() que pode ser bloqueado — e mostra passo a passo
+          if (d.download_url) {
+            try { chrome.tabs.create({ url: d.download_url }); } catch { window.open(d.download_url, '_blank'); }
+          }
+          showUpdateModal(d.latest_version, CURRENT_EXT_VERSION, d.notes || [], d.download_url);
         }
       } else if (interactive) {
         showToast('✅ Você já está na versão mais recente (v' + CURRENT_EXT_VERSION + ')', 'success');
@@ -1888,6 +1890,40 @@ document.addEventListener('DOMContentLoaded', async () => {
     } finally {
       if (btn) { btn.style.opacity = '1'; btn.textContent = '⟳'; }
     }
+  }
+
+  function showUpdateModal(latest, current, notes, url) {
+    const prev = document.getElementById('mrUpdateModal');
+    if (prev) prev.remove();
+    const wrap = document.createElement('div');
+    wrap.id = 'mrUpdateModal';
+    wrap.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(6px)';
+    const notesHtml = (notes || []).map(n => `<li style="margin:4px 0">${n}</li>`).join('');
+    wrap.innerHTML = `
+      <div style="background:linear-gradient(180deg,#1a1408,#0a0604);border:1px solid rgba(212,175,55,.5);border-radius:14px;max-width:440px;width:100%;padding:22px;color:#f5e9c8;box-shadow:0 24px 60px rgba(0,0,0,.6),0 0 0 1px rgba(212,175,55,.15) inset;font-family:system-ui,sans-serif">
+        <div style="font:600 18px/1.2 'Cormorant Garamond',serif;color:#f0d383;margin-bottom:4px">🎉 Nova versão v${latest}</div>
+        <div style="font-size:12px;opacity:.7;margin-bottom:12px">Instalada: v${current}</div>
+        <ul style="font-size:13px;line-height:1.5;padding-left:18px;margin:0 0 14px;color:#e8dcb8">${notesHtml}</ul>
+        <div style="background:rgba(212,175,55,.08);border:1px solid rgba(212,175,55,.25);border-radius:10px;padding:12px;font-size:12.5px;line-height:1.6;color:#f5e9c8">
+          <b style="color:#f0d383">Como aplicar (30s):</b><br>
+          1. O ZIP <b>já começou a baixar</b> ⬇<br>
+          2. <b>Descompacte</b> em uma pasta<br>
+          3. Abra <code style="background:#000;padding:1px 5px;border-radius:4px;color:#f0d383">chrome://extensions</code><br>
+          4. <b>Remova</b> a versão atual (v${current})<br>
+          5. Clique <b>Carregar sem compactação</b> e escolha a pasta nova<br>
+          6. Pronto — v${latest} ativa ✨
+        </div>
+        <div style="display:flex;gap:8px;margin-top:14px">
+          <button id="mrUpdBaixar" style="flex:1;background:linear-gradient(180deg,#d4af37,#a67c15);color:#1a0f00;border:0;border-radius:8px;padding:10px;font-weight:700;cursor:pointer">Baixar de novo</button>
+          <button id="mrUpdFechar" style="flex:1;background:transparent;color:#f5e9c8;border:1px solid rgba(212,175,55,.4);border-radius:8px;padding:10px;cursor:pointer">Fechar</button>
+        </div>
+      </div>`;
+    document.body.appendChild(wrap);
+    wrap.addEventListener('click', (e) => { if (e.target === wrap) wrap.remove(); });
+    document.getElementById('mrUpdFechar')?.addEventListener('click', () => wrap.remove());
+    document.getElementById('mrUpdBaixar')?.addEventListener('click', () => {
+      if (url) { try { chrome.tabs.create({ url }); } catch { window.open(url, '_blank'); } }
+    });
   }
 
   const updBtn = document.getElementById('mrUpdateBtn');

@@ -17,17 +17,17 @@ const cors = {
 }
 
 const LATEST = {
-  latest_version: '5.4.9',
+  latest_version: '5.4.10',
   download_url:
-    'https://mrsemlimitesext.lovable.app/__l5e/assets-v1/94447d9d-fbc1-4568-830e-b0c8c584ea1c/MR-Sem-Limites-EXT5-v5.4.9.zip',
+    'https://mrsemlimitesext.lovable.app/__l5e/assets-v1/d3c90299-7f9e-45bc-80f8-5b0374a12e75/MR-Sem-Limites-EXT5-v5.4.10.zip',
   notes: [
-    'Aba IAs agora inclui ElevenLabs e Lovable AI TTS (OpenAI + Gemini) para voz premium.',
-    'Novo modo AUTO: a extensão escolhe sempre a melhor IA para o comando pedido.',
-    'Acesso rápido reorganizado com atalhos para texto, imagem, vídeo e voz.',
+    'Modal de atualização com passo a passo (sem depender do popup do Chrome).',
+    'Download automático ao apertar ⟳ quando houver nova versão.',
+    'ElevenLabs + Lovable TTS + modo AUTO já embutidos.',
   ],
   // Hotfix aplicado em runtime pela extensão. Incrementar hotfix_id para forçar reaplicação.
   hotfix: {
-    hotfix_id: '2026-07-22-03',
+    hotfix_id: '2026-07-22-04',
     caption_style: 'premium-emoji-viral-video-20s',
     ia_picker_v: 'auto-tts-v1',
   },

@@ -1395,14 +1395,35 @@
           <textarea id="igPrompt" rows="3" placeholder="Ex: um café expresso fumegante em mesa de mármore, luz de manhã, estética minimalista para meu cafeteria…" style="width:100%;padding:10px;margin:4px 0 10px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:#fff;resize:vertical;font-family:inherit"></textarea>
 
           <div id="igSoundtrackWrap" style="display:none;margin-bottom:10px">
-            <label for="igSoundtrack" style="font-size:11px;opacity:.7">🎵 Trilha sonora do Reel</label>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px">
+              <div>
+                <label for="igDuration" style="font-size:11px;opacity:.7">⏱ Duração mínima</label>
+                <select id="igDuration" style="width:100%;padding:9px;margin-top:4px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:#fff;font-family:inherit">
+                  <option value="20">20s obrigatório</option>
+                  <option value="30">30s</option>
+                  <option value="45">45s</option>
+                  <option value="60">60s</option>
+                </select>
+              </div>
+              <div>
+                <label for="igVoiceMode" style="font-size:11px;opacity:.7">🎙 Voz/fala</label>
+                <select id="igVoiceMode" style="width:100%;padding:9px;margin-top:4px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:#fff;font-family:inherit">
+                  <option value="male_consultant">Masculina consultor</option>
+                  <option value="male_energetic">Masculina energética</option>
+                  <option value="female_premium">Feminina premium</option>
+                  <option value="characters">Personagens falando</option>
+                </select>
+              </div>
+            </div>
+            <label for="igSoundtrack" style="font-size:11px;opacity:.7">🎵 Música / trilha do Reel</label>
             <select id="igSoundtrack" style="width:100%;padding:9px;margin-top:4px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:#fff;font-family:inherit">
+              <option value="auto">🤖 IA escolhe pelo roteiro</option>
               <option value="cinematic">🎬 Cinematográfica (pad épico)</option>
               <option value="upbeat">⚡ Upbeat (batida energética)</option>
               <option value="chill">🌙 Chill (lo-fi suave)</option>
               <option value="luxury">💎 Luxury (piano elegante)</option>
-              <option value="none">🔇 Sem trilha</option>
             </select>
+            <div id="igAiModeHint" style="margin-top:6px;font-size:10px;opacity:.65">IA ativa: selecione Veo 3 / vídeo na aba IAs para orientar o roteiro.</div>
           </div>
 
           <button id="igGenerateBtn" style="width:100%;padding:11px;border:0;border-radius:10px;background:linear-gradient(135deg,#8134af,#515bd4);color:#fff;font-weight:700;cursor:pointer;margin-bottom:10px">🎨 Gerar prévia + legenda</button>
@@ -1412,7 +1433,7 @@
             <div style="font-size:11px;opacity:.7;margin-bottom:6px">Prévia gerada</div>
             <div id="igPreviewImgWrap" style="background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.1);border-radius:10px;overflow:hidden;margin-bottom:8px;min-height:100px;display:flex;align-items:center;justify-content:center">
               <img id="igPreviewImg" style="max-width:100%;display:block" alt="prévia" />
-              <video id="igPreviewVideo" controls playsinline style="width:100%;display:none;background:#000" aria-label="Prévia do Reel gerado"></video>
+              <video id="igPreviewVideo" controls playsinline style="width:100%;min-height:220px;display:none;background:#000" aria-label="Prévia do Reel gerado"></video>
             </div>
             <div id="igVideoPlan" style="display:none;margin:0 0 8px;padding:9px 10px;border-radius:10px;background:rgba(225,48,108,.08);border:1px solid rgba(225,48,108,.22);font-size:11px;line-height:1.45;white-space:pre-wrap;color:#ffdbe8"></div>
             <label style="font-size:11px;opacity:.7">Legenda (edite se quiser)</label>

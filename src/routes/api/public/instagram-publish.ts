@@ -47,7 +47,17 @@ export const Route = createFileRoute('/api/public/instagram-publish')({
             access_token = process.env.INSTAGRAM_ACCESS_TOKEN
           }
           if (!access_token || !media_url) {
-            return new Response(JSON.stringify({ error: 'Parâmetros incompletos' }), { status: 400, headers: cors })
+            return new Response(JSON.stringify({ error: 'Parâmetros incompletos', media_url }), { status: 400, headers: cors })
+          }
+          // Preflight: garante que a URL é pública, HTTPS e acessível
+          if (!/^https:\/\//i.test(media_url)) {
+            return new Response(JSON.stringify({ error: `URL da mídia não é HTTPS pública. Recebi: ${media_url || '(vazia)'}`, media_url }), { status: 400, headers: cors })
+          }
+          try {
+            const head = await fetch(media_url, { method: 'GET', headers: { Range: 'bytes=0-1' } })
+            if (!head.ok) throw new Error(`HTTP ${head.status}`)
+          } catch (e: any) {
+            return new Response(JSON.stringify({ error: `A URL gerada não abriu no servidor da Meta: ${media_url} (${e?.message || 'sem resposta'}). Gere a mídia novamente.`, media_url }), { status: 400, headers: cors })
           }
           if (!ig_user_id) {
             const me = await j(`${API}/me?fields=id&access_token=${access_token}`)
@@ -58,8 +68,9 @@ export const Route = createFileRoute('/api/public/instagram-publish')({
 
           if (type === 'reel') {
             if (!/\.(mp4|mov)(\?|$)/i.test(media_url)) {
-              return new Response(JSON.stringify({ error: 'Reel precisa ser vídeo MP4/MOV público. Gere o Reel novamente antes de publicar.' }), { status: 400, headers: cors })
+              return new Response(JSON.stringify({ error: `Reel precisa ser vídeo MP4/MOV público. URL atual: ${media_url}`, media_url }), { status: 400, headers: cors })
             }
+
             const c = await j(
               `${base}/media?media_type=REELS&video_url=${encodeURIComponent(media_url)}&caption=${encodeURIComponent(caption)}&access_token=${access_token}`,
               { method: 'POST' },

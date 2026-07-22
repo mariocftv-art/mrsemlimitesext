@@ -5,9 +5,12 @@ import { createFileRoute } from '@tanstack/react-router'
 // externamente — armazenar em memória do Worker não funciona porque o pedido da Meta
 // pode cair em outro isolate. catbox.moe é anônimo, sem chave e persiste os arquivos.
 export async function putMedia(dataUrl: string, filenameHint?: string): Promise<string> {
-  const m = /^data:([^;]+);base64,(.+)$/.exec(dataUrl)
+  // Aceita "data:<mime>[;param=...];base64,<b64>" — MediaRecorder gera mimes tipo
+  // "video/mp4;codecs=avc1.42E01E" que quebravam o regex antigo ([^;]+).
+  const m = /^data:([^,]+);base64,(.+)$/.exec(dataUrl)
   if (!m) throw new Error('data URL inválida')
-  const mime = m[1]
+  const fullMime = m[1]
+  const mime = fullMime.split(';')[0].trim().toLowerCase()
   const b64 = m[2]
 
   // Decodifica base64 -> bytes
@@ -25,6 +28,7 @@ export async function putMedia(dataUrl: string, filenameHint?: string): Promise<
   const filename = (filenameHint || `ig-${Date.now()}-${crypto.randomUUID().slice(0, 8)}`).replace(/\.[^.]+$/, '') + '.' + ext
 
   const blob = new Blob([bytes as BlobPart], { type: mime })
+
 
   // Tenta múltiplos hosts públicos até um funcionar.
   const errors: string[] = []

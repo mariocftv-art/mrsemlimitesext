@@ -17,18 +17,19 @@ const cors = {
 }
 
 const LATEST = {
-  latest_version: '5.4.8',
+  latest_version: '5.4.9',
   download_url:
-    'https://mrsemlimitesext.lovable.app/__l5e/assets-v1/b46b531c-b2c1-44a6-a2ae-e5ecc1dbcf91/MR-Sem-Limites-EXT5-v5.4.8.zip',
+    'https://mrsemlimitesext.lovable.app/__l5e/assets-v1/94447d9d-fbc1-4568-830e-b0c8c584ea1c/MR-Sem-Limites-EXT5-v5.4.9.zip',
   notes: [
-    'Imagem convertida obrigatoriamente para JPEG antes da publicação.',
-    'Reels agora exigem no mínimo 20s, com roteiro, fala/locução e trilha configurável.',
-    'Prévia grande ampliada para vídeo vertical e post.',
+    'Aba IAs agora inclui ElevenLabs e Lovable AI TTS (OpenAI + Gemini) para voz premium.',
+    'Novo modo AUTO: a extensão escolhe sempre a melhor IA para o comando pedido.',
+    'Acesso rápido reorganizado com atalhos para texto, imagem, vídeo e voz.',
   ],
   // Hotfix aplicado em runtime pela extensão. Incrementar hotfix_id para forçar reaplicação.
   hotfix: {
-    hotfix_id: '2026-07-22-02',
+    hotfix_id: '2026-07-22-03',
     caption_style: 'premium-emoji-viral-video-20s',
+    ia_picker_v: 'auto-tts-v1',
   },
 }
 

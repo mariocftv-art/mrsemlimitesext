@@ -6,10 +6,8 @@
 (function () {
   const BASE = 'https://mrsemlimitesext.lovable.app';
   const STATUS_URL = BASE + '/api/public/instagram-status';
-  const GEN_URL = BASE + '/api/public/instagram-generate';
   const MEDIA_URL = BASE + '/api/public/instagram-media';
   const PUBLISH_URL = BASE + '/api/public/instagram-publish';
-  const TTS_URL = BASE + '/api/public/orbe-tts';
 
   const $ = (id) => document.getElementById(id);
   const log = (m, ok) => {
@@ -175,22 +173,94 @@
     return types.find((t) => window.MediaRecorder && MediaRecorder.isTypeSupported(t)) || '';
   }
 
-  async function loadVoiceoverBuffer(audioCtx, text) {
-    const clean = String(text || '').replace(/[#*_`>]/g, '').slice(0, 1400).trim();
-    if (!clean) return null;
-    try {
-      const r = await fetch(TTS_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: clean, voice: 'onyx' }),
-      });
-      if (!r.ok) throw new Error('TTS ' + r.status);
-      const ab = await r.arrayBuffer();
-      return await audioCtx.decodeAudioData(ab.slice(0));
-    } catch (e) {
-      console.warn('Locução IA indisponível:', e);
-      return null;
+  async function loadVoiceoverBuffer() {
+    // Regra MR: não usar créditos de IA do workspace para TTS.
+    // A prévia local sai com trilha/áudio sintético; locução premium deve ser feita pela IA escolhida (ex.: ElevenLabs) com a conta do usuário.
+    return null;
+  }
+
+  function titleFromPrompt(prompt, isReel) {
+    const clean = String(prompt || '').replace(/\s+/g, ' ').trim();
+    const base = clean.split(/[.!?]/)[0].slice(0, 58).trim();
+    return base || (isReel ? 'Reel premium MR Sem Limites' : 'Post premium MR Sem Limites');
+  }
+
+  function buildLocalCaption(prompt, type) {
+    const isReel = type === 'reel';
+    const title = titleFromPrompt(prompt, isReel);
+    const niche = /seguran|cftv|c[âa]mera|alarme|monitoramento/i.test(prompt) ? 'segurança' : /pax|funer|plano/i.test(prompt) ? 'pax' : 'oferta';
+    const hashtags = niche === 'segurança'
+      ? '#MRSemLimites #MRSecurity #SegurançaMáxima #CFTV #Monitoramento #Proteção24h #CasaSegura #EmpresaSegura'
+      : niche === 'pax'
+        ? '#MRSemLimites #PAX #Cuidado #FamíliaProtegida #AssistênciaFamiliar #Tranquilidade'
+        : '#MRSemLimites #MarketingDigital #InstagramBrasil #ConteúdoPremium #ReelsBrasil #Empreendedorismo';
+    return `✨ ${title}\n\n🔥 Conteúdo criado com foco em impacto visual, autoridade e conversão.\n\n✅ Visual premium\n🎯 Mensagem direta\n🚀 Chamada para ação clara\n\n📲 Quer uma versão ainda mais forte? Ajuste a legenda aqui antes de publicar.\n\n${hashtags}`;
+  }
+
+  function buildLocalScript(prompt, duration) {
+    const title = titleFromPrompt(prompt, true);
+    return [
+      `0-4s: abertura forte com destaque para “${title}”.`,
+      '4-10s: mostrar o benefício principal com movimento cinematográfico.',
+      '10-16s: reforçar confiança, resultado e diferenciais premium.',
+      `16-${duration}s: CTA final para chamar no WhatsApp / seguir o perfil.`
+    ].join('\n');
+  }
+
+  function makeLocalPosterDataUrl(prompt, type) {
+    const isReel = type === 'reel';
+    const canvas = document.createElement('canvas');
+    canvas.width = isReel ? 1080 : 1080;
+    canvas.height = isReel ? 1920 : 1080;
+    const ctx = canvas.getContext('2d');
+    const w = canvas.width, h = canvas.height;
+    const grd = ctx.createLinearGradient(0, 0, w, h);
+    grd.addColorStop(0, '#07070b');
+    grd.addColorStop(0.45, '#19100a');
+    grd.addColorStop(1, '#030303');
+    ctx.fillStyle = grd;
+    ctx.fillRect(0, 0, w, h);
+    for (let i = 0; i < 18; i++) {
+      ctx.beginPath();
+      ctx.arc((i * 173) % w, (i * 271) % h, 90 + (i % 5) * 36, 0, Math.PI * 2);
+      ctx.fillStyle = i % 2 ? 'rgba(212,175,55,.08)' : 'rgba(255,255,255,.035)';
+      ctx.fill();
     }
+    ctx.strokeStyle = 'rgba(212,175,55,.78)';
+    ctx.lineWidth = 8;
+    ctx.strokeRect(44, 44, w - 88, h - 88);
+    ctx.strokeStyle = 'rgba(255,255,255,.12)';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(72, 72, w - 144, h - 144);
+    ctx.fillStyle = '#d4af37';
+    ctx.font = '900 44px system-ui, -apple-system, Segoe UI, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('MR SEM LIMITES', w / 2, isReel ? 210 : 150);
+    ctx.fillStyle = 'rgba(255,255,255,.94)';
+    ctx.font = `900 ${isReel ? 76 : 62}px system-ui, -apple-system, Segoe UI, sans-serif`;
+    wrapCanvasText(ctx, titleFromPrompt(prompt, isReel), w / 2, isReel ? 770 : 450, w - 180, isReel ? 86 : 72, 4);
+    ctx.fillStyle = 'rgba(212,175,55,.96)';
+    ctx.font = `800 ${isReel ? 34 : 28}px system-ui, -apple-system, Segoe UI, sans-serif`;
+    ctx.fillText(isReel ? 'REEL COM ÁUDIO • PRÉVIA LOCAL' : 'POST PREMIUM • PRÉVIA LOCAL', w / 2, h - 170);
+    ctx.fillStyle = 'rgba(255,255,255,.72)';
+    ctx.font = `600 ${isReel ? 28 : 24}px system-ui, -apple-system, Segoe UI, sans-serif`;
+    ctx.fillText('Use a aba IAs para gerar a arte final na IA escolhida', w / 2, h - 112);
+    return canvas.toDataURL('image/png');
+  }
+
+  function createLocalCreative(prompt, type, duration, aiPick) {
+    const isReel = type === 'reel';
+    const title = titleFromPrompt(prompt, isReel);
+    const videoScript = isReel ? buildLocalScript(prompt, duration) : '';
+    return {
+      title,
+      caption: buildLocalCaption(prompt, type),
+      media_url: makeLocalPosterDataUrl(prompt, type),
+      media_b64: '',
+      video_script: videoScript,
+      voiceover: isReel ? `Roteiro para locução premium (${aiPick?.title || 'AUTO'}): ${title}. Mostre confiança, clareza e chamada para ação.` : '',
+      soundtrack_suggestion: isReel ? 'Trilha sintética cinematográfica local já incluída na prévia. Para voz humana, use ElevenLabs com sua conta.' : '',
+    };
   }
 
   function makeSceneTexts(title, script) {
@@ -504,21 +574,7 @@
     try {
       const apiType = currentType === 'viral' ? 'post' : currentType;
       const finalPrompt = currentType === 'viral' ? `[Foco em máximo engajamento viral] ${prompt}` : prompt;
-      const r = await fetch(GEN_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          prompt: finalPrompt,
-          type: apiType,
-          media: true,
-          duration,
-          soundtrack,
-          voice_mode: voiceMode,
-          ai_mode: aiPick ? `${aiPick.emoji || ''} ${aiPick.title || aiPick.id || ''}`.trim() : 'Veo 3 / IA de vídeo premium',
-        }),
-      });
-      const d = await r.json();
-      if (!r.ok) throw new Error(d.error || `HTTP ${r.status}`);
+      const d = createLocalCreative(finalPrompt, apiType, duration, aiPick);
       const img = $('igPreviewImg');
       const vid = $('igPreviewVideo');
       const wrap = $('igPreviewImgWrap');

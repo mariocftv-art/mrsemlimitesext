@@ -30,22 +30,21 @@ export async function putMedia(dataUrl: string, filenameHint?: string): Promise<
   const blob = new Blob([bytes as BlobPart], { type: mime })
 
 
-  // Tenta múltiplos hosts públicos até um funcionar.
+  // catbox.moe primeiro: retorna URL DIRETA (https://files.catbox.moe/xxx.jpg) que
+  // carrega inline no <img>. tmpfiles.org devolve HTML wrapper em /dl/ e às vezes
+  // instabilidade 5xx, então cai para fallback.
   const errors: string[] = []
 
-  // 1) tmpfiles.org — JSON, sem chave, persistente
+  // 1) catbox.moe — link direto, o mais estável para <img> e Instagram Graph
   try {
     const fd = new FormData()
-    fd.append('file', blob, filename)
-    const r = await fetch('https://tmpfiles.org/api/v1/upload', { method: 'POST', body: fd })
-    const j: any = await r.json().catch(() => ({}))
-    const url: string | undefined = j?.data?.url
-    if (r.ok && url) {
-      // converte /dl/ para download direto
-      return url.replace('tmpfiles.org/', 'tmpfiles.org/dl/')
-    }
-    errors.push(`tmpfiles: ${r.status} ${JSON.stringify(j).slice(0,200)}`)
-  } catch (e: any) { errors.push(`tmpfiles: ${e?.message || e}`) }
+    fd.append('reqtype', 'fileupload')
+    fd.append('fileToUpload', blob, filename)
+    const r = await fetch('https://catbox.moe/user/api.php', { method: 'POST', body: fd })
+    const text = (await r.text()).trim()
+    if (r.ok && /^https?:\/\//i.test(text)) return text
+    errors.push(`catbox: ${r.status} ${text.slice(0,200)}`)
+  } catch (e: any) { errors.push(`catbox: ${e?.message || e}`) }
 
   // 2) 0x0.st — retorna URL em texto
   try {
@@ -57,16 +56,16 @@ export async function putMedia(dataUrl: string, filenameHint?: string): Promise<
     errors.push(`0x0: ${r.status} ${text.slice(0,200)}`)
   } catch (e: any) { errors.push(`0x0: ${e?.message || e}`) }
 
-  // 3) catbox.moe — fallback final
+  // 3) tmpfiles.org — fallback final (link com wrapper /dl/)
   try {
     const fd = new FormData()
-    fd.append('reqtype', 'fileupload')
-    fd.append('fileToUpload', blob, filename)
-    const r = await fetch('https://catbox.moe/user/api.php', { method: 'POST', body: fd })
-    const text = (await r.text()).trim()
-    if (r.ok && /^https?:\/\//i.test(text)) return text
-    errors.push(`catbox: ${r.status} ${text.slice(0,200)}`)
-  } catch (e: any) { errors.push(`catbox: ${e?.message || e}`) }
+    fd.append('file', blob, filename)
+    const r = await fetch('https://tmpfiles.org/api/v1/upload', { method: 'POST', body: fd })
+    const j: any = await r.json().catch(() => ({}))
+    const url: string | undefined = j?.data?.url
+    if (r.ok && url) return url.replace('tmpfiles.org/', 'tmpfiles.org/dl/')
+    errors.push(`tmpfiles: ${r.status} ${JSON.stringify(j).slice(0,200)}`)
+  } catch (e: any) { errors.push(`tmpfiles: ${e?.message || e}`) }
 
   throw new Error(`Todos os hosts falharam. ${errors.join(' | ')}`)
 

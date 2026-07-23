@@ -944,7 +944,16 @@
   function wire() {
     if (!$('igConnectBtn')) return false;
     $('igConnectBtn').addEventListener('click', startOAuth);
-    $('igAddAccountBtn')?.addEventListener('click', startOAuth);
+    $('igAddAccountBtn')?.addEventListener('click', async () => {
+      const list = await loadAccounts();
+      // Se já tem conta conectada, força logout antes para permitir login com OUTRA conta.
+      if (list.length >= 1) {
+        const proceed = confirm('Para adicionar OUTRA conta, o Instagram precisa deslogar da conta atual.\n\nClique OK para abrir o logout do Instagram. Depois clique em "Adicionar outra conta" DE NOVO para entrar com a nova conta.');
+        if (!proceed) return;
+        return startOAuth({ forceLogout: true });
+      }
+      return startOAuth();
+    });
     $('igAccountPicker')?.addEventListener('change', onPickerChange);
     const bd = $('igDisconnectBtn');
     if (bd) bd.addEventListener('click', disconnect);

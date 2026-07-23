@@ -1375,8 +1375,13 @@
           <div style="font-size:12px;opacity:.7;margin-bottom:4px">Status da conta</div>
           <div id="igStatusText" style="font-weight:600">🔴 Não conectado</div>
           <div id="igAccountInfo" style="font-size:12px;opacity:.8;margin-top:4px;display:none"></div>
+          <div id="igAccountPickerWrap" style="margin-top:8px;display:none">
+            <label style="font-size:11px;opacity:.7;display:block;margin-bottom:4px">📱 Publicar em:</label>
+            <select id="igAccountPicker" style="width:100%;padding:8px;border-radius:8px;background:rgba(0,0,0,.4);color:#fff;border:1px solid rgba(255,255,255,.15);font-size:13px"></select>
+          </div>
           <button id="igConnectBtn" style="margin-top:10px;width:100%;padding:10px;border:0;border-radius:10px;background:linear-gradient(135deg,#f58529,#dd2a7b,#8134af,#515bd4);color:#fff;font-weight:700;cursor:pointer">Verificar conexão</button>
-          <button id="igDisconnectBtn" style="margin-top:6px;width:100%;padding:8px;border:1px solid rgba(255,255,255,.15);border-radius:10px;background:transparent;color:#fff;cursor:pointer;display:none">Desconectar</button>
+          <button id="igAddAccountBtn" style="margin-top:6px;width:100%;padding:8px;border:1px solid rgba(225,48,108,.4);border-radius:10px;background:rgba(225,48,108,.1);color:#fff;cursor:pointer;display:none">➕ Adicionar outra conta</button>
+          <button id="igDisconnectBtn" style="margin-top:6px;width:100%;padding:8px;border:1px solid rgba(255,255,255,.15);border-radius:10px;background:transparent;color:#fff;cursor:pointer;display:none">Desconectar esta conta</button>
         </div>
 
         <!-- Sub-abas -->

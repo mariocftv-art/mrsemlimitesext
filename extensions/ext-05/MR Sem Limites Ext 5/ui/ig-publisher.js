@@ -667,7 +667,8 @@
     const wrap = $('igAccountPickerWrap');
     const sel = $('igAccountPicker');
     if (!wrap || !sel) return;
-    if (!list || list.length <= 1) { wrap.style.display = 'none'; return; }
+    if (!list || list.length === 0) { wrap.style.display = 'none'; return; }
+    // Mostra o seletor sempre que houver pelo menos 1 conta, para deixar claro em qual conta vai publicar.
     wrap.style.display = 'block';
     sel.innerHTML = list.map((a) => {
       const val = String(a.ig_user_id);
@@ -700,10 +701,19 @@
     }
   }
 
-  async function startOAuth() {
+  async function startOAuth(opts) {
     try {
+      const forceLogout = !!(opts && opts.forceLogout);
       const returnUrl = chrome.runtime.getURL('sidepanel.html');
       const url = `${BASE}/api/public/instagram-oauth-start?ext_return=${encodeURIComponent(returnUrl)}`;
+      // Ao ADICIONAR outra conta, abrimos primeiro o logout do Instagram para forçar
+      // digitar usuário/senha da OUTRA conta — senão o IG reconecta a mesma que está logada.
+      if (forceLogout) {
+        const lo = window.open('https://www.instagram.com/accounts/logout/', 'ig_logout', 'width=560,height=720');
+        log('👉 Faça logout do Instagram na janela que abriu, depois clique novamente em "Adicionar outra conta".', true);
+        setTimeout(() => { try { lo && lo.close(); } catch(_){} }, 8000);
+        return;
+      }
       const w = window.open(url, 'ig_oauth', 'width=560,height=720');
       const handler = async (ev) => {
         if (!ev.data || ev.data.type !== 'MRSL_IG_CONNECTED') return;
@@ -934,7 +944,16 @@
   function wire() {
     if (!$('igConnectBtn')) return false;
     $('igConnectBtn').addEventListener('click', startOAuth);
-    $('igAddAccountBtn')?.addEventListener('click', startOAuth);
+    $('igAddAccountBtn')?.addEventListener('click', async () => {
+      const list = await loadAccounts();
+      // Se já tem conta conectada, força logout antes para permitir login com OUTRA conta.
+      if (list.length >= 1) {
+        const proceed = confirm('Para adicionar OUTRA conta, o Instagram precisa deslogar da conta atual.\n\nClique OK para abrir o logout do Instagram. Depois clique em "Adicionar outra conta" DE NOVO para entrar com a nova conta.');
+        if (!proceed) return;
+        return startOAuth({ forceLogout: true });
+      }
+      return startOAuth();
+    });
     $('igAccountPicker')?.addEventListener('change', onPickerChange);
     const bd = $('igDisconnectBtn');
     if (bd) bd.addEventListener('click', disconnect);

@@ -64,17 +64,25 @@ export const Route = createFileRoute('/api/public/instagram-generate')({
           const voiceover = (parsed.voiceover || '').toString().trim()
           const soundtrackSuggestion = (parsed.soundtrack_suggestion || '').toString().trim()
 
-          // Helper: gera uma imagem cinematográfica de alta qualidade a partir de um prompt de cena.
+          // Helper: gera uma imagem fotorrealista de altíssima qualidade DO ASSUNTO pedido.
           async function genImage(scenePrompt: string, aspect: 'vertical' | 'square'): Promise<string> {
             const orient = aspect === 'vertical'
-              ? 'Vertical 9:16 composition (tall portrait, cinematic Reel frame)'
-              : 'Square 1:1 composition (Instagram post format)'
-            const full = `${orient}. Ultra premium editorial photograph. Subject: ${scenePrompt}. ABSOLUTELY NO TEXT, NO LETTERS, NO WORDS, NO TYPOGRAPHY, NO CAPTIONS, NO SUBTITLES, NO LOGOS, NO WATERMARKS anywhere — pure photographic scene only. Leave clean negative space at top and bottom for text overlay. Award-winning professional photography, 8K microdetail, tack-sharp focus, hyper-realistic skin/textures/materials, cinematic three-point lighting with soft rim light and volumetric god-rays, shallow depth of field f/1.4, rich vibrant natural color grading with deep contrast and film-like highlight rolloff, magazine-cover composition following rule of thirds, luxury Brazilian aesthetic (dourado & preto premium), shot on Hasselblad H6D medium format, ARRI ALEXA color science, dramatic mood, photorealistic, no cartoon, no illustration, no AI artifacts.`
+              ? 'Vertical 9:16 portrait composition, full-bleed cinematic Reel frame'
+              : 'Square 1:1 Instagram post composition, full-bleed'
+            // Prompt LITERAL ao assunto — nada de estética abstrata dourada/preta forçada.
+            // Deixamos o modelo escolher paleta e luz naturais adequadas ao tema.
+            const full = [
+              `HYPERREALISTIC EDITORIAL PHOTOGRAPH — the image MUST show exactly this subject as a real photo, not an abstract pattern, not a graphic, not a decorative background:`,
+              `SUBJECT: ${scenePrompt}.`,
+              orient + '.',
+              `Shot like a top-tier commercial ad / magazine cover: professional DSLR/medium-format camera (Hasselblad H6D or Phase One), 50mm or 85mm lens, natural cinematic lighting appropriate to the scene, shallow depth of field, tack-sharp focus on the main subject, hyper-realistic skin tones and material textures, film-like color grading with rich contrast, 8K microdetail, award-winning composition following rule of thirds, leave clean negative space at top for headline overlay.`,
+              `HARD RULES: photograph the SUBJECT literally and recognizably. Show real people/objects/environments described in the subject. Do NOT invent generic abstract shapes. Do NOT generate bubbles, dots, particles, gradients, geometric patterns, or decorative wallpaper backgrounds unless the subject explicitly asks for it. Do NOT default to a gold-and-black color scheme — use colors that fit the subject naturally. NO text, NO letters, NO logos, NO watermarks, NO captions anywhere in the image. No cartoon, no illustration, no 3D render style, no AI-looking artifacts, no plastic skin, no oversaturation.`,
+            ].join(' ')
             const r = await fetch('https://ai.gateway.lovable.dev/v1/images/generations', {
               method: 'POST',
               headers: { Authorization: `Bearer ${KEY}`, 'Content-Type': 'application/json' },
               body: JSON.stringify({
-                model: 'google/gemini-3.1-flash-image',
+                model: 'google/gemini-3-pro-image',
                 messages: [{ role: 'user', content: full }],
                 modalities: ['image', 'text'],
               }),

@@ -352,11 +352,16 @@
     return (lines.length ? lines : fallback).slice(0, 5);
   }
 
-  async function makeReelPreviewFromImage(imageUrl, title, soundtrack, voiceover, script, durationSec) {
+  async function makeReelPreviewFromImage(imageUrl, title, soundtrack, voiceover, script, durationSec, sceneImgUrls) {
     if (!HTMLCanvasElement.prototype.captureStream || !window.MediaRecorder) {
       throw new Error('Seu navegador não liberou gravação de vídeo no painel. Atualize o Chrome e tente de novo.');
     }
-    const img = await loadImage(imageUrl);
+    // Carrega imagens por cena (várias) ou uma única como fallback.
+    const sceneSrcs = Array.isArray(sceneImgUrls) && sceneImgUrls.length ? sceneImgUrls : [imageUrl];
+    const imgs = await Promise.all(sceneSrcs.map((s) => loadImage(s).catch(() => null)));
+    const validImgs = imgs.filter(Boolean);
+    if (!validImgs.length) throw new Error('Nenhuma imagem de cena disponível para montar o vídeo.');
+    const img = validImgs[0]; // usado no fallback e no primeiro frame
     const canvas = document.createElement('canvas');
     canvas.width = 720;
     canvas.height = 1280;
@@ -419,22 +424,34 @@
 
     const sceneTexts = makeSceneTexts(title, script);
     // Distribui as cenas uniformemente pela duração real (>= 20s)
-    const sceneCount = sceneTexts.length;
+    // Alinha nº de cenas ao nº de imagens disponíveis quando temos várias
+    const sceneCount = validImgs.length > 1 ? Math.max(validImgs.length, sceneTexts.length) : sceneTexts.length;
     const beatSec = 60 / bpm; // 1 beat da trilha
     const W = canvas.width, H = canvas.height;
     const drawCover = (elapsedMs, progress) => {
       const sceneIndex = Math.min(sceneCount - 1, Math.floor(progress * sceneCount));
       const sceneProgress = (progress * sceneCount) % 1;
+      // Imagem desta cena (rotaciona quando há várias)
+      const curImg = validImgs[sceneIndex % validImgs.length] || img;
+      const prevImg = validImgs[(sceneIndex - 1 + validImgs.length) % validImgs.length] || curImg;
+      const fadeIn = Math.min(1, sceneProgress * 6); // crossfade nos primeiros ~16% da cena
       // Ken Burns por cena — recomeça o zoom a cada cena pra sensação de corte
-      const zoom = 1.05 + sceneProgress * 0.22;
-      const scale = Math.max(W / img.width, H / img.height) * zoom;
-      const w = img.width * scale;
-      const h = img.height * scale;
-      const driftX = Math.sin(sceneProgress * Math.PI) * 40 * (sceneIndex % 2 ? 1 : -1);
-      const driftY = -sceneProgress * 60;
+      const zoom = 1.05 + sceneProgress * 0.18;
+      const drawKB = (image, alpha) => {
+        if (alpha <= 0.001) return;
+        const scale = Math.max(W / image.width, H / image.height) * zoom;
+        const w = image.width * scale;
+        const h = image.height * scale;
+        const driftX = Math.sin(sceneProgress * Math.PI) * 40 * (sceneIndex % 2 ? 1 : -1);
+        const driftY = -sceneProgress * 60;
+        ctx.globalAlpha = alpha;
+        ctx.drawImage(image, (W - w) / 2 + driftX, (H - h) / 2 + driftY, w, h);
+        ctx.globalAlpha = 1;
+      };
       ctx.fillStyle = '#000';
       ctx.fillRect(0, 0, W, H);
-      ctx.drawImage(img, (W - w) / 2 + driftX, (H - h) / 2 + driftY, w, h);
+      if (validImgs.length > 1 && fadeIn < 1) drawKB(prevImg, 1 - fadeIn);
+      drawKB(curImg, fadeIn);
       // Vinheta cinematográfica
       const g = ctx.createLinearGradient(0, 0, 0, H);
       g.addColorStop(0, 'rgba(0,0,0,.55)');
@@ -779,7 +796,10 @@
           try {
             // Usa base64 direto (sem CORS) pra carregar no canvas sem taint
             const canvasSrc = d.media_b64 ? `data:image/png;base64,${d.media_b64}` : d.media_url;
-            const rec = await makeReelPreviewFromImage(canvasSrc, d.title || '', soundtrack === 'auto' ? 'cinematic' : soundtrack, d.voiceover || d.caption || '', d.video_script || '', duration);
+            const sceneSrcs = Array.isArray(d.scenes) && d.scenes.length
+              ? d.scenes.map((s) => s && s.b64 ? `data:image/png;base64,${s.b64}` : s?.url).filter(Boolean)
+              : null;
+            const rec = await makeReelPreviewFromImage(canvasSrc, d.title || '', soundtrack === 'auto' ? 'cinematic' : soundtrack, d.voiceover || d.caption || '', d.video_script || '', duration, sceneSrcs);
             if (!/^video\/(mp4|quicktime)/i.test(rec.mimeType)) {
               throw new Error('Seu Chrome gerou vídeo WebM, mas o Instagram só aceita MP4/MOV para Reel. Atualize o Chrome e tente de novo.');
             }

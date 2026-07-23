@@ -11,11 +11,14 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VersionsRouteImport } from './routes/versions'
 import { Route as ToolsRouteImport } from './routes/tools'
+import { Route as TermsOfServiceRouteImport } from './routes/terms-of-service'
+import { Route as SupportRouteImport } from './routes/support'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SecurityRouteImport } from './routes/security'
 import { Route as PromptsRouteImport } from './routes/prompts'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ProductsRouteImport } from './routes/products'
+import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as LogsRouteImport } from './routes/logs'
 import { Route as LicensesRouteImport } from './routes/licenses'
 import { Route as InstagramPreviewRouteImport } from './routes/instagram-preview'
@@ -23,6 +26,7 @@ import { Route as ExtensionsRouteImport } from './routes/extensions'
 import { Route as EditorRouteImport } from './routes/editor'
 import { Route as DownloadsRouteImport } from './routes/downloads'
 import { Route as DevicesRouteImport } from './routes/devices'
+import { Route as DataDeletionRouteImport } from './routes/data-deletion'
 import { Route as CustomersRouteImport } from './routes/customers'
 import { Route as ComponentsRouteImport } from './routes/components'
 import { Route as CompatibilityRouteImport } from './routes/compatibility'
@@ -59,6 +63,16 @@ const ToolsRoute = ToolsRouteImport.update({
   path: '/tools',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TermsOfServiceRoute = TermsOfServiceRouteImport.update({
+  id: '/terms-of-service',
+  path: '/terms-of-service',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SupportRoute = SupportRouteImport.update({
+  id: '/support',
+  path: '/support',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -82,6 +96,11 @@ const ProfileRoute = ProfileRouteImport.update({
 const ProductsRoute = ProductsRouteImport.update({
   id: '/products',
   path: '/products',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
+  id: '/privacy-policy',
+  path: '/privacy-policy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LogsRoute = LogsRouteImport.update({
@@ -117,6 +136,11 @@ const DownloadsRoute = DownloadsRouteImport.update({
 const DevicesRoute = DevicesRouteImport.update({
   id: '/devices',
   path: '/devices',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DataDeletionRoute = DataDeletionRouteImport.update({
+  id: '/data-deletion',
+  path: '/data-deletion',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CustomersRoute = CustomersRouteImport.update({
@@ -264,6 +288,7 @@ export interface FileRoutesByFullPath {
   '/compatibility': typeof CompatibilityRoute
   '/components': typeof ComponentsRoute
   '/customers': typeof CustomersRoute
+  '/data-deletion': typeof DataDeletionRoute
   '/devices': typeof DevicesRoute
   '/downloads': typeof DownloadsRoute
   '/editor': typeof EditorRoute
@@ -271,11 +296,14 @@ export interface FileRoutesByFullPath {
   '/instagram-preview': typeof InstagramPreviewRoute
   '/licenses': typeof LicensesRoute
   '/logs': typeof LogsRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
   '/products': typeof ProductsRoute
   '/profile': typeof ProfileRoute
   '/prompts': typeof PromptsRoute
   '/security': typeof SecurityRoute
   '/settings': typeof SettingsRoute
+  '/support': typeof SupportRoute
+  '/terms-of-service': typeof TermsOfServiceRoute
   '/tools': typeof ToolsRoute
   '/versions': typeof VersionsRoute
   '/live/$id': typeof LiveIdRoute
@@ -305,6 +333,7 @@ export interface FileRoutesByTo {
   '/compatibility': typeof CompatibilityRoute
   '/components': typeof ComponentsRoute
   '/customers': typeof CustomersRoute
+  '/data-deletion': typeof DataDeletionRoute
   '/devices': typeof DevicesRoute
   '/downloads': typeof DownloadsRoute
   '/editor': typeof EditorRoute
@@ -312,11 +341,14 @@ export interface FileRoutesByTo {
   '/instagram-preview': typeof InstagramPreviewRoute
   '/licenses': typeof LicensesRoute
   '/logs': typeof LogsRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
   '/products': typeof ProductsRoute
   '/profile': typeof ProfileRoute
   '/prompts': typeof PromptsRoute
   '/security': typeof SecurityRoute
   '/settings': typeof SettingsRoute
+  '/support': typeof SupportRoute
+  '/terms-of-service': typeof TermsOfServiceRoute
   '/tools': typeof ToolsRoute
   '/versions': typeof VersionsRoute
   '/live/$id': typeof LiveIdRoute
@@ -347,6 +379,7 @@ export interface FileRoutesById {
   '/compatibility': typeof CompatibilityRoute
   '/components': typeof ComponentsRoute
   '/customers': typeof CustomersRoute
+  '/data-deletion': typeof DataDeletionRoute
   '/devices': typeof DevicesRoute
   '/downloads': typeof DownloadsRoute
   '/editor': typeof EditorRoute
@@ -354,11 +387,14 @@ export interface FileRoutesById {
   '/instagram-preview': typeof InstagramPreviewRoute
   '/licenses': typeof LicensesRoute
   '/logs': typeof LogsRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
   '/products': typeof ProductsRoute
   '/profile': typeof ProfileRoute
   '/prompts': typeof PromptsRoute
   '/security': typeof SecurityRoute
   '/settings': typeof SettingsRoute
+  '/support': typeof SupportRoute
+  '/terms-of-service': typeof TermsOfServiceRoute
   '/tools': typeof ToolsRoute
   '/versions': typeof VersionsRoute
   '/live/$id': typeof LiveIdRoute
@@ -390,6 +426,7 @@ export interface FileRouteTypes {
     | '/compatibility'
     | '/components'
     | '/customers'
+    | '/data-deletion'
     | '/devices'
     | '/downloads'
     | '/editor'
@@ -397,11 +434,14 @@ export interface FileRouteTypes {
     | '/instagram-preview'
     | '/licenses'
     | '/logs'
+    | '/privacy-policy'
     | '/products'
     | '/profile'
     | '/prompts'
     | '/security'
     | '/settings'
+    | '/support'
+    | '/terms-of-service'
     | '/tools'
     | '/versions'
     | '/live/$id'
@@ -431,6 +471,7 @@ export interface FileRouteTypes {
     | '/compatibility'
     | '/components'
     | '/customers'
+    | '/data-deletion'
     | '/devices'
     | '/downloads'
     | '/editor'
@@ -438,11 +479,14 @@ export interface FileRouteTypes {
     | '/instagram-preview'
     | '/licenses'
     | '/logs'
+    | '/privacy-policy'
     | '/products'
     | '/profile'
     | '/prompts'
     | '/security'
     | '/settings'
+    | '/support'
+    | '/terms-of-service'
     | '/tools'
     | '/versions'
     | '/live/$id'
@@ -472,6 +516,7 @@ export interface FileRouteTypes {
     | '/compatibility'
     | '/components'
     | '/customers'
+    | '/data-deletion'
     | '/devices'
     | '/downloads'
     | '/editor'
@@ -479,11 +524,14 @@ export interface FileRouteTypes {
     | '/instagram-preview'
     | '/licenses'
     | '/logs'
+    | '/privacy-policy'
     | '/products'
     | '/profile'
     | '/prompts'
     | '/security'
     | '/settings'
+    | '/support'
+    | '/terms-of-service'
     | '/tools'
     | '/versions'
     | '/live/$id'
@@ -514,6 +562,7 @@ export interface RootRouteChildren {
   CompatibilityRoute: typeof CompatibilityRoute
   ComponentsRoute: typeof ComponentsRoute
   CustomersRoute: typeof CustomersRoute
+  DataDeletionRoute: typeof DataDeletionRoute
   DevicesRoute: typeof DevicesRoute
   DownloadsRoute: typeof DownloadsRoute
   EditorRoute: typeof EditorRoute
@@ -521,11 +570,14 @@ export interface RootRouteChildren {
   InstagramPreviewRoute: typeof InstagramPreviewRoute
   LicensesRoute: typeof LicensesRoute
   LogsRoute: typeof LogsRoute
+  PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   ProductsRoute: typeof ProductsRoute
   ProfileRoute: typeof ProfileRoute
   PromptsRoute: typeof PromptsRoute
   SecurityRoute: typeof SecurityRoute
   SettingsRoute: typeof SettingsRoute
+  SupportRoute: typeof SupportRoute
+  TermsOfServiceRoute: typeof TermsOfServiceRoute
   ToolsRoute: typeof ToolsRoute
   VersionsRoute: typeof VersionsRoute
   LiveIdRoute: typeof LiveIdRoute
@@ -557,6 +609,20 @@ declare module '@tanstack/react-router' {
       path: '/tools'
       fullPath: '/tools'
       preLoaderRoute: typeof ToolsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms-of-service': {
+      id: '/terms-of-service'
+      path: '/terms-of-service'
+      fullPath: '/terms-of-service'
+      preLoaderRoute: typeof TermsOfServiceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/support': {
+      id: '/support'
+      path: '/support'
+      fullPath: '/support'
+      preLoaderRoute: typeof SupportRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/settings': {
@@ -592,6 +658,13 @@ declare module '@tanstack/react-router' {
       path: '/products'
       fullPath: '/products'
       preLoaderRoute: typeof ProductsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy-policy': {
+      id: '/privacy-policy'
+      path: '/privacy-policy'
+      fullPath: '/privacy-policy'
+      preLoaderRoute: typeof PrivacyPolicyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/logs': {
@@ -641,6 +714,13 @@ declare module '@tanstack/react-router' {
       path: '/devices'
       fullPath: '/devices'
       preLoaderRoute: typeof DevicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/data-deletion': {
+      id: '/data-deletion'
+      path: '/data-deletion'
+      fullPath: '/data-deletion'
+      preLoaderRoute: typeof DataDeletionRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/customers': {
@@ -834,6 +914,7 @@ const rootRouteChildren: RootRouteChildren = {
   CompatibilityRoute: CompatibilityRoute,
   ComponentsRoute: ComponentsRoute,
   CustomersRoute: CustomersRoute,
+  DataDeletionRoute: DataDeletionRoute,
   DevicesRoute: DevicesRoute,
   DownloadsRoute: DownloadsRoute,
   EditorRoute: EditorRoute,
@@ -841,11 +922,14 @@ const rootRouteChildren: RootRouteChildren = {
   InstagramPreviewRoute: InstagramPreviewRoute,
   LicensesRoute: LicensesRoute,
   LogsRoute: LogsRoute,
+  PrivacyPolicyRoute: PrivacyPolicyRoute,
   ProductsRoute: ProductsRoute,
   ProfileRoute: ProfileRoute,
   PromptsRoute: PromptsRoute,
   SecurityRoute: SecurityRoute,
   SettingsRoute: SettingsRoute,
+  SupportRoute: SupportRoute,
+  TermsOfServiceRoute: TermsOfServiceRoute,
   ToolsRoute: ToolsRoute,
   VersionsRoute: VersionsRoute,
   LiveIdRoute: LiveIdRoute,
@@ -865,13 +949,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

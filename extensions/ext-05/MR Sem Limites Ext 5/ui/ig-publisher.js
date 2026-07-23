@@ -701,10 +701,19 @@
     }
   }
 
-  async function startOAuth() {
+  async function startOAuth(opts) {
     try {
+      const forceLogout = !!(opts && opts.forceLogout);
       const returnUrl = chrome.runtime.getURL('sidepanel.html');
       const url = `${BASE}/api/public/instagram-oauth-start?ext_return=${encodeURIComponent(returnUrl)}`;
+      // Ao ADICIONAR outra conta, abrimos primeiro o logout do Instagram para forçar
+      // digitar usuário/senha da OUTRA conta — senão o IG reconecta a mesma que está logada.
+      if (forceLogout) {
+        const lo = window.open('https://www.instagram.com/accounts/logout/', 'ig_logout', 'width=560,height=720');
+        log('👉 Faça logout do Instagram na janela que abriu, depois clique novamente em "Adicionar outra conta".', true);
+        setTimeout(() => { try { lo && lo.close(); } catch(_){} }, 8000);
+        return;
+      }
       const w = window.open(url, 'ig_oauth', 'width=560,height=720');
       const handler = async (ev) => {
         if (!ev.data || ev.data.type !== 'MRSL_IG_CONNECTED') return;

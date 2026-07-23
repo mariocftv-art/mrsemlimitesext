@@ -352,11 +352,16 @@
     return (lines.length ? lines : fallback).slice(0, 5);
   }
 
-  async function makeReelPreviewFromImage(imageUrl, title, soundtrack, voiceover, script, durationSec) {
+  async function makeReelPreviewFromImage(imageUrl, title, soundtrack, voiceover, script, durationSec, sceneImgUrls) {
     if (!HTMLCanvasElement.prototype.captureStream || !window.MediaRecorder) {
       throw new Error('Seu navegador não liberou gravação de vídeo no painel. Atualize o Chrome e tente de novo.');
     }
-    const img = await loadImage(imageUrl);
+    // Carrega imagens por cena (várias) ou uma única como fallback.
+    const sceneSrcs = Array.isArray(sceneImgUrls) && sceneImgUrls.length ? sceneImgUrls : [imageUrl];
+    const imgs = await Promise.all(sceneSrcs.map((s) => loadImage(s).catch(() => null)));
+    const validImgs = imgs.filter(Boolean);
+    if (!validImgs.length) throw new Error('Nenhuma imagem de cena disponível para montar o vídeo.');
+    const img = validImgs[0]; // usado no fallback e no primeiro frame
     const canvas = document.createElement('canvas');
     canvas.width = 720;
     canvas.height = 1280;

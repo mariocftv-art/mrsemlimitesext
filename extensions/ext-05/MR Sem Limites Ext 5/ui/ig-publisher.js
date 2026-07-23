@@ -618,7 +618,18 @@
     { t: '📄 Página de vendas walkthrough', p: 'Reel scrollando por landing page de vendas real, mostrando headline, prova social, bônus e botão CTA, tipografia em destaque, aesthetic profissional, ensinando o funil de conversão' },
   ];
 
-  const IG_ACCOUNT_KEY = 'mrsl_ig_account';
+  const IG_ACCOUNT_KEY = 'mrsl_ig_account';        // conta ATIVA (compat)
+  const IG_ACCOUNTS_KEY = 'mrsl_ig_accounts';      // lista de contas conectadas
+
+  function loadAccounts() {
+    return new Promise((r) => {
+      try { chrome.storage.local.get([IG_ACCOUNTS_KEY], (d) => r(Array.isArray(d[IG_ACCOUNTS_KEY]) ? d[IG_ACCOUNTS_KEY] : [])); }
+      catch (_) { r([]); }
+    });
+  }
+  function saveAccounts(list) {
+    return new Promise((r) => { try { chrome.storage.local.set({ [IG_ACCOUNTS_KEY]: list }, r); } catch(_){ r(); } });
+  }
   function loadAccount() {
     return new Promise((r) => {
       try { chrome.storage.local.get([IG_ACCOUNT_KEY], (d) => r(d[IG_ACCOUNT_KEY] || null)); }
@@ -628,25 +639,63 @@
   function saveAccount(a) {
     return new Promise((r) => { try { chrome.storage.local.set({ [IG_ACCOUNT_KEY]: a }, r); } catch(_){ r(); } });
   }
-  function clearAccount() {
-    return new Promise((r) => { try { chrome.storage.local.remove([IG_ACCOUNT_KEY], r); } catch(_){ r(); } });
+  async function upsertAccount(a) {
+    if (!a || !a.ig_user_id) return;
+    const list = await loadAccounts();
+    const idx = list.findIndex((x) => String(x.ig_user_id) === String(a.ig_user_id));
+    if (idx >= 0) list[idx] = { ...list[idx], ...a };
+    else list.push(a);
+    await saveAccounts(list);
+    await saveAccount(a); // define como ativa
+  }
+  async function setActiveById(igUserId) {
+    const list = await loadAccounts();
+    const found = list.find((x) => String(x.ig_user_id) === String(igUserId));
+    if (found) { await saveAccount(found); return found; }
+    return null;
+  }
+  async function removeActiveAccount() {
+    const active = await loadAccount();
+    if (!active) return;
+    const list = (await loadAccounts()).filter((x) => String(x.ig_user_id) !== String(active.ig_user_id));
+    await saveAccounts(list);
+    if (list.length) await saveAccount(list[0]);
+    else await new Promise((r) => { try { chrome.storage.local.remove([IG_ACCOUNT_KEY], r); } catch(_){ r(); } });
+  }
+
+  function renderAccountPicker(list, activeId) {
+    const wrap = $('igAccountPickerWrap');
+    const sel = $('igAccountPicker');
+    if (!wrap || !sel) return;
+    if (!list || list.length <= 1) { wrap.style.display = 'none'; return; }
+    wrap.style.display = 'block';
+    sel.innerHTML = list.map((a) => {
+      const val = String(a.ig_user_id);
+      const label = `@${a.username || '—'} (${a.ig_user_id || '—'})`;
+      const sel_ = String(activeId) === val ? ' selected' : '';
+      return `<option value="${val}"${sel_}>${label}</option>`;
+    }).join('');
   }
 
   async function refreshStatus() {
     const st = $('igStatusText'), info = $('igAccountInfo'), pub = $('igPublishCard');
-    const bc = $('igConnectBtn'), bd = $('igDisconnectBtn');
+    const bc = $('igConnectBtn'), bd = $('igDisconnectBtn'), ba = $('igAddAccountBtn');
     const acc = await loadAccount();
+    const list = await loadAccounts();
+    renderAccountPicker(list, acc?.ig_user_id);
     if (acc && acc.access_token) {
-      if (st) st.textContent = '🟢 Conectado';
+      if (st) st.textContent = list.length > 1 ? `🟢 ${list.length} contas conectadas` : '🟢 Conectado';
       if (info) { info.style.display = 'block'; info.innerHTML = `<b>@${acc.username || '-'}</b><br><span style="opacity:.6">ID ${acc.ig_user_id || '-'}</span>`; }
       if (pub) pub.style.display = 'block';
-      if (bc) { bc.textContent = '🔄 Reconectar Instagram'; bc.disabled = false; bc.style.opacity = '1'; bc.style.cursor = 'pointer'; }
+      if (bc) { bc.textContent = '🔄 Reconectar conta ativa'; bc.disabled = false; bc.style.opacity = '1'; bc.style.cursor = 'pointer'; }
+      if (ba) ba.style.display = 'block';
       if (bd) bd.style.display = 'block';
     } else {
       if (st) st.textContent = '🔴 Não conectado';
       if (info) { info.style.display = 'block'; info.textContent = 'Faça login com sua conta do Instagram para publicar.'; }
       if (pub) pub.style.display = 'none';
       if (bc) { bc.textContent = '📸 Conectar Instagram'; bc.disabled = false; bc.style.opacity = '1'; bc.style.cursor = 'pointer'; }
+      if (ba) ba.style.display = 'none';
       if (bd) bd.style.display = 'none';
     }
   }
@@ -659,10 +708,10 @@
       const handler = async (ev) => {
         if (!ev.data || ev.data.type !== 'MRSL_IG_CONNECTED') return;
         window.removeEventListener('message', handler);
-        await saveAccount(ev.data.account);
+        await upsertAccount(ev.data.account);
         await refreshStatus();
         try { w && w.close(); } catch(_){}
-        log('✅ Instagram conectado', true);
+        log(`✅ @${ev.data.account?.username || 'conta'} conectada`, true);
       };
       window.addEventListener('message', handler);
     } catch (e) {
@@ -671,10 +720,19 @@
   }
 
   async function disconnect() {
-    await clearAccount();
+    const acc = await loadAccount();
+    await removeActiveAccount();
     await refreshStatus();
-    log('🔌 Desconectado do Instagram');
+    log(`🔌 @${acc?.username || 'conta'} desconectada`);
   }
+
+  async function onPickerChange() {
+    const sel = $('igAccountPicker');
+    if (!sel) return;
+    const newActive = await setActiveById(sel.value);
+    if (newActive) { await refreshStatus(); log(`✅ Publicando agora em @${newActive.username}`, true); }
+  }
+
 
   async function generate() {
     const prompt = ($('igPrompt')?.value || '').trim();

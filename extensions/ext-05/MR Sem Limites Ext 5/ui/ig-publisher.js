@@ -796,7 +796,10 @@
           try {
             // Usa base64 direto (sem CORS) pra carregar no canvas sem taint
             const canvasSrc = d.media_b64 ? `data:image/png;base64,${d.media_b64}` : d.media_url;
-            const rec = await makeReelPreviewFromImage(canvasSrc, d.title || '', soundtrack === 'auto' ? 'cinematic' : soundtrack, d.voiceover || d.caption || '', d.video_script || '', duration);
+            const sceneSrcs = Array.isArray(d.scenes) && d.scenes.length
+              ? d.scenes.map((s) => s && s.b64 ? `data:image/png;base64,${s.b64}` : s?.url).filter(Boolean)
+              : null;
+            const rec = await makeReelPreviewFromImage(canvasSrc, d.title || '', soundtrack === 'auto' ? 'cinematic' : soundtrack, d.voiceover || d.caption || '', d.video_script || '', duration, sceneSrcs);
             if (!/^video\/(mp4|quicktime)/i.test(rec.mimeType)) {
               throw new Error('Seu Chrome gerou vídeo WebM, mas o Instagram só aceita MP4/MOV para Reel. Atualize o Chrome e tente de novo.');
             }

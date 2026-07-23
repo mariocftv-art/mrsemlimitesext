@@ -17,14 +17,14 @@ const cors = {
 }
 
 const LATEST = {
-  latest_version: '5.4.14',
+  latest_version: '5.4.15',
   download_url:
-    'https://mrsemlimitesext.lovable.app/__l5e/assets-v1/02316ce1-d07c-4293-a39d-abf5b0c6bd48/MR-Sem-Limites-EXT5-v5.4.14.zip',
+    'https://mrsemlimitesext.lovable.app/__l5e/assets-v1/3a8f533f-6629-4617-ad11-aa1871d04a07/MR-Sem-Limites-EXT5-v5.4.15.zip',
   notes: [
-    'Correção do botão da extensão: agora abre o painel lateral direto, sem conflito de popup.',
-    'Título e legenda muito mais fortes, virais e adaptados ao nicho (segurança, PAX, infoproduto, gastronomia, beleza, imóveis, moda).',
-    'Reel agora em 720x1280, com cenas sincronizadas ao beat da trilha, progress bar e Ken Burns por cena.',
-    'Prévia grande com mensagem clara quando o host bloqueia hotlink, com link direto pra abrir a mídia.',
+    'Multi-contas Instagram: conecte várias contas @ e escolha em qual publicar antes de cada post.',
+    'Novo botão "➕ Adicionar outra conta" no painel Instagram.',
+    'Dropdown "📱 Publicar em:" aparece automaticamente quando há mais de uma conta conectada.',
+    'Nenhuma alteração no fluxo de geração de mídia ou publicação — tudo continua funcionando como antes.',
   ],
   hotfix: {
     hotfix_id: '2026-07-22-07',

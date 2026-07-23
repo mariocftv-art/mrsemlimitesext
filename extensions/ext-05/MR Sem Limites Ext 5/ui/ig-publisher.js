@@ -934,6 +934,8 @@
   function wire() {
     if (!$('igConnectBtn')) return false;
     $('igConnectBtn').addEventListener('click', startOAuth);
+    $('igAddAccountBtn')?.addEventListener('click', startOAuth);
+    $('igAccountPicker')?.addEventListener('change', onPickerChange);
     const bd = $('igDisconnectBtn');
     if (bd) bd.addEventListener('click', disconnect);
     document.querySelectorAll('.igTypeBtn').forEach((b) => {

@@ -19,7 +19,7 @@ const cors = {
 const LATEST = {
   latest_version: '5.4.18',
   download_url:
-    'https://mrsemlimitesext.lovable.app/__l5e/assets-v1/73202dab-08c5-4145-8179-eae18914223a/MR-Sem-Limites-EXT5-v5.4.17.zip',
+    'https://mrsemlimitesext.lovable.app/__l5e/assets-v1/d8885285-3b90-4f84-ad5e-68a5496c26bb/MR-Sem-Limites-EXT5-v5.4.18.zip',
   notes: [
     'Correção do gerador: agora a aba Instagram chama a IA real de imagem, sem usar a capa local dourada de fallback.',
     'Reels passam a montar o vídeo com cenas únicas vindas da IA, com variação obrigatória a cada geração.',

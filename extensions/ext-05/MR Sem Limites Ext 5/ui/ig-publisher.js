@@ -667,7 +667,8 @@
     const wrap = $('igAccountPickerWrap');
     const sel = $('igAccountPicker');
     if (!wrap || !sel) return;
-    if (!list || list.length <= 1) { wrap.style.display = 'none'; return; }
+    if (!list || list.length === 0) { wrap.style.display = 'none'; return; }
+    // Mostra o seletor sempre que houver pelo menos 1 conta, para deixar claro em qual conta vai publicar.
     wrap.style.display = 'block';
     sel.innerHTML = list.map((a) => {
       const val = String(a.ig_user_id);

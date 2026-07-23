@@ -47,7 +47,14 @@ export async function putMedia(dataUrl: string, filenameHint?: string): Promise<
       uploadMime = 'image/jpeg'
       ext = 'jpg'
     } catch (e: any) {
-      throw new Error(`Falha ao converter PNG para JPEG: ${e?.message || e}`)
+      // Alguns runtimes serverless quebram a descompressão PNG do pngjs
+      // (ex.: "Class constructor Inflate cannot be invoked without 'new'").
+      // Não podemos derrubar a geração por causa disso: a EXT5 recebe também
+      // o base64 original e converte para JPEG no navegador antes de publicar.
+      console.warn(`Falha ao converter PNG para JPEG; enviando PNG original: ${e?.message || e}`)
+      uploadBytes = bytes
+      uploadMime = mime
+      ext = 'png'
     }
   }
 

@@ -17,18 +17,18 @@ const cors = {
 }
 
 const LATEST = {
-  latest_version: '5.4.15',
+  latest_version: '5.4.18',
   download_url:
-    'https://mrsemlimitesext.lovable.app/__l5e/assets-v1/3a8f533f-6629-4617-ad11-aa1871d04a07/MR-Sem-Limites-EXT5-v5.4.15.zip',
+    'https://mrsemlimitesext.lovable.app/__l5e/assets-v1/d8885285-3b90-4f84-ad5e-68a5496c26bb/MR-Sem-Limites-EXT5-v5.4.18.zip',
   notes: [
-    'Multi-contas Instagram: conecte várias contas @ e escolha em qual publicar antes de cada post.',
-    'Novo botão "➕ Adicionar outra conta" no painel Instagram.',
-    'Dropdown "📱 Publicar em:" aparece automaticamente quando há mais de uma conta conectada.',
-    'Nenhuma alteração no fluxo de geração de mídia ou publicação — tudo continua funcionando como antes.',
+    'Correção do gerador: agora a aba Instagram chama a IA real de imagem, sem usar a capa local dourada de fallback.',
+    'Reels passam a montar o vídeo com cenas únicas vindas da IA, com variação obrigatória a cada geração.',
+    'O botão Regerar força nova composição e bloqueia fundos abstratos/bolhas quando o assunto pede foto real.',
+    'Descrição, título, roteiro, fala e hashtags continuam profissionais e completos.',
   ],
   hotfix: {
-    hotfix_id: '2026-07-22-07',
-    caption_style: 'premium-emoji-viral-video-20s',
+    hotfix_id: '2026-07-23-18',
+    caption_style: 'premium-real-image-no-local-poster',
     ia_picker_v: 'auto-tts-v1',
   },
 }

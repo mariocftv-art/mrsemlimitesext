@@ -8,6 +8,7 @@
   const STATUS_URL = BASE + '/api/public/instagram-status';
   const MEDIA_URL = BASE + '/api/public/instagram-media';
   const PUBLISH_URL = BASE + '/api/public/instagram-publish';
+  const GENERATE_URL = BASE + '/api/public/instagram-generate';
 
   const $ = (id) => document.getElementById(id);
   const log = (m, ok) => {
@@ -770,12 +771,33 @@
     const soundtrack = ($('igSoundtrack')?.value) || 'auto';
     const voiceMode = ($('igVoiceMode')?.value) || 'male_consultant';
     const aiPick = getAiPick();
-    setBusy(btn, true, isReel ? '⏳ Gerando Reel 20s com fala…' : '⏳ Gerando imagem + legenda…');
-    log(isReel ? `⏳ Gerando roteiro, fala, trilha e vídeo de ${duration}s com ${aiModeLabel()}…` : '⏳ Gerando com IA (pode levar ~15s)…');
+    setBusy(btn, true, isReel ? '⏳ Gerando imagens reais + Reel…' : '⏳ Gerando imagem real + legenda…');
+    log(isReel ? `⏳ Chamando IA de imagem real para criar cenas únicas e montar vídeo de ${duration}s…` : '⏳ Chamando IA de imagem real — sem prévia local dourada…');
     try {
       const apiType = currentType === 'viral' ? 'post' : currentType;
-      const finalPrompt = currentType === 'viral' ? `[Foco em máximo engajamento viral] ${prompt}` : prompt;
-      const d = createLocalCreative(finalPrompt, apiType, duration, aiPick);
+      const nonce = Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+      const finalPrompt = (currentType === 'viral' ? `[Foco em máximo engajamento viral] ${prompt}` : prompt)
+        + `\n\nVARIAÇÃO OBRIGATÓRIA ${nonce}: gere uma composição nova, foto real do assunto descrito, nunca reutilize fundo abstrato/bolhas/dourado genérico.`;
+      const res = await fetch(GENERATE_URL + '?v=' + encodeURIComponent(nonce), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
+        body: JSON.stringify({
+          prompt: finalPrompt,
+          type: apiType,
+          duration,
+          ai_mode: aiModeLabel(),
+          soundtrack,
+          voice_mode: voiceMode,
+          media: true,
+        }),
+      });
+      const d = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(d.error || `Falha na IA de imagem (${res.status})`);
+      }
+      if (!d.media_url && !d.media_b64) {
+        throw new Error('A IA não retornou mídia nova. Tente um prompt mais específico.');
+      }
       const img = $('igPreviewImg');
       const vid = $('igPreviewVideo');
       const wrap = $('igPreviewImgWrap');
@@ -790,7 +812,7 @@
 
       if (d.media_url) {
         if (currentType === 'reel') {
-          // Reel: gera um vídeo vertical de no mínimo 20s com fala/voz + trilha, usando a capa IA como frame base.
+          // Reel: monta um vídeo vertical com cenas únicas geradas pela IA, não uma capa local repetida.
           if (img) { img.src = d.media_url; img.style.display = 'block'; }
           log(`🎬 Montando Reel de ${duration}s com roteiro, fala e trilha…`);
           try {

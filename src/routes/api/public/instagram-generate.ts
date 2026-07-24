@@ -132,31 +132,8 @@ async function fetchAsB64(url: string): Promise<string> {
   return buf.toString('base64')
 }
 
-async function genImage(scenePrompt: string, aspect: 'vertical' | 'square', key: string | undefined, seedSalt: string): Promise<{ b64: string; mime: 'image/png' | 'image/jpeg' }> {
+async function genImage(scenePrompt: string, aspect: 'vertical' | 'square', seedSalt: string): Promise<{ b64: string; mime: 'image/jpeg' }> {
   const full = imagePrompt(scenePrompt, aspect)
-  if (key) {
-    try {
-      const r = await fetch('https://ai.gateway.lovable.dev/v1/images/generations', {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'google/gemini-3-pro-image',
-          messages: [{ role: 'user', content: full }],
-          modalities: ['image', 'text'],
-        }),
-      })
-      const d: any = await r.json().catch(() => ({}))
-      const b64 = d?.data?.[0]?.b64_json
-        || d?.choices?.[0]?.message?.images?.[0]?.image_url?.url?.replace(/^data:[^;]+;base64,/, '')
-      if (r.ok && b64) return { b64, mime: 'image/png' }
-      if (r.status !== 402) {
-        console.warn(`Gateway imagem falhou; usando fallback: ${d?.error?.message || d?.error || r.status}`)
-      }
-    } catch (e: any) {
-      console.warn(`Gateway imagem indisponível; usando fallback: ${e?.message || e}`)
-    }
-  }
-
   const w = aspect === 'vertical' ? 720 : 1080
   const h = aspect === 'vertical' ? 1280 : 1080
   const seed = Math.abs(Array.from(`${scenePrompt}-${seedSalt}`).reduce((a, c) => ((a * 31) + c.charCodeAt(0)) | 0, 7))
@@ -173,57 +150,17 @@ function parseScenes(script: string, max: number): string[] {
   return parts.slice(0, max)
 }
 
-async function gatewayCopy(prompt: string, type: string, duration: number, aiMode: string, soundtrack: string, voiceMode: string, key: string | undefined): Promise<CreativeCopy | null> {
-  if (!key) return null
-  try {
-    const capRes = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
-        messages: [
-          { role: 'system', content: 'Você é consultor premium de Instagram brasileiro, diretor de vídeo profissional e copywriter viral de alto nível. Responda APENAS em JSON válido: {"title":"...","caption":"...","hashtags":["#.."],"video_script":"...","voiceover":"...","soundtrack_suggestion":"..."}. Título magnético, legenda PT-BR com no mínimo 900 caracteres, emojis, duas chamadas para seguir a página, 18–25 hashtags. Para Reel, gere 5 cenas sincronizadas com a duração, fala masculina natural e sugestão de trilha. Para Post/Carrossel deixe roteiro/fala/trilha vazios.' },
-          { role: 'user', content: `Prompt do usuário: ${plainSubject(prompt)}\nTipo: ${type === 'reel' ? 'Reel vertical 9:16' : type === 'carousel' ? 'Carrossel' : 'Post'}\nDuração: ${duration}s\nIA escolhida: ${aiMode || 'externa do usuário'}\nTrilha: ${soundtrack || 'cinematográfica'}\nVoz: ${voiceMode}` },
-        ],
-        temperature: 0.85,
-        response_format: { type: 'json_object' },
-      }),
-    })
-    const capData: any = await capRes.json().catch(() => ({}))
-    if (!capRes.ok) return null
-    const raw = capData?.choices?.[0]?.message?.content?.trim() || '{}'
-    let parsed: any = {}
-    try { parsed = JSON.parse(raw) } catch { parsed = { caption: raw } }
-    const title = (parsed.title || '').toString().trim()
-    const captionBody = (parsed.caption || '').toString().trim()
-    const hashtags = Array.isArray(parsed.hashtags) ? parsed.hashtags.join(' ') : ''
-    return {
-      title,
-      caption: [title, captionBody, hashtags].filter(Boolean).join('\n\n').trim(),
-      videoScript: (parsed.video_script || '').toString().trim(),
-      voiceover: (parsed.voiceover || '').toString().trim(),
-      soundtrackSuggestion: (parsed.soundtrack_suggestion || '').toString().trim(),
-    }
-  } catch {
-    return null
-  }
-}
-
-// Gera imagem + legenda viral. Se os créditos do Gateway falharem (402), usa fallback gratuito para não travar a extensão.
+// Gera imagem + legenda viral sem usar créditos do workspace Lovable.
 export const Route = createFileRoute('/api/public/instagram-generate')({
   server: {
     handlers: {
       OPTIONS: async () => new Response(null, { status: 204, headers: cors }),
       POST: async ({ request }) => {
-        const key = process.env.LOVABLE_API_KEY
         let body: any = {}
         try { body = await request.json() } catch {}
         const prompt = (body?.prompt || body?.theme || '').toString().trim()
         const type = (body?.type || 'post').toString()
         const duration = Math.max(10, Math.min(600, Number(body?.duration || 20) || 20))
-        const aiMode = (body?.ai_mode || body?.aiMode || '').toString().trim()
-        const soundtrack = (body?.soundtrack || '').toString().trim()
-        const voiceMode = (body?.voice_mode || body?.voiceMode || 'male').toString().trim()
         const wantMedia = body?.media !== false
         const seedSalt = `${Date.now()}-${Math.random()}`
         if (!prompt) {
@@ -231,8 +168,7 @@ export const Route = createFileRoute('/api/public/instagram-generate')({
         }
 
         try {
-          const copy = (await gatewayCopy(prompt, type, duration, aiMode, soundtrack, voiceMode, key))
-            || localCopy(prompt, type, duration)
+          const copy = localCopy(prompt, type, duration)
           let mediaUrl = ''
           let mediaB64 = ''
           let mediaMime: 'image/png' | 'image/jpeg' = 'image/jpeg'
@@ -252,7 +188,7 @@ export const Route = createFileRoute('/api/public/instagram-generate')({
                 ]
                 const imgs = await Promise.all(
                   finalScenes.slice(0, 5).map(async (desc, idx) => {
-                    try { return await genImage(desc, 'vertical', key, `${seedSalt}-${idx}`) } catch { return null }
+                    try { return await genImage(desc, 'vertical', `${seedSalt}-${idx}`) } catch { return null }
                   })
                 )
                 for (let i = 0; i < finalScenes.length && i < imgs.length; i++) {
@@ -267,7 +203,7 @@ export const Route = createFileRoute('/api/public/instagram-generate')({
                 mediaMime = scenes[0].mime === 'image/png' ? 'image/png' : 'image/jpeg'
                 mediaUrl = scenes[0].url
               } else {
-                const img = await genImage(prompt, 'square', key, seedSalt)
+                const img = await genImage(prompt, 'square', seedSalt)
                 mediaB64 = img.b64
                 mediaMime = img.mime
                 const ext = img.mime === 'image/jpeg' ? 'jpg' : 'png'
@@ -291,7 +227,7 @@ export const Route = createFileRoute('/api/public/instagram-generate')({
             voiceover: copy.voiceover,
             soundtrack_suggestion: copy.soundtrackSuggestion,
             duration,
-            fallback: !key,
+            fallback: true,
           }), { status: 200, headers: cors })
         } catch (e: any) {
           return new Response(JSON.stringify({ error: e?.message || 'Erro' }), { status: 500, headers: cors })

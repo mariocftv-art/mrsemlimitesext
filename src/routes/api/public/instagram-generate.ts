@@ -311,7 +311,7 @@ export const Route = createFileRoute('/api/public/instagram-generate')({
             voiceover: copy.voiceover,
             soundtrack_suggestion: copy.soundtrackSuggestion,
             duration,
-            fallback: true,
+            engine: process.env.LOVABLE_API_KEY ? 'lovable-ai-gateway' : 'pollinations',
           }), { status: 200, headers: cors })
         } catch (e: any) {
           return new Response(JSON.stringify({ error: e?.message || 'Erro' }), { status: 500, headers: cors })

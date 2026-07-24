@@ -250,9 +250,9 @@ function ExtensionsPage() {
       <Card className="glass mb-4 border-primary/40">
           <CardContent className="flex flex-col gap-3 p-4 md:flex-row md:items-center md:justify-between">
             <div className="space-y-1">
-              <p className="text-sm font-semibold">EXT5 — Instagram Publisher</p>
+              <p className="text-sm font-semibold">EXT5 — Instagram + Skills</p>
               <p className="text-xs text-muted-foreground">
-                Todas as funcionalidades da EXT3 + aba <b>Instagram</b> com IA: descreva o post → gera imagem + legenda + hashtags → você aprova → publica direto no @linkmrstore. Inclui biblioteca de 20 prompts de imagem e 20 de vídeo.
+                Todas as funcionalidades da EXT3 + aba <b>Instagram</b> (gera imagem/legenda/hashtags e publica na sua conta) + <b>nova aba Skills</b> com 50 habilidades prontas (Landing, SaaS, E-commerce, Auth, Stripe, SEO, Copy, WhatsApp scripts…) — clica na skill e o prompt vai direto pro chat do Lovable.
               </p>
             </div>
             <div className="flex flex-col gap-2 md:flex-row md:w-auto">
@@ -260,11 +260,11 @@ function ExtensionsPage() {
                 className="gap-1.5 md:w-auto"
                 style={{ background: "linear-gradient(135deg,#f58529,#dd2a7b,#8134af,#515bd4)", color: "#fff" }}
                 onClick={() => {
-                  downloadZip(EXT5_ZIP_URL, "MR-Sem-Limites-EXT5-v5.4.20.zip");
+                  downloadZip(EXT5_ZIP_URL, "MR-Sem-Limites-EXT5-v5.4.21.zip");
                   toast.success("Download da EXT5 iniciado.");
                 }}
               >
-                <Download className="h-4 w-4" /> EXT5 v5.4.20 Download
+                <Download className="h-4 w-4" /> EXT5 v5.4.21 Download
               </Button>
               <Button variant="outline" className="gap-1.5 border-emerald-500/60 text-emerald-400 hover:bg-emerald-500/10 md:w-auto" onClick={openSupport}>
                 <MessageCircle className="h-4 w-4" /> Suporte

@@ -1081,7 +1081,7 @@ async function callCommand(command, payload) {
             );
           });
           if (resp?.ok) {
-            result = { message: hasFiles ? '✅ Mensagem + anexo enviados no chat!' : '✅ Mensagem enviada no chat!' };
+            result = { message: hasFiles ? '⚡ Encaminhado ao Lovable + anexo' : '⚡ Encaminhado ao Lovable' };
           } else {
             error = resp?.error || 'Falha ao enviar no chat';
           }

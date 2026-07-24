@@ -1258,6 +1258,23 @@
 
     /* Force gold on any lingering neon overrides from earlier blocks */
     .app-header-title{ background:linear-gradient(135deg,#f7e08a 0%,#fff6c2 30%,#e6c14a 60%,#b8860b 100%) !important; }
+    /* EXT7 v7.0.4 — Título do topo (faixa dourada) precisa exibir o nome legível */
+    .app-header-title.ext7-title-badge{
+      -webkit-text-fill-color:#1a1206 !important;
+      color:#1a1206 !important;
+      background:linear-gradient(90deg,#b8860b 0%,#f7e08a 25%,#fff6c2 50%,#f7e08a 75%,#b8860b 100%) !important;
+      -webkit-background-clip:padding-box !important;
+      background-clip:padding-box !important;
+      padding:5px 12px !important;
+      border-radius:8px !important;
+      border:1px solid rgba(255,246,194,.85) !important;
+      box-shadow:0 0 12px rgba(230,193,74,.55), inset 0 0 8px rgba(255,255,255,.35) !important;
+      font-weight:900 !important; letter-spacing:.6px !important;
+      text-transform:uppercase !important;
+      text-shadow:0 1px 0 rgba(255,255,255,.35) !important;
+      white-space:nowrap !important;
+      font-size:12px !important;
+    }
     .tab-btn.active::after, .mr-tab.active::after,
     .app-header::after{
       background:linear-gradient(90deg,transparent,#f7e08a,#e6c14a,#b8860b,transparent) !important;
@@ -1440,7 +1457,7 @@
   <div id="mainApp">
     <div class="app-header">
       <div class="app-header-left">
-        <img src="logo.png" class="app-header-logo" alt=""><span class="app-header-title">MR Turbo GT • Motor V12 Unificado</span>
+        <img src="logo.png" class="app-header-logo" alt=""><span class="app-header-title ext7-title-badge">MR TURBO GT · MOTOR V12 UNIFICADO</span>
       </div>
       <div class="app-header-right">
         <button id="mrPowerToggle" class="mr-power" title="Ativar/Desativar extensão"><span class="mr-power-dot"></span><span id="mrPowerLabel">ATIVA</span></button>

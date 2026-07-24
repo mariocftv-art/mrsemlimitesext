@@ -251,7 +251,8 @@ export const Route = createFileRoute('/api/public/instagram-generate')({
         }
 
         try {
-          const copy = localCopy(prompt, type, duration)
+          const baseCopy = localCopy(prompt, type, duration)
+          const copy = await aiCopy(prompt, type, duration, baseCopy)
           let mediaUrl = ''
           let mediaB64 = ''
           let mediaMime: 'image/png' | 'image/jpeg' = 'image/jpeg'

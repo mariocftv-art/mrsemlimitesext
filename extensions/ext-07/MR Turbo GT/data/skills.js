@@ -12,6 +12,7 @@ export const SKILL_CATEGORIES = [
   { id: 'auto',    name: 'Automação',  icon: '⚡' },
   { id: 'ai',      name: 'IA/Agents',  icon: '🤖' },
   { id: 'edu',     name: 'Aulas/Professores', icon: '🎓' },
+  { id: 'iptv',    name: 'IPTV / P2P',        icon: '📺' },
 ];
 
 const s = (id, cat, icon, name, desc, prompt) => ({ id, cat, icon, name, desc, prompt });

@@ -2059,10 +2059,10 @@ Isso vai remover a marca d'água do Lovable. Aplique essa alteração agora.`,
       subMenuHtml += '</div>';
 
       floatBall.innerHTML = `
-        <img src="${iconUrl}" alt="MR TURBO GT">
+        <img src="${iconUrl}" alt="MR SEM LIMITES">
         <div class="il-cockpit-label">
-          <div class="il-cockpit-title">MR TURBO GT</div>
-          <div class="il-cockpit-sub">MOTOR V12</div>
+          <div class="il-cockpit-title">MR SEM LIMITES</div>
+          <div class="il-cockpit-sub">TURBO GT · V12</div>
         </div>
         <div class="il-status-dot"></div>
         ${subMenuHtml}

@@ -99,7 +99,7 @@ const EXT2_ZIP_URL = "/__l5e/assets-v1/ce8b8538-9670-4dc9-80ef-8143186ab254/MR S
 const EXT3_ZIP_URL = "/__l5e/assets-v1/e5691ba7-8515-4004-bb77-b0df44b06628/MR-Sem-Limites-EXT3-v3.2.6.zip";
 const EXT4_ZIP_URL = "/__l5e/assets-v1/a9e2a317-8481-456e-9dc6-5df018c0cc59/MR Sem Limite Manus.zip";
 const EXT5_ZIP_URL = "/__l5e/assets-v1/dbab4104-b9b9-4eaf-9ab8-a8a6211c0337/MR-Sem-Limites-EXT5-v5.4.20.zip";
-import ext6Asset from "@/assets/ext6-v6.0.1.zip.asset.json";
+import ext6Asset from "@/assets/ext6-v6.1.0.zip.asset.json";
 const EXT6_ZIP_URL = ext6Asset.url;
 
 type Filter = "all" | ExtensionStatus;
@@ -275,21 +275,21 @@ function ExtensionsPage() {
       <Card className="glass mb-4 border-primary/40">
           <CardContent className="flex flex-col gap-3 p-4 md:flex-row md:items-center md:justify-between">
             <div className="space-y-1">
-              <p className="text-sm font-semibold">EXT6 — MR Sem Limites Glass Orb (Híbrida)</p>
+              <p className="text-sm font-semibold">EXT6 — MR Sem Limites HOLO GRID (Skills)</p>
               <p className="text-xs text-muted-foreground">
-                Mesma base da EXT5 + fluxo Instagram <b>híbrido</b>: botão <b>Gerar no Lovable</b> (qualidade máxima, sem créditos) e botão <b>Gerar e Publicar Auto</b> (Pollinations + Graph API, publica sozinho). Visual Glass Orb em ouro e preto.
+                Design totalmente novo — <b>holográfico cyan/violeta/magenta</b> com grade animada, glass e neon. Aba <b>Instagram removida</b> e substituída pela aba <b>Skills</b>: 30+ habilidades prontas (Landing, SaaS, Auth, Stripe, SEO, Bug Fix, Refactor, Copy…) que injetam um prompt profissional direto no chat do Lovable com 1 clique. Todo o resto (Chat, IAs, Prompts, Imagens IA, Vídeos IA, Templates, Ferramentas, Favoritos) funcionando igual.
               </p>
             </div>
             <div className="flex flex-col gap-2 md:flex-row md:w-auto">
               <Button
                 className="gap-1.5 md:w-auto"
-                style={{ background: "linear-gradient(135deg,#d4af37,#f5d06a,#7c3aed)", color: "#1a1305" }}
+                style={{ background: "linear-gradient(135deg,#22d3ee,#8b5cf6 55%,#ec4899)", color: "#04061a" }}
                 onClick={() => {
-                  downloadZip(EXT6_ZIP_URL, "MR-Sem-Limites-EXT6-v6.0.1.zip");
-                  toast.success("Download da EXT6 v6.0.1 iniciado.");
+                  downloadZip(EXT6_ZIP_URL, "MR-Sem-Limites-EXT6-v6.1.0.zip");
+                  toast.success("Download da EXT6 v6.1.0 iniciado.");
                 }}
               >
-                <Download className="h-4 w-4" /> EXT6 v6.0.1 Download
+                <Download className="h-4 w-4" /> EXT6 v6.1.0 Download
               </Button>
               <Button variant="outline" className="gap-1.5 border-emerald-500/60 text-emerald-400 hover:bg-emerald-500/10 md:w-auto" onClick={openSupport}>
                 <MessageCircle className="h-4 w-4" /> Suporte

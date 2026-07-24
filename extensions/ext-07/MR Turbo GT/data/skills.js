@@ -11,6 +11,7 @@ export const SKILL_CATEGORIES = [
   { id: 'content', name: 'Conteúdo',   icon: '✍️' },
   { id: 'auto',    name: 'Automação',  icon: '⚡' },
   { id: 'ai',      name: 'IA/Agents',  icon: '🤖' },
+  { id: 'edu',     name: 'Aulas/Professores', icon: '🎓' },
 ];
 
 const s = (id, cat, icon, name, desc, prompt) => ({ id, cat, icon, name, desc, prompt });
@@ -131,6 +132,24 @@ export const SKILLS = [
 `Server function recebe diff (GitHub webhook em /api/public/gh-webhook.ts), envia ao LLM com um system prompt sênior (segurança, performance, RLS, tipos), e posta comentário resumido no PR via API do GitHub. Ignora arquivos gerados/lockfiles. Marca commits com status.`),
   s('ai-voice-tts','ai','🎙','Voz do Site (TTS)','Botão "Ouvir" em qualquer texto do app.',
 `Componente <ReadAloud text=... /> que chama server function TTS (openai gpt-4o-mini-tts, voz configurável), retorna MP3 base64, tocado no <audio>. Cache por hash do texto+voz. Ícone de play/pause com animação sutil. Sem depender do Web Speech do browser.`),
+
+  // ================== AULAS / PROFESSORES (8) ==================
+  s('edu-plano-aula','edu','📘','Plano de Aula Completo','Objetivos, BNCC, metodologia, avaliação e recursos.',
+`Crie um plano de aula profissional em PT-BR estruturado assim:\n1) Cabeçalho (disciplina, ano/série, duração, professor)\n2) Tema e justificativa\n3) Objetivos geral e específicos alinhados à BNCC (com códigos de habilidade)\n4) Conteúdos (conceituais, procedimentais, atitudinais)\n5) Metodologia passo a passo com tempo por etapa\n6) Recursos didáticos (materiais, tecnologia)\n7) Avaliação (critérios, instrumentos, rubrica)\n8) Adaptações para inclusão (TEA, TDAH, deficiência visual/auditiva)\n9) Referências\n\nPergunte antes: disciplina, ano/série e tema.`),
+  s('edu-prova-gabarito','edu','📝','Prova + Gabarito','Prova com múltipla escolha, dissertativas e gabarito comentado.',
+`Gere uma prova completa em PT-BR:\n- 10 questões de múltipla escolha (5 alternativas, apenas 1 correta, distratores plausíveis)\n- 3 questões dissertativas com espaço para resposta\n- 2 questões contextualizadas (texto/imagem/situação-problema)\n- Distribuição por nível: 40% fácil, 40% médio, 20% difícil\n- Gabarito ao final com resposta correta E comentário pedagógico explicando o porquê\n- Rubrica de correção para as dissertativas (0-10 com critérios)\n\nPergunte: disciplina, ano, tema, duração e valor total da prova.`),
+  s('edu-slides','edu','🖥','Slides de Aula','Apresentação didática com abertura, desenvolvimento, atividades e fechamento.',
+`Crie roteiro de apresentação de slides para aula (12-18 slides) em PT-BR:\n- Slide 1: capa (tema, professor, turma)\n- Slide 2: objetivos de aprendizagem\n- Slide 3: agenda\n- Slides 4-12: conteúdo com um conceito por slide (título + 3-5 bullets curtos + sugestão de imagem/analogia)\n- Slide de atividade prática/quiz no meio\n- Slide de estudo de caso ou exemplo real\n- Slide de resumo e mapa mental\n- Slide de tarefa/dever de casa\n- Slide final: dúvidas + referências\n\nPara cada slide, dê também a fala do professor (2-4 linhas) e uma pergunta para engajar a turma.`),
+  s('edu-atividades','edu','✏️','Lista de Atividades','Exercícios progressivos com gabarito.',
+`Monte uma lista de exercícios em PT-BR com 15 questões em progressão (fácil → difícil):\n- 5 questões de fixação (conceito puro)\n- 5 questões de aplicação (situação-problema)\n- 5 questões de aprofundamento (interdisciplinar/desafio)\n- Enunciados claros, contextualizados com o cotidiano do aluno\n- Gabarito completo com resolução comentada passo a passo\n- Dica em 3 questões para o aluno que travar\n\nPergunte: disciplina, ano/série e conteúdo específico.`),
+  s('edu-projeto-abp','edu','🧪','Projeto (Aprendizagem por Projetos)','Projeto interdisciplinar por etapas com entregáveis.',
+`Elabore um projeto ABP (Aprendizagem Baseada em Projetos) em PT-BR:\n- Pergunta essencial motivadora\n- Produto final tangível (o que o aluno vai entregar)\n- Duração total e etapas semanais\n- Competências e habilidades BNCC envolvidas (multidisciplinar)\n- Papéis dentro do grupo\n- Cronograma detalhado por semana\n- Rubrica de avaliação (conteúdo, colaboração, criatividade, apresentação)\n- Momentos de feedback e autoavaliação\n- Sugestões de ferramentas digitais (Canva, Padlet, Genially)\n\nPergunte: tema/problema, ano/série e disciplinas envolvidas.`),
+  s('edu-explicar-facil','edu','💡','Explicar Fácil (Analogias)','Explica um conceito difícil com analogias do dia a dia.',
+`Explique um conceito complexo em PT-BR para um estudante do [ANO], como se ele nunca tivesse ouvido falar:\n- Comece com uma analogia do cotidiano (algo que ele conhece)\n- Depois a definição formal simples\n- 2 exemplos práticos progressivos\n- Erro comum que os alunos cometem e como evitar\n- Mini-quiz de 3 perguntas com resposta\n- Frase-resumo para decorar\n\nPergunte antes o conceito e o ano/série.`),
+  s('edu-relatorio-aluno','edu','📊','Relatório de Aluno','Parecer descritivo pedagógico bem redigido.',
+`Escreva um parecer descritivo (relatório pedagógico) em PT-BR profissional, respeitoso e construtivo:\n- Aspectos cognitivos (leitura, escrita, raciocínio lógico, atenção)\n- Aspectos socioemocionais (relacionamento, autonomia, responsabilidade)\n- Progressos observados no bimestre\n- Dificuldades e estratégias já aplicadas\n- Sugestões para a família apoiar em casa\n- Fechamento otimista\n\nEvite rótulos negativos; use linguagem pedagógica. Pergunte antes: nome do aluno, ano/série, e 3-5 observações-chave que o professor tem sobre ele.`),
+  s('edu-gestao-sala','edu','🧑‍🏫','Estratégias de Gestão de Sala','Rotinas, combinados e técnicas para turmas difíceis.',
+`Monte um pacote de estratégias de gestão de sala de aula em PT-BR para [ANO/SÉRIE]:\n- 10 combinados iniciais (linguagem positiva, no que fazer e não no que não fazer)\n- Rotina de entrada, transição entre atividades e saída\n- 5 técnicas para chamar atenção sem gritar\n- Como lidar com aluno disruptivo (passo a passo em 4 níveis)\n- Sistema de reforço positivo (fichas, elogio específico, quadro de conquistas)\n- Comunicação com a família (modelo de bilhete, quando ligar)\n- Autocuidado do professor (checklist semanal)\n\nPergunte antes: ano/série e principais desafios da turma.`),
 ];
 
 export function buildSkillPrompt(skill) {

@@ -890,6 +890,58 @@
     }
   }
 
+  async function generateAndPublishAuto() {
+    const userPrompt = ($('igPrompt')?.value || '').trim();
+    if (!userPrompt) return log('❌ Descreva o que você quer gerar', false);
+    const acc = await loadAccount();
+    if (!acc || !acc.access_token) {
+      return log('❌ Conecte sua conta do Instagram primeiro (auto-publicar precisa da conta linkada)', false);
+    }
+    const btn = $('igGenerateAutoBtn');
+    const apiType = currentType === 'viral' ? 'post' : currentType;
+    const duration = Math.max(REEL_MIN_DURATION_SEC, Math.min(REEL_MAX_DURATION_SEC, Number($('igDuration')?.value || REEL_MIN_DURATION_SEC) || REEL_MIN_DURATION_SEC));
+    setBusy(btn, true, '⚡ Gerando mídia + legenda…');
+    log('⚡ Auto: gerando mídia (Pollinations) e legenda…');
+    try {
+      const r = await fetch(GENERATE_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: userPrompt, type: apiType, duration, media: true }),
+      });
+      const d = await r.json();
+      if (!r.ok) throw new Error(d.error || `HTTP ${r.status}`);
+      const media_url = d.media_url;
+      const caption = [d.title, d.caption].filter(Boolean).join('\n\n');
+      if (!media_url) throw new Error('Servidor não retornou URL da mídia');
+      $('igMediaUrl').value = media_url;
+      $('igCaption').value = caption;
+      const preview = $('igPreview'); if (preview) preview.style.display = 'block';
+      try {
+        const img = $('igPreviewImg'); if (img) { img.src = media_url; img.style.display = 'block'; }
+        const vid = $('igPreviewVideo'); if (vid) vid.style.display = 'none';
+      } catch (_) {}
+      log('✅ Mídia gerada. Publicando no Instagram…', true);
+      setBusy(btn, true, '📤 Publicando…');
+      const r2 = await fetch(PUBLISH_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          access_token: acc.access_token,
+          ig_user_id: acc.ig_user_id,
+          type: apiType,
+          media_url,
+          caption,
+        }),
+      });
+      const d2 = await r2.json();
+      if (!r2.ok) throw new Error(d2.error || `HTTP ${r2.status}`);
+      log(`✅ Publicado automaticamente! ID ${d2.id}`, true);
+    } catch (e) {
+      log('❌ Auto falhou: ' + (e?.message || e) + '. Você ainda pode usar "Gerar no Lovable" + Publicar manual.', false);
+    } finally {
+      setBusy(btn, false);
+    }
+
   function renderPromptGrid(gridId, items) {
     const grid = document.getElementById(gridId);
     if (!grid) return;

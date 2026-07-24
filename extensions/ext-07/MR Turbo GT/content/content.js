@@ -2040,6 +2040,13 @@ Isso vai remover a marca d'água do Lovable. Aplique essa alteração agora.`,
     }
 
     function ensureFloatBall() {
+      // EXT7 v7.0.4 — Botão flutuante COCKPIT removido a pedido do usuário.
+      // Também remove qualquer instância residual injetada por versões antigas.
+      try {
+        document.querySelectorAll('#il-float-ball').forEach(el => el.remove());
+      } catch(_) {}
+      floatBall = null;
+      return;
       if (floatBall) return;
       floatBall = document.createElement('div');
       floatBall.id = 'il-float-ball';

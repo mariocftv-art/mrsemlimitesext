@@ -1,11 +1,15 @@
 /*
  * MR Turbo GT — Anti-Inspeção (F12 / DevTools)
- * Comportamento:
- *  - Detecta abertura do DevTools (F12, Ctrl+Shift+I/J, Ctrl+U, menu, resize).
- *  - Mostra overlay VERMELHO "⚠ VIOLAÇÃO DE EXTENSÃO".
- *  - Fecha DevTools → overlay some.
- *  - Se persistir, inicia contagem regressiva de 60s.
- *  - Ao zerar: BLOQUEIA a extensão (limpa sessão, notifica painel).
+ *
+ * Regras críticas:
+ *  1) Só é armado APÓS a extensão estar autenticada (chave/licença ativa
+ *     em chrome.storage.local: mrsl_session_token OU mrsl_license_key).
+ *  2) NUNCA usa heurística de outerWidth/innerWidth — o sidepanel do Chrome
+ *     tem geometria "estreita" naturalmente e disparava falso-positivo.
+ *  3) Só dispara em sinais REAIS de inspeção:
+ *       - Teclas F12 / Ctrl+Shift+I/J/C / Ctrl+U / Cmd+Opt+I/J
+ *       - Trap do console (toString em objeto avaliado pelo devtools)
+ *  4) Fechou DevTools → overlay some. Persistiu 60s → bloqueia sessão.
  */
 (function () {
   if (window.__MRT_ANTI_INSPECT__) return;
@@ -18,6 +22,31 @@
   let timerId = null;
   let blocked = false;
   let overlayEl = null;
+  let armed = false;
+
+  // ---------- Gate: só arma com sessão/licença ativa ----------
+  function checkArmed() {
+    try {
+      chrome?.storage?.local?.get?.(
+        ["mrsl_session_token", "mrsl_license_key"],
+        (r) => {
+          armed = !!(r && (r.mrsl_session_token || r.mrsl_license_key));
+          if (!armed && overlayEl?.isConnected) hideOverlay();
+        }
+      );
+    } catch (_) {
+      armed = false;
+    }
+  }
+  checkArmed();
+  try {
+    chrome?.storage?.onChanged?.addListener?.((changes, area) => {
+      if (area === "local" &&
+          (changes.mrsl_session_token || changes.mrsl_license_key)) {
+        checkArmed();
+      }
+    });
+  } catch (_) {}
 
   function buildOverlay() {
     const el = document.createElement("div");
@@ -63,16 +92,14 @@
   }
 
   function showOverlay() {
-    if (blocked) return;
+    if (blocked || !armed) return;
     if (!overlayEl) {
       overlayEl = buildOverlay();
       document.documentElement.appendChild(overlayEl);
     } else if (!overlayEl.isConnected) {
       document.documentElement.appendChild(overlayEl);
     }
-    if (!timerId) {
-      timerId = setInterval(tick, 1000);
-    }
+    if (!timerId) timerId = setInterval(tick, 1000);
   }
 
   function hideOverlay() {
@@ -121,7 +148,7 @@
         body: JSON.stringify({
           event: "extension_violation",
           product: "ext7-mr-turbo-gt",
-          version: "7.0.0",
+          version: "7.0.2",
           ts: Date.now(),
           ua: navigator.userAgent,
         }),
@@ -129,29 +156,35 @@
     } catch (_) {}
   }
 
-  // ---------- Detection ----------
-  function heuristicOpen() {
-    const w = window.outerWidth - window.innerWidth;
-    const h = window.outerHeight - window.innerHeight;
-    return w > 200 || h > 200;
-  }
-
-  setInterval(() => {
-    if (blocked) return;
-    if (heuristicOpen()) showOverlay();
-    else hideOverlay();
-  }, 900);
-
-  // console.log timing trick
+  // ---------- Trap real do DevTools (só dispara quando console avalia) ----------
   const trap = /./;
   trap.toString = function () {
-    if (!blocked) showOverlay();
+    if (armed && !blocked) showOverlay();
     return "";
   };
-  setInterval(() => { if (!blocked) console.debug(trap); }, 1500);
+  setInterval(() => {
+    if (!armed || blocked) return;
+    // Se o devtools NÃO estiver aberto, o console não avalia trap.toString.
+    // Se estiver aberto, showOverlay é chamado via toString acima.
+    console.debug(trap);
+  }, 1500);
 
-  // Keyboard shortcuts → alert immediately
+  // Fallback: se depois de um tick o overlay não foi chamado, esconde.
+  // (o trap dispara antes do próximo intervalo se devtools segue aberto)
+  let lastTrigger = 0;
+  const origShow = showOverlay;
+  // eslint-disable-next-line no-func-assign
+  showOverlay = function () { lastTrigger = Date.now(); origShow(); };
+  setInterval(() => {
+    if (!armed || blocked) return;
+    if (overlayEl?.isConnected && Date.now() - lastTrigger > 3000) {
+      hideOverlay();
+    }
+  }, 1000);
+
+  // Atalhos de teclado → só sinalizam (não bloqueiam a tecla do usuário no Chrome)
   window.addEventListener("keydown", (e) => {
+    if (!armed || blocked) return;
     const k = (e.key || "").toLowerCase();
     if (
       k === "f12" ||
@@ -159,13 +192,7 @@
       (e.ctrlKey && k === "u") ||
       (e.metaKey && e.altKey && (k === "i" || k === "j"))
     ) {
-      e.preventDefault();
       showOverlay();
     }
-  }, true);
-
-  // Right-click context menu → alert (não bloqueia navegador do usuário)
-  window.addEventListener("contextmenu", () => {
-    if (heuristicOpen()) showOverlay();
   }, true);
 })();

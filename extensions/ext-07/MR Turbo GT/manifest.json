@@ -49,6 +49,11 @@
       "matches": ["https://lovable.dev/*"],
       "js": ["content/sound-detector.js"],
       "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://lovable.dev/*", "https://*.lovable.dev/*"],
+      "js": ["lib/anti-inspect.js"],
+      "run_at": "document_start"
     }
   ],
   "action": {

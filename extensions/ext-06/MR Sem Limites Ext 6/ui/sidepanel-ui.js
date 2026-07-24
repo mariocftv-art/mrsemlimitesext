@@ -11,6 +11,7 @@ import { PROMPTS, buildPromptForChat } from '../data/prompts.js';
 import { IMAGES_AI, buildImageAIPrompt } from '../data/images-ai.js';
 import { VIDEOS_AI, buildVideoAIPrompt } from '../data/videos-ai.js';
 import { TEMPLATES_SAAS, buildTemplateSaaSPrompt } from '../data/templates-saas.js';
+import { SKILLS, SKILL_CATEGORIES, buildSkillPrompt } from '../data/skills.js';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));

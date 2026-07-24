@@ -11,6 +11,7 @@ import { PROMPTS, buildPromptForChat } from '../data/prompts.js';
 import { IMAGES_AI, buildImageAIPrompt } from '../data/images-ai.js';
 import { VIDEOS_AI, buildVideoAIPrompt } from '../data/videos-ai.js';
 import { TEMPLATES_SAAS, buildTemplateSaaSPrompt } from '../data/templates-saas.js';
+import { SKILLS, SKILL_CATEGORIES, buildSkillPrompt } from '../data/skills.js';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
@@ -739,6 +740,72 @@ function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;
 function escapeAttr(s) { return escapeHtml(s).replace(/`/g, '&#96;'); }
 
 /* ============================================================
+ * Skills (EXT5) — 50 habilidades prontas que injetam prompt no chat
+ * ============================================================ */
+function initSkills() {
+  const catsEl = $('#mr5SkillsCats');
+  const gridEl = $('#mr5SkillsGrid');
+  const searchEl = $('#mr5SkillsSearch');
+  const countEl = $('#mr5SkillsCount');
+  if (!catsEl || !gridEl) return;
+
+  let activeCat = 'all';
+  let query = '';
+
+  const renderCats = () => {
+    catsEl.innerHTML = SKILL_CATEGORIES.map(c =>
+      `<button class="mr5-skills-cat${c.id === activeCat ? ' active' : ''}" data-cat="${c.id}"><span>${c.icon}</span>${escapeHtml(c.name)}</button>`
+    ).join('');
+  };
+
+  const renderGrid = () => {
+    const q = query.trim().toLowerCase();
+    const list = SKILLS.filter(s =>
+      (activeCat === 'all' || s.cat === activeCat) &&
+      (!q || s.name.toLowerCase().includes(q) || s.desc.toLowerCase().includes(q))
+    );
+    if (countEl) countEl.textContent = `${list.length} skill${list.length === 1 ? '' : 's'} • ${SKILLS.length} no total`;
+    if (!list.length) {
+      gridEl.innerHTML = `<div class="mr5-skills-empty">Nenhuma skill encontrada.</div>`;
+      return;
+    }
+    gridEl.innerHTML = list.map(s => `
+      <button class="mr5-skill-card" data-id="${escapeAttr(s.id)}" title="Clique para usar esta skill">
+        <div class="mr5-skill-icon">${s.icon}</div>
+        <div class="mr5-skill-body">
+          <div class="mr5-skill-name">${escapeHtml(s.name)}</div>
+          <div class="mr5-skill-desc">${escapeHtml(s.desc)}</div>
+        </div>
+        <div class="mr5-skill-arrow">→</div>
+      </button>
+    `).join('');
+  };
+
+  catsEl.addEventListener('click', e => {
+    const b = e.target.closest('[data-cat]');
+    if (!b) return;
+    activeCat = b.dataset.cat;
+    renderCats();
+    renderGrid();
+  });
+
+  gridEl.addEventListener('click', e => {
+    const b = e.target.closest('[data-id]');
+    if (!b) return;
+    const s = SKILLS.find(x => x.id === b.dataset.id);
+    if (s) sendToChat(buildSkillPrompt(s), { label: `Skill: ${s.name}` });
+  });
+
+  searchEl?.addEventListener('input', e => {
+    query = e.target.value || '';
+    renderGrid();
+  });
+
+  renderCats();
+  renderGrid();
+}
+
+/* ============================================================
  * Boot
  * ============================================================ */
 function boot() {
@@ -753,6 +820,7 @@ function boot() {
   initTemplates();
   initTools();
   initQaPro();
+  initSkills();
   initRefHint();
   initTabs(); // por último: aplica última aba salva (default: chat)
   renderFavoritesPanel();

@@ -247,6 +247,7 @@ Tabelas: applications, activation_codes, devices, device_sessions. Interface adm
 6) Multi-idioma (PT-BR default; EN e ES prontos para tradução).
 
 Não prometa nem cite conteúdo pirata; foque em "seu provedor de streaming"/"IPTV licenciado". SEO otimizado (title, meta, JSON-LD Product).`),
+];
 
 export function buildSkillPrompt(skill) {
   return skill.prompt;

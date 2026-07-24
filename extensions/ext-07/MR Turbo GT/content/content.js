@@ -1656,53 +1656,73 @@
         color: #f0abfc !important;
         filter: drop-shadow(0 0 4px #ec4899) !important;
       }
-      /* ---- Floating icon ball ---- */
+      /* ---- Floating COCKPIT BAR (MR TURBO GT) ---- */
       #il-float-ball {
         position: fixed;
-        width: 58px;
-        height: 58px;
-        border-radius: 16px;
-        background: #0b0616;
-        border: 2px solid transparent;
-        background-image: linear-gradient(#0b0616,#0b0616), linear-gradient(135deg,#ec4899,#3b82f6);
-        background-origin: border-box;
-        background-clip: padding-box, border-box;
-        box-shadow: 0 0 20px rgba(236,72,153,0.55), 0 0 30px rgba(59,130,246,0.35);
+        width: 210px;
+        height: 56px;
+        border-radius: 14px;
+        background: linear-gradient(135deg,#1a1200 0%,#2a1e05 45%,#1a1200 100%);
+        border: 1.5px solid #f7e08a;
+        box-shadow:
+          0 0 22px rgba(247,224,138,0.55),
+          0 0 40px rgba(184,134,11,0.35),
+          inset 0 1px 0 rgba(255,246,194,0.35),
+          inset 0 -2px 8px rgba(0,0,0,0.6);
         cursor: grab;
         z-index: 2147483645;
         display: flex;
         align-items: center;
-        justify-content: center;
+        justify-content: flex-start;
+        gap: 10px;
+        padding: 0 12px 0 8px;
         user-select: none;
         will-change: left, top;
         touch-action: none;
+        font-family: -apple-system, "Segoe UI", sans-serif;
       }
       #il-float-ball:active { cursor: grabbing; }
       #il-float-ball img {
-        width: 48px;
-        height: 48px;
-        border-radius: 12px;
+        width: 40px; height: 40px;
+        border-radius: 10px;
+        border: 1px solid rgba(247,224,138,0.7);
+        box-shadow: 0 0 10px rgba(247,224,138,0.5), inset 0 0 6px rgba(0,0,0,0.5);
         pointer-events: none;
         display: block;
       }
+      #il-float-ball .il-cockpit-label {
+        display:flex; flex-direction:column; line-height:1.1; pointer-events:none; flex:1;
+      }
+      #il-float-ball .il-cockpit-title {
+        font-size: 12px; font-weight: 900; letter-spacing: 0.14em;
+        background: linear-gradient(180deg,#fff8d0 0%,#f7e08a 45%,#b8860b 100%);
+        -webkit-background-clip: text; background-clip: text; color: transparent;
+        text-shadow: 0 0 6px rgba(247,224,138,0.4);
+      }
+      #il-float-ball .il-cockpit-sub {
+        font-size: 8.5px; font-weight: 700; letter-spacing: 0.24em;
+        color: rgba(247,224,138,0.75); margin-top: 2px;
+      }
       #il-float-ball .il-status-dot {
-        position: absolute;
-        bottom: 0px;
-        right: 0px;
-        width: 13px;
-        height: 13px;
+        position: relative;
+        width: 12px; height: 12px;
         border-radius: 50%;
-        border: 2.5px solid #0b0616;
+        border: 1.5px solid rgba(0,0,0,0.6);
         pointer-events: none;
         animation: il-dot-pulse 2s ease-in-out infinite;
-        box-shadow: 0 0 8px rgba(74,222,128,0.7);
+        flex-shrink: 0;
       }
       #il-float-ball.il-ball-ativo {
-        animation: il-ball-ring 2s ease-in-out infinite;
+        animation: il-ball-ring 2.4s ease-in-out infinite;
+        box-shadow:
+          0 0 26px rgba(247,224,138,0.75),
+          0 0 48px rgba(184,134,11,0.5),
+          inset 0 1px 0 rgba(255,246,194,0.4),
+          inset 0 -2px 8px rgba(0,0,0,0.6);
       }
-      #il-float-ball.il-ball-ativo .il-status-dot { background: #4ade80; }
-      #il-float-ball.il-ball-inativo .il-status-dot { background: #f87171; animation: none; }
-      #il-float-ball.il-ball-inativo { border-color: #831843; opacity: 0.75; box-shadow: none; }
+      #il-float-ball.il-ball-ativo .il-status-dot { background: #4ade80; box-shadow: 0 0 10px #4ade80; }
+      #il-float-ball.il-ball-inativo .il-status-dot { background: #f87171; animation: none; box-shadow: 0 0 8px #f87171; }
+      #il-float-ball.il-ball-inativo { opacity: 0.85; }
       @keyframes il-toast-slide-in {
         from { opacity: 0; transform: translateX(30px); }
         to   { opacity: 1; transform: translateX(0); }

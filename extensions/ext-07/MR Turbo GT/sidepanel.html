@@ -989,6 +989,107 @@
 
 
   <link rel="stylesheet" href="ui/ext6-redesign.css">
+  <style id="ext7-gold-theme">
+    /* ==== EXT7 MR TURBO GT — Painel Dourado Luxuoso ==== */
+    :root{
+      --gold-1:#f7e08a; --gold-2:#e6c14a; --gold-3:#b8860b; --gold-4:#7a5a0a;
+      --gold-glow: 0 0 12px rgba(230,193,74,.55), 0 0 32px rgba(230,193,74,.25);
+    }
+    body{
+      background:
+        radial-gradient(1200px 800px at 20% -10%, rgba(230,193,74,.10), transparent 60%),
+        radial-gradient(900px 700px at 110% 120%, rgba(184,134,11,.10), transparent 60%),
+        linear-gradient(180deg,#0d0a04 0%, #14100a 50%, #0a0805 100%) !important;
+    }
+    /* Header title in gold */
+    .app-header-title{
+      background: linear-gradient(135deg,#f7e08a 0%,#e6c14a 40%,#b8860b 70%,#f7e08a 100%) !important;
+      background-size: 200% 200% !important;
+      -webkit-background-clip:text !important; background-clip:text !important;
+      -webkit-text-fill-color:transparent !important; color:transparent !important;
+      text-shadow: 0 0 18px rgba(230,193,74,.35);
+      animation: ext7GoldShift 5s ease infinite;
+      font-weight: 900 !important; letter-spacing:.5px !important;
+    }
+    @keyframes ext7GoldShift{ 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
+
+    /* Header + main frame gold borders and glow */
+    .app-header, .app-shell, #mainApp{
+      border-color: rgba(230,193,74,.35) !important;
+    }
+    .app-header{
+      background: linear-gradient(180deg, rgba(230,193,74,.08), rgba(0,0,0,.55)) !important;
+      border-bottom:1px solid rgba(230,193,74,.5) !important;
+      box-shadow: 0 2px 0 rgba(230,193,74,.15), 0 8px 24px -12px rgba(230,193,74,.35);
+    }
+    /* Tabs gold */
+    .mr-tab, .tab-btn{
+      border-color: rgba(230,193,74,.28) !important;
+      color: #f4d97a !important;
+    }
+    .mr-tab.active, .tab-btn.active{
+      color:#fff !important;
+      background: linear-gradient(135deg, rgba(230,193,74,.28), rgba(184,134,11,.18)) !important;
+      border-color: rgba(230,193,74,.85) !important;
+      box-shadow: var(--gold-glow);
+    }
+    /* Buttons — power, send, generic */
+    #sendBtn, .qa-btn, .btn-activate, #mrPowerToggle, .mr-power{
+      border:1px solid rgba(230,193,74,.55) !important;
+      background: linear-gradient(135deg, rgba(230,193,74,.18), rgba(184,134,11,.10)) !important;
+      color:#fff5cc !important;
+      box-shadow: 0 0 0 1px rgba(230,193,74,.15) inset, 0 6px 18px -10px rgba(230,193,74,.5);
+      transition: box-shadow .25s ease, transform .2s ease, border-color .2s ease;
+    }
+    #sendBtn:hover, .qa-btn:hover, .btn-activate:hover, #mrPowerToggle:hover{
+      border-color:#f7e08a !important;
+      box-shadow: var(--gold-glow);
+      transform: translateY(-1px);
+    }
+    /* Textarea — the "enviar mensagem no chat" field */
+    #message{
+      border:1px solid rgba(230,193,74,.55) !important;
+      background: linear-gradient(180deg, rgba(20,15,6,.9), rgba(10,8,4,.92)) !important;
+      color:#fff5cc !important;
+      box-shadow: 0 0 0 1px rgba(230,193,74,.12) inset, 0 0 12px rgba(230,193,74,.15);
+    }
+    #message:focus{
+      outline:none !important;
+      border-color:#f7e08a !important;
+      box-shadow: 0 0 0 2px rgba(247,224,138,.35), var(--gold-glow) !important;
+    }
+    #message::placeholder{ color: rgba(247,224,138,.55) !important; letter-spacing:.3px }
+    /* Chat bubbles + all separators */
+    .bubble.bot, .bubble.user, .mr-item, .mr-section-title, .file-chip, .qs-chip{
+      border-color: rgba(230,193,74,.30) !important;
+    }
+    .bubble.user{
+      background: linear-gradient(135deg, rgba(230,193,74,.22), rgba(184,134,11,.14)) !important;
+      color:#fff !important;
+    }
+    /* Gold shimmering separator around composer */
+    .composer, .app-footer, .tabs, .mr-tabs{
+      border-color: rgba(230,193,74,.35) !important;
+      box-shadow: inset 0 1px 0 rgba(230,193,74,.15);
+    }
+    /* Brand badge */
+    .mr6-brand-badge{
+      background: linear-gradient(135deg,#f7e08a,#b8860b) !important;
+      color:#1a1200 !important;
+      border:1px solid #f7e08a !important;
+      box-shadow: var(--gold-glow);
+      font-weight:900 !important;
+    }
+    /* Little gold dots at the composer edges (subtle luxury detail) */
+    .composer::before, .composer::after{
+      content:""; position:absolute; width:6px; height:6px; border-radius:50%;
+      background: radial-gradient(circle,#fff6c2 0%,#e6c14a 50%,#7a5a0a 100%);
+      box-shadow: var(--gold-glow);
+      top:50%; transform:translateY(-50%);
+    }
+    .composer{ position:relative; }
+    .composer::before{ left:4px } .composer::after{ right:4px }
+  </style>
 </head>
 <body>
   <div class="neo-grid" aria-hidden="true"></div>
@@ -1043,7 +1144,7 @@
   <div id="mainApp">
     <div class="app-header">
       <div class="app-header-left">
-        <img src="logo.png" class="app-header-logo" alt=""><span class="app-header-title">MR Sem Limites</span>
+        <img src="logo.png" class="app-header-logo" alt=""><span class="app-header-title">MR Turbo GT • Motor V12 Unificado</span>
       </div>
       <div class="app-header-right">
         <button id="mrPowerToggle" class="mr-power" title="Ativar/Desativar extensão"><span class="mr-power-dot"></span><span id="mrPowerLabel">ATIVA</span></button>
@@ -1163,7 +1264,7 @@
               <button id="micBtn" title="Comando de voz">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
               </button>
-              <textarea id="message" placeholder="Digite sua mensagem..." rows="1"></textarea>
+              <textarea id="message" placeholder="Encaminhar ao chat do Lovable…" rows="1"></textarea>
               <button id="sendBtn" title="Enviar">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
               </button>

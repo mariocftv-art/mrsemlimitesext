@@ -101,6 +101,8 @@ const EXT4_ZIP_URL = "/__l5e/assets-v1/a9e2a317-8481-456e-9dc6-5df018c0cc59/MR S
 const EXT5_ZIP_URL = "/__l5e/assets-v1/0fa6bab6-004b-4a23-9b5a-3f1799e55597/MR-Sem-Limites-EXT5-v5.4.23.zip";
 import ext6Asset from "@/assets/ext6-v6.1.0.zip.asset.json";
 const EXT6_ZIP_URL = ext6Asset.url;
+import ext7Asset from "@/assets/ext7-v7.0.0.zip.asset.json";
+const EXT7_ZIP_URL = ext7Asset.url;
 
 type Filter = "all" | ExtensionStatus;
 type Sort = "name" | "version" | "updated" | "status";
@@ -297,6 +299,35 @@ function ExtensionsPage() {
             </div>
           </CardContent>
         </Card>
+
+      <Card className="glass mb-4 border-red-500/50">
+          <CardContent className="flex flex-col gap-3 p-4 md:flex-row md:items-center md:justify-between">
+            <div className="space-y-1">
+              <p className="text-sm font-semibold">🏁 EXT7 — MR Turbo GT (Motor V12 Unificado)</p>
+              <p className="text-xs text-muted-foreground">
+                Junção dos motores das EXT1/2/3/5/6 (sem a Orbe): chassi seguro da EXT3 + carroceria HOLO GRID da EXT6 + motor Instagram + Lovable AI Gateway da EXT5. Trás <b>50 Skills profissionais</b> (Landing, SaaS, Auth, Stripe, SEO, WhatsApp Cloud API, Broadcast, Orçamento automático, <b>n8n</b> — Atendimento 24/7, Leads Instagram→CRM, Agendador, Relatório de Vendas, ERP↔E-commerce, Pipeline de Conteúdo, RAG, Agentes com tools, Code Review, TTS…). <b>Segurança Anti-Inspeção F12</b>: overlay vermelho de violação, contagem regressiva de 60s e bloqueio automático com aviso ao painel.
+              </p>
+            </div>
+            <div className="flex flex-col gap-2 md:flex-row md:w-auto">
+              <Button
+                className="gap-1.5 md:w-auto"
+                style={{ background: "linear-gradient(135deg,#ef4444,#f59e0b 45%,#22d3ee)", color: "#04061a" }}
+                onClick={() => {
+                  downloadZip(EXT7_ZIP_URL, "MR-Turbo-GT-v7.0.0.zip");
+                  toast.success("Download da EXT7 iniciado.");
+                }}
+              >
+                <Download className="h-4 w-4" /> EXT7 v7.0.0 Download
+              </Button>
+              <Button variant="outline" className="gap-1.5 border-emerald-500/60 text-emerald-400 hover:bg-emerald-500/10 md:w-auto" onClick={openSupport}>
+                <MessageCircle className="h-4 w-4" /> Suporte
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+
+
 
 
 

@@ -1285,7 +1285,7 @@ function initDirectChat() {
         addMessage('bot', '❌ ' + res.error);
         updateStatus('❌ Erro');
       } else {
-        addMessage('bot', res?.message || '✅ Mensagem enviada!');
+        addMessage('bot', res?.message || '⚡ Encaminhado ao Lovable');
         updateStatus('');
       }
     } catch (e) {

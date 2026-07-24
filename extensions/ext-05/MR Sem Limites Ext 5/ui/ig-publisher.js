@@ -20,7 +20,8 @@
   let currentType = 'post';
   let lastGeneratedMime = '';
   let lastPreviewObjectUrl = '';
-  const REEL_MIN_DURATION_SEC = 20;
+  const REEL_MIN_DURATION_SEC = 10;
+  const REEL_MAX_DURATION_SEC = 600;
 
   function setBusy(btn, busy, text) {
     if (!btn) return;
@@ -41,11 +42,11 @@
     const stWrap = $('igSoundtrackWrap');
     const hint = $('igAiModeHint');
     if (stWrap) stWrap.style.display = currentType === 'reel' ? 'block' : 'none';
-    if (hint) hint.textContent = 'IA ativa: ' + aiModeLabel() + ' • todos os Reels saem com no mínimo 20s, fala e trilha.';
+    if (hint) hint.textContent = 'IA ativa: ' + aiModeLabel() + ' • Reels de 10s até 10min, com roteiro, fala e trilha.';
     if (currentType === 'reel') {
-      if (label) label.textContent = 'Descreva o Reel que você quer (mín. 20s, com roteiro, personagem falando, voz, trilha, título, legenda e hashtags)';
+      if (label) label.textContent = 'Descreva o Reel que você quer (10s até 10min, com roteiro, personagem falando, voz, trilha, título, legenda e hashtags)';
       if (prompt) prompt.placeholder = 'Ex: um Reel cinematográfico da minha loja Link MR Store, pessoa falando para câmera, cenas de tecnologia/luxo/confiança, trilha premium e CTA final…';
-      if (btn) btn.textContent = '🎬 Gerar Reel 20s + fala + trilha';
+      if (btn) btn.textContent = '🎬 Gerar Reel + fala + trilha';
     } else {
       if (label) label.textContent = 'Descreva o que você quer (a IA gera a prévia, título, legenda e hashtags)';
       if (prompt) prompt.placeholder = 'Ex: um café expresso fumegante em mesa de mármore, luz de manhã, estética minimalista para minha cafeteria…';
@@ -369,7 +370,7 @@
     const ctx = canvas.getContext('2d');
     if (!ctx) throw new Error('Canvas indisponível para gerar vídeo');
 
-    const safeDuration = Math.max(REEL_MIN_DURATION_SEC, Number(durationSec || REEL_MIN_DURATION_SEC) || REEL_MIN_DURATION_SEC);
+    const safeDuration = Math.max(REEL_MIN_DURATION_SEC, Math.min(REEL_MAX_DURATION_SEC, Number(durationSec || REEL_MIN_DURATION_SEC) || REEL_MIN_DURATION_SEC));
     const durationMs = safeDuration * 1000;
     const fps = 30;
     const mimeType = bestVideoMime();
@@ -424,7 +425,7 @@
     });
 
     const sceneTexts = makeSceneTexts(title, script);
-    // Distribui as cenas uniformemente pela duração real (>= 20s)
+    // Distribui as cenas uniformemente pela duração real (10s até 10min)
     // Alinha nº de cenas ao nº de imagens disponíveis quando temos várias
     const sceneCount = validImgs.length > 1 ? Math.max(validImgs.length, sceneTexts.length) : sceneTexts.length;
     const beatSec = 60 / bpm; // 1 beat da trilha
@@ -767,7 +768,7 @@
     if (!prompt) return log('❌ Descreva o que você quer gerar', false);
     const btn = $('igGenerateBtn');
     const isReel = currentType === 'reel';
-    const duration = Math.max(REEL_MIN_DURATION_SEC, Number($('igDuration')?.value || REEL_MIN_DURATION_SEC) || REEL_MIN_DURATION_SEC);
+    const duration = Math.max(REEL_MIN_DURATION_SEC, Math.min(REEL_MAX_DURATION_SEC, Number($('igDuration')?.value || REEL_MIN_DURATION_SEC) || REEL_MIN_DURATION_SEC));
     const soundtrack = ($('igSoundtrack')?.value) || 'auto';
     const voiceMode = ($('igVoiceMode')?.value) || 'male_consultant';
     const aiPick = getAiPick();
@@ -817,13 +818,14 @@
           log(`🎬 Montando Reel de ${duration}s com roteiro, fala e trilha…`);
           try {
             // Usa base64 direto (sem CORS) pra carregar no canvas sem taint
-            const canvasSrc = d.media_b64 ? `data:image/png;base64,${d.media_b64}` : d.media_url;
+            const firstMime = d.media_mime || 'image/png';
+            const canvasSrc = d.media_b64 ? `data:${firstMime};base64,${d.media_b64}` : d.media_url;
             const sceneSrcs = Array.isArray(d.scenes) && d.scenes.length
-              ? d.scenes.map((s) => s && s.b64 ? `data:image/png;base64,${s.b64}` : s?.url).filter(Boolean)
+              ? d.scenes.map((s) => s && s.b64 ? `data:${s.mime || firstMime};base64,${s.b64}` : s?.url).filter(Boolean)
               : null;
             const rec = await makeReelPreviewFromImage(canvasSrc, d.title || '', soundtrack === 'auto' ? 'cinematic' : soundtrack, d.voiceover || d.caption || '', d.video_script || '', duration, sceneSrcs);
             if (!/^video\/(mp4|quicktime)/i.test(rec.mimeType)) {
-              throw new Error('Seu Chrome gerou vídeo WebM, mas o Instagram só aceita MP4/MOV para Reel. Atualize o Chrome e tente de novo.');
+              log('⚠️ Seu Chrome gerou vídeo WebM. A prévia vai aparecer; se a Meta rejeitar, gere o vídeo final na IA escolhida (Veo/Runway/etc.) e envie o MP4.', false);
             }
             const publicUrl = await publishGeneratedMedia(rec.dataUrl);
             lastGeneratedMime = rec.mimeType;
@@ -848,13 +850,13 @@
               plan.style.display = 'block';
             }
             $('igMediaUrl').value = '';
-            throw new Error('Não consegui finalizar o vídeo de 20s neste navegador. Gere novamente ou selecione Veo 3 na aba IAs antes de publicar. ' + (err?.message || ''));
+            throw new Error('Não consegui finalizar o vídeo neste navegador. Gere novamente ou selecione Veo/Vídeo na aba IAs antes de publicar. ' + (err?.message || ''));
           }
         } else {
           // Instagram só aceita JPEG para imagens. Converte PNG->JPEG no canvas e re-envia.
           if (img) { img.src = d.media_url; img.style.display = 'block'; }
           try {
-            const srcData = d.media_b64 ? `data:image/png;base64,${d.media_b64}` : d.media_url;
+            const srcData = d.media_b64 ? `data:${d.media_mime || 'image/png'};base64,${d.media_b64}` : d.media_url;
             const im = new Image();
             im.crossOrigin = 'anonymous';
             await new Promise((res, rej) => { im.onload = res; im.onerror = rej; im.src = srcData; });

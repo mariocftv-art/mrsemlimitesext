@@ -1089,6 +1089,84 @@
     }
     .composer{ position:relative; }
     .composer::before{ left:4px } .composer::after{ right:4px }
+
+    /* ==== HARD OVERRIDES: kill neon cyan/pink, force gold everywhere ==== */
+    body::after{
+      background:
+        radial-gradient(ellipse at 50% 0%, rgba(230,193,74,.14), transparent 55%),
+        radial-gradient(ellipse at 50% 100%, rgba(184,134,11,.18), transparent 55%),
+        linear-gradient(180deg, rgba(13,10,4,.55) 0%, rgba(13,10,4,.35) 40%, rgba(13,10,4,.85) 100%) !important;
+    }
+    .app-header, .action-bar, .tabs-bar, .mr-tabs, .input-area,
+    .app-footer, .quick-actions{
+      background: linear-gradient(180deg, rgba(30,22,8,.78), rgba(15,11,4,.68)) !important;
+      backdrop-filter: blur(14px) saturate(140%);
+      -webkit-backdrop-filter: blur(14px) saturate(140%);
+      border-color: rgba(230,193,74,.35) !important;
+    }
+    /* Any button variant */
+    .action-btn, .qa-btn, .mr-btn, .nc-iconbtn, #sendBtn, .btn-activate, .mr-tab{
+      background: linear-gradient(135deg, rgba(230,193,74,.18), rgba(122,90,10,.12)) !important;
+      border:1px solid rgba(230,193,74,.55) !important;
+      color:#fff5cc !important;
+      box-shadow: 0 0 0 1px rgba(230,193,74,.12) inset,
+                  0 6px 18px -12px rgba(230,193,74,.55) !important;
+      transition: box-shadow .25s ease, transform .2s ease, border-color .2s ease;
+    }
+    .action-btn:hover, .qa-btn:hover, .mr-btn:hover, .nc-iconbtn:hover,
+    #sendBtn:hover, .btn-activate:hover{
+      border-color:#f7e08a !important;
+      box-shadow: var(--gold-glow) !important;
+      transform: translateY(-1px);
+      color:#fff !important;
+    }
+    .mr-tab.active{
+      background: linear-gradient(135deg, rgba(247,224,138,.35), rgba(184,134,11,.22)) !important;
+      border-color:#f7e08a !important;
+      color:#fff !important;
+      box-shadow: var(--gold-glow) !important;
+    }
+    /* Chat bubbles */
+    .bubble.bot{
+      background: linear-gradient(180deg, rgba(28,20,6,.85), rgba(18,13,4,.85)) !important;
+      border:1px solid rgba(230,193,74,.28) !important;
+      color:#fff5cc !important;
+    }
+    .bubble.user{
+      background: linear-gradient(135deg,#e6c14a,#b8860b) !important;
+      color:#1a1200 !important;
+      border:1px solid #f7e08a !important;
+      box-shadow: 0 4px 20px rgba(230,193,74,.35) !important;
+    }
+    /* Send button gets full gold ingot look */
+    #sendBtn{
+      background: linear-gradient(135deg,#f7e08a 0%,#e6c14a 45%,#b8860b 100%) !important;
+      color:#1a1200 !important;
+      border:1px solid #f7e08a !important;
+      box-shadow: 0 4px 20px rgba(230,193,74,.55),
+                  0 0 0 1px rgba(255,246,194,.5) inset !important;
+      font-weight:900 !important;
+    }
+    /* Scrollbar */
+    *::-webkit-scrollbar-thumb{ background: rgba(230,193,74,.35) !important; }
+    /* Section titles */
+    .mr-section-title, .action-bar-label, .quick-actions-label{
+      color:#f7e08a !important;
+      letter-spacing:1.2px !important;
+    }
+    /* License card */
+    .lic-title{
+      background: linear-gradient(135deg,#f7e08a,#e6c14a,#b8860b,#f7e08a) !important;
+      background-size:200% 200% !important;
+      -webkit-background-clip:text !important;
+      -webkit-text-fill-color:transparent !important;
+    }
+    .lic-card{ border:1px solid rgba(230,193,74,.35) !important; }
+    .lic-field input{
+      border:1.5px solid rgba(230,193,74,.35) !important;
+      background: rgba(20,15,6,.85) !important;
+      color:#fff5cc !important;
+    }
   </style>
 </head>
 <body>

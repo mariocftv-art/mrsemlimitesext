@@ -17,9 +17,9 @@ const cors = {
 }
 
 const LATEST = {
-  latest_version: '5.4.19',
+  latest_version: '5.4.20',
   download_url:
-    'https://mrsemlimitesext.lovable.app/__l5e/assets-v1/2cbd34d0-4588-4008-8b04-07f5180bda1b/MR-Sem-Limites-EXT5-v5.4.19.zip',
+    'https://mrsemlimitesext.lovable.app/__l5e/assets-v1/dbab4104-b9b9-4eaf-9ab8-a8a6211c0337/MR-Sem-Limites-EXT5-v5.4.20.zip',
   notes: [
     'Correção do erro HTTP 402: se os créditos do Gateway falharem, a extensão usa fallback de imagem sem travar.',
     'Imagens agora são fotorrealistas do assunto pedido, sem capa local dourada/bolhas.',

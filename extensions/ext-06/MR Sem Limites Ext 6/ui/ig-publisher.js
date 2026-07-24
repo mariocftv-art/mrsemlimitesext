@@ -1000,6 +1000,7 @@
       b.addEventListener('click', () => switchSub(b.dataset.sub));
     });
     $('igGenerateBtn')?.addEventListener('click', generate);
+    $('igGenerateAutoBtn')?.addEventListener('click', generateAndPublishAuto);
     $('igRegenBtn')?.addEventListener('click', generate);
     $('igPublishBtn')?.addEventListener('click', publish);
     $('igOpenPreviewBtn')?.addEventListener('click', openBigPreview);

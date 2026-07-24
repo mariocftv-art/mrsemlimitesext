@@ -132,8 +132,91 @@ async function fetchAsB64(url: string): Promise<string> {
   return buf.toString('base64')
 }
 
-async function genImage(scenePrompt: string, aspect: 'vertical' | 'square', seedSalt: string): Promise<{ b64: string; mime: 'image/jpeg' }> {
+// Lovable AI Gateway — usa os créditos do workspace (assinatura do usuário)
+const AIG_URL = 'https://ai.gateway.lovable.dev/v1/chat/completions'
+const IMAGE_MODELS = ['google/gemini-3-pro-image', 'google/gemini-3.5-flash-image', 'google/gemini-2.5-flash-image']
+const TEXT_MODEL = 'google/gemini-3.6-flash'
+
+async function aigImage(fullPrompt: string): Promise<{ b64: string; mime: 'image/png' | 'image/jpeg' } | null> {
+  const key = process.env.LOVABLE_API_KEY
+  if (!key) return null
+  for (const model of IMAGE_MODELS) {
+    try {
+      const r = await fetch(AIG_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` },
+        body: JSON.stringify({
+          model,
+          messages: [{ role: 'user', content: fullPrompt }],
+          modalities: ['image', 'text'],
+        }),
+      })
+      if (!r.ok) { if (r.status === 402 || r.status === 429) return null; continue }
+      const data: any = await r.json()
+      const img = data?.choices?.[0]?.message?.images?.[0]?.image_url?.url
+      if (!img || !img.startsWith('data:')) continue
+      const [meta, b64] = img.split(';base64,')
+      if (!b64) continue
+      const mime = meta.slice(5) as 'image/png' | 'image/jpeg'
+      return { b64, mime: mime === 'image/jpeg' ? 'image/jpeg' : 'image/png' }
+    } catch { /* try next */ }
+  }
+  return null
+}
+
+async function aigText(system: string, user: string): Promise<string | null> {
+  const key = process.env.LOVABLE_API_KEY
+  if (!key) return null
+  try {
+    const r = await fetch(AIG_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` },
+      body: JSON.stringify({
+        model: TEXT_MODEL,
+        messages: [{ role: 'system', content: system }, { role: 'user', content: user }],
+      }),
+    })
+    if (!r.ok) return null
+    const data: any = await r.json()
+    return data?.choices?.[0]?.message?.content?.toString() || null
+  } catch { return null }
+}
+
+async function aiCopy(prompt: string, type: string, duration: number, fallback: CreativeCopy): Promise<CreativeCopy> {
+  const system = 'Você é um copywriter viral especialista em Instagram brasileiro. Escreve legendas longas, envolventes, com storytelling, gatilhos mentais, hashtags relevantes e CTA forte. Sempre responde APENAS com JSON válido puro (sem markdown, sem crases).'
+  const isReel = type === 'reel'
+  const user = `Crie um conteúdo profissional para Instagram sobre: "${prompt}"
+
+Tipo: ${type}${isReel ? ` | Duração: ${duration}s` : ''}
+Responda em JSON com estas chaves exatas:
+{
+  "title": "título curto e impactante (máx 90 chars, com 1-2 emojis)",
+  "caption": "legenda LONGA e completa em português-BR (mín 800 chars, máx 2100): hook forte na 1ª linha, storytelling, 4-6 bullets com emojis, prova social, CTA claro (seguir + salvar + direct/WhatsApp), assinatura da marca, e no final 18-25 hashtags relevantes em português misturadas com internacionais"${isReel ? `,
+  "videoScript": "roteiro cinematográfico com EXATAMENTE 5 cenas numeradas (Cena 1 até Cena 5), cada cena descrita fisicamente (o que a câmera mostra, ângulo, movimento, iluminação, texto na tela), com timings somando ${duration}s",
+  "voiceover": "narração em português-BR sincronizada com o vídeo (voz masculina consultor), começando com 'Olha isso, Mr.' e terminando com CTA claro para o direct/WhatsApp",
+  "soundtrackSuggestion": "descrição da trilha ideal (estilo, BPM, energia)"` : ''}
+}`
+  const raw = await aigText(system, user)
+  if (!raw) return fallback
+  try {
+    const clean = raw.replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/i, '').trim()
+    const j = JSON.parse(clean)
+    return {
+      title: (j.title || fallback.title).toString().slice(0, 120),
+      caption: (j.caption || fallback.caption).toString(),
+      videoScript: (j.videoScript || fallback.videoScript || '').toString(),
+      voiceover: (j.voiceover || fallback.voiceover || '').toString(),
+      soundtrackSuggestion: (j.soundtrackSuggestion || fallback.soundtrackSuggestion || '').toString(),
+    }
+  } catch { return fallback }
+}
+
+async function genImage(scenePrompt: string, aspect: 'vertical' | 'square', seedSalt: string): Promise<{ b64: string; mime: 'image/png' | 'image/jpeg' }> {
   const full = imagePrompt(scenePrompt, aspect)
+  // 1) tenta Lovable AI Gateway (Gemini 3 Pro Image — máxima qualidade)
+  const aig = await aigImage(full)
+  if (aig?.b64) return aig
+  // 2) fallback Pollinations
   const w = aspect === 'vertical' ? 720 : 1080
   const h = aspect === 'vertical' ? 1280 : 1080
   const seed = Math.abs(Array.from(`${scenePrompt}-${seedSalt}`).reduce((a, c) => ((a * 31) + c.charCodeAt(0)) | 0, 7))
@@ -168,7 +251,8 @@ export const Route = createFileRoute('/api/public/instagram-generate')({
         }
 
         try {
-          const copy = localCopy(prompt, type, duration)
+          const baseCopy = localCopy(prompt, type, duration)
+          const copy = await aiCopy(prompt, type, duration, baseCopy)
           let mediaUrl = ''
           let mediaB64 = ''
           let mediaMime: 'image/png' | 'image/jpeg' = 'image/jpeg'
@@ -227,7 +311,7 @@ export const Route = createFileRoute('/api/public/instagram-generate')({
             voiceover: copy.voiceover,
             soundtrack_suggestion: copy.soundtrackSuggestion,
             duration,
-            fallback: true,
+            engine: process.env.LOVABLE_API_KEY ? 'lovable-ai-gateway' : 'pollinations',
           }), { status: 200, headers: cors })
         } catch (e: any) {
           return new Response(JSON.stringify({ error: e?.message || 'Erro' }), { status: 500, headers: cors })

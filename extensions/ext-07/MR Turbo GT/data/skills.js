@@ -1,139 +1,136 @@
-// MR Sem Limites EXT6 — Skills
+// MR Turbo GT — 50 Skills profissionais
 // Cada skill injeta um prompt profissional no chat #message.
-// Não altera backend, licença, autenticação ou envio de mensagens.
 
 export const SKILL_CATEGORIES = [
-  { id: 'all',     name: 'Todas',     icon: '✨' },
-  { id: 'build',   name: 'Construir', icon: '🚀' },
-  { id: 'ui',      name: 'UI/Design', icon: '🎨' },
-  { id: 'backend', name: 'Backend',   icon: '🗄' },
-  { id: 'growth',  name: 'Growth',    icon: '📈' },
-  { id: 'fix',     name: 'Consertar', icon: '🛠' },
-  { id: 'content', name: 'Conteúdo',  icon: '✍️' },
+  { id: 'all',     name: 'Todas',      icon: '✨' },
+  { id: 'build',   name: 'Construir',  icon: '🚀' },
+  { id: 'ui',      name: 'UI/Design',  icon: '🎨' },
+  { id: 'backend', name: 'Backend',    icon: '🗄' },
+  { id: 'growth',  name: 'Growth',     icon: '📈' },
+  { id: 'fix',     name: 'Consertar',  icon: '🛠' },
+  { id: 'content', name: 'Conteúdo',   icon: '✍️' },
+  { id: 'auto',    name: 'Automação',  icon: '⚡' },
+  { id: 'ai',      name: 'IA/Agents',  icon: '🤖' },
 ];
 
+const s = (id, cat, icon, name, desc, prompt) => ({ id, cat, icon, name, desc, prompt });
+
 export const SKILLS = [
-  // ============ BUILD ============
-  { id: 'landing-premium', cat: 'build', icon: '🚀', name: 'Landing Page Premium',
-    desc: 'Landing moderna com hero, features, prova social, pricing, FAQ e CTA final.',
-    prompt: `Crie uma landing page premium moderna com design elegante e futurista.\n\nEstrutura obrigatória:\n1. Hero cinematográfico com headline forte, subheadline explicativa, CTA principal e imagem/visual\n2. Barra de logos de prova social\n3. Seção de 3-6 features com ícones (lucide-react) e microcopy\n4. "Como funciona" em 3 passos numerados\n5. Depoimentos com foto/nome/cargo\n6. Tabela de preços (3 planos, plano do meio destacado)\n7. FAQ com accordion (mín. 6 perguntas)\n8. CTA final com fundo em destaque\n9. Footer completo (links, redes, copyright)\n\nUse tokens semânticos do design system (src/styles.css), animações sutis (fade-in/scale-in), tipografia hierárquica, espaçamento generoso, responsivo mobile-first. Nada de cores hardcoded. SEO: title, meta description, H1 único.`, },
+  // ================== BUILD (7) ==================
+  s('landing-premium','build','🚀','Landing Page Premium','Landing moderna completa (hero, features, prova social, preço, FAQ, CTA).',
+`Crie uma landing page premium moderna com design elegante e futurista.\n\nEstrutura:\n1) Hero cinematográfico (headline forte, subheadline, CTA, visual)\n2) Logos de prova social\n3) 3-6 features com ícones lucide-react\n4) Como funciona em 3 passos\n5) Depoimentos com foto/nome/cargo\n6) Preços 3 planos (meio destacado)\n7) FAQ accordion (6+ perguntas)\n8) CTA final + Footer completo\n\nTokens semânticos, animações sutis, mobile-first. SEO: title, meta, H1 único.`),
+  s('saas-dashboard','build','💼','SaaS Dashboard','Sidebar, KPIs, gráficos Recharts, tabela e ações rápidas.',
+`Dashboard SaaS profissional: sidebar colapsável (Overview/Analytics/Customers/Billing/Settings), topbar (busca, notificações, avatar), 4 KPI cards com sparkline, gráficos line+bar (Recharts), tabela com filtros e paginação, skeleton loaders, estado vazio. shadcn/ui + tokens semânticos, responsivo.`),
+  s('ecommerce','build','🛒','E-commerce Completo','Loja com catálogo, carrinho, checkout e área do cliente.',
+`E-commerce completo: home (hero + categorias + destaques), listagem com filtros, PDP (galeria, variações, avaliações), carrinho lateral com cupom, checkout em passos, área do cliente (pedidos/endereços/favoritos). Tabelas com RLS: produtos, categorias, pedidos, itens_pedido, endereços. Preços em centavos. Design premium mobile-first.`),
+  s('blog-cms','build','📝','Blog / CMS','Editor rich text, categorias, tags e SEO por post.',
+`Blog CMS: listagem pública paginada com filtro por categoria/tag, PDP do post (título, capa, autor, tempo de leitura, markdown), admin protegido para CRUD com preview, SEO por post (title/description/og:image/canonical/JSON-LD Article), busca full-text. Tabelas com RLS: posts (leitura pública se publicado), categorias, tags, autores.`),
+  s('booking','build','📅','Sistema de Agendamento','Calendly-like: calendário, horários, confirmação.',
+`Agendamento estilo Calendly: seleção de serviço, calendário mensal, horários do dia, formulário do cliente, confirmação por email, admin com reservas/filtros/status, bloqueio de conflitos e horários passados, fuso do usuário. Tabelas RLS: services, availability_rules, bookings.`),
+  s('crm','build','📇','CRM Simples','Contatos, pipeline, atividades, notas.',
+`CRM enxuto: tabela de contatos (nome/email/telefone/empresa/tags), pipeline Kanban (Lead → Contato → Proposta → Fechado), atividades (call/email/nota) com timeline por contato, filtros e busca, importação CSV, exportação, permissões por owner. RLS por user_id. Design moderno com shadcn.`),
+  s('directory','build','📚','Diretório / Marketplace','Listagem com busca, filtros, mapa e páginas de item.',
+`Diretório tipo marketplace: home com destaques + categorias, listagem com busca full-text e filtros (categoria, preço, localização), página do item (fotos, descrição, contato), submissão pública com moderação, painel admin, mapa (opcional). Tabelas RLS: items, categories, submissions.`),
 
-  { id: 'saas-dashboard', cat: 'build', icon: '💼', name: 'SaaS Dashboard',
-    desc: 'Dashboard com sidebar, KPIs, gráficos, tabela e ações rápidas.',
-    prompt: `Construa um dashboard SaaS completo e profissional.\n\nRequisitos:\n- Sidebar colapsável com navegação (Overview, Analytics, Customers, Billing, Settings)\n- Topbar com busca, notificações, avatar/dropdown\n- 4 cards de KPI (valor, variação %, sparkline)\n- 2 gráficos (line + bar) usando Recharts\n- Tabela com paginação, busca e filtros\n- Estado vazio elegante\n- Skeleton loaders\n- Totalmente responsivo, dark/light via tokens semânticos\n\nUse shadcn/ui (Card, Table, Button, Badge, DropdownMenu). Não use cores hardcoded — apenas tokens do design system.`, },
+  // ================== UI (6) ==================
+  s('hero','ui','🌠','Hero Cinemática','Hero impactante com headline, sub, 2 CTAs e visual.',
+`Hero cinematográfico: headline em 2 linhas com hierarquia forte, subheadline curta com valor, 2 CTAs (primário + fantasma), visual à direita ou fundo com gradiente/blur animado, badges de confiança, animações fade-in/slide-up staggered, responsivo. Tokens semânticos apenas.`),
+  s('pricing','ui','💰','Tabela de Preços','3 planos com toggle mensal/anual e destaque no popular.',
+`Tabela de preços: toggle mensal/anual (desconto anual visível), 3 planos (Starter/Pro/Enterprise), plano do meio destacado com badge "Mais popular", features com check, comparação expandível abaixo, responsivo. Tokens semânticos.`),
+  s('testimonials','ui','💬','Depoimentos','Grid/carrossel com foto, nome, cargo e estrelas.',
+`Seção depoimentos premium: grid 3x1 desktop e 1x em mobile, aspas grandes, avatar/nome/cargo, 5 estrelas, carrossel opcional com autoplay. Prova social acima. Tokens e animações on scroll.`),
+  s('faq','ui','❓','FAQ Accordion','FAQ acessível com 8+ perguntas.',
+`FAQ com Accordion shadcn (8+ perguntas relevantes), título + subtítulo, CTA final "Não achou sua resposta? Fale conosco". Animação suave. Tokens semânticos.`),
+  s('design-system','ui','🎨','Design System Setup','Tokens semânticos ricos (cor, gradiente, sombra, radius).',
+`Configure design system em src/styles.css: palette oklch (--background, --foreground, --primary(+glow), --secondary, --muted, --accent, --border, --ring), tokens extras (--gradient-primary, --gradient-hero, --shadow-elegant, --shadow-glow), dark/light, radius/spacing/transições consistentes. Atualize variantes de shadcn para consumir os tokens. Nada de cor hardcoded.`),
+  s('pwa','ui','📱','PWA Mobile-First','Transforma app em PWA instalável.',
+`PWA mobile-first: manifest.json (nome, ícones 192/512, theme/background color, display standalone), service worker com cache básico, meta viewport correta, prompt "Adicionar à tela inicial", bottom nav se fizer sentido, splash. Manter responsividade desktop.`),
 
-  { id: 'ecommerce', cat: 'build', icon: '🛒', name: 'E-commerce Setup',
-    desc: 'Loja com catálogo, carrinho, checkout e área do cliente.',
-    prompt: `Crie uma loja e-commerce completa:\n\n- Home com hero + categorias em destaque + produtos em alta\n- Página de listagem com filtros (categoria, preço, ordenação)\n- Página de produto com galeria, variações, descrição, avaliações\n- Carrinho lateral (Sheet) com resumo e cupom\n- Checkout em passos (endereço → pagamento → confirmação)\n- Área do cliente (pedidos, endereços, favoritos)\n- Design premium, mobile-first\n\nEstruture o banco (produtos, categorias, pedidos, itens_pedido, endereços) com RLS. Preços em centavos.`, },
+  // ================== BACKEND (6) ==================
+  s('auth','backend','🔐','Auth Completo','Login/Signup email+senha, Google, rotas protegidas.',
+`Auth completo com Lovable Cloud: /auth com tabs Login/Signup, email+senha, botão Google, /reset-password, trigger criando public.profiles no signup, rotas protegidas em _authenticated/*, logout no header, redirect pós-login. Nunca guarde roles em profiles — use user_roles + has_role() security definer.`),
+  s('stripe','backend','💳','Pagamentos Stripe','Checkout + webhook + status de assinatura.',
+`Integração Stripe: botão Assinar cria Checkout Session (server function), webhook em src/routes/api/public/stripe-webhook.ts verificando assinatura, tabela subscriptions (user_id, stripe_customer_id, status, plan, current_period_end) com RLS, página /billing (plano atual, Portal Stripe, próximo pagamento), guards por plano. Secrets: STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET.`),
+  s('db-schema','backend','🗄','Schema de Banco','Tabelas com RLS, GRANTs e índices.',
+`Modele banco Lovable Cloud. Regras: todo CREATE TABLE public.* seguido de GRANT (SELECT/INSERT/UPDATE/DELETE) para authenticated e ALL para service_role, ENABLE ROW LEVEL SECURITY, policies por operação (não FOR ALL), roles em user_roles + has_role() security definer, FKs com ON DELETE apropriado, índices em WHERE/JOIN, timestamps + trigger de updated_at. Pergunte o domínio antes.`),
+  s('rls-fix','backend','🔒','Corrigir RLS','Auditar e corrigir políticas de segurança.',
+`Audite RLS de todas as tabelas em public. Liste: RLS ligado? policies (nome, op, roles, USING/WITH CHECK), GRANTs. Aponte problemas (RLS off, FOR ALL sem WITH CHECK, referência circular, GRANTs faltando, escopo por profile) e proponha migration corrigindo tudo com has_role() security definer.`),
+  s('email-flow','backend','📧','E-mail Transacional','Resend: boas-vindas, reset, notificações.',
+`E-mails via Resend: adicione RESEND_API_KEY (secret), server function sendEmail(to, subject, html), templates HTML (boas-vindas, reset, confirmação), dispare no signup/reset/checkout, log em email_logs com RLS (só admin lê).`),
+  s('files-upload','backend','📎','Upload de Arquivos','Storage privado com URLs assinadas.',
+`Upload de arquivos: bucket privado, RLS no bucket por owner, server function que retorna signed URL para upload/download, componente com dropzone + preview + progresso, validação de tipo/tamanho no client e no server, chave file_path em tabela files (owner_id, size, mime, created_at).`),
 
-  { id: 'blog-cms', cat: 'build', icon: '📝', name: 'Blog / CMS',
-    desc: 'Blog com editor rich text, categorias, tags e SEO por post.',
-    prompt: `Construa um blog CMS completo com:\n\n- Lista pública de posts com paginação e filtro por categoria/tag\n- Página do post com título, capa, autor, data, tempo de leitura, conteúdo em rich text (markdown)\n- Painel admin (protegido) para criar/editar/publicar posts\n- Editor com preview\n- SEO por post: title, description, og:image, canonical, JSON-LD Article\n- Comentários (opcional)\n- Busca full-text\n\nTabelas: posts, categorias, tags, autores. RLS: leitura pública para publicados, escrita só para admins.`, },
+  // ================== GROWTH (4) ==================
+  s('seo','growth','🔍','SEO Completo','Título, meta, OG, sitemap, robots e JSON-LD.',
+`SEO total: cada rota com head() (title <60c com keyword, description <160c, og:*, twitter:card), H1 único e semântico, alt em imagens, JSON-LD (Organization, WebSite, Article/Product), sitemap.xml + robots.txt, canonical, lazy-loading, viewport correto. Nada de "Lovable App".`),
+  s('analytics','growth','📊','Analytics + Eventos','Instrumenta eventos-chave.',
+`Adicione PostHog/similar (chave VITE_). Track: page_view, sign_up, log_in, subscribe_click, purchase_completed, cta_click{cta_id}. Identifique usuário pós-login. Dashboard interno com MRR, signups da semana, top páginas via server function. Não envie PII sensível.`),
+  s('i18n','growth','🌍','Multi-idioma (i18n)','PT/EN/ES com detecção automática.',
+`react-i18next com pt/en/es, extrair strings visíveis, seletor no header com bandeira, detecção do browser + persistência, hreflang e locale nas OG. PT como default.`),
+  s('cta-optimize','growth','🎯','Otimizar CTAs','Reforma textos e visual para conversão.',
+`Audite CTAs: verbo de ação + benefício ("Começar grátis"), alto contraste, tamanho/padding generosos em mobile, micro-hover (scale/glow), hierarquia primário vs secundário, prova social próxima. Aplique com tokens semânticos.`),
 
-  { id: 'booking', cat: 'build', icon: '📅', name: 'Sistema de Agendamento',
-    desc: 'Calendário com horários disponíveis, reserva e confirmação.',
-    prompt: `Crie um sistema de agendamento tipo Calendly:\n\n- Página pública com seleção de serviço, calendário mensal, horários do dia\n- Formulário do cliente (nome, email, telefone, observações)\n- Confirmação por email\n- Painel admin com lista de reservas, filtros e status (pendente/confirmado/cancelado)\n- Bloqueio de horários passados e conflitos\n- Fuso horário do usuário\n\nTabelas: services, availability_rules, bookings. RLS adequada.`, },
+  // ================== FIX (4) ==================
+  s('bug-fix','fix','🐛','Consertar Bug','Diagnóstico + causa raiz + patch + validação.',
+`Antes de escrever código: 1) diga a investigação (logs, network, arquivos), 2) aponte causa raiz (não sintoma), 3) enumere onde mais o padrão falha (rotas irmãs, políticas, fetchers), 4) proponha patch, 5) valide (build/console/teste).\n\nBug: [DESCREVA — o que acontece, o esperado e a mensagem]`),
+  s('perf','fix','⚡','Otimizar Performance','LCP, bundle e re-renders.',
+`Otimizar performance: medir LCP/CLS/INP por rota, corrigir imagens grandes (formato/tamanho/loading=lazy), evitar re-renders (memo/useMemo/useCallback), code-split rotas com lazy(), reduzir bundle (libs duplicadas, alternativas menores), Suspense + skeletons. Relatório antes/depois.`),
+  s('refactor','fix','♻️','Refatorar Código','Quebra arquivos grandes e melhora legibilidade.',
+`Refatorar mantendo comportamento: quebrar arquivos +300 linhas em componentes/hooks focados, extrair util/hooks compartilhados, tipos claros (sem any), nomes expressivos, remover código morto/imports não usados, consolidar estilos em tokens. Antes de mudar, mostrar plano.`),
+  s('a11y','fix','♿','Acessibilidade (a11y)','Contraste, foco, labels e ARIA.',
+`Auditoria a11y: labels em todos inputs, aria-label em botões só-ícone, contraste 4.5:1, foco visível no teclado, ordem lógica de tabulação, landmarks (header/main/footer/nav), alt significativo, modais com trap de foco e Escape. Corrigir tudo mantendo design.`),
 
-  { id: 'ai-chatbot', cat: 'build', icon: '🤖', name: 'AI Chatbot',
-    desc: 'Chat com streaming, histórico e componente polido.',
-    prompt: `Implemente um AI chatbot moderno usando AI SDK + Lovable AI Gateway:\n\n- Interface de chat com bolhas assistant/usuário\n- Streaming de tokens em tempo real\n- Histórico persistido por conversa (threads)\n- Input com submit por Enter e Shift+Enter para nova linha\n- Loading state (shimmer "Pensando...") e tratamento de erros (429, 402)\n- Model padrão google/gemini-2.5-flash\n- Server route em src/routes/api/chat.ts usando streamText + toUIMessageStreamResponse\n\nUse AI Elements (Conversation, Message, PromptInput). Design elegante, dark theme com tokens do sistema.`, },
+  // ================== CONTENT (4) ==================
+  s('copy','content','✍️','Copy Persuasivo','Reescreve textos com foco em conversão.',
+`Reescreva textos com foco em conversão: headline (promessa + benefício + diferencial ≤12 palavras), subheadline (quem é, o que resolve, para quem ≤20 palavras), features (benefício antes de característica), CTAs (verbo + resultado), depoimentos específicos, FAQ com perguntas reais. PT-BR, tom [profissional/próximo/técnico/luxo]. Mantenha HTML.`),
+  s('about','content','🏛','Página Sobre','Missão, história, time e valores.',
+`Página /sobre premium: hero com foto/ilustração + manifesto, história em timeline visual, missão/visão/valores em 3 cards, time com fotos e mini bios, métricas de impacto, CTA final. Tokens do site.`),
+  s('legal','content','📜','Termos + Privacidade (LGPD)','Páginas legais PT-BR.',
+`Crie /termos e /privacidade em PT-BR alinhadas com LGPD (aceitação, cadastro, pagamentos, PI, limitação, rescisão, foro / dados, base legal, uso, compartilhamento, direitos, cookies, DPO). Sumário lateral, data de atualização. Peça antes: empresa, CNPJ, site, email de contato.`),
+  s('social-content','content','📱','Kit de Redes Sociais','Legendas + roteiros para posts e reels.',
+`Kit para redes: 5 legendas Instagram (hook + corpo + CTA + hashtags), 3 roteiros de Reels 30-60s cena a cena (visual+texto+narração), 3 posts LinkedIn (storytelling), 3 threads X/Twitter. PT-BR, tom [ESCOLHA]. Pergunte o nicho se não estiver claro.`),
 
-  // ============ UI ============
-  { id: 'hero', cat: 'ui', icon: '🌠', name: 'Hero Section Cinemática',
-    desc: 'Hero impactante com headline, sub, CTA e visual.',
-    prompt: `Crie uma seção Hero cinematográfica e impactante:\n\n- Headline em 2 linhas, hierarquia tipográfica forte\n- Subheadline curta explicando o valor\n- 2 CTAs (primário + secundário fantasma)\n- Visual à direita (imagem ou mockup) OU fundo com gradiente/blur animado\n- Badges de confiança abaixo\n- Animações fade-in/slide-up staggered\n- Responsivo (empilha em mobile)\n\nUse apenas tokens semânticos do design system. Sem cores hardcoded.`, },
+  // ================== AUTOMAÇÃO / N8N / WHATSAPP (11) ==================
+  s('n8n-setup','auto','⚙️','n8n Setup Completo','Sobe n8n auto-hospedado com Postgres e HTTPS.',
+`Instruções passo-a-passo para subir n8n em produção: docker-compose com n8n + Postgres + Caddy/Traefik (HTTPS auto), variáveis WEBHOOK_URL/N8N_ENCRYPTION_KEY/N8N_BASIC_AUTH_*, backup do Postgres, worker mode para escala, política de retries e timeouts. Boas práticas de segurança e observabilidade.`),
+  s('n8n-whatsapp-atendimento','auto','💬','n8n — Atendimento WhatsApp 24/7','Fluxo WhatsApp Cloud API + IA + handoff humano.',
+`Fluxo n8n de atendimento WhatsApp 24/7: webhook do WhatsApp Cloud API → node HTTP para OpenAI/Gemini/Claude com contexto por chat_id (buffer no Postgres/Supabase) → resposta para o WhatsApp. Detecção de intenção "falar com humano" → tag no CRM + notificação no Slack. Fila para mensagens fora do horário. Log completo em Supabase.`),
+  s('n8n-leads-instagram','auto','📸','n8n — Leads Instagram → CRM','Captura comentários/DMs e cria leads.',
+`Fluxo n8n: trigger Instagram Graph (webhook comments/mentions/DMs) → parse do texto → HTTP para API do CRM (HubSpot/Pipedrive/Supabase) criando lead com tag "instagram" → resposta automática por DM ("Recebemos, em breve retornamos") → notificação no e-mail/Slack do time comercial. Tratamento de duplicados por username.`),
+  s('n8n-agendador','auto','📅','n8n — Agendador Google Calendar','Confirma, lembra e reagenda automaticamente.',
+`Fluxo n8n: trigger Cron → busca eventos do dia no Google Calendar → envia lembrete 24h e 2h antes via WhatsApp/Email → cliente responde "1" (confirma), "2" (reagenda), "3" (cancela) → atualiza evento e envia link novo se reagendou. Log de todas as interações.`),
+  s('n8n-relatorio-vendas','auto','📊','n8n — Relatório Diário de Vendas','Consolida vendas e envia por e-mail/WhatsApp.',
+`Fluxo n8n Cron diário 08h: consultas SQL (Supabase/MySQL) para vendas do dia anterior (total, ticket médio, top produtos, top vendedores) → gera PDF/HTML com gráficos → envia por e-mail (Resend) para o dono e por WhatsApp para o gerente. Comparativo D-1 e D-7.`),
+  s('n8n-erp-integracao','auto','🔌','n8n — Integração ERP ↔ E-commerce','Sincroniza produtos, estoque e pedidos.',
+`Fluxo n8n bidirecional entre ERP (Bling/Tiny/Omie) e e-commerce (Shopify/WooCommerce): a cada 5 min, sincronizar produtos e estoque ERP → e-commerce; pedidos novos e-commerce → ERP com cliente/itens/pagamento; NF-e emitida no ERP → e-mail para o cliente com PDF. Idempotência via SKU/external_id.`),
+  s('n8n-content-pipeline','auto','🎬','n8n — Pipeline de Conteúdo','Ideia → roteiro → imagem → post multi-plataforma.',
+`Fluxo n8n: form no Notion/Airtable com ideia → OpenAI gera roteiro + legenda + hashtags → gera imagem (Gemini/Pollinations) → aprovação humana no Slack (botão) → publica simultâneo em Instagram (Graph API), Facebook, LinkedIn e X. Registra métricas em Sheets.`),
+  s('whatsapp-cloud-api','auto','📲','WhatsApp Cloud API — Bot Direto','Envia/recebe mensagens sem Twilio.',
+`Integre WhatsApp Cloud API (Meta): registro do número, geração do WHATSAPP_TOKEN + PHONE_NUMBER_ID (secrets), webhook em /api/public/wa-webhook.ts verificando hub.verify_token e assinatura, server function sendWhatsApp(to, template|text), tabela wa_messages com RLS. Suporte a templates aprovados, mídia e botões interativos.`),
+  s('whatsapp-broadcast','auto','📢','WhatsApp — Broadcast por Template','Disparo em massa com opt-in e taxa controlada.',
+`Sistema de broadcast WhatsApp: cadastro de contatos com opt-in explícito (LGPD), lista segmentada por tags, escolha de template aprovado, disparo com rate-limit (ex.: 20/s), fila com retries e status por mensagem (queued/sent/delivered/read/failed). Painel com KPIs e opt-out automático via keyword "SAIR".`),
+  s('whatsapp-orcamento','auto','💵','WhatsApp — Orçamento Automático','Cliente pede orçamento, bot responde na hora.',
+`Bot WhatsApp para orçamento: cliente escolhe categoria e itens via lista interativa → bot calcula (tabela de preços no Supabase) → envia orçamento em texto + PDF → botão "Fechar pedido" gera link de pagamento Stripe → notifica atendente e cria pedido no sistema. Log completo.`),
+  s('zapier-alternative','auto','🔁','Automação Multi-app (sem code)','Conecta apps quando não puder usar n8n.',
+`Quando o cliente não tem servidor: implementar automações usando Make/Zapier equivalentes internas. Mapeie triggers (novo lead, novo pedido, novo evento) e ações (email, WhatsApp, CRM, planilha). Documente cada cenário com passos, campos e testes. Inclua backoff em falhas.`),
 
-  { id: 'pricing', cat: 'ui', icon: '💰', name: 'Tabela de Preços',
-    desc: '3 planos com toggle mensal/anual e destaque no popular.',
-    prompt: `Crie uma tabela de preços premium:\n\n- Toggle mensal/anual com desconto anual visível\n- 3 planos (Starter / Pro / Enterprise), plano do meio destacado com badge "Mais popular"\n- Cada plano: nome, preço, descrição curta, lista de features com check, CTA\n- Comparação de features em tabela expandível abaixo\n- Layout responsivo (empilha em mobile)\n\nUse tokens semânticos, sem cores hardcoded.`, },
-
-  { id: 'testimonials', cat: 'ui', icon: '💬', name: 'Depoimentos',
-    desc: 'Carrossel/grid de depoimentos com foto, nome, cargo e estrelas.',
-    prompt: `Crie uma seção de depoimentos premium:\n\n- Grid de 3 cards em desktop, 1 em mobile\n- Cada card: aspas grandes, texto do depoimento, avatar, nome, cargo/empresa, 5 estrelas\n- Carrossel opcional com autoplay e controles\n- Prova social acima: "+2.000 clientes" ou logos de empresas\n\nUse tokens semânticos e animações sutis on scroll.`, },
-
-  { id: 'faq', cat: 'ui', icon: '❓', name: 'FAQ com Accordion',
-    desc: 'FAQ acessível com 8+ perguntas.',
-    prompt: `Crie uma seção FAQ:\n\n- Accordion acessível (shadcn/ui Accordion)\n- Mínimo 8 perguntas relevantes\n- Título + subtítulo\n- CTA no final: "Não achou sua resposta? Fale conosco"\n\nAnime a expansão suavemente. Use tokens semânticos.`, },
-
-  { id: 'design-system', cat: 'ui', icon: '🎨', name: 'Design System Setup',
-    desc: 'Define tokens semânticos ricos (cor, gradiente, sombra, radius).',
-    prompt: `Configure um design system elegante e futurista em src/styles.css:\n\n- Palette em oklch: --background, --foreground, --primary, --primary-foreground, --secondary, --muted, --accent, --border, --ring\n- Tokens extras: --primary-glow, --gradient-primary, --gradient-hero, --shadow-elegant, --shadow-glow\n- Suporte dark/light\n- Radius, spacing e transições consistentes\n- Atualize componentes shadcn para consumir variantes com esses tokens\n\nNão use classes com cores hardcoded (text-white, bg-black). Sempre tokens.`, },
-
-  { id: 'pwa', cat: 'ui', icon: '📱', name: 'PWA Mobile-First',
-    desc: 'Transforma o app em PWA instalável e responsivo.',
-    prompt: `Transforme o projeto em PWA mobile-first:\n\n- manifest.json com nome, ícones (192/512), theme_color, background_color, display standalone\n- Service worker com cache básico\n- Meta viewport correta\n- Ícone de instalação e prompt "Adicionar à tela inicial"\n- Layout revisado para mobile-first (bottom nav se fizer sentido)\n- Splash screen elegante\n\nMantenha responsividade em desktop.`, },
-
-  // ============ BACKEND ============
-  { id: 'auth', cat: 'backend', icon: '🔐', name: 'Auth Completo',
-    desc: 'Login/Signup com email+senha, sessão e rotas protegidas.',
-    prompt: `Implemente autenticação completa com Lovable Cloud:\n\n- Página /auth com tabs Login/Signup\n- Email + senha, validação e mensagens claras\n- Botão "Continuar com Google" (se disponível)\n- Página /reset-password\n- Trigger no signup criando profile em public.profiles\n- Rotas protegidas em _authenticated/*\n- Logout no header/menu\n- Redirecionamento pós-login para dashboard\n\nRespeite RLS. Nunca guarde roles em profiles — use tabela user_roles separada com has_role() security definer.`, },
-
-  { id: 'stripe', cat: 'backend', icon: '💳', name: 'Pagamento Stripe',
-    desc: 'Checkout Stripe com webhook e status de assinatura.',
-    prompt: `Integre pagamentos Stripe:\n\n- Botão "Assinar" que cria Checkout Session (server function)\n- Webhook em src/routes/api/public/stripe-webhook.ts verificando assinatura\n- Tabela subscriptions (user_id, stripe_customer_id, status, plan, current_period_end) com RLS\n- Página /billing mostrando plano atual, botão gerenciar (Portal), próximo pagamento\n- Guards de rota por plano\n\nUse STRIPE_SECRET_KEY e STRIPE_WEBHOOK_SECRET como secrets.`, },
-
-  { id: 'db-schema', cat: 'backend', icon: '🗄', name: 'Schema de Banco',
-    desc: 'Modela tabelas com RLS, grants e índices.',
-    prompt: `Modele o banco Lovable Cloud para o meu domínio.\n\nRegras obrigatórias:\n- Todo CREATE TABLE public.* seguido de GRANT (SELECT/INSERT/UPDATE/DELETE) para authenticated e ALL para service_role\n- ENABLE ROW LEVEL SECURITY em todas\n- Políticas por operação (não FOR ALL genérico)\n- Roles em tabela user_roles separada + função has_role security definer\n- Chaves estrangeiras com ON DELETE apropriado\n- Índices nas colunas usadas em WHERE/JOIN\n- Timestamps created_at/updated_at + trigger de updated_at\n\nAntes de escrever a migration, me pergunte o domínio (ex: agendamento, ecommerce, blog).`, },
-
-  { id: 'rls-fix', cat: 'backend', icon: '🔒', name: 'Corrigir RLS',
-    desc: 'Audita e corrige políticas de segurança.',
-    prompt: `Audite as políticas RLS de todas as tabelas em public.\n\nPara cada tabela liste:\n- Se RLS está habilitado\n- Cada policy: nome, operação, roles, expressão USING/WITH CHECK\n- GRANTs concedidos\n\nAponte problemas: RLS desligado, políticas FOR ALL sem WITH CHECK, referência circular a user_roles, falta de GRANTs, escopo por profile em vez de user_roles. Depois proponha uma migration corrigindo tudo, incluindo função has_role security definer se ainda não existir.`, },
-
-  { id: 'email-flow', cat: 'backend', icon: '📧', name: 'E-mail Transacional',
-    desc: 'Envia e-mails (boas-vindas, reset, notificações).',
-    prompt: `Configure e-mails transacionais via Resend:\n\n- Adicione RESEND_API_KEY como secret\n- Crie server function sendEmail(to, subject, html)\n- Templates HTML elegantes (boas-vindas, reset, confirmação de compra)\n- Dispare no signup (via trigger + edge/server), no reset, no checkout concluído\n- Log dos envios em tabela email_logs\n\nRespeite RLS: só admin lê logs.`, },
-
-  // ============ GROWTH ============
-  { id: 'seo', cat: 'growth', icon: '🔍', name: 'SEO Completo',
-    desc: 'Otimiza título, meta, OG, sitemap, robots e JSON-LD.',
-    prompt: `Otimize o SEO do site inteiro:\n\n- Em cada rota, defina head() com title único (<60 chars, com keyword), meta description (<160 chars), og:title, og:description, og:type, twitter:card\n- H1 único por página, hierarquia semântica\n- Alt em todas as imagens\n- JSON-LD (Organization, WebSite, Article/Product conforme rota)\n- sitemap.xml e robots.txt gerados\n- Canonical tags\n- Lazy loading de imagens abaixo do fold\n- Meta viewport responsivo\n\nNão use "Lovable App" nem placeholders. Cada página com identidade própria.`, },
-
-  { id: 'analytics', cat: 'growth', icon: '📊', name: 'Analytics + Eventos',
-    desc: 'Instrumenta eventos-chave (signup, purchase, click).',
-    prompt: `Adicione analytics ao app:\n\n- Integre PostHog ou similar (chave em VITE_)\n- Track eventos-chave: page_view, sign_up, log_in, subscribe_click, purchase_completed, cta_click (com prop cta_id)\n- Identifique o usuário pós-login\n- Dashboard interno mostrando MRR, signups da semana, top páginas (server function agregando)\n\nRespeite privacidade e não envie PII sensível.`, },
-
-  { id: 'i18n', cat: 'growth', icon: '🌍', name: 'Multi-idioma (i18n)',
-    desc: 'Adiciona PT/EN/ES com detecção automática.',
-    prompt: `Adicione internacionalização:\n\n- react-i18next com locales pt, en, es\n- Extraia todas as strings visíveis para arquivos de tradução\n- Seletor de idioma no header (com bandeira)\n- Detecção do idioma do browser + persistência em localStorage\n- hreflang e locale nas metatags OG\n\nMantenha PT como default.`, },
-
-  { id: 'cta-optimize', cat: 'growth', icon: '🎯', name: 'Otimizar CTAs',
-    desc: 'Reforma textos e visual dos CTAs para conversão.',
-    prompt: `Audite todos os botões CTA do site e proponha melhorias:\n\n- Texto: verbo de ação + benefício claro (ex: "Começar grátis", "Ver demonstração")\n- Contraste alto contra fundo\n- Tamanho e padding generosos, especialmente em mobile\n- Micro-interação no hover (scale/glow)\n- Hierarquia clara entre CTA primário e secundário\n- Prova social próxima ("+2.000 usuários já usam")\n\nAplique as mudanças mantendo tokens semânticos.`, },
-
-  // ============ FIX ============
-  { id: 'bug-fix', cat: 'fix', icon: '🐛', name: 'Consertar Bug',
-    desc: 'Diagnostica e corrige um erro específico.',
-    prompt: `Preciso corrigir um bug. Antes de escrever código:\n\n1. Me diga qual investigação você vai fazer (logs, network, arquivos suspeitos)\n2. Aponte a causa raiz, não só o sintoma\n3. Enumere onde mais o mesmo padrão pode falhar (rotas irmãs, políticas, fetchers)\n4. Só então proponha o patch\n5. Depois de aplicar, valide (build, teste ou console)\n\nBug atual: [DESCREVA AQUI O QUE ESTÁ ACONTECENDO, O QUE VOCÊ ESPERAVA E QUAL MENSAGEM APARECE]`, },
-
-  { id: 'perf', cat: 'fix', icon: '⚡', name: 'Otimizar Performance',
-    desc: 'Analisa e reduz LCP, bundle e re-renders.',
-    prompt: `Otimize performance do app:\n\n- Meça LCP, CLS, INP mentalmente pelas rotas\n- Identifique imagens grandes sem lazy loading e otimize (formato, tamanho, loading="lazy")\n- Encontre re-renders desnecessários (useMemo, useCallback, React.memo onde faz sentido)\n- Code-split rotas pesadas com lazy()\n- Reduza bundle: remova libs duplicadas, prefira alternativas menores\n- Suspense + skeletons ao invés de spinners genéricos\n\nApresente um relatório antes/depois do que mudou.`, },
-
-  { id: 'refactor', cat: 'fix', icon: '♻️', name: 'Refatorar Código',
-    desc: 'Quebra arquivos grandes e melhora legibilidade.',
-    prompt: `Refatore o código mantendo comportamento idêntico:\n\n- Identifique arquivos com +300 linhas e quebre em componentes/hooks focados\n- Extraia lógica compartilhada para hooks/utils\n- Tipos claros (nada de any)\n- Nomes expressivos\n- Remova código morto e imports não usados\n- Consolide estilos duplicados em tokens\n\nAntes de mudar algo, mostre a lista de arquivos afetados e o plano.`, },
-
-  { id: 'a11y', cat: 'fix', icon: '♿', name: 'Acessibilidade (a11y)',
-    desc: 'Audita e corrige contraste, foco, labels e ARIA.',
-    prompt: `Faça uma auditoria de acessibilidade:\n\n- Todos os inputs com <label>\n- Botões sem texto com aria-label\n- Contraste mínimo 4.5:1 em texto normal\n- Foco visível em toda navegação por teclado\n- Ordem lógica de tabulação\n- Landmarks (header, main, footer, nav)\n- Imagens com alt significativo\n- Modais com trap de foco e Escape para fechar\n\nCorrija tudo mantendo o design.`, },
-
-  // ============ CONTENT ============
-  { id: 'copy', cat: 'content', icon: '✍️', name: 'Copy Persuasivo',
-    desc: 'Reescreve textos com foco em conversão.',
-    prompt: `Reescreva todos os textos visíveis do site com foco em conversão:\n\n- Headline: promessa clara + benefício + diferencial (máx 12 palavras)\n- Subheadline: quem é, o que resolve, para quem (máx 20 palavras)\n- Features: benefício antes de característica\n- CTAs: verbo + resultado\n- Depoimentos: reais e específicos\n- FAQ: perguntas que o cliente REALMENTE tem\n\nEm português brasileiro, tom [ESCOLHA: profissional / próximo / técnico / luxo]. Mantenha estrutura HTML igual.`, },
-
-  { id: 'about', cat: 'content', icon: '🏛', name: 'Página Sobre',
-    desc: 'Sobre nós com missão, história, time e valores.',
-    prompt: `Crie uma página /sobre premium:\n\n- Hero com foto/ilustração + frase-manifesto\n- Nossa história em timeline visual\n- Missão, visão, valores em 3 cards\n- Time com fotos, nomes, cargos e mini bios\n- Métricas de impacto (clientes, países, anos)\n- CTA final para contato/produto\n\nDesign elegante, mesmos tokens do restante do site.`, },
-
-  { id: 'legal', cat: 'content', icon: '📜', name: 'Termos + Privacidade',
-    desc: 'Gera páginas legais em PT-BR (LGPD).',
-    prompt: `Crie páginas legais em /termos e /privacidade, em português brasileiro, alinhadas com LGPD:\n\n- Termos de Uso: aceitação, cadastro, pagamentos, propriedade intelectual, limitação de responsabilidade, rescisão, foro\n- Política de Privacidade: dados coletados, base legal, uso, compartilhamento, direitos do titular, cookies, contato do DPO\n- Layout limpo com sumário lateral clicável\n- Data de atualização visível\n\nPergunte antes o nome da empresa, CNPJ (opcional), site e email de contato.`, },
-
-  { id: 'social-content', cat: 'content', icon: '📱', name: 'Kit de Redes Sociais',
-    desc: 'Gera legendas + roteiros para posts e reels.',
-    prompt: `Gere um kit de conteúdo para redes sociais do meu produto:\n\n- 5 legendas prontas para Instagram (hook forte + corpo + CTA + hashtags)\n- 3 roteiros de Reels (30-60s) com cena a cena (visual + texto na tela + narração)\n- 3 tópicos para LinkedIn (mais formais, storytelling)\n- 3 threads curtas para X/Twitter\n\nEm PT-BR, tom [ESCOLHA]. Pergunte o nicho antes se não estiver claro.`, },
+  // ================== IA / AGENTES (8) ==================
+  s('ai-chatbot','ai','🤖','AI Chatbot com Streaming','Chat com streaming, histórico e UI polida.',
+`Chatbot AI com AI SDK + Lovable AI Gateway: bolhas assistant/user, streaming em tempo real, threads persistidas, Enter envia + Shift+Enter nova linha, shimmer "Pensando…", tratamento de 429/402. Modelo padrão google/gemini-3.6-flash. Server route em src/routes/api/chat.ts com streamText + toUIMessageStreamResponse. UI com AI Elements.`),
+  s('ai-rag','ai','📚','RAG sobre seus documentos','Upload → embeddings → busca semântica → resposta.',
+`RAG completo: upload PDF/DOCX/TXT no Storage privado → server function extrai texto → chunk 800/overlap 100 → embeddings openai/text-embedding-3-small → tabela documents_chunks com pgvector → busca por similaridade top-k → prompt ao LLM com contexto → resposta com citações. Painel de conversas e reindex.`),
+  s('ai-agent-atendimento','ai','🧑‍💼','Agente de Atendimento','Agent com tools (buscar pedido, abrir ticket).',
+`Agente de atendimento com tool-use: tools findOrder(id), openTicket(assunto,desc), refundOrder(id) implementadas como server functions com RLS por usuário. LLM decide qual tool chamar. Log de cada chamada (tool_calls table). UI de chat com badges de ferramenta usada.`),
+  s('ai-image-gen','ai','🖼','Gerador de Imagens IA','UI de geração com histórico e prompts salvos.',
+`App de imagens IA: input do prompt + presets de estilo → chama Lovable AI Gateway (google/gemini-3-pro-image) com fallback para Pollinations em 402/429 → galeria com metadata (prompt, seed, modelo) por usuário, favoritos, download, "prompts salvos". Storage privado por owner.`),
+  s('ai-video-summary','ai','🎞','Resumo de Vídeos com IA','Upload/URL → transcrição → resumo estruturado.',
+`Fluxo: URL do YouTube ou upload → server function baixa áudio → openai/whisper transcreve → LLM gera resumo, tópicos, timestamps clicáveis e Q&A. Salva em Storage/DB. UI com player + transcrição em coluna e resumo destacável.`),
+  s('ai-lead-qualifier','ai','🎯','Qualificador de Leads (BANT)','LLM pontua leads e sugere próximo passo.',
+`Ao criar lead, um server function envia dados (empresa, cargo, necessidade, orçamento, prazo) ao LLM que retorna JSON: score 0-100, tags, próxima ação, e-mail sugerido. Grava em leads.score + leads.suggested_action. Notifica SDR quando score ≥ 80.`),
+  s('ai-code-review','ai','👨‍💻','Code Review Automático','LLM comenta PRs e aponta risco.',
+`Server function recebe diff (GitHub webhook em /api/public/gh-webhook.ts), envia ao LLM com um system prompt sênior (segurança, performance, RLS, tipos), e posta comentário resumido no PR via API do GitHub. Ignora arquivos gerados/lockfiles. Marca commits com status.`),
+  s('ai-voice-tts','ai','🎙','Voz do Site (TTS)','Botão "Ouvir" em qualquer texto do app.',
+`Componente <ReadAloud text=... /> que chama server function TTS (openai gpt-4o-mini-tts, voz configurável), retorna MP3 base64, tocado no <audio>. Cache por hash do texto+voz. Ícone de play/pause com animação sutil. Sem depender do Web Speech do browser.`),
 ];
 
 export function buildSkillPrompt(skill) {

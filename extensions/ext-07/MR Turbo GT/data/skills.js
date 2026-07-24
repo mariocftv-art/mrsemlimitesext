@@ -12,6 +12,7 @@ export const SKILL_CATEGORIES = [
   { id: 'auto',    name: 'Automação',  icon: '⚡' },
   { id: 'ai',      name: 'IA/Agents',  icon: '🤖' },
   { id: 'edu',     name: 'Aulas/Professores', icon: '🎓' },
+  { id: 'iptv',    name: 'IPTV / P2P',        icon: '📺' },
 ];
 
 const s = (id, cat, icon, name, desc, prompt) => ({ id, cat, icon, name, desc, prompt });
@@ -150,6 +151,102 @@ export const SKILLS = [
 `Escreva um parecer descritivo (relatório pedagógico) em PT-BR profissional, respeitoso e construtivo:\n- Aspectos cognitivos (leitura, escrita, raciocínio lógico, atenção)\n- Aspectos socioemocionais (relacionamento, autonomia, responsabilidade)\n- Progressos observados no bimestre\n- Dificuldades e estratégias já aplicadas\n- Sugestões para a família apoiar em casa\n- Fechamento otimista\n\nEvite rótulos negativos; use linguagem pedagógica. Pergunte antes: nome do aluno, ano/série, e 3-5 observações-chave que o professor tem sobre ele.`),
   s('edu-gestao-sala','edu','🧑‍🏫','Estratégias de Gestão de Sala','Rotinas, combinados e técnicas para turmas difíceis.',
 `Monte um pacote de estratégias de gestão de sala de aula em PT-BR para [ANO/SÉRIE]:\n- 10 combinados iniciais (linguagem positiva, no que fazer e não no que não fazer)\n- Rotina de entrada, transição entre atividades e saída\n- 5 técnicas para chamar atenção sem gritar\n- Como lidar com aluno disruptivo (passo a passo em 4 níveis)\n- Sistema de reforço positivo (fichas, elogio específico, quadro de conquistas)\n- Comunicação com a família (modelo de bilhete, quando ligar)\n- Autocuidado do professor (checklist semanal)\n\nPergunte antes: ano/série e principais desafios da turma.`),
+
+  // ================== IPTV / P2P (6) ==================
+  s('iptv-painel-revenda','iptv','📺','Painel IPTV Revenda Completo','Painel administrativo pronto para revenda com M3U, Xtream, EPG e clientes.',
+`Construa um PAINEL ADMINISTRATIVO DE IPTV COMPLETO pronto para revenda, em PT-BR, com design premium (dark + acentos dourados/neon), 100% responsivo:
+
+MÓDULOS OBRIGATÓRIOS:
+1) Dashboard: KPIs (clientes ativos, expirando 7d, receita MRR, créditos, canais online, servidores). Gráficos Recharts (assinaturas por mês, top revendedores, uso por servidor).
+2) Clientes: CRUD com nome, email, telefone, plano, data ativação, expiração, status (ativo/vencido/bloqueado), device count, notas. Renovação em 1 clique, extensão de teste, bloqueio/desbloqueio, log de conexões.
+3) Revendedores: hierarquia master → sub-revenda, saldo de créditos, comissão %, transferência de créditos entre níveis, extrato.
+4) Planos: nome, duração (dias), conexões simultâneas, preço, adulto on/off, categorias liberadas.
+5) Servidores/Linhas: cadastro de servidores Xtream/M3U upstream (host, porta, user, pass), balanceamento, status online, latência, contagem de clientes.
+6) Catálogo: canais ao vivo, filmes VOD, séries — importação por M3U, Xtream Codes API, playlists remotas com refresh automático (cron). EPG XMLTV (URL + agendador), logos.
+7) Aplicativos: gerenciamento de códigos ativação IBO Player / Smarters / Duplecast / IPTV Smarters Pro / TiviMate / OTT Navigator / Absolute — com QR Code e link "adicionar 1 clique".
+8) Financeiro: cobranças (Pix/cartão), assinaturas recorrentes, cupons, gateway (Stripe/Mercado Pago/Asaas), inadimplência, notas.
+9) Suporte: tickets, WhatsApp direto, avisos em massa (banner + notificação push), FAQ.
+10) Configurações: branding (logo, cores, domínio), SMTP, integrações, chaves API, políticas.
+
+SCHEMA (Supabase RLS): profiles, resellers, clients, plans, subscriptions, servers, playlists, channels, movies, series, epg_sources, applications, activation_codes, invoices, payments, tickets, audit_logs. Roles: super_admin, master_reseller, reseller, support, client.
+
+DEPENDÊNCIAS: recharts, @tanstack/react-table, react-hook-form + zod, sonner, date-fns, qrcode.react.
+
+Comece pelo Dashboard + Clientes + Planos + Servidores. Use tokens semânticos, sem cor hardcoded.`),
+
+  s('iptv-m3u-xtream','iptv','🎛','Importador M3U + Xtream Codes','Importa playlists M3U, EPG XMLTV e sincroniza via Xtream Codes API.',
+`Implemente o SUBSISTEMA DE IMPORTAÇÃO/SINCRONIZAÇÃO para o painel IPTV:
+
+1) Importador M3U (arquivo ou URL) com parser tolerante de #EXTINF, #EXTGRP, tvg-id, tvg-name, tvg-logo, group-title, catchup. Suporta HLS (m3u8), MPEG-TS (ts), HTTPS/HTTP. Progresso em tempo real.
+2) Xtream Codes API client: player_api.php (get_live_streams, get_vod_streams, get_series, get_live_categories, get_vod_categories, get_series_categories, get_live_epg, xmltv.php). Autenticação via host+user+pass, teste de conexão, expiração da linha.
+3) EPG XMLTV: importador de URL (gz suportado), matching por tvg-id/tvg-name, agenda de refresh (cron 6h).
+4) Deduplicação de canais, matching automático de logos (fallback: Iptv-org logos public repo por tvg-id), agrupamento por categoria.
+5) Cron: refresh de playlists conforme intervalo por fonte, alerta se cair.
+6) UI: página "Fontes" (M3U/Xtream/EPG), botão "Sincronizar agora", log de última importação (adicionados/atualizados/removidos), preview do stream (hls.js).
+
+Server functions (TanStack Start) para os fetch pesados; nunca expor credenciais Xtream ao browser. Salve em servers, playlists, channels, epg_sources.`),
+
+  s('iptv-p2p-cdn','iptv','🛰','P2P Streaming (WebRTC + HLS)','Distribui streams via P2P reduzindo carga do servidor.',
+`Implemente distribuição P2P dos streams do painel IPTV para reduzir banda do servidor:
+
+1) Player web hls.js + biblioteca P2P (P2P-Media-Loader-Hlsjs OU CDNBye/hlsjs-p2p) integrada. Tracker WebTorrent/WSS próprio ou público (wss://tracker.openwebtorrent.com).
+2) Configuração por canal: on/off P2P, número máximo de peers, tamanho de segmento, TTL do cache.
+3) Métricas em tempo real: % de tráfego servido por P2P vs HTTP, peers conectados, economia estimada de banda em GB/mês, latência média. Gráfico Recharts na dashboard.
+4) Fallback automático 100% HTTP se P2P falhar.
+5) Página "P2P" no admin: economia total, top canais por peers, health do tracker.
+6) Segurança: token efêmero por sessão (JWT curto) na URL do manifesto, validação server-side (edge function), rate-limit por IP.
+
+Documente que P2P só funciona em navegador (WebRTC); apps nativos continuam HTTP puro. Adicione instrução para whitelist do tracker no CSP.`),
+
+  s('iptv-catchup-vod','iptv','🎬','Catch-up + VOD + Séries','Grava programação, biblioteca de filmes/séries com posters TMDB.',
+`Implemente CATCH-UP e biblioteca VOD/SÉRIES no painel IPTV:
+
+1) Catch-up: gravação dos últimos 3-7 dias por canal marcado, storage em bucket (Supabase Storage/R2), navegação por EPG "voltar no tempo", limpeza automática.
+2) VOD: biblioteca de filmes com posters e metadados enriquecidos via TMDB API (título original, sinopse PT-BR, gêneros, elenco, ano, duração, IMDB rating, trailer YouTube). Cron para reprocessar novos VODs.
+3) Séries: temporadas/episódios com continuar assistindo por cliente, próxima temporada auto-play.
+4) Player: hls.js com legendas WebVTT, múltiplos áudios, controle de qualidade, tela cheia, PiP, mini-player.
+5) UI cliente: Netflix-like (hero rotativo, linhas por categoria, minha lista, continuar assistindo, "porque você viu…").
+6) Watchlist e histórico por cliente com RLS.
+
+Peça a TMDB_API_KEY como secret (add_secret). Tabelas: movies, series, seasons, episodes, watch_history, watchlist.`),
+
+  s('iptv-app-codes','iptv','📱','Códigos de Ativação de Apps','Gera códigos IBO/Smarters/Duplecast com QR e ativação 1 clique.',
+`Implemente MÓDULO DE APLICATIVOS/CÓDIGOS DE ATIVAÇÃO para o painel IPTV:
+
+Apps suportados (cadastro por app):
+- IBO Player / IBO Pro
+- IPTV Smarters Pro / Smarters Player Lite
+- Duplecast
+- TiviMate (M3U + EPG)
+- OTT Navigator
+- Absolute IPTV
+- 9Xtream
+- SparkleTV
+- BOB Player
+- XCIPTV
+
+Funcionalidades:
+1) Cadastro de MAC/Device ID + código de ativação por cliente/app.
+2) Geração automática de credenciais Xtream (user/pass) por cliente com expiração.
+3) URL de ativação profunda por app (deep link) + QR Code gerado (qrcode.react) + botão "Copiar M3U", "Copiar Xtream URL".
+4) Envio automático por WhatsApp (link wa.me com mensagem pronta) e email (SMTP).
+5) Limite de conexões simultâneas por plano com kickout do device antigo.
+6) Renovação: mesmo código continua funcionando; só atualiza expiração no upstream.
+7) Log de dispositivos: IP, User-Agent, país, última conexão.
+
+Tabelas: applications, activation_codes, devices, device_sessions. Interface admin com filtros por app, status e cliente.`),
+
+  s('iptv-cliente-portal','iptv','👤','Portal do Cliente + Área de Testes','Área do cliente para renovar, ver dados e criar teste grátis.',
+`Implemente PORTAL PÚBLICO DO CLIENTE + LANDING DE VENDAS para o painel IPTV:
+
+1) Landing pública (dark premium): hero com CTA "Teste grátis 6h", 3 planos com preço, lista de canais/filmes destacados, prova social (depoimentos), FAQ IPTV (legalidade, apps, dispositivos, requisitos de internet), rodapé com WhatsApp, políticas.
+2) Cadastro teste grátis: nome + WhatsApp + email → cria cliente trial de 6h automaticamente, envia credenciais Xtream + link M3U + QR Code por email/WhatsApp. Anti-abuso: rate-limit por IP/telefone (turnstile).
+3) Área logada do cliente: minhas assinaturas, expiração com contador, botão "Renovar" (checkout), dispositivos conectados (com kickout), suporte, tutoriais por app (vídeo YouTube + passo a passo).
+4) Checkout: Pix (QR + copia-cola), cartão (Stripe/Mercado Pago), boleto opcional; ao confirmar pagamento, estende assinatura automaticamente no upstream via webhook.
+5) Notificações: 5 dias antes de expirar, 1 dia antes, no dia (email + WhatsApp).
+6) Multi-idioma (PT-BR default; EN e ES prontos para tradução).
+
+Não prometa nem cite conteúdo pirata; foque em "seu provedor de streaming"/"IPTV licenciado". SEO otimizado (title, meta, JSON-LD Product).`),
 ];
 
 export function buildSkillPrompt(skill) {

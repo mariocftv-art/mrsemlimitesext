@@ -1264,6 +1264,127 @@
       box-shadow: 0 0 14px rgba(247,224,138,.6) !important;
     }
     #mainApp::after{ background:linear-gradient(90deg,transparent,rgba(247,224,138,.45),transparent) !important; }
+
+    /* ===================================================================
+       EXT7 v7.0.3 — FINAL GOLD OVERRIDES (últimos, sobrescrevem qualquer neon)
+       =================================================================== */
+    /* Prompt rápido — ícones e labels em ouro (mata pink/blue/violet do neon) */
+    .qa-btn .qa-icon,
+    .qa-btn[data-action] .qa-icon{
+      background: linear-gradient(135deg, rgba(247,224,138,.28), rgba(184,134,11,.18)) !important;
+      border:1px solid rgba(247,224,138,.55) !important;
+      color:#f7e08a !important;
+      box-shadow: 0 0 12px rgba(247,224,138,.35) inset !important;
+    }
+    .qa-btn .qa-icon svg{ color:#f7e08a !important; stroke:#f7e08a !important; }
+    .qa-btn{ color:#fff5cc !important; border:1px solid rgba(230,193,74,.5) !important; background:linear-gradient(155deg, rgba(30,22,8,.9), rgba(15,11,4,.85)) !important; }
+    .qa-btn:hover{ border-color:#f7e08a !important; box-shadow: var(--gold-glow) !important; }
+    .qa-btn:hover .qa-icon{ color:#fff8d0 !important; box-shadow: var(--gold-glow) inset !important; }
+
+    /* Left action-bar / mr-btn — força ouro */
+    .action-bar{ background:linear-gradient(180deg, rgba(30,22,8,.7), rgba(15,11,4,.85)) !important; border:1px solid rgba(230,193,74,.28) !important; border-radius:12px; padding:8px !important; }
+    .action-btn, .action-bar > button{
+      background: linear-gradient(135deg, rgba(247,224,138,.22), rgba(184,134,11,.14)) !important;
+      border:1px solid rgba(247,224,138,.55) !important;
+      color:#fff5cc !important;
+      box-shadow: 0 4px 12px -6px rgba(230,193,74,.45), 0 0 0 1px rgba(247,224,138,.15) inset !important;
+    }
+    .action-btn:hover, .action-bar > button:hover{
+      background: linear-gradient(135deg, #f7e08a, #b8860b) !important;
+      color:#1a1200 !important;
+      border-color:#fff6c2 !important;
+      box-shadow: var(--gold-glow) !important;
+    }
+    .mr-btn{
+      background: linear-gradient(135deg, rgba(247,224,138,.20), rgba(184,134,11,.12)) !important;
+      border:1px solid rgba(247,224,138,.50) !important;
+      color:#fff5cc !important;
+    }
+    .mr-btn:hover{ background:linear-gradient(135deg, rgba(247,224,138,.38), rgba(184,134,11,.22)) !important; border-color:#f7e08a !important; color:#fff !important; box-shadow: var(--gold-glow) !important; }
+    .mr-btn.primary{ background:linear-gradient(135deg,#f7e08a,#e6c14a,#b8860b) !important; color:#1a1200 !important; border-color:#fff6c2 !important; font-weight:800 !important; }
+
+    /* Power toggle — dourado quando ATIVA */
+    #mrPowerToggle.mr-power,
+    #mrPowerToggle{
+      background: linear-gradient(135deg,#f7e08a 0%,#e6c14a 50%,#b8860b 100%) !important;
+      border:1px solid #fff6c2 !important;
+      color:#1a1200 !important;
+      box-shadow: 0 0 14px rgba(247,224,138,.55), 0 0 0 1px rgba(255,255,255,.2) inset !important;
+      font-weight:900 !important;
+      letter-spacing:.06em !important;
+    }
+    #mrPowerToggle .mr-power-dot{
+      background: radial-gradient(circle at 30% 30%, #fff8d0, #f7e08a 40%, #b8860b 100%) !important;
+      box-shadow: 0 0 10px #f7e08a, 0 0 18px rgba(247,224,138,.6) !important;
+      animation: mrGoldPulse 2s ease-in-out infinite;
+    }
+    #mrPowerToggle.off{
+      background: linear-gradient(135deg, rgba(80,15,15,.9), rgba(40,10,10,.9)) !important;
+      color:#ffb4b4 !important;
+      border-color: rgba(255,107,107,.55) !important;
+      box-shadow: 0 0 12px rgba(255,80,80,.35) !important;
+    }
+    #mrPowerToggle.off .mr-power-dot{ background:#ff5252 !important; box-shadow:0 0 10px #ff5252 !important; animation:none; }
+    @keyframes mrGoldPulse{ 0%,100%{ filter:drop-shadow(0 0 4px #f7e08a) } 50%{ filter:drop-shadow(0 0 10px #fff6c2) } }
+
+    /* Badge de dias restantes ao lado do power — dourado */
+    #licenseInfo{
+      background: linear-gradient(135deg, rgba(247,224,138,.22), rgba(184,134,11,.14)) !important;
+      border:1px solid rgba(247,224,138,.5) !important;
+      color:#fff5cc !important;
+      padding:3px 10px !important;
+      border-radius:20px !important;
+      font-weight:700 !important;
+      box-shadow: 0 0 0 1px rgba(247,224,138,.12) inset !important;
+    }
+
+    /* Aba ativa — DESTAQUE forte com halo dourado */
+    .mr-tab.active{
+      background: linear-gradient(135deg, #f7e08a 0%, #e6c14a 50%, #b8860b 100%) !important;
+      color:#1a1200 !important;
+      border:1px solid #fff6c2 !important;
+      box-shadow: 0 0 22px rgba(247,224,138,.7), 0 0 0 2px rgba(255,246,194,.35) inset !important;
+      transform: scale(1.02);
+      position:relative;
+    }
+    .mr-tab.active::before{
+      content:"" !important;
+      position:absolute !important;
+      left:-4px !important; top:8% !important; bottom:8% !important;
+      width:4px !important; border-radius:0 4px 4px 0 !important;
+      background: linear-gradient(180deg,#fff8d0,#f7e08a,#e6c14a,#b8860b) !important;
+      box-shadow: 0 0 12px #f7e08a, 0 0 20px rgba(247,224,138,.6) !important;
+      animation: mrGoldPulse 2s ease-in-out infinite !important;
+    }
+    .mr-tab.active::after{ display:none !important; }
+
+    /* Instagram tab — mantém identidade IG mas com borda ouro */
+    .mr7-tab-ig{
+      background: linear-gradient(180deg, rgba(225,48,108,.18), rgba(30,22,8,.7)) !important;
+      border-left:3px solid #e1306c !important;
+    }
+    .mr7-tab-ig.active{
+      background: linear-gradient(135deg,#dd2a7b,#8134af) !important;
+      color:#fff !important;
+      box-shadow: 0 0 22px rgba(221,42,123,.6), 0 0 0 2px rgba(247,224,138,.35) inset !important;
+    }
+
+    /* Textos "prompt rápido" / "ações" — label dourado */
+    .lt-section{
+      color:#f7e08a !important;
+      text-shadow: 0 0 8px rgba(247,224,138,.35);
+      font-weight:800 !important;
+      letter-spacing:.14em !important;
+    }
+
+    /* Pedras de ouro maiores/mais brilhantes na área do prompt */
+    .input-area::before, .input-area::after{
+      width:11px !important; height:11px !important;
+      background: radial-gradient(circle at 30% 30%, #fff8d0 0%, #f7e08a 25%, #e6c14a 55%, #7a5a0a 100%) !important;
+      box-shadow: 0 0 14px #f7e08a, 0 0 26px rgba(247,224,138,.6), inset 0 -1px 3px rgba(0,0,0,.4) !important;
+      animation: mrGoldPulse 2.5s ease-in-out infinite !important;
+    }
+    .input-area::before{ left:8px !important } .input-area::after{ right:8px !important }
   </style>
 </head>
 <body>
@@ -1344,6 +1465,7 @@
       <button class="mr-tab" data-mrtab="tools" role="tab">🛠<br>Ferram.</button>
       <button class="mr-tab" data-mrtab="fav" role="tab">⭐<br>Favoritos</button>
       <button class="mr-tab" data-mrtab="config" role="tab">⚙<br>Config.</button>
+      <button class="mr-tab mr7-tab-ig" data-mrtab="instagram" role="tab">📸<br>Instagram</button>
       <button class="mr-tab mr6-tab-skills" data-mrtab="skills" role="tab">⚡<br>Skills</button>
       <button class="mr-tab" data-mrtab="home" role="tab">🏠<br>Início</button>
       <a id="mrWhatsappTab" href="https://wa.me/5511962579428" target="_blank" rel="noopener" title="Suporte no WhatsApp" style="margin-top:8px;display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;font-size:20px;text-decoration:none;align-self:center;box-shadow:0 4px 12px rgba(37,211,102,.35)">💬</a>
@@ -1636,6 +1758,133 @@
         </div>
       </div>
     </section>
+
+    <!-- Instagram (EXT5) -->
+    <section class="mr-panel" data-mrpanel="instagram">
+      <div class="mr-panel-scroll" style="padding:14px;color:#e8faff">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+          <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#f58529,#dd2a7b,#8134af,#515bd4);display:flex;align-items:center;justify-content:center;font-size:22px">📸</div>
+          <div>
+            <div style="font-size:16px;font-weight:700;background:linear-gradient(135deg,#f58529,#dd2a7b,#8134af);-webkit-background-clip:text;background-clip:text;color:transparent">Instagram Publisher</div>
+            <div style="font-size:12px;opacity:.7">Gere mídia + legenda com IA e publique com 1 clique</div>
+          </div>
+        </div>
+
+        <div id="igStatusCard" style="background:rgba(255,255,255,.04);border:1px solid rgba(225,48,108,.25);border-radius:14px;padding:12px;margin-bottom:12px">
+          <div style="font-size:12px;opacity:.7;margin-bottom:4px">Status da conta</div>
+          <div id="igStatusText" style="font-weight:600">🔴 Não conectado</div>
+          <div id="igAccountInfo" style="font-size:12px;opacity:.8;margin-top:4px;display:none"></div>
+          <div id="igAccountPickerWrap" style="margin-top:8px;display:none">
+            <label style="font-size:11px;opacity:.7;display:block;margin-bottom:4px">📱 Publicar em:</label>
+            <select id="igAccountPicker" style="width:100%;padding:8px;border-radius:8px;background:rgba(0,0,0,.4);color:#fff;border:1px solid rgba(255,255,255,.15);font-size:13px"></select>
+          </div>
+          <button id="igConnectBtn" style="margin-top:10px;width:100%;padding:10px;border:0;border-radius:10px;background:linear-gradient(135deg,#f58529,#dd2a7b,#8134af,#515bd4);color:#fff;font-weight:700;cursor:pointer">Verificar conexão</button>
+          <button id="igAddAccountBtn" style="margin-top:6px;width:100%;padding:8px;border:1px solid rgba(225,48,108,.4);border-radius:10px;background:rgba(225,48,108,.1);color:#fff;cursor:pointer;display:none">➕ Adicionar outra conta</button>
+          <button id="igDisconnectBtn" style="margin-top:6px;width:100%;padding:8px;border:1px solid rgba(255,255,255,.15);border-radius:10px;background:transparent;color:#fff;cursor:pointer;display:none">Desconectar esta conta</button>
+        </div>
+
+        <!-- Sub-abas -->
+        <div style="display:flex;gap:4px;margin-bottom:12px;background:rgba(0,0,0,.35);padding:4px;border-radius:10px">
+          <button class="igSubTab active" data-sub="create" style="flex:1;padding:8px;border:0;border-radius:8px;background:rgba(225,48,108,.25);color:#fff;cursor:pointer;font-size:12px;font-weight:600">✨ Criar</button>
+          <button class="igSubTab" data-sub="promptsImg" style="flex:1;padding:8px;border:0;border-radius:8px;background:transparent;color:#fff;cursor:pointer;font-size:12px">🖼 Prompts Imagem</button>
+          <button class="igSubTab" data-sub="promptsVid" style="flex:1;padding:8px;border:0;border-radius:8px;background:transparent;color:#fff;cursor:pointer;font-size:12px">🎬 Prompts Vídeo</button>
+        </div>
+
+        <!-- Sub-aba: Criar -->
+        <div class="igSubPanel" data-sub="create" id="igPublishCard" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:12px;display:none">
+          <div style="font-size:13px;font-weight:700;margin-bottom:8px">✨ Nova publicação</div>
+
+          <div style="display:flex;gap:4px;margin-bottom:10px;flex-wrap:wrap">
+            <button class="igTypeBtn active" data-type="post" style="flex:1;min-width:70px;padding:6px;border-radius:8px;border:1px solid rgba(225,48,108,.4);background:rgba(225,48,108,.15);color:#fff;cursor:pointer;font-size:11px">📷 Post</button>
+            <button class="igTypeBtn" data-type="reel" style="flex:1;min-width:70px;padding:6px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:transparent;color:#fff;cursor:pointer;font-size:11px">🎬 Reel</button>
+            <button class="igTypeBtn" data-type="carousel" style="flex:1;min-width:70px;padding:6px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:transparent;color:#fff;cursor:pointer;font-size:11px">🖼 Carrossel</button>
+            <button class="igTypeBtn" data-type="viral" style="flex:1;min-width:70px;padding:6px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:transparent;color:#fff;cursor:pointer;font-size:11px">🔥 Viral</button>
+          </div>
+
+          <label id="igPromptLabel" for="igPrompt" style="font-size:11px;opacity:.7">Descreva o que você quer (a IA gera a prévia, título, legenda e hashtags)</label>
+          <textarea id="igPrompt" rows="3" placeholder="Ex: um café expresso fumegante em mesa de mármore, luz de manhã, estética minimalista para meu cafeteria…" style="width:100%;padding:10px;margin:4px 0 10px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:#fff;resize:vertical;font-family:inherit"></textarea>
+
+          <div id="igSoundtrackWrap" style="display:none;margin-bottom:10px">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px">
+              <div>
+                <label for="igDuration" style="font-size:11px;opacity:.7">⏱ Duração do Reel</label>
+                <select id="igDuration" style="width:100%;padding:9px;margin-top:4px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:#fff;font-family:inherit">
+                  <option value="10">10s</option>
+                  <option value="20">20s</option>
+                  <option value="30">30s</option>
+                  <option value="45">45s</option>
+                  <option value="60">60s</option>
+                  <option value="90">1min30s</option>
+                  <option value="120">2min</option>
+                  <option value="180">3min</option>
+                  <option value="300">5min</option>
+                  <option value="600">10min</option>
+                </select>
+              </div>
+              <div>
+                <label for="igVoiceMode" style="font-size:11px;opacity:.7">🎙 Voz/fala</label>
+                <select id="igVoiceMode" style="width:100%;padding:9px;margin-top:4px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:#fff;font-family:inherit">
+                  <option value="male_consultant">Masculina consultor</option>
+                  <option value="male_energetic">Masculina energética</option>
+                  <option value="female_premium">Feminina premium</option>
+                  <option value="characters">Personagens falando</option>
+                </select>
+              </div>
+            </div>
+            <label for="igSoundtrack" style="font-size:11px;opacity:.7">🎵 Música / trilha do Reel</label>
+            <select id="igSoundtrack" style="width:100%;padding:9px;margin-top:4px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:#fff;font-family:inherit">
+              <option value="auto">🤖 IA escolhe pelo roteiro</option>
+              <option value="cinematic">🎬 Cinematográfica (pad épico)</option>
+              <option value="upbeat">⚡ Upbeat (batida energética)</option>
+              <option value="chill">🌙 Chill (lo-fi suave)</option>
+              <option value="luxury">💎 Luxury (piano elegante)</option>
+            </select>
+            <div id="igAiModeHint" style="margin-top:6px;font-size:10px;opacity:.65">IA ativa: selecione Veo 3 / vídeo na aba IAs para orientar o roteiro.</div>
+          </div>
+
+          <button id="igGenerateBtn" style="width:100%;padding:11px;border:0;border-radius:10px;background:linear-gradient(135deg,#8134af,#515bd4);color:#fff;font-weight:700;cursor:pointer;margin-bottom:10px">🎨 Gerar prévia + legenda</button>
+
+          <!-- Preview -->
+          <div id="igPreview" style="display:none;margin-bottom:10px">
+            <div style="font-size:11px;opacity:.7;margin-bottom:6px">Prévia gerada</div>
+            <div id="igPreviewImgWrap" style="background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.1);border-radius:10px;overflow:hidden;margin-bottom:8px;min-height:100px;display:flex;align-items:center;justify-content:center">
+              <img id="igPreviewImg" style="max-width:100%;display:block" alt="prévia" />
+              <video id="igPreviewVideo" controls playsinline style="width:100%;min-height:220px;display:none;background:#000" aria-label="Prévia do Reel gerado"></video>
+            </div>
+            <div id="igVideoPlan" style="display:none;margin:0 0 8px;padding:9px 10px;border-radius:10px;background:rgba(225,48,108,.08);border:1px solid rgba(225,48,108,.22);font-size:11px;line-height:1.45;white-space:pre-wrap;color:#ffdbe8"></div>
+            <label style="font-size:11px;opacity:.7">Legenda (edite se quiser)</label>
+            <textarea id="igCaption" rows="8" placeholder="Legenda será gerada aqui…" style="width:100%;padding:10px;margin:4px 0 10px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:#fff;resize:vertical;font-family:inherit"></textarea>
+            <div style="display:flex;gap:6px;margin-bottom:6px">
+              <button id="igRegenBtn" style="flex:1;padding:9px;border:1px solid rgba(255,255,255,.15);border-radius:10px;background:transparent;color:#fff;cursor:pointer;font-size:12px">🔄 Regerar</button>
+              <button id="igOpenPreviewBtn" style="flex:1;padding:9px;border:1px solid rgba(212,175,55,.5);border-radius:10px;background:rgba(212,175,55,.08);color:#f4d47a;cursor:pointer;font-size:12px">🔍 Prévia grande</button>
+              <button id="igPublishBtn" style="flex:2;padding:11px;border:0;border-radius:10px;background:linear-gradient(135deg,#f58529,#dd2a7b);color:#fff;font-weight:700;cursor:pointer">🚀 Publicar agora</button>
+            </div>
+
+          </div>
+
+          <input id="igMediaUrl" type="hidden" />
+          <div id="igPublishLog" style="margin-top:8px;font-size:12px;opacity:.85;max-height:100px;overflow:auto"></div>
+        </div>
+
+        <!-- Sub-aba: Prompts Imagem -->
+        <div class="igSubPanel" data-sub="promptsImg" style="display:none">
+          <div style="font-size:12px;opacity:.75;margin-bottom:8px">Clique num prompt para usar. Ajuste o texto e depois gere.</div>
+          <div id="igImgPromptGrid" style="display:grid;grid-template-columns:1fr;gap:6px"></div>
+        </div>
+
+        <!-- Sub-aba: Prompts Vídeo -->
+        <div class="igSubPanel" data-sub="promptsVid" style="display:none">
+          <div style="font-size:12px;opacity:.75;margin-bottom:8px">Clique num prompt para usar em Reel. Ajuste e gere.</div>
+          <div id="igVidPromptGrid" style="display:grid;grid-template-columns:1fr;gap:6px"></div>
+        </div>
+
+        <div style="margin-top:14px;font-size:11px;opacity:.55;text-align:center">
+          Publique com sua própria conta do Instagram.<br>
+          Tokens ficam salvos com segurança no seu navegador.
+        </div>
+      </div>
+    </section>
+
 
     <!-- Skills (EXT6) -->
     <section class="mr-panel mr6-skills" data-mrpanel="skills">
@@ -1943,7 +2192,7 @@
       <div class="nc-logo-mr">MR</div>
       <div class="nc-header-info">
         <div class="t1">MR TURBO GT</div>
-        <div class="t2">MR Sem Limites · Motor V12 · v7.0.2</div>
+        <div class="t2">MR Sem Limites · Motor V12 · v7.0.3</div>
       </div>
       <div class="nc-topbar-actions">
         <button class="nc-iconbtn" id="ext3MenuBtn" title="Menu">⋮</button>

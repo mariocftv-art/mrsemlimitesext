@@ -28,13 +28,20 @@
   let armed = false;
   let lastTrigger = 0;
 
-  // ---------- Gate estrito: só arma com flag explícito ----------
+  // ---------- Gate: arma quando houver flag OU sessão/licença ativa ----------
   function checkArmed() {
     try {
-      chrome?.storage?.local?.get?.(["mrsl_ext7_armed"], (r) => {
-        armed = r && r.mrsl_ext7_armed === "1";
-        if (!armed && overlayEl?.isConnected) hideOverlay();
-      });
+      chrome?.storage?.local?.get?.(
+        ["mrsl_ext7_armed", "mrsl_session_token", "mrsl_license_key", "licenseKey", "licenseSessionToken", "settings"],
+        (r) => {
+          const flag = r && r.mrsl_ext7_armed === "1";
+          const hasSession =
+            !!(r && (r.mrsl_session_token || r.mrsl_license_key || r.licenseKey || r.licenseSessionToken));
+          const licValid = r?.settings?.licenseState?.status === "valid";
+          armed = flag || hasSession || licValid;
+          if (!armed && overlayEl?.isConnected) hideOverlay();
+        }
+      );
     } catch (_) {
       armed = false;
     }
@@ -42,7 +49,12 @@
   checkArmed();
   try {
     chrome?.storage?.onChanged?.addListener?.((changes, area) => {
-      if (area === "local" && changes.mrsl_ext7_armed) checkArmed();
+      if (area !== "local") return;
+      if (
+        changes.mrsl_ext7_armed || changes.mrsl_session_token ||
+        changes.mrsl_license_key || changes.licenseKey ||
+        changes.licenseSessionToken || changes.settings
+      ) checkArmed();
     });
   } catch (_) {}
 

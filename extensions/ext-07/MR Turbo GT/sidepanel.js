@@ -525,7 +525,7 @@ function setupBridge(iframe) {
           });
         });
         if (injected.ok) {
-          result = { message: '✅ Mensagem enviada no chat!' };
+          result = { message: '⚡ Encaminhado ao Lovable' };
         } else {
           error = injected.error || 'Falha ao digitar no chat';
         }
@@ -1081,7 +1081,7 @@ async function callCommand(command, payload) {
             );
           });
           if (resp?.ok) {
-            result = { message: hasFiles ? '✅ Mensagem + anexo enviados no chat!' : '✅ Mensagem enviada no chat!' };
+            result = { message: hasFiles ? '⚡ Encaminhado ao Lovable + anexo' : '⚡ Encaminhado ao Lovable' };
           } else {
             error = resp?.error || 'Falha ao enviar no chat';
           }
@@ -1273,6 +1273,15 @@ function initDirectChat() {
     sendBtn && (sendBtn.disabled = true);
     updateStatus('📤 Enviando...');
 
+    // Auto-ativa o motor Turbo GT ao enviar qualquer mensagem
+    try {
+      const pw = document.getElementById('mrPowerToggle');
+      const pwLbl = document.getElementById('mrPowerLabel');
+      if (pw) { pw.classList.remove('off'); pw.classList.add('on'); }
+      if (pwLbl) pwLbl.textContent = 'ATIVA';
+      chrome.storage.local.set({ mrsl_ext7_armed: '1', mrsl_power: 'on' });
+    } catch (_) {}
+
     if (msg) addMessage('user', msg);
 
     const files = pendingFiles.map(f => ({
@@ -1285,7 +1294,7 @@ function initDirectChat() {
         addMessage('bot', '❌ ' + res.error);
         updateStatus('❌ Erro');
       } else {
-        addMessage('bot', res?.message || '✅ Mensagem enviada!');
+        addMessage('bot', res?.message || '⚡ Encaminhado ao Lovable');
         updateStatus('');
       }
     } catch (e) {

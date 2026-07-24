@@ -25,7 +25,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>MR Sem Limites 6</title>
+  <title>MR Turbo GT</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
@@ -1832,13 +1832,20 @@
   </div>
   <button class="nc-open-home" id="ext3OpenHome" title="Abrir painel EXT3">☰</button>
 
-  <script src="ui/neocore.js"></script>
-  <script type="module" src="lib/anti-tamper.js"></script>
+    <style>
+      /* MR Turbo GT — Orbe desativada nesta edição */
+      .nc-orb, #ncOrb, #ncOrbCaption, .nc-cmdbar, .nc-voice-log, .nc-work-title { display:none !important; }
+      .nc-work { padding: 0 !important; }
+      .mr6-brand-badge::before { content: "MR TURBO GT · "; }
+    </style>
+    <script src="ui/neocore.js"></script>
+    <script type="module" src="lib/anti-tamper.js"></script>
+    <script src="lib/anti-inspect.js"></script>
 
-  <div class="mr6-orb o1"></div>
-  <div class="mr6-orb o2"></div>
-  <div class="mr6-orb o3"></div>
-  <div class="mr6-brand-badge">MR Sem Limites · 6</div>
-</body>
-</html>
+    <div class="mr6-orb o1"></div>
+    <div class="mr6-orb o2"></div>
+    <div class="mr6-orb o3"></div>
+    <div class="mr6-brand-badge">EXT7 v7.0.0</div>
+  </body>
+  </html>
 

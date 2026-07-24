@@ -981,6 +981,9 @@ async function showMainApp() {
   if (ls) ls.style.display = 'none';
   mainApp.style.display = 'flex';
 
+  // Arma anti-inspeção somente após app principal exibido (licença OK)
+  try { chrome.storage.local.set({ mrsl_ext7_armed: '1' }); } catch (_) {}
+
   // Inicializa a UI do chat diretamente (sem iframe)
   initDirectChat();
 }

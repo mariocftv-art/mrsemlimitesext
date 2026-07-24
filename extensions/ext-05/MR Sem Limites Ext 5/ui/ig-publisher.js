@@ -763,124 +763,64 @@
   }
 
 
+  // Mesmo caminho das abas Imagem/Vídeo: monta um prompt rico e joga no chat da IA
+  // escolhida (o próprio Lovable/Claude/GPT do usuário) — sem usar créditos do workspace.
+  function buildInstagramPrompt(userPrompt, type, duration, soundtrack, voiceMode) {
+    const isReel = type === 'reel';
+    const isCarousel = type === 'carousel';
+    const isViral = type === 'viral';
+    const formatLine = isReel
+      ? `Formato: Reel vertical 9:16 (1080×1920), duração ${duration}s, com roteiro cena a cena, fala/locução em português (${voiceMode}), trilha sonora sugerida (${soundtrack}).`
+      : isCarousel
+        ? 'Formato: Carrossel quadrado 1:1 (1080×1080) com 5 slides (capa + 3 slides de conteúdo + slide de CTA).'
+        : 'Formato: Post quadrado 1:1 (1080×1080), fotografia editorial hiper-realista.';
+    const focus = isViral ? '\n- FOCO: máximo engajamento viral, hook forte nos primeiros 3s.' : '';
+    return [
+      `📸 GERAR CONTEÚDO PARA INSTAGRAM — assunto: ${userPrompt}`,
+      '',
+      formatLine + focus,
+      '',
+      '📦 Entregar TUDO isso em uma resposta:',
+      '1) Imagem (ou 5 imagens para Reel/Carrossel) hiper-realista, foto real do assunto — SEM padrões abstratos, SEM fundo dourado genérico, SEM bolhas, SEM logos, SEM texto na imagem.',
+      isReel ? '2) Roteiro cena a cena (5 cenas) com tempos, ação, enquadramento e texto na tela.' : '2) Descrição visual detalhada da composição (câmera, luz, materiais).',
+      '3) Título forte (até 80 caracteres, com emoji, gancho de parar o dedo).',
+      '4) Legenda longa em português (mínimo 800 caracteres) com hook + valor + prova + CTA para direct/WhatsApp.',
+      '5) Bloco final com 20 hashtags relevantes ao nicho.',
+      isReel ? '6) Fala/locução em português (voz masculina consultor) sincronizada com as 5 cenas.' : '',
+      isReel ? '7) Sugestão de trilha (BPM, estilo, energia).' : '',
+      '',
+      '⚠️ Não gere código nem projeto — apenas o conteúdo pronto para publicar. Depois eu copio a mídia + legenda e publico pela extensão.',
+    ].filter(Boolean).join('\n');
+  }
+
   async function generate() {
-    const prompt = ($('igPrompt')?.value || '').trim();
-    if (!prompt) return log('❌ Descreva o que você quer gerar', false);
+    const userPrompt = ($('igPrompt')?.value || '').trim();
+    if (!userPrompt) return log('❌ Descreva o que você quer gerar', false);
     const btn = $('igGenerateBtn');
     const isReel = currentType === 'reel';
     const duration = Math.max(REEL_MIN_DURATION_SEC, Math.min(REEL_MAX_DURATION_SEC, Number($('igDuration')?.value || REEL_MIN_DURATION_SEC) || REEL_MIN_DURATION_SEC));
     const soundtrack = ($('igSoundtrack')?.value) || 'auto';
     const voiceMode = ($('igVoiceMode')?.value) || 'male_consultant';
-    const aiPick = getAiPick();
-    setBusy(btn, true, isReel ? '⏳ Gerando imagens reais + Reel…' : '⏳ Gerando imagem real + legenda…');
-    log(isReel ? `⏳ Chamando IA de imagem real para criar cenas únicas e montar vídeo de ${duration}s…` : '⏳ Chamando IA de imagem real — sem prévia local dourada…');
+    setBusy(btn, true, '📝 Enviando ao chat da IA…');
     try {
       const apiType = currentType === 'viral' ? 'post' : currentType;
-      const nonce = Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
-      const finalPrompt = (currentType === 'viral' ? `[Foco em máximo engajamento viral] ${prompt}` : prompt)
-        + `\n\nVARIAÇÃO OBRIGATÓRIA ${nonce}: gere uma composição nova, foto real do assunto descrito, nunca reutilize fundo abstrato/bolhas/dourado genérico.`;
-      const res = await fetch(GENERATE_URL + '?v=' + encodeURIComponent(nonce), {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
-        body: JSON.stringify({
-          prompt: finalPrompt,
-          type: apiType,
-          duration,
-          ai_mode: aiModeLabel(),
-          soundtrack,
-          voice_mode: voiceMode,
-          media: true,
-        }),
-      });
-      const d = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        throw new Error(d.error || `Falha na IA de imagem (${res.status})`);
-      }
-      if (!d.media_url && !d.media_b64) {
-        throw new Error('A IA não retornou mídia nova. Tente um prompt mais específico.');
-      }
-      const img = $('igPreviewImg');
-      const vid = $('igPreviewVideo');
-      const wrap = $('igPreviewImgWrap');
-      const plan = $('igVideoPlan');
-      lastGeneratedMime = '';
-      $('igMediaUrl').value = '';
-      if (lastPreviewObjectUrl) { URL.revokeObjectURL(lastPreviewObjectUrl); lastPreviewObjectUrl = ''; }
-      if (vid) { try { vid.pause(); } catch(_){} vid.style.display = 'none'; vid.removeAttribute('src'); }
-      if (img) { img.style.display = 'none'; img.removeAttribute('src'); }
-      if (wrap) wrap.style.minHeight = '100px';
-      if (plan) { plan.style.display = 'none'; plan.textContent = ''; }
-
-      if (d.media_url) {
-        if (currentType === 'reel') {
-          // Reel: monta um vídeo vertical com cenas únicas geradas pela IA, não uma capa local repetida.
-          if (img) { img.src = d.media_url; img.style.display = 'block'; }
-          log(`🎬 Montando Reel de ${duration}s com roteiro, fala e trilha…`);
-          try {
-            // Usa base64 direto (sem CORS) pra carregar no canvas sem taint
-            const firstMime = d.media_mime || 'image/png';
-            const canvasSrc = d.media_b64 ? `data:${firstMime};base64,${d.media_b64}` : d.media_url;
-            const sceneSrcs = Array.isArray(d.scenes) && d.scenes.length
-              ? d.scenes.map((s) => s && s.b64 ? `data:${s.mime || firstMime};base64,${s.b64}` : s?.url).filter(Boolean)
-              : null;
-            const rec = await makeReelPreviewFromImage(canvasSrc, d.title || '', soundtrack === 'auto' ? 'cinematic' : soundtrack, d.voiceover || d.caption || '', d.video_script || '', duration, sceneSrcs);
-            if (!/^video\/(mp4|quicktime)/i.test(rec.mimeType)) {
-              log('⚠️ Seu Chrome gerou vídeo WebM. A prévia vai aparecer; se a Meta rejeitar, gere o vídeo final na IA escolhida (Veo/Runway/etc.) e envie o MP4.', false);
-            }
-            const publicUrl = await publishGeneratedMedia(rec.dataUrl);
-            lastGeneratedMime = rec.mimeType;
-            $('igMediaUrl').value = publicUrl;
-            if (img) { img.style.display = 'none'; img.removeAttribute('src'); }
-            if (vid) {
-              lastPreviewObjectUrl = URL.createObjectURL(rec.blob);
-              vid.src = lastPreviewObjectUrl;
-              vid.style.display = 'block';
-              try { vid.play(); } catch(_){}
-            }
-            if (plan && d.video_script) {
-              plan.textContent = '🎬 Roteiro sugerido para o Reel:\n' + d.video_script
-                + (d.voiceover ? '\n\n🎙️ Fala/locução:\n' + d.voiceover : '')
-                + (d.soundtrack_suggestion ? '\n\n🎵 Trilha sugerida:\n' + d.soundtrack_suggestion : '');
-              plan.style.display = 'block';
-            }
-          } catch (err) {
-            if (img) { img.src = d.media_url; img.style.display = 'block'; }
-            if (plan) {
-              plan.textContent = '⚠️ A capa e o roteiro foram gerados, mas o navegador bloqueou a montagem do vídeo completo.\n\n' + (d.video_script || '') + (d.voiceover ? '\n\n🎙️ Fala/locução:\n' + d.voiceover : '');
-              plan.style.display = 'block';
-            }
-            $('igMediaUrl').value = '';
-            throw new Error('Não consegui finalizar o vídeo neste navegador. Gere novamente ou selecione Veo/Vídeo na aba IAs antes de publicar. ' + (err?.message || ''));
-          }
-        } else {
-          // Instagram só aceita JPEG para imagens. Converte PNG->JPEG no canvas e re-envia.
-          if (img) { img.src = d.media_url; img.style.display = 'block'; }
-          try {
-            const srcData = d.media_b64 ? `data:${d.media_mime || 'image/png'};base64,${d.media_b64}` : d.media_url;
-            const im = new Image();
-            im.crossOrigin = 'anonymous';
-            await new Promise((res, rej) => { im.onload = res; im.onerror = rej; im.src = srcData; });
-            const cv = document.createElement('canvas');
-            cv.width = im.naturalWidth || 1080;
-            cv.height = im.naturalHeight || 1080;
-            const cx = cv.getContext('2d');
-            cx.fillStyle = '#ffffff';
-            cx.fillRect(0, 0, cv.width, cv.height);
-            cx.drawImage(im, 0, 0);
-            const jpegDataUrl = cv.toDataURL('image/jpeg', 0.92);
-            const jpegUrl = await publishGeneratedMedia(jpegDataUrl);
-            $('igMediaUrl').value = jpegUrl;
-          } catch (err) {
-            log('⚠️ Falha ao converter para JPEG, usando URL original. ' + (err?.message || ''), false);
-            throw new Error('A imagem precisa ser convertida para JPEG antes de publicar. Gere novamente para evitar “formato não suportado”.');
-          }
-        }
-      } else {
-        throw new Error('A IA não retornou uma imagem. Tente um prompt mais simples.');
-      }
-      $('igCaption').value = d.caption || '';
-      $('igPreview').style.display = 'block';
-      log('✅ Prévia pronta. Confira, edite a legenda e clique em Publicar.', true);
+      const prompt = buildInstagramPrompt(userPrompt, apiType, duration, soundtrack, voiceMode);
+      const ta = document.getElementById('message');
+      if (!ta) throw new Error('Chat da IA não encontrado no painel. Abra a aba Chat e tente novamente.');
+      ta.value = prompt;
+      ta.dispatchEvent(new Event('input', { bubbles: true }));
+      try { ta.setSelectionRange(ta.value.length, ta.value.length); } catch (_) {}
+      // Ativa a aba Chat pra o usuário revisar e enviar manualmente
+      try {
+        document.querySelectorAll('.mr-tab').forEach((t) => t.classList.toggle('active', t.dataset.mrtab === 'chat'));
+        document.querySelectorAll('.mr-panel').forEach((p) => p.classList.toggle('active', p.dataset.mrpanel === 'chat'));
+        try { localStorage.setItem('mr21.lastTab', 'chat'); } catch (_) {}
+      } catch (_) {}
+      try { ta.focus(); } catch (_) {}
+      log('✅ Prompt do Instagram carregado no chat da IA. Revise e envie — a mídia e a legenda vão vir da IA que você escolheu na aba IAs (sem créditos do workspace). Depois cole a URL da mídia em "URL da mídia" abaixo e clique em Publicar.', true);
+      // Deixa o preview visível pra o usuário colar a URL manualmente
+      const preview = $('igPreview');
+      if (preview) preview.style.display = 'block';
     } catch (e) {
       log('❌ ' + (e?.message || e), false);
     } finally {

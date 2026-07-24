@@ -1167,6 +1167,103 @@
       background: rgba(20,15,6,.85) !important;
       color:#fff5cc !important;
     }
+    /* === NEO-CORE HEADER — cor de ouro no MR TURBO GT === */
+    #ext3-home .nc-header{
+      border:1px solid rgba(230,193,74,.5) !important;
+      background:linear-gradient(135deg, rgba(30,22,8,.9), rgba(15,11,4,.85)) !important;
+      box-shadow: var(--gold-glow), inset 0 1px 0 rgba(247,224,138,.15) !important;
+      border-radius:14px;
+    }
+    #ext3-home .nc-logo-mr{
+      background:linear-gradient(135deg,#f7e08a,#e6c14a 50%,#b8860b) !important;
+      color:#1a1200 !important;
+      border:1px solid #f7e08a !important;
+      box-shadow: var(--gold-glow);
+      font-weight:900 !important;
+    }
+    #ext3-home .nc-header-info .t1{
+      background:linear-gradient(135deg,#f7e08a 0%,#fff6c2 40%,#e6c14a 70%,#b8860b 100%) !important;
+      background-size:200% 200% !important;
+      -webkit-background-clip:text !important;
+      background-clip:text !important;
+      -webkit-text-fill-color:transparent !important;
+      color:transparent !important;
+      font-size:20px !important; font-weight:900 !important;
+      letter-spacing:.5px !important;
+      animation: ext7GoldShift 5s ease infinite;
+      text-shadow: 0 0 24px rgba(247,224,138,.35);
+    }
+    #ext3-home .nc-header-info .t2{
+      color:#f4d97a !important;
+      font-weight:600 !important;
+      letter-spacing:.4px !important;
+    }
+    #ext3-home .nc-iconbtn{
+      color:#f7e08a !important;
+      border:1px solid rgba(230,193,74,.45) !important;
+      background:rgba(20,15,6,.7) !important;
+    }
+    #ext3-home .nc-iconbtn:hover{ box-shadow: var(--gold-glow) !important; border-color:#f7e08a !important; }
+
+    /* NC-cards (clock, timer, items) — moldura dourada */
+    #ext3-home .nc-clock-card,
+    #ext3-home .nc-timer-card,
+    #ext3-home .nc-item,
+    #ext3-home .nc-work{
+      border:1px solid rgba(230,193,74,.32) !important;
+      background:linear-gradient(180deg, rgba(28,20,6,.7), rgba(18,13,4,.85)) !important;
+      box-shadow: inset 0 1px 0 rgba(247,224,138,.08), 0 6px 22px -14px rgba(230,193,74,.4) !important;
+    }
+    #ext3-home .nc-item:hover{
+      border-color: rgba(247,224,138,.6) !important;
+      box-shadow: var(--gold-glow) !important;
+    }
+    #ext3-home .nc-group-title, #ext3-home .nc-work-title{
+      color:#f4d97a !important; letter-spacing:1.2px !important;
+    }
+    #ext3-home .nc-clock-digits, #ext3-home .nc-timer-digits{
+      color:#fff6c2 !important;
+      text-shadow: 0 0 18px rgba(247,224,138,.5) !important;
+    }
+    #ext3-home .nc-item-icon{
+      background:linear-gradient(135deg, rgba(230,193,74,.28), rgba(184,134,11,.18)) !important;
+      color:#fff6c2 !important;
+      border:1px solid rgba(230,193,74,.4) !important;
+    }
+    #ext3-home .nc-item-chev{ color:#f4d97a !important; }
+
+    /* Pedras de ouro decorativas nas bordas do composer */
+    .input-area, .composer{ position:relative; }
+    .input-area::before, .input-area::after{
+      content:""; position:absolute; width:8px; height:8px; border-radius:50%;
+      background: radial-gradient(circle at 30% 30%, #fff8d0 0%, #f7e08a 30%, #b8860b 75%, #4a3200 100%);
+      box-shadow: 0 0 10px rgba(247,224,138,.75), 0 0 22px rgba(230,193,74,.4);
+      top:50%; transform:translateY(-50%); pointer-events:none;
+    }
+    .input-area::before{ left:6px } .input-area::after{ right:6px }
+
+    /* Sidebar (mr-tabs verticais): evitar cortar nomes */
+    .mr-tabs{ width:96px !important; flex-basis:96px !important; padding:8px 4px !important; }
+    .mr-tab{
+      min-height:58px !important;
+      font-size:10px !important;
+      line-height:1.18 !important;
+      letter-spacing:.02em !important;
+      text-transform:none !important;
+      word-break:normal !important;
+      overflow-wrap:break-word !important;
+      hyphens:auto !important;
+      padding:8px 4px !important;
+    }
+
+    /* Force gold on any lingering neon overrides from earlier blocks */
+    .app-header-title{ background:linear-gradient(135deg,#f7e08a 0%,#fff6c2 30%,#e6c14a 60%,#b8860b 100%) !important; }
+    .tab-btn.active::after, .mr-tab.active::after,
+    .app-header::after{
+      background:linear-gradient(90deg,transparent,#f7e08a,#e6c14a,#b8860b,transparent) !important;
+      box-shadow: 0 0 14px rgba(247,224,138,.6) !important;
+    }
+    #mainApp::after{ background:linear-gradient(90deg,transparent,rgba(247,224,138,.45),transparent) !important; }
   </style>
 </head>
 <body>
@@ -1845,8 +1942,8 @@
     <div class="nc-header">
       <div class="nc-logo-mr">MR</div>
       <div class="nc-header-info">
-        <div class="t1">MR Sem Limites</div>
-        <div class="t2">Extensão</div>
+        <div class="t1">MR TURBO GT</div>
+        <div class="t2">MR Sem Limites · Motor V12 · v7.0.2</div>
       </div>
       <div class="nc-topbar-actions">
         <button class="nc-iconbtn" id="ext3MenuBtn" title="Menu">⋮</button>

@@ -1273,6 +1273,15 @@ function initDirectChat() {
     sendBtn && (sendBtn.disabled = true);
     updateStatus('📤 Enviando...');
 
+    // Auto-ativa o motor Turbo GT ao enviar qualquer mensagem
+    try {
+      const pw = document.getElementById('mrPowerToggle');
+      const pwLbl = document.getElementById('mrPowerLabel');
+      if (pw) { pw.classList.remove('off'); pw.classList.add('on'); }
+      if (pwLbl) pwLbl.textContent = 'ATIVA';
+      chrome.storage.local.set({ mrsl_ext7_armed: '1', mrsl_power: 'on' });
+    } catch (_) {}
+
     if (msg) addMessage('user', msg);
 
     const files = pendingFiles.map(f => ({

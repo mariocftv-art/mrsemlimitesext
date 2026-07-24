@@ -275,9 +275,9 @@ function ExtensionsPage() {
       <Card className="glass mb-4 border-primary/40">
           <CardContent className="flex flex-col gap-3 p-4 md:flex-row md:items-center md:justify-between">
             <div className="space-y-1">
-              <p className="text-sm font-semibold">EXT6 — MR Sem Limites Glass Orb</p>
+              <p className="text-sm font-semibold">EXT6 — MR Sem Limites Glass Orb (Híbrida)</p>
               <p className="text-xs text-muted-foreground">
-                Mesma base da EXT5 (backend de chaves, Instagram, IAs, prompts, ferramentas) com painel redesenhado em <b>Glass Orb</b>: fundo estelar animado, orbes flutuantes e identidade MR Sem Limites em ouro e preto. Não afeta as extensões anteriores.
+                Mesma base da EXT5 + fluxo Instagram <b>híbrido</b>: botão <b>Gerar no Lovable</b> (qualidade máxima, sem créditos) e botão <b>Gerar e Publicar Auto</b> (Pollinations + Graph API, publica sozinho). Visual Glass Orb em ouro e preto.
               </p>
             </div>
             <div className="flex flex-col gap-2 md:flex-row md:w-auto">
@@ -285,11 +285,11 @@ function ExtensionsPage() {
                 className="gap-1.5 md:w-auto"
                 style={{ background: "linear-gradient(135deg,#d4af37,#f5d06a,#7c3aed)", color: "#1a1305" }}
                 onClick={() => {
-                  downloadZip(EXT6_ZIP_URL, "MR-Sem-Limites-EXT6-v6.0.0.zip");
-                  toast.success("Download da EXT6 iniciado.");
+                  downloadZip(EXT6_ZIP_URL, "MR-Sem-Limites-EXT6-v6.0.1.zip");
+                  toast.success("Download da EXT6 v6.0.1 iniciado.");
                 }}
               >
-                <Download className="h-4 w-4" /> EXT6 v6.0.0 Download
+                <Download className="h-4 w-4" /> EXT6 v6.0.1 Download
               </Button>
               <Button variant="outline" className="gap-1.5 border-emerald-500/60 text-emerald-400 hover:bg-emerald-500/10 md:w-auto" onClick={openSupport}>
                 <MessageCircle className="h-4 w-4" /> Suporte

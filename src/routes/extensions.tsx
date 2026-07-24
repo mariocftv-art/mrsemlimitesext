@@ -98,7 +98,7 @@ const EXT1_ZIP_URL = "/MR%20Sem%20Limites%20EXT1.zip";
 const EXT2_ZIP_URL = "/__l5e/assets-v1/ce8b8538-9670-4dc9-80ef-8143186ab254/MR Sem Limites EXT2.zip";
 const EXT3_ZIP_URL = "/__l5e/assets-v1/e5691ba7-8515-4004-bb77-b0df44b06628/MR-Sem-Limites-EXT3-v3.2.6.zip";
 const EXT4_ZIP_URL = "/__l5e/assets-v1/a9e2a317-8481-456e-9dc6-5df018c0cc59/MR Sem Limite Manus.zip";
-const EXT5_ZIP_URL = "/__l5e/assets-v1/dbab4104-b9b9-4eaf-9ab8-a8a6211c0337/MR-Sem-Limites-EXT5-v5.4.20.zip";
+const EXT5_ZIP_URL = "/__l5e/assets-v1/913c4586-26f2-45ff-a85f-be22941146b0/MR-Sem-Limites-EXT5-v5.4.21.zip";
 import ext6Asset from "@/assets/ext6-v6.1.0.zip.asset.json";
 const EXT6_ZIP_URL = ext6Asset.url;
 

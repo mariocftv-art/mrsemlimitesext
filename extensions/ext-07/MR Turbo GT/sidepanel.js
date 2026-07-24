@@ -1022,7 +1022,7 @@ async function callCommand(command, payload) {
             resolve();
           });
         });
-        await chrome.storage.local.remove(['licenseKey', 'licenseSessionToken']);
+        await chrome.storage.local.remove(['licenseKey', 'licenseSessionToken', 'mrsl_ext7_armed']);
         licenseKey = null;
         licenseSessionToken = null;
         licenseInfo = null;

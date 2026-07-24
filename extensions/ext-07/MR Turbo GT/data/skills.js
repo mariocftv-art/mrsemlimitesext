@@ -151,7 +151,6 @@ export const SKILLS = [
 `Escreva um parecer descritivo (relatório pedagógico) em PT-BR profissional, respeitoso e construtivo:\n- Aspectos cognitivos (leitura, escrita, raciocínio lógico, atenção)\n- Aspectos socioemocionais (relacionamento, autonomia, responsabilidade)\n- Progressos observados no bimestre\n- Dificuldades e estratégias já aplicadas\n- Sugestões para a família apoiar em casa\n- Fechamento otimista\n\nEvite rótulos negativos; use linguagem pedagógica. Pergunte antes: nome do aluno, ano/série, e 3-5 observações-chave que o professor tem sobre ele.`),
   s('edu-gestao-sala','edu','🧑‍🏫','Estratégias de Gestão de Sala','Rotinas, combinados e técnicas para turmas difíceis.',
 `Monte um pacote de estratégias de gestão de sala de aula em PT-BR para [ANO/SÉRIE]:\n- 10 combinados iniciais (linguagem positiva, no que fazer e não no que não fazer)\n- Rotina de entrada, transição entre atividades e saída\n- 5 técnicas para chamar atenção sem gritar\n- Como lidar com aluno disruptivo (passo a passo em 4 níveis)\n- Sistema de reforço positivo (fichas, elogio específico, quadro de conquistas)\n- Comunicação com a família (modelo de bilhete, quando ligar)\n- Autocuidado do professor (checklist semanal)\n\nPergunte antes: ano/série e principais desafios da turma.`),
-];
 
   // ================== IPTV / P2P (6) ==================
   s('iptv-painel-revenda','iptv','📺','Painel IPTV Revenda Completo','Painel administrativo pronto para revenda com M3U, Xtream, EPG e clientes.',

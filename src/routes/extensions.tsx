@@ -313,11 +313,11 @@ function ExtensionsPage() {
                 className="gap-1.5 md:w-auto"
                 style={{ background: "linear-gradient(135deg,#ef4444,#f59e0b 45%,#22d3ee)", color: "#04061a" }}
                 onClick={() => {
-                  downloadZip(EXT7_ZIP_URL, "MR-Turbo-GT-v7.0.2.zip");
+                  downloadZip(EXT7_ZIP_URL, "MR-Turbo-GT-v7.0.3.zip");
                   toast.success("Download da EXT7 iniciado.");
                 }}
               >
-                <Download className="h-4 w-4" /> EXT7 v7.0.2 Download
+                <Download className="h-4 w-4" /> EXT7 v7.0.3 Download
               </Button>
               <Button variant="outline" className="gap-1.5 border-emerald-500/60 text-emerald-400 hover:bg-emerald-500/10 md:w-auto" onClick={openSupport}>
                 <MessageCircle className="h-4 w-4" /> Suporte

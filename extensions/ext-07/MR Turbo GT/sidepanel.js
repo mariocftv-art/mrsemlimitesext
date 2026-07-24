@@ -525,7 +525,7 @@ function setupBridge(iframe) {
           });
         });
         if (injected.ok) {
-          result = { message: '✅ Mensagem enviada no chat!' };
+          result = { message: '⚡ Encaminhado ao Lovable' };
         } else {
           error = injected.error || 'Falha ao digitar no chat';
         }

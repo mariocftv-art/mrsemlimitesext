@@ -1,0 +1,227 @@
+/* ==========================================================================
+   MR Sem Limites 6 — Glass Orb Redesign
+   Camada puramente visual sobre a EXT5. Não altera nenhuma lógica JS.
+   Inspirado no painel Glass/Orb (glass card + orbes + fundo estelar).
+   ========================================================================== */
+
+:root {
+  --mr6-bg-0: #05060f;
+  --mr6-bg-1: #0a0c1c;
+  --mr6-glass: rgba(12, 16, 34, 0.55);
+  --mr6-glass-strong: rgba(12, 16, 34, 0.78);
+  --mr6-border: rgba(212, 175, 55, 0.28);
+  --mr6-border-strong: rgba(212, 175, 55, 0.55);
+  --mr6-gold: #d4af37;
+  --mr6-gold-2: #f5d06a;
+  --mr6-gold-3: #ffe58a;
+  --mr6-purple: #7c3aed;
+  --mr6-cyan: #22d3ee;
+  --mr6-magenta: #ec4899;
+  --mr6-text: #f4ecd0;
+  --mr6-text-sub: #b9b195;
+}
+
+/* ---- Fundo animado global ---- */
+html, body {
+  background: #05060f !important;
+  color: var(--mr6-text) !important;
+}
+
+/* Camada de estrelas + halos */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(1px 1px at 12% 22%, rgba(255,229,138,0.9), transparent 60%),
+    radial-gradient(1px 1px at 78% 34%, rgba(255,229,138,0.6), transparent 60%),
+    radial-gradient(1.2px 1.2px at 42% 68%, rgba(255,229,138,0.75), transparent 60%),
+    radial-gradient(1px 1px at 88% 82%, rgba(255,229,138,0.5), transparent 60%),
+    radial-gradient(1px 1px at 22% 88%, rgba(255,229,138,0.6), transparent 60%),
+    radial-gradient(1.5px 1.5px at 62% 12%, rgba(255,229,138,0.85), transparent 60%);
+  background-size: 100% 100%;
+  animation: mr6-twinkle 6s ease-in-out infinite alternate;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 15% 0%, rgba(124, 58, 237, 0.20), transparent 55%),
+    radial-gradient(ellipse at 85% 100%, rgba(212, 175, 55, 0.18), transparent 55%),
+    radial-gradient(ellipse at 50% 50%, rgba(34, 211, 238, 0.08), transparent 65%),
+    linear-gradient(180deg, rgba(5,6,15,.35) 0%, rgba(5,6,15,.15) 50%, rgba(5,6,15,.6) 100%);
+}
+
+@keyframes mr6-twinkle {
+  0%   { opacity: 0.55; transform: translateY(0px); }
+  100% { opacity: 1;    transform: translateY(-2px); }
+}
+
+/* Orbes flutuantes */
+.mr6-orb {
+  position: fixed;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.55;
+  animation: mr6-float 14s ease-in-out infinite alternate;
+}
+.mr6-orb.o1 {
+  width: 260px; height: 260px;
+  top: -60px; left: -60px;
+  background: radial-gradient(circle, rgba(212,175,55,0.75), transparent 65%);
+  animation-delay: -3s;
+}
+.mr6-orb.o2 {
+  width: 320px; height: 320px;
+  bottom: -80px; right: -100px;
+  background: radial-gradient(circle, rgba(124,58,237,0.75), transparent 65%);
+  animation-delay: -7s;
+}
+.mr6-orb.o3 {
+  width: 200px; height: 200px;
+  top: 40%; right: -60px;
+  background: radial-gradient(circle, rgba(34,211,238,0.55), transparent 65%);
+  animation-delay: -10s;
+}
+
+@keyframes mr6-float {
+  0%   { transform: translate3d(0,0,0) scale(1); }
+  50%  { transform: translate3d(20px,-30px,0) scale(1.06); }
+  100% { transform: translate3d(-15px,25px,0) scale(0.98); }
+}
+
+/* Garante que o conteúdo do EXT5 fique acima do fundo */
+#licenseScreen,
+#mainApp,
+.app-header,
+.action-bar,
+.tabs-bar,
+.mr-tabs,
+.input-area,
+.app-footer,
+.quick-actions,
+.mr-content,
+.messages,
+.tab-content {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---- Glass containers (sobrescreve gradientes anteriores) ---- */
+.app-header,
+.action-bar,
+.tabs-bar,
+.mr-tabs,
+.input-area,
+.app-footer,
+.quick-actions {
+  background: linear-gradient(180deg, var(--mr6-glass-strong), var(--mr6-glass)) !important;
+  backdrop-filter: blur(18px) saturate(150%);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  border-color: var(--mr6-border) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 229, 138, 0.10),
+    0 8px 32px -12px rgba(0, 0, 0, 0.55) !important;
+}
+
+/* Título e logo com gradiente ouro MR */
+.app-header-title,
+.logo-text,
+#sp-footer-text {
+  background: linear-gradient(135deg, var(--mr6-gold-3), var(--mr6-gold), var(--mr6-gold-2)) !important;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent !important;
+  letter-spacing: 0.02em;
+  font-weight: 800 !important;
+}
+
+/* ---- Tabs ---- */
+.tab-btn.active,
+.mr-tab.active {
+  color: var(--mr6-gold-2) !important;
+  border-bottom-color: var(--mr6-gold) !important;
+  text-shadow: 0 0 12px rgba(212, 175, 55, 0.35);
+}
+.tab-btn:hover,
+.mr-tab:hover {
+  color: var(--mr6-gold-3) !important;
+}
+
+/* ---- Bolhas de chat ---- */
+.bubble.bot {
+  background: rgba(16, 20, 48, 0.72) !important;
+  border: 1px solid var(--mr6-border) !important;
+  backdrop-filter: blur(12px);
+  color: var(--mr6-text) !important;
+}
+.bubble.user {
+  background: linear-gradient(135deg, var(--mr6-gold), #b8891f) !important;
+  color: #1a1305 !important;
+  border-color: rgba(212, 175, 55, 0.6) !important;
+  box-shadow: 0 6px 24px -10px rgba(212, 175, 55, 0.55) !important;
+}
+
+/* ---- Botões primários ganham selo MR ---- */
+.btn-primary,
+button.primary,
+.mr-btn-primary,
+.btn.primary {
+  background: linear-gradient(135deg, var(--mr6-gold), var(--mr6-gold-2)) !important;
+  color: #1a1305 !important;
+  border: 1px solid var(--mr6-border-strong) !important;
+  box-shadow: 0 6px 24px -10px rgba(212, 175, 55, 0.6) !important;
+  font-weight: 700 !important;
+}
+.btn-primary:hover,
+button.primary:hover,
+.mr-btn-primary:hover,
+.btn.primary:hover {
+  filter: brightness(1.08);
+}
+
+/* ---- Inputs ---- */
+input, textarea, select {
+  color: var(--mr6-text) !important;
+}
+input::placeholder, textarea::placeholder {
+  color: var(--mr6-text-sub) !important;
+  opacity: 0.7;
+}
+
+/* ---- Scrollbar fininha ---- */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--mr6-gold), #6b4d10);
+  border-radius: 6px;
+}
+::-webkit-scrollbar-track { background: transparent; }
+
+/* ---- Badge de marca no rodapé ---- */
+.mr6-brand-badge {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  z-index: 5;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #1a1305;
+  background: linear-gradient(135deg, var(--mr6-gold-2), var(--mr6-gold));
+  border: 1px solid var(--mr6-border-strong);
+  box-shadow: 0 4px 18px -6px rgba(212, 175, 55, 0.55);
+  pointer-events: none;
+  opacity: 0.9;
+}

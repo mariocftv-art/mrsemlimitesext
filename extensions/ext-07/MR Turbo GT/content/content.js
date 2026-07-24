@@ -2040,14 +2040,13 @@ Isso vai remover a marca d'água do Lovable. Aplique essa alteração agora.`,
     }
 
     function ensureFloatBall() {
-      // EXT7 v7.0.4 — Botão flutuante COCKPIT removido a pedido do usuário.
-      // Também remove qualquer instância residual injetada por versões antigas.
+      // EXT7 v7.0.5 — remove duplicatas antes de criar (evita 2 botões flutuantes)
       try {
-        document.querySelectorAll('#il-float-ball').forEach(el => el.remove());
+        document.querySelectorAll('#il-float-ball').forEach(el => {
+          if (el !== floatBall) el.remove();
+        });
       } catch(_) {}
-      floatBall = null;
-      return;
-      if (floatBall) return;
+      if (floatBall && document.body.contains(floatBall)) return;
       floatBall = document.createElement('div');
       floatBall.id = 'il-float-ball';
 
@@ -2060,10 +2059,10 @@ Isso vai remover a marca d'água do Lovable. Aplique essa alteração agora.`,
       subMenuHtml += '</div>';
 
       floatBall.innerHTML = `
-        <img src="${iconUrl}" alt="MR TURBO GT">
+        <img src="${iconUrl}" alt="MR SEM LIMITES">
         <div class="il-cockpit-label">
-          <div class="il-cockpit-title">MR TURBO GT</div>
-          <div class="il-cockpit-sub">MOTOR V12</div>
+          <div class="il-cockpit-title">MR SEM LIMITES</div>
+          <div class="il-cockpit-sub">TURBO GT · V12</div>
         </div>
         <div class="il-status-dot"></div>
         ${subMenuHtml}

@@ -2214,7 +2214,7 @@ Isso vai remover a marca d'água do Lovable. Aplique essa alteração agora.`,
         });
       });
 
-      // Clique arma o Ask Lovable (verde sólido) e abre/fecha o dock. Arraste para reposicionar.
+      // Toggle: 1º clique → arma (verde) + abre dock; 2º clique → fecha dock + desarma (vermelho).
       floatBall.addEventListener('click', (e) => {
         if (isDragging) return;
         if (e.target.closest('.il-sub-btn') || e.target.closest('.il-sub-menu')) return;
@@ -2223,14 +2223,23 @@ Isso vai remover a marca d'água do Lovable. Aplique essa alteração agora.`,
           return;
         }
         if (!STATE.active) {
+          // LIGA: verde + abre dock com botões
           STATE.active = true;
           STATE._manuallyActivated = true;
           announceActive();
           sendMessage({ type: 'SET_SETTINGS', updates: { enabled: true } });
-          showIlSuccessToast('✅ Ask Lovable ativado — cockpit verde');
+          updateFloatBall();
+          openSubMenu();
+          showIlSuccessToast('✅ Cockpit ativado — dock aberto');
+        } else {
+          // DESLIGA: fecha dock + vermelho
+          closeSubMenu();
+          STATE.active = false;
+          STATE._manuallyActivated = false;
+          sendMessage({ type: 'SET_SETTINGS', updates: { enabled: false } });
+          updateFloatBall();
+          showIlSuccessToast('⏸️ Cockpit desativado');
         }
-        toggleSubMenu();
-        updateFloatBall();
       });
 
       // Sem hover automático: o dock só abre/fecha no clique para não ficar “louco”.

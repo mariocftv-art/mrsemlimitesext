@@ -1403,6 +1403,25 @@
     }
     .input-area::before{ left:8px !important } .input-area::after{ right:8px !important }
   </style>
+<style id="mrsl-compact-layout-override">
+  /* LAYOUT COMPACTO — cabeçalho reduzido e mais espaço para o chat (aplicado nas 5 extensões) */
+  .banner{padding:2px 0 !important;max-height:36px;background:transparent !important;border-bottom:1px solid var(--border)}
+  .banner img{max-height:28px !important;width:auto !important;object-fit:contain;display:block;margin:0 auto}
+  .app-header{padding:6px 10px !important}
+  .app-header-logo{width:28px !important;height:28px !important;border-radius:8px !important}
+  .app-header-brand{width:30px !important;height:30px !important;border-radius:9px !important}
+  .app-header-title{font-size:12px !important;letter-spacing:.3px !important}
+  #chatPanel{flex:1 1 auto;min-height:0}
+  #history{flex:1 1 auto;min-height:0}
+  .input-area{padding:8px 10px 10px !important}
+  #message{min-height:38px !important}
+  @media (max-width:420px){
+    .banner{max-height:30px}
+    .banner img{max-height:22px !important}
+    .app-header{padding:4px 8px !important}
+    .app-header-logo,.app-header-brand{width:24px !important;height:24px !important}
+  }
+</style>
 </head>
 <body>
   <div class="neo-grid" aria-hidden="true"></div>

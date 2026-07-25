@@ -2024,7 +2024,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           console.warn('[checkStoredLicense] Erro transitorio de banco - usando token salvo como fallback');
           _licenseCache = { valid: true, session_token: licenseSessionToken };
           _licenseCacheTime = Date.now();
-          licenseInfo = licenseInfo || { days_remaining: 999, hours_remaining: 0, license_id: null };
+          licenseInfo = licenseInfo || { days_remaining: null, hours_remaining: 0, license_id: null };
           showMainApp();
           return true;
         }

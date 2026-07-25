@@ -1739,8 +1739,8 @@
           inset 0 1px 0 rgba(255,246,194,0.7),
           inset 0 -2px 6px rgba(74,54,8,0.55);
       }
-      #il-float-ball.il-ball-ativo .il-status-dot { background: #22c55e; box-shadow: 0 0 10px #22c55e; }
-      #il-float-ball.il-ball-inativo .il-status-dot { background: #b91c1c; animation: none; box-shadow: 0 0 6px #7f1d1d; }
+      #il-float-ball.il-ball-ativo .il-status-dot { background: #22c55e !important; box-shadow: 0 0 10px #22c55e !important; animation: none !important; opacity: 1 !important; }
+      #il-float-ball.il-ball-inativo .il-status-dot { background: transparent !important; box-shadow: none !important; animation: none !important; border-color: rgba(74,54,8,0.6) !important; opacity: 0.5 !important; }
       #il-float-ball.il-ball-inativo { opacity: 0.9; }
       #il-float-ball.il-dragging .il-sub-menu { display: none !important; }
       @keyframes il-toast-slide-in {

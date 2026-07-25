@@ -1973,7 +1973,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (storage.licenseSessionToken) {
           licenseSessionToken = storage.licenseSessionToken;
           licenseInfo = {
-            days_remaining: cachedState.expiresAt ? Math.ceil((new Date(cachedState.expiresAt) - Date.now()) / 86400000) : 999,
+            days_remaining: cachedState.expiresAt ? Math.max(0, Math.ceil((new Date(cachedState.expiresAt) - Date.now()) / 86400000)) : null,
             hours_remaining: 0,
             license_id: cachedState.licenseHash || null,
           };

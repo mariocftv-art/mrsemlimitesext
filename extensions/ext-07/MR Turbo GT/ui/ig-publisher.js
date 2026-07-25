@@ -421,8 +421,7 @@
           stream.getTracks().forEach((t) => t.stop());
           if (audioCtx) { try { await audioCtx.close(); } catch(_){} }
           const blob = new Blob(chunks, { type: mimeType });
-          const dataUrl = await blobToDataUrl(blob);
-          resolve({ blob, dataUrl, mimeType });
+          resolve({ blob, dataUrl: '', mimeType });
         } catch (e) { reject(e); }
       };
     });

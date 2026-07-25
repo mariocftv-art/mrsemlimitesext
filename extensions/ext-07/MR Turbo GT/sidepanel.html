@@ -1501,7 +1501,7 @@
       <button class="mr-tab" data-mrtab="tools" role="tab">🛠<br>Ferram.</button>
       <button class="mr-tab" data-mrtab="fav" role="tab">⭐<br>Favoritos</button>
       <button class="mr-tab" data-mrtab="config" role="tab">⚙<br>Config.</button>
-      <button class="mr-tab mr7-tab-ig" data-mrtab="instagram" role="tab">📸<br>Instagram</button>
+      
       <button class="mr-tab mr6-tab-skills" data-mrtab="skills" role="tab">⚡<br>Skills</button>
       <button class="mr-tab" data-mrtab="home" role="tab">🏠<br>Início</button>
       <a id="mrWhatsappTab" href="https://wa.me/5511962579428" target="_blank" rel="noopener" title="Suporte no WhatsApp" style="margin-top:8px;display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;font-size:20px;text-decoration:none;align-self:center;box-shadow:0 4px 12px rgba(37,211,102,.35)">💬</a>
@@ -1795,131 +1795,6 @@
       </div>
     </section>
 
-    <!-- Instagram (EXT5) -->
-    <section class="mr-panel" data-mrpanel="instagram">
-      <div class="mr-panel-scroll" style="padding:14px;color:#e8faff">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
-          <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#f58529,#dd2a7b,#8134af,#515bd4);display:flex;align-items:center;justify-content:center;font-size:22px">📸</div>
-          <div>
-            <div style="font-size:16px;font-weight:700;background:linear-gradient(135deg,#f58529,#dd2a7b,#8134af);-webkit-background-clip:text;background-clip:text;color:transparent">Instagram Publisher</div>
-            <div style="font-size:12px;opacity:.7">Gere mídia + legenda com IA e publique com 1 clique</div>
-          </div>
-        </div>
-
-        <div id="igStatusCard" style="background:rgba(255,255,255,.04);border:1px solid rgba(225,48,108,.25);border-radius:14px;padding:12px;margin-bottom:12px">
-          <div style="font-size:12px;opacity:.7;margin-bottom:4px">Status da conta</div>
-          <div id="igStatusText" style="font-weight:600">🔴 Não conectado</div>
-          <div id="igAccountInfo" style="font-size:12px;opacity:.8;margin-top:4px;display:none"></div>
-          <div id="igAccountPickerWrap" style="margin-top:8px;display:none">
-            <label style="font-size:11px;opacity:.7;display:block;margin-bottom:4px">📱 Publicar em:</label>
-            <select id="igAccountPicker" style="width:100%;padding:8px;border-radius:8px;background:rgba(0,0,0,.4);color:#fff;border:1px solid rgba(255,255,255,.15);font-size:13px"></select>
-          </div>
-          <button id="igConnectBtn" style="margin-top:10px;width:100%;padding:10px;border:0;border-radius:10px;background:linear-gradient(135deg,#f58529,#dd2a7b,#8134af,#515bd4);color:#fff;font-weight:700;cursor:pointer">Verificar conexão</button>
-          <button id="igAddAccountBtn" style="margin-top:6px;width:100%;padding:8px;border:1px solid rgba(225,48,108,.4);border-radius:10px;background:rgba(225,48,108,.1);color:#fff;cursor:pointer;display:none">➕ Adicionar outra conta</button>
-          <button id="igDisconnectBtn" style="margin-top:6px;width:100%;padding:8px;border:1px solid rgba(255,255,255,.15);border-radius:10px;background:transparent;color:#fff;cursor:pointer;display:none">Desconectar esta conta</button>
-        </div>
-
-        <!-- Sub-abas -->
-        <div style="display:flex;gap:4px;margin-bottom:12px;background:rgba(0,0,0,.35);padding:4px;border-radius:10px">
-          <button class="igSubTab active" data-sub="create" style="flex:1;padding:8px;border:0;border-radius:8px;background:rgba(225,48,108,.25);color:#fff;cursor:pointer;font-size:12px;font-weight:600">✨ Criar</button>
-          <button class="igSubTab" data-sub="promptsImg" style="flex:1;padding:8px;border:0;border-radius:8px;background:transparent;color:#fff;cursor:pointer;font-size:12px">🖼 Prompts Imagem</button>
-          <button class="igSubTab" data-sub="promptsVid" style="flex:1;padding:8px;border:0;border-radius:8px;background:transparent;color:#fff;cursor:pointer;font-size:12px">🎬 Prompts Vídeo</button>
-        </div>
-
-        <!-- Sub-aba: Criar -->
-        <div class="igSubPanel" data-sub="create" id="igPublishCard" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:12px;display:none">
-          <div style="font-size:13px;font-weight:700;margin-bottom:8px">✨ Nova publicação</div>
-
-          <div style="display:flex;gap:4px;margin-bottom:10px;flex-wrap:wrap">
-            <button class="igTypeBtn active" data-type="post" style="flex:1;min-width:70px;padding:6px;border-radius:8px;border:1px solid rgba(225,48,108,.4);background:rgba(225,48,108,.15);color:#fff;cursor:pointer;font-size:11px">📷 Post</button>
-            <button class="igTypeBtn" data-type="reel" style="flex:1;min-width:70px;padding:6px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:transparent;color:#fff;cursor:pointer;font-size:11px">🎬 Reel</button>
-            <button class="igTypeBtn" data-type="carousel" style="flex:1;min-width:70px;padding:6px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:transparent;color:#fff;cursor:pointer;font-size:11px">🖼 Carrossel</button>
-            <button class="igTypeBtn" data-type="viral" style="flex:1;min-width:70px;padding:6px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:transparent;color:#fff;cursor:pointer;font-size:11px">🔥 Viral</button>
-          </div>
-
-          <label id="igPromptLabel" for="igPrompt" style="font-size:11px;opacity:.7">Descreva o que você quer (a IA gera a prévia, título, legenda e hashtags)</label>
-          <textarea id="igPrompt" rows="3" placeholder="Ex: um café expresso fumegante em mesa de mármore, luz de manhã, estética minimalista para meu cafeteria…" style="width:100%;padding:10px;margin:4px 0 10px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:#fff;resize:vertical;font-family:inherit"></textarea>
-
-          <div id="igSoundtrackWrap" style="display:none;margin-bottom:10px">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px">
-              <div>
-                <label for="igDuration" style="font-size:11px;opacity:.7">⏱ Duração do Reel</label>
-                <select id="igDuration" style="width:100%;padding:9px;margin-top:4px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:#fff;font-family:inherit">
-                  <option value="10">10s</option>
-                  <option value="20">20s</option>
-                  <option value="30">30s</option>
-                  <option value="45">45s</option>
-                  <option value="60">60s</option>
-                  <option value="90">1min30s</option>
-                  <option value="120">2min</option>
-                  <option value="180">3min</option>
-                  <option value="300">5min</option>
-                  <option value="600">10min</option>
-                </select>
-              </div>
-              <div>
-                <label for="igVoiceMode" style="font-size:11px;opacity:.7">🎙 Voz/fala</label>
-                <select id="igVoiceMode" style="width:100%;padding:9px;margin-top:4px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:#fff;font-family:inherit">
-                  <option value="male_consultant">Masculina consultor</option>
-                  <option value="male_energetic">Masculina energética</option>
-                  <option value="female_premium">Feminina premium</option>
-                  <option value="characters">Personagens falando</option>
-                </select>
-              </div>
-            </div>
-            <label for="igSoundtrack" style="font-size:11px;opacity:.7">🎵 Música / trilha do Reel</label>
-            <select id="igSoundtrack" style="width:100%;padding:9px;margin-top:4px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:#fff;font-family:inherit">
-              <option value="auto">🤖 IA escolhe pelo roteiro</option>
-              <option value="cinematic">🎬 Cinematográfica (pad épico)</option>
-              <option value="upbeat">⚡ Upbeat (batida energética)</option>
-              <option value="chill">🌙 Chill (lo-fi suave)</option>
-              <option value="luxury">💎 Luxury (piano elegante)</option>
-            </select>
-            <div id="igAiModeHint" style="margin-top:6px;font-size:10px;opacity:.65">IA ativa: selecione Veo 3 / vídeo na aba IAs para orientar o roteiro.</div>
-          </div>
-
-          <button id="igGenerateBtn" style="width:100%;padding:11px;border:0;border-radius:10px;background:linear-gradient(135deg,#8134af,#515bd4);color:#fff;font-weight:700;cursor:pointer;margin-bottom:10px">🎨 Gerar prévia + legenda</button>
-
-          <!-- Preview -->
-          <div id="igPreview" style="display:none;margin-bottom:10px">
-            <div style="font-size:11px;opacity:.7;margin-bottom:6px">Prévia gerada</div>
-            <div id="igPreviewImgWrap" style="background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.1);border-radius:10px;overflow:hidden;margin-bottom:8px;min-height:100px;display:flex;align-items:center;justify-content:center">
-              <img id="igPreviewImg" style="max-width:100%;display:block" alt="prévia" />
-              <video id="igPreviewVideo" controls playsinline style="width:100%;min-height:220px;display:none;background:#000" aria-label="Prévia do Reel gerado"></video>
-            </div>
-            <div id="igVideoPlan" style="display:none;margin:0 0 8px;padding:9px 10px;border-radius:10px;background:rgba(225,48,108,.08);border:1px solid rgba(225,48,108,.22);font-size:11px;line-height:1.45;white-space:pre-wrap;color:#ffdbe8"></div>
-            <label style="font-size:11px;opacity:.7">Legenda (edite se quiser)</label>
-            <textarea id="igCaption" rows="8" placeholder="Legenda será gerada aqui…" style="width:100%;padding:10px;margin:4px 0 10px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:#fff;resize:vertical;font-family:inherit"></textarea>
-            <div style="display:flex;gap:6px;margin-bottom:6px">
-              <button id="igRegenBtn" style="flex:1;padding:9px;border:1px solid rgba(255,255,255,.15);border-radius:10px;background:transparent;color:#fff;cursor:pointer;font-size:12px">🔄 Regerar</button>
-              <button id="igOpenPreviewBtn" style="flex:1;padding:9px;border:1px solid rgba(212,175,55,.5);border-radius:10px;background:rgba(212,175,55,.08);color:#f4d47a;cursor:pointer;font-size:12px">🔍 Prévia grande</button>
-              <button id="igPublishBtn" style="flex:2;padding:11px;border:0;border-radius:10px;background:linear-gradient(135deg,#f58529,#dd2a7b);color:#fff;font-weight:700;cursor:pointer">🚀 Publicar agora</button>
-            </div>
-
-          </div>
-
-          <input id="igMediaUrl" type="hidden" />
-          <div id="igPublishLog" style="margin-top:8px;font-size:12px;opacity:.85;max-height:100px;overflow:auto"></div>
-        </div>
-
-        <!-- Sub-aba: Prompts Imagem -->
-        <div class="igSubPanel" data-sub="promptsImg" style="display:none">
-          <div style="font-size:12px;opacity:.75;margin-bottom:8px">Clique num prompt para usar. Ajuste o texto e depois gere.</div>
-          <div id="igImgPromptGrid" style="display:grid;grid-template-columns:1fr;gap:6px"></div>
-        </div>
-
-        <!-- Sub-aba: Prompts Vídeo -->
-        <div class="igSubPanel" data-sub="promptsVid" style="display:none">
-          <div style="font-size:12px;opacity:.75;margin-bottom:8px">Clique num prompt para usar em Reel. Ajuste e gere.</div>
-          <div id="igVidPromptGrid" style="display:grid;grid-template-columns:1fr;gap:6px"></div>
-        </div>
-
-        <div style="margin-top:14px;font-size:11px;opacity:.55;text-align:center">
-          Publique com sua própria conta do Instagram.<br>
-          Tokens ficam salvos com segurança no seu navegador.
-        </div>
-      </div>
-    </section>
 
 
     <!-- Skills (EXT6) -->
@@ -1967,7 +1842,7 @@
 
   <!-- V6 — Beeps + input status colors -->
   <script src="ui/input-status.js"></script>
-  <script src="ui/ig-publisher.js"></script>
+  
 
   <!-- ============================================================= -->
   <!-- EXT3 NEO-CORE HOME OVERLAY — Clock + Countdown Timer + AI Orb -->
@@ -2367,26 +2242,6 @@
       </div>
     </div>
 
-    <!-- WORK STATUS / ORB -->
-    <div class="nc-work">
-      <div class="nc-work-title">Work Status</div>
-      <div class="nc-orb" id="ncOrb" title="Clique para conversar por voz"></div>
-      <div class="nc-work-caption" id="ncOrbCaption">
-        <h3 id="ncOrbTitle">STANDBY</h3>
-        <p id="ncOrbStatus">Clique na Orbe para ativar</p>
-      </div>
-
-      <!-- Barra de comandos (visível com Orbe desativada) -->
-      <div class="nc-cmdbar" id="ncCmdBar">
-        <button class="nc-cmd-btn" id="ncCmdAttach" title="Anexar arquivo">📎</button>
-        <button class="nc-cmd-btn mic" id="ncCmdMic" title="Ditar por voz">🎤</button>
-        <input class="nc-cmd-input" id="ncCmdInput" type="text" placeholder="Digite seu comando…" />
-        <button class="nc-cmd-send" id="ncCmdSend" title="Ativar IA e enviar">Ativar IA</button>
-      </div>
-
-      <div class="nc-voice-log" id="ncVoiceLog"></div>
-    </div>
-
     <div class="nc-footer">
       <span class="shield">🛡</span> produto <b>MR Sem Limites</b><br>Extensão <span class="lov">LOVABLE</span>
     </div>
@@ -2394,19 +2249,18 @@
   <button class="nc-open-home" id="ext3OpenHome" title="Abrir painel EXT3">☰</button>
 
     <style>
-      /* MR Turbo GT — Orbe desativada nesta edição */
-      .nc-orb, #ncOrb, #ncOrbCaption, .nc-cmdbar, .nc-voice-log, .nc-work-title { display:none !important; }
-      .nc-work { padding: 0 !important; }
+      /* MR Turbo GT — Orbe removida definitivamente nesta edição */
+      .nc-orb, #ncOrb, #ncOrbCaption, .nc-cmdbar, .nc-voice-log, .nc-work, .nc-work-title { display:none !important; }
       .mr6-brand-badge::before { content: "MR TURBO GT · "; }
     </style>
-    <script src="ui/neocore.js"></script>
     <script type="module" src="lib/anti-tamper.js"></script>
     <script src="lib/anti-inspect.js"></script>
 
     <div class="mr6-orb o1"></div>
     <div class="mr6-orb o2"></div>
     <div class="mr6-orb o3"></div>
-    <div class="mr6-brand-badge">EXT7 v7.1.0</div>
+    <div class="mr6-brand-badge">EXT7 v7.1.2</div>
+
   </body>
   </html>
 

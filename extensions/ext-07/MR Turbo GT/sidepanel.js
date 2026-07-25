@@ -989,6 +989,7 @@ async function showMainApp() {
 
   // Inicializa a UI do chat diretamente (sem iframe)
   initDirectChat();
+  try { window.__mrUpdateLicenseBadges && window.__mrUpdateLicenseBadges(); } catch(_) {}
 }
 
 // ========== DIRECT CHAT UI (no iframe, no bridge) ==========

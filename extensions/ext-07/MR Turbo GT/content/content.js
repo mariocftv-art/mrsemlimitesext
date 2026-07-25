@@ -1656,73 +1656,83 @@
         color: #f0abfc !important;
         filter: drop-shadow(0 0 4px #ec4899) !important;
       }
-      /* ---- Floating COCKPIT BAR (MR TURBO GT) ---- */
+      /* ---- Floating SLIDING DOCK (MR TURBO GT — Modelo 3) ---- */
       #il-float-ball {
         position: fixed;
-        width: 210px;
-        height: 56px;
-        border-radius: 14px;
-        background: linear-gradient(135deg,#1a1200 0%,#2a1e05 45%,#1a1200 100%);
-        border: 1.5px solid #f7e08a;
+        width: 46px;
+        height: 104px;
+        border-radius: 12px;
+        background:
+          linear-gradient(180deg,#f5dc8c 0%,#d4a94a 45%,#8f6b1e 100%);
+        border: 1.5px solid #f5dc8c;
         box-shadow:
-          0 0 22px rgba(247,224,138,0.55),
-          0 0 40px rgba(184,134,11,0.35),
-          inset 0 1px 0 rgba(255,246,194,0.35),
-          inset 0 -2px 8px rgba(0,0,0,0.6);
+          0 0 18px rgba(212,169,74,0.55),
+          0 0 36px rgba(143,107,30,0.35),
+          inset 0 1px 0 rgba(255,246,194,0.65),
+          inset 0 -2px 6px rgba(74,54,8,0.55);
         cursor: grab;
         z-index: 2147483645;
         display: flex;
+        flex-direction: column;
         align-items: center;
-        justify-content: flex-start;
-        gap: 10px;
-        padding: 0 12px 0 8px;
+        justify-content: space-between;
+        padding: 8px 4px;
         user-select: none;
         will-change: left, top;
         touch-action: none;
         font-family: -apple-system, "Segoe UI", sans-serif;
+        overflow: visible;
+      }
+      #il-float-ball::before {
+        /* pull-tab knurl lines */
+        content: '';
+        position: absolute;
+        top: 50%; left: 50%;
+        transform: translate(-50%,-50%);
+        width: 4px; height: 22px;
+        background:
+          repeating-linear-gradient(180deg,
+            rgba(74,54,8,.65) 0 2px,
+            transparent 2px 4px);
+        opacity: .55;
+        pointer-events: none;
       }
       #il-float-ball:active { cursor: grabbing; }
       #il-float-ball img {
-        width: 40px; height: 40px;
-        border-radius: 10px;
-        border: 1px solid rgba(247,224,138,0.7);
-        box-shadow: 0 0 10px rgba(247,224,138,0.5), inset 0 0 6px rgba(0,0,0,0.5);
+        width: 34px; height: 34px;
+        border-radius: 8px;
+        border: 1px solid rgba(74,54,8,0.5);
+        box-shadow: inset 0 0 4px rgba(0,0,0,0.4);
         pointer-events: none;
         display: block;
       }
-      #il-float-ball .il-cockpit-label {
-        display:flex; flex-direction:column; line-height:1.1; pointer-events:none; flex:1;
-      }
-      #il-float-ball .il-cockpit-title {
-        font-size: 12px; font-weight: 900; letter-spacing: 0.14em;
-        background: linear-gradient(180deg,#fff8d0 0%,#f7e08a 45%,#b8860b 100%);
-        -webkit-background-clip: text; background-clip: text; color: transparent;
-        text-shadow: 0 0 6px rgba(247,224,138,0.4);
-      }
-      #il-float-ball .il-cockpit-sub {
-        font-size: 8.5px; font-weight: 700; letter-spacing: 0.24em;
-        color: rgba(247,224,138,0.75); margin-top: 2px;
+      #il-float-ball .il-cockpit-label { display:none; } /* legacy hidden */
+      #il-float-ball .il-cockpit-mr {
+        font-size: 11px; font-weight: 900; letter-spacing: 0.18em;
+        color: #3b2a04;
+        text-shadow: 0 1px 0 rgba(255,246,194,0.55);
+        pointer-events: none;
+        writing-mode: horizontal-tb;
       }
       #il-float-ball .il-status-dot {
         position: relative;
-        width: 12px; height: 12px;
+        width: 10px; height: 10px;
         border-radius: 50%;
-        border: 1.5px solid rgba(0,0,0,0.6);
+        border: 1.5px solid rgba(74,54,8,0.7);
         pointer-events: none;
         animation: il-dot-pulse 2s ease-in-out infinite;
         flex-shrink: 0;
       }
       #il-float-ball.il-ball-ativo {
-        animation: il-ball-ring 2.4s ease-in-out infinite;
         box-shadow:
-          0 0 26px rgba(247,224,138,0.75),
-          0 0 48px rgba(184,134,11,0.5),
-          inset 0 1px 0 rgba(255,246,194,0.4),
-          inset 0 -2px 8px rgba(0,0,0,0.6);
+          0 0 22px rgba(212,169,74,0.85),
+          0 0 44px rgba(143,107,30,0.55),
+          inset 0 1px 0 rgba(255,246,194,0.7),
+          inset 0 -2px 6px rgba(74,54,8,0.55);
       }
-      #il-float-ball.il-ball-ativo .il-status-dot { background: #4ade80; box-shadow: 0 0 10px #4ade80; }
-      #il-float-ball.il-ball-inativo .il-status-dot { background: #f87171; animation: none; box-shadow: 0 0 8px #f87171; }
-      #il-float-ball.il-ball-inativo { opacity: 0.85; }
+      #il-float-ball.il-ball-ativo .il-status-dot { background: #22c55e; box-shadow: 0 0 10px #22c55e; }
+      #il-float-ball.il-ball-inativo .il-status-dot { background: #b91c1c; animation: none; box-shadow: 0 0 6px #7f1d1d; }
+      #il-float-ball.il-ball-inativo { opacity: 0.9; }
       @keyframes il-toast-slide-in {
         from { opacity: 0; transform: translateX(30px); }
         to   { opacity: 1; transform: translateX(0); }

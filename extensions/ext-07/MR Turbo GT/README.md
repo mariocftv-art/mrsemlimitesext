@@ -1,4 +1,4 @@
-# MR Turbo GT (EXT7) — v7.0.0
+# MR Turbo GT (EXT7) — v7.0.8
 
 Extensão premium unificando o melhor das EXT1/2/3/5/6 (sem a Orbe).
 

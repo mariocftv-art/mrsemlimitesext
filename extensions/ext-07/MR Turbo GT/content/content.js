@@ -2066,9 +2066,10 @@ Isso vai remover a marca d'água do Lovable. Aplique essa alteração agora.`,
       });
       subMenuHtml += '</div>';
 
+      // Modelo 3 — Sliding Dock: pull-tab vertical com "MR" empilhado + LED de status
       floatBall.innerHTML = `
-        <img src="${iconUrl}" alt="MR SEM LIMITES">
-        <div class="il-cockpit-mr">MR</div>
+        <div class="il-cockpit-mr">M</div>
+        <div class="il-cockpit-mr">R</div>
         <div class="il-status-dot"></div>
         ${subMenuHtml}
       `;

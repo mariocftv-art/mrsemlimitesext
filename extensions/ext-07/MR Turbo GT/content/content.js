@@ -1634,7 +1634,9 @@
         border-radius: 14px !important;
         position: relative !important;
         z-index: 10 !important;
-        animation: il-border-gradient 3s linear infinite !important;
+        animation: none !important;
+        outline: 2px solid #d4a94a !important;
+        outline-offset: 2px !important;
         background:
           linear-gradient(135deg,
             rgba(245,220,140,0.14) 0%,

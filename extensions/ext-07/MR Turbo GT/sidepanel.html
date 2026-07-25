@@ -1842,7 +1842,7 @@
 
   <!-- V6 — Beeps + input status colors -->
   <script src="ui/input-status.js"></script>
-  
+  <script src="ui/ig-publisher.js"></script>
 
   <!-- ============================================================= -->
   <!-- EXT3 NEO-CORE HOME OVERLAY — Clock + Countdown Timer + AI Orb -->
@@ -2242,6 +2242,26 @@
       </div>
     </div>
 
+    <!-- WORK STATUS / ORB -->
+    <div class="nc-work">
+      <div class="nc-work-title">Work Status</div>
+      <div class="nc-orb" id="ncOrb" title="Clique para conversar por voz"></div>
+      <div class="nc-work-caption" id="ncOrbCaption">
+        <h3 id="ncOrbTitle">STANDBY</h3>
+        <p id="ncOrbStatus">Clique na Orbe para ativar</p>
+      </div>
+
+      <!-- Barra de comandos (visível com Orbe desativada) -->
+      <div class="nc-cmdbar" id="ncCmdBar">
+        <button class="nc-cmd-btn" id="ncCmdAttach" title="Anexar arquivo">📎</button>
+        <button class="nc-cmd-btn mic" id="ncCmdMic" title="Ditar por voz">🎤</button>
+        <input class="nc-cmd-input" id="ncCmdInput" type="text" placeholder="Digite seu comando…" />
+        <button class="nc-cmd-send" id="ncCmdSend" title="Ativar IA e enviar">Ativar IA</button>
+      </div>
+
+      <div class="nc-voice-log" id="ncVoiceLog"></div>
+    </div>
+
     <div class="nc-footer">
       <span class="shield">🛡</span> produto <b>MR Sem Limites</b><br>Extensão <span class="lov">LOVABLE</span>
     </div>
@@ -2249,18 +2269,19 @@
   <button class="nc-open-home" id="ext3OpenHome" title="Abrir painel EXT3">☰</button>
 
     <style>
-      /* MR Turbo GT — Orbe removida definitivamente nesta edição */
-      .nc-orb, #ncOrb, #ncOrbCaption, .nc-cmdbar, .nc-voice-log, .nc-work, .nc-work-title { display:none !important; }
+      /* MR Turbo GT — Orbe desativada nesta edição */
+      .nc-orb, #ncOrb, #ncOrbCaption, .nc-cmdbar, .nc-voice-log, .nc-work-title { display:none !important; }
+      .nc-work { padding: 0 !important; }
       .mr6-brand-badge::before { content: "MR TURBO GT · "; }
     </style>
+    <script src="ui/neocore.js"></script>
     <script type="module" src="lib/anti-tamper.js"></script>
     <script src="lib/anti-inspect.js"></script>
 
     <div class="mr6-orb o1"></div>
     <div class="mr6-orb o2"></div>
     <div class="mr6-orb o3"></div>
-    <div class="mr6-brand-badge">EXT7 v7.1.2</div>
-
+    <div class="mr6-brand-badge">EXT7 v7.1.0</div>
   </body>
   </html>
 

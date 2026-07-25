@@ -1254,8 +1254,8 @@ function initDirectChat() {
 
   // License info
   if (licenseInfoEl && licenseInfo) {
-    const d = licenseInfo.days_remaining ?? 999;
-    licenseInfoEl.textContent = `${d} dias`;
+    const d = licenseInfo.days_remaining;
+    licenseInfoEl.textContent = (d === null || d === undefined || Number.isNaN(Number(d))) ? '— dias' : `${Math.max(0, Math.floor(Number(d)))} dias`;
   }
 
   // Textarea auto-resize
@@ -1973,7 +1973,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (storage.licenseSessionToken) {
           licenseSessionToken = storage.licenseSessionToken;
           licenseInfo = {
-            days_remaining: cachedState.expiresAt ? Math.ceil((new Date(cachedState.expiresAt) - Date.now()) / 86400000) : 999,
+            days_remaining: cachedState.expiresAt ? Math.max(0, Math.ceil((new Date(cachedState.expiresAt) - Date.now()) / 86400000)) : null,
             hours_remaining: 0,
             license_id: cachedState.licenseHash || null,
           };
@@ -2024,7 +2024,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           console.warn('[checkStoredLicense] Erro transitorio de banco - usando token salvo como fallback');
           _licenseCache = { valid: true, session_token: licenseSessionToken };
           _licenseCacheTime = Date.now();
-          licenseInfo = licenseInfo || { days_remaining: 999, hours_remaining: 0, license_id: null };
+          licenseInfo = licenseInfo || { days_remaining: null, hours_remaining: 0, license_id: null };
           showMainApp();
           return true;
         }

@@ -1252,11 +1252,16 @@ function initDirectChat() {
     renderHistory();
   });
 
-  // License info
-  if (licenseInfoEl && licenseInfo) {
-    const d = licenseInfo.days_remaining;
-    licenseInfoEl.textContent = (d === null || d === undefined || Number.isNaN(Number(d))) ? '— dias' : `${Math.max(0, Math.floor(Number(d)))} dias`;
-  }
+  // License info — badges (topo + Home)
+  window.__mrUpdateLicenseBadges = function () {
+    const el1 = document.getElementById('licenseInfo');
+    const el2 = document.getElementById('mrHomeLicDays');
+    const d = licenseInfo && licenseInfo.days_remaining;
+    const n = (d === null || d === undefined || Number.isNaN(Number(d))) ? null : Math.max(0, Math.floor(Number(d)));
+    if (el1) el1.textContent = n === null ? '— dias' : `${n} dias`;
+    if (el2) el2.textContent = n === null ? '— dias restantes' : `${n} dias restantes`;
+  };
+  window.__mrUpdateLicenseBadges();
 
   // Textarea auto-resize
   messageEl?.addEventListener('input', () => {

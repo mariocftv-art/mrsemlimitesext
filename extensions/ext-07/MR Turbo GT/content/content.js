@@ -2266,8 +2266,8 @@ Isso vai remover a marca d'água do Lovable. Aplique essa alteração agora.`,
         }
       });
 
-      // Arrastar livre: o cockpit nasce perto da seta de envio e pode ser reposicionado.
-      let downX = 0, downY = 0, startLeft = 0, startTop = 0, moved = false;
+      // Arrastar livre: o cockpit pode ser reposicionado; clique simples abre/fecha o dock.
+      let downX = 0, downY = 0, startLeft = 0, startTop = 0, moved = false, pointerDown = false;
       floatBall.addEventListener('pointerdown', (e) => {
         if (e.button !== 0) return;
         if (e.target.closest('.il-sub-btn')) return;
@@ -2277,24 +2277,28 @@ Isso vai remover a marca d'água do Lovable. Aplique essa alteração agora.`,
         startLeft = rect.left;
         startTop = rect.top;
         moved = false;
+        pointerDown = true;
         isDragging = false;
-        e.preventDefault();
         try { floatBall.setPointerCapture(e.pointerId); } catch (_) {}
       });
       floatBall.addEventListener('pointermove', (e) => {
-        if (e.buttons !== 1) return;
+        if (!pointerDown) return;
         const dx = e.clientX - downX;
         const dy = e.clientY - downY;
-        if (!moved && Math.hypot(dx, dy) < 5) return;
-        moved = true;
-        isDragging = true;
-        ballManuallyMoved = true;
-        closeSubMenu();
-        floatBall.classList.add('il-dragging');
+        if (!moved && Math.hypot(dx, dy) < 6) return;
+        if (!moved) {
+          moved = true;
+          isDragging = true;
+          ballManuallyMoved = true;
+          closeSubMenu();
+          floatBall.classList.add('il-dragging');
+        }
+        e.preventDefault();
         applyFloatPosition(startLeft + dx, startTop + dy, true);
       });
       floatBall.addEventListener('pointerup', (e) => {
         try { floatBall.releasePointerCapture(e.pointerId); } catch (_) {}
+        pointerDown = false;
         if (moved) {
           e.preventDefault();
           e.stopPropagation();
@@ -2303,6 +2307,11 @@ Isso vai remover a marca d'água do Lovable. Aplique essa alteração agora.`,
           isDragging = false;
           floatBall.classList.remove('il-dragging');
         }
+      });
+      floatBall.addEventListener('pointercancel', () => {
+        pointerDown = false;
+        isDragging = false;
+        floatBall?.classList.remove('il-dragging');
       });
     }
 

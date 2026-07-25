@@ -2076,7 +2076,9 @@ document.addEventListener('DOMContentLoaded', async () => {
           };
           
           const cur3 = (await chrome.storage.local.get('settings')).settings || {};
-          await chrome.storage.local.set({ licenseKey: key, licenseSessionToken: result.session_token, settings: { ...cur3, licenseState: { status: 'valid' }, licenseKey: key } });
+          const _pLS3 = cur3.licenseState || {};
+          const _exp3 = result.expires_at || (typeof result.days_remaining === 'number' ? new Date(Date.now() + result.days_remaining * 86400000).toISOString() : _pLS3.expiresAt || null);
+          await chrome.storage.local.set({ licenseKey: key, licenseSessionToken: result.session_token, settings: { ...cur3, licenseState: { ..._pLS3, status: 'valid', expiresAt: _exp3 }, licenseKey: key } });
           if (licenseStatus) { licenseStatus.textContent = '✅ Licença ativada!'; licenseStatus.style.color = '#22c55e'; }
           showToast('Licença ativada com sucesso!', 'success');
           setTimeout(() => showMainApp(), 500);

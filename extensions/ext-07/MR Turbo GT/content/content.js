@@ -1666,27 +1666,32 @@
       /* ---- Floating SLIDING DOCK (MR TURBO GT — Modelo 3) ---- */
       #il-float-ball {
         position: fixed;
-        width: 46px;
-        height: 104px;
-        border-radius: 12px;
+        left: 0 !important;
+        bottom: 76px !important;
+        top: auto !important;
+        right: auto !important;
+        width: 34px;
+        height: 118px;
+        border-radius: 0 14px 14px 0;
         background:
           linear-gradient(180deg,#f5dc8c 0%,#d4a94a 45%,#8f6b1e 100%);
         border: 1.5px solid #f5dc8c;
+        border-left: 0;
         box-shadow:
           0 0 18px rgba(212,169,74,0.55),
           0 0 36px rgba(143,107,30,0.35),
           inset 0 1px 0 rgba(255,246,194,0.65),
           inset 0 -2px 6px rgba(74,54,8,0.55);
-        cursor: grab;
+        cursor: pointer;
         z-index: 2147483645;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: space-between;
-        padding: 8px 4px;
+        padding: 10px 3px;
         user-select: none;
-        will-change: left, top;
-        touch-action: none;
+        will-change: auto;
+        touch-action: manipulation;
         font-family: -apple-system, "Segoe UI", sans-serif;
         overflow: visible;
       }
@@ -1704,18 +1709,15 @@
         opacity: .55;
         pointer-events: none;
       }
-      #il-float-ball:active { cursor: grabbing; }
+      #il-float-ball:active { cursor: pointer; }
       #il-float-ball img {
-        width: 34px; height: 34px;
-        border-radius: 8px;
-        border: 1px solid rgba(74,54,8,0.5);
-        box-shadow: inset 0 0 4px rgba(0,0,0,0.4);
-        pointer-events: none;
-        display: block;
+        display: none !important;
       }
-      #il-float-ball .il-cockpit-label { display:none; } /* legacy hidden */
+      #il-float-ball .il-cockpit-label,
+      #il-float-ball .il-cockpit-logo,
+      #il-float-ball .il-cockpit-icon { display:none !important; } /* legacy hidden */
       #il-float-ball .il-cockpit-mr {
-        font-size: 11px; font-weight: 900; letter-spacing: 0.18em;
+        font-size: 10px; font-weight: 900; letter-spacing: 0.16em;
         color: #3b2a04;
         text-shadow: 0 1px 0 rgba(255,246,194,0.55);
         pointer-events: none;
@@ -1794,6 +1796,7 @@
         border: 1.5px solid #d4a94a;
         border-left: none;
         border-radius: 0 14px 14px 0;
+        min-width: max-content;
         box-shadow:
           0 6px 24px rgba(0,0,0,0.55),
           0 0 18px rgba(212,169,74,0.35),
@@ -1869,6 +1872,15 @@
       .il-sub-btn.il-wm-btn { border-color: #d97757; }
       .il-sub-btn.il-wm-btn svg { stroke: #fca5a5; }
       .il-sub-btn.il-wm-btn:hover { border-color: #fca5a5; box-shadow: 0 0 14px rgba(248,113,113,.5), inset 0 1px 0 rgba(252,165,165,.25); }
+      .mr-floating-cockpit,
+      .mr-cockpit-ball,
+      .mr-front-ball,
+      .il-floating-cockpit,
+      .il-cockpit-old,
+      #mr-float-ball,
+      #mr-front-ball,
+      #mr-cockpit,
+      #il-old-float-ball { display: none !important; }
     `;
     document.head.appendChild(style);
 
@@ -1888,6 +1900,36 @@
       { id: 'responsivo', label: 'Responsivo', icon: '<rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12" y2="18"/>' },
       { id: 'watermark', label: 'Tirar Marca', icon: '<circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>', wm: true },
     ];
+
+    function cleanupLegacyFloatingControls() {
+      try {
+        document.querySelectorAll('#il-float-ball').forEach(el => {
+          if (el !== floatBall) el.remove();
+        });
+
+        const legacySelectors = [
+          '#mr-float-ball', '#mr-front-ball', '#mr-cockpit', '#il-old-float-ball',
+          '.mr-floating-cockpit', '.mr-cockpit-ball', '.mr-front-ball', '.il-floating-cockpit', '.il-cockpit-old'
+        ];
+        document.querySelectorAll(legacySelectors.join(',')).forEach(el => el.remove());
+
+        document.querySelectorAll('body > div, body > button').forEach(el => {
+          if (el === floatBall || floatBall?.contains(el)) return;
+          const rect = el.getBoundingClientRect();
+          if (rect.width < 12 || rect.height < 12 || rect.width > 280 || rect.height > 180) return;
+          const css = window.getComputedStyle(el);
+          if (css.position !== 'fixed' && css.position !== 'absolute') return;
+          const signature = `${el.id || ''} ${el.className || ''} ${el.textContent || ''} ${el.innerHTML || ''}`.toUpperCase();
+          const isLegacyMr =
+            signature.includes('MR SEM LIMITES') ||
+            signature.includes('SEM LIMITES TURBO') ||
+            signature.includes('TURBO V12') ||
+            signature.includes('IL-COCKPIT-LABEL') ||
+            signature.includes('ICON48.PNG');
+          if (isLegacyMr) el.remove();
+        });
+      } catch (_) {}
+    }
 
     function positionSubButtons(menuEl) {
       // Sliding Dock: layout is flex-row via CSS; no absolute positioning needed.
@@ -2048,12 +2090,7 @@ Isso vai remover a marca d'água do Lovable. Aplique essa alteração agora.`,
     }
 
     function ensureFloatBall() {
-      // EXT7 v7.0.5 — remove duplicatas antes de criar (evita 2 botões flutuantes)
-      try {
-        document.querySelectorAll('#il-float-ball').forEach(el => {
-          if (el !== floatBall) el.remove();
-        });
-      } catch(_) {}
+      cleanupLegacyFloatingControls();
       if (floatBall && document.body.contains(floatBall)) return;
       floatBall = document.createElement('div');
       floatBall.id = 'il-float-ball';
@@ -2073,7 +2110,7 @@ Isso vai remover a marca d'água do Lovable. Aplique essa alteração agora.`,
         <div class="il-status-dot"></div>
         ${subMenuHtml}
       `;
-      floatBall.title = 'MR TURBO GT — Clique para ativar/desativar';
+      floatBall.title = 'MR TURBO GT — Clique para abrir/fechar ações rápidas';
       document.body.appendChild(floatBall);
 
       // Position sub-buttons in arc
@@ -2088,33 +2125,20 @@ Isso vai remover a marca d'água do Lovable. Aplique essa alteração agora.`,
         });
       });
 
-      // Click toggles active state (ativar/desativar)
+      // Click abre/fecha o dock. A extensão fica armada automaticamente quando a licença está válida.
       floatBall.addEventListener('click', (e) => {
         if (isDragging) return;
         if (e.target.closest('.il-sub-btn') || e.target.closest('.il-sub-menu')) return;
-        if (STATE.active) {
-          STATE._manuallyActivated = false;
-          STATE.active = false;
-          announceActive();
-        } else {
+        if (!STATE.active && STATE.licenseValid) {
           STATE._manuallyActivated = true;
           STATE.active = true;
           announceActive();
         }
+        toggleSubMenu();
         updateFloatBall();
       });
 
-      // Hover opens/closes sub-menu
-      let _hoverTimeout = null;
-      floatBall.addEventListener('mouseenter', () => {
-        clearTimeout(_hoverTimeout);
-        if (!subMenuOpen) toggleSubMenu();
-      });
-      floatBall.addEventListener('mouseleave', () => {
-        _hoverTimeout = setTimeout(() => {
-          if (subMenuOpen) closeSubMenu();
-        }, 1500);
-      });
+      // Sem hover automático: o dock só abre/fecha no clique para não ficar “louco”.
 
       // Tooltip on hover for sub-buttons
       let _tooltip = null;
@@ -2149,40 +2173,12 @@ Isso vai remover a marca d'água do Lovable. Aplique essa alteração agora.`,
         }
       });
 
-      // Drag — moves ball AND sub-menu together
+      // Fixo na borda: sem arrastar, para não invadir o Ask Lovable nem duplicar posição.
       floatBall.addEventListener('pointerdown', (e) => {
         if (e.button !== 0) return;
         if (e.target.closest('.il-sub-btn')) return;
         isDragging = false;
-        const rect = floatBall.getBoundingClientRect();
-        dragOffX = e.clientX - rect.left;
-        dragOffY = e.clientY - rect.top;
-        floatBall.setPointerCapture(e.pointerId);
-        floatBall.style.transition = 'none';
-        floatBall.style.animation = 'none';
-
-        const onMove = (ev) => {
-          if (!isDragging && (Math.abs(ev.clientX - (rect.left + dragOffX)) > 3 || Math.abs(ev.clientY - (rect.top + dragOffY)) > 3)) {
-            isDragging = true;
-            closeSubMenu();
-          }
-          if (!isDragging) return;
-          floatBall.style.left   = (ev.clientX - dragOffX) + 'px';
-          floatBall.style.top    = (ev.clientY - dragOffY) + 'px';
-          floatBall.style.bottom = 'auto';
-          floatBall.style.right  = 'auto';
-        };
-        const onUp = () => {
-          floatBall.removeEventListener('pointermove', onMove);
-          floatBall.removeEventListener('pointerup', onUp);
-          floatBall.style.transition = '';
-          floatBall.style.animation  = '';
-          updateFloatBall();
-          if (isDragging) ballManuallyMoved = true;
-          setTimeout(() => { isDragging = false; }, 80);
-        };
-        floatBall.addEventListener('pointermove', onMove);
-        floatBall.addEventListener('pointerup', onUp);
+        ballManuallyMoved = false;
         e.preventDefault();
       });
     }
@@ -2217,7 +2213,14 @@ Isso vai remover a marca d'água do Lovable. Aplique essa alteração agora.`,
         }
         return;
       }
+      STATE.licenseValid = true;
+      if (!STATE.active) {
+        STATE.active = true;
+        STATE._manuallyActivated = true;
+        announceActive();
+      }
       ensureFloatBall();
+      cleanupLegacyFloatingControls();
       updateFloatBall();
 
       // Encontra o input do Lovable (roda SEMPRE, antes do return por inativo)
@@ -2238,22 +2241,7 @@ Isso vai remover a marca d'água do Lovable. Aplique essa alteração agora.`,
         }
       }
 
-      // Posiciona a bolinha ao lado DIREITO do chat (apenas se não foi movida manualmente)
-      if (floatBall && !isDragging && !ballManuallyMoved && foundInput) {
-        const inputRect = foundInput.getBoundingClientRect();
-        const ballSize  = 48;
-        const gap       = 20; // Maior gap para não ficar colada
-        const newLeft = inputRect.right + gap;
-        const newTop  = inputRect.top + (inputRect.height / 2) - (ballSize / 2);
-        const curLeft = parseFloat(floatBall.style.left) || -9999;
-        const curTop  = parseFloat(floatBall.style.top)  || -9999;
-        if (Math.abs(newLeft - curLeft) > 2 || Math.abs(newTop - curTop) > 2) {
-          floatBall.style.left   = newLeft + 'px';
-          floatBall.style.top    = newTop  + 'px';
-          floatBall.style.bottom = 'auto';
-          floatBall.style.right  = 'auto';
-        }
-      }
+      // O Sliding Dock fica travado na borda esquerda; não segue mais o campo Ask Lovable.
 
       // Só aplica o glow quando a extensão está realmente ativa
       if (!STATE.active) {

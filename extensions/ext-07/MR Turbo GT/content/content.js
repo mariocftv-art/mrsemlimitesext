@@ -1772,85 +1772,82 @@
         animation: il-toast-slide-out 0.25s ease-in forwards;
       }
 
-      /* ---- Sub-buttons menu ---- */
+      /* ---- Sliding Dock horizontal (sub-buttons) ---- */
       .il-sub-menu {
         position: absolute;
-        top: 50%; left: 50%;
-        width: 0; height: 0;
+        top: 50%; left: 100%;
+        transform: translateY(-50%);
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 10px 6px 14px;
+        margin-left: -6px;
+        background: linear-gradient(180deg,#1c1408 0%,#2a1e0a 50%,#1c1408 100%);
+        border: 1.5px solid #d4a94a;
+        border-left: none;
+        border-radius: 0 14px 14px 0;
+        box-shadow:
+          0 6px 24px rgba(0,0,0,0.55),
+          0 0 18px rgba(212,169,74,0.35),
+          inset 0 1px 0 rgba(245,220,140,0.25);
         pointer-events: none;
-        z-index: -1;
+        opacity: 0;
+        clip-path: inset(0 100% 0 0);
+        transition: clip-path .35s cubic-bezier(.34,1.56,.64,1), opacity .25s ease;
+        z-index: 2147483644;
       }
-      .il-sub-menu.il-open { pointer-events: auto; }
-      .il-sub-menu.il-closing { pointer-events: none; }
+      .il-sub-menu.il-open {
+        pointer-events: auto;
+        opacity: 1;
+        clip-path: inset(0 0 0 0);
+      }
+      .il-sub-menu.il-closing { pointer-events: none; opacity: 0; clip-path: inset(0 100% 0 0); }
       .il-sub-btn {
-        position: absolute;
-        width: 38px; height: 38px;
-        border-radius: 50%;
-        background: #1a0b24;
-        border: 1.5px solid #ec4899;
+        position: relative;
+        width: 40px; height: 40px;
+        border-radius: 10px;
+        background: linear-gradient(180deg,#2a1e0a,#1c1408);
+        border: 1.5px solid #d4a94a;
         display: flex;
         align-items: center;
         justify-content: center;
         cursor: pointer;
-        opacity: 0;
-        transform: translate(-50%, -50%) scale(0);
-        transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
-        box-shadow: 0 2px 12px rgba(236,72,153,0.35);
+        transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease, background .2s ease;
+        box-shadow: inset 0 1px 0 rgba(245,220,140,0.18), 0 2px 8px rgba(0,0,0,0.35);
+        flex-shrink: 0;
       }
       .il-sub-btn svg {
-        width: 16px; height: 16px;
-        stroke: #f0abfc;
+        width: 18px; height: 18px;
+        stroke: #f5dc8c;
         fill: none;
         stroke-width: 1.8;
         stroke-linecap: round;
         stroke-linejoin: round;
         pointer-events: none;
+        filter: drop-shadow(0 0 3px rgba(212,169,74,.45));
       }
       .il-sub-btn:hover {
-        background: #3b0d3b;
-        border-color: #f0abfc;
-        transform: translate(-50%, -50%) scale(1.15) !important;
-        box-shadow: 0 4px 20px rgba(236,72,153,0.55);
+        background: linear-gradient(180deg,#3a2810,#241a08);
+        border-color: #f5dc8c;
+        transform: translateY(-2px);
+        box-shadow: 0 0 14px rgba(245,220,140,.55), inset 0 1px 0 rgba(245,220,140,.35);
       }
-      .il-sub-btn:active {
-        transform: translate(-50%, -50%) scale(0.9) !important;
-      }
-      .il-open .il-sub-btn {
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(1);
-      }
-      .il-open .il-sub-btn:nth-child(1) { transition-delay: 0.02s; }
-      .il-open .il-sub-btn:nth-child(2) { transition-delay: 0.05s; }
-      .il-open .il-sub-btn:nth-child(3) { transition-delay: 0.08s; }
-      .il-open .il-sub-btn:nth-child(4) { transition-delay: 0.11s; }
-      .il-open .il-sub-btn:nth-child(5) { transition-delay: 0.14s; }
-      .il-open .il-sub-btn:nth-child(6) { transition-delay: 0.17s; }
-      .il-open .il-sub-btn:nth-child(7) { transition-delay: 0.20s; }
-      /* Close animation (reverse stagger) */
-      .il-closing .il-sub-btn {
-        opacity: 0;
-        transform: translate(-50%, -50%) scale(0);
-        transition: all 0.25s cubic-bezier(0.6, -0.28, 0.74, 0.05);
-      }
-      .il-closing .il-sub-btn:nth-child(7) { transition-delay: 0.01s; }
-      .il-closing .il-sub-btn:nth-child(6) { transition-delay: 0.04s; }
-      .il-closing .il-sub-btn:nth-child(5) { transition-delay: 0.07s; }
-      .il-closing .il-sub-btn:nth-child(4) { transition-delay: 0.10s; }
-      .il-closing .il-sub-btn:nth-child(3) { transition-delay: 0.13s; }
-      .il-closing .il-sub-btn:nth-child(2) { transition-delay: 0.16s; }
-      .il-closing .il-sub-btn:nth-child(1) { transition-delay: 0.19s; }
+      .il-sub-btn:active { transform: translateY(0) scale(0.95); }
       /* Tooltip label (JS-positioned) */
       .il-sub-tooltip {
         position: fixed;
         white-space: nowrap;
-        background: rgba(15,10,30,0.95);
-        color: #e9d5ff;
+        background: rgba(28,20,8,0.96);
+        color: #f5dc8c;
         font-size: 11px;
-        font-weight: 600;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         padding: 4px 10px;
         border-radius: 6px;
-        border: 1px solid rgba(236,72,153,0.35);
+        border: 1px solid rgba(212,169,74,0.55);
         pointer-events: none;
         z-index: 2147483647;
         opacity: 0;
@@ -1862,9 +1859,9 @@
         transform: translateX(-50%) translateY(0);
       }
       /* Watermark button special color */
-      .il-sub-btn.il-wm-btn { border-color: #f87171; }
+      .il-sub-btn.il-wm-btn { border-color: #d97757; }
       .il-sub-btn.il-wm-btn svg { stroke: #fca5a5; }
-      .il-sub-btn.il-wm-btn:hover { background: #3d1a1a; border-color: #f87171; box-shadow: 0 4px 20px rgba(248,113,113,0.4); }
+      .il-sub-btn.il-wm-btn:hover { border-color: #fca5a5; box-shadow: 0 0 14px rgba(248,113,113,.5), inset 0 1px 0 rgba(252,165,165,.25); }
     `;
     document.head.appendChild(style);
 

@@ -216,12 +216,30 @@ async function genImage(scenePrompt: string, aspect: 'vertical' | 'square', seed
   // 1) tenta Lovable AI Gateway (Gemini 3 Pro Image — máxima qualidade)
   const aig = await aigImage(full)
   if (aig?.b64) return aig
-  // 2) fallback Pollinations
+  // 2) fallback Pollinations — vários modelos + retries curtos p/ contornar 429
   const w = aspect === 'vertical' ? 720 : 1080
   const h = aspect === 'vertical' ? 1280 : 1080
-  const seed = Math.abs(Array.from(`${scenePrompt}-${seedSalt}`).reduce((a, c) => ((a * 31) + c.charCodeAt(0)) | 0, 7))
-  const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(full)}?width=${w}&height=${h}&nologo=true&enhance=true&model=flux&seed=${seed}`
-  return { b64: await fetchAsB64(url), mime: 'image/jpeg' }
+  const baseSeed = Math.abs(Array.from(`${scenePrompt}-${seedSalt}`).reduce((a, c) => ((a * 31) + c.charCodeAt(0)) | 0, 7))
+  const models = ['flux', 'flux-realism', 'turbo', 'flux-anime']
+  let lastErr: unknown = null
+  for (let attempt = 0; attempt < 6; attempt++) {
+    const model = models[attempt % models.length]
+    const seed = (baseSeed + attempt * 97) & 0x7fffffff
+    const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(full)}?width=${w}&height=${h}&nologo=true&enhance=true&model=${model}&seed=${seed}`
+    try {
+      return { b64: await fetchAsB64(url), mime: 'image/jpeg' }
+    } catch (e) {
+      lastErr = e
+      await new Promise((r) => setTimeout(r, 800 + attempt * 400))
+    }
+  }
+  // 3) último recurso: Picsum (foto stock aleatória, sempre disponível) — evita quebrar o preview
+  try {
+    const picsum = `https://picsum.photos/seed/${encodeURIComponent(`${scenePrompt}-${seedSalt}`)}/${w}/${h}`
+    return { b64: await fetchAsB64(picsum), mime: 'image/jpeg' }
+  } catch {
+    throw lastErr instanceof Error ? lastErr : new Error('Falha ao gerar imagem em todos os provedores')
+  }
 }
 
 function parseScenes(script: string, max: number): string[] {

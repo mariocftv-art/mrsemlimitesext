@@ -102,19 +102,17 @@ function SetupCard({ onDone, onSkip }: { onDone: () => void; onSkip: () => void 
             <div className="grid gap-2 sm:grid-cols-2">
               <div className="space-y-1">
                 <Label className="text-xs">Nova senha</Label>
-                <Input
-                  type="password"
+                <PasswordField
                   value={pw[email] || ""}
-                  onChange={(e) => setPw({ ...pw, [email]: e.target.value })}
+                  onChange={(v) => setPw({ ...pw, [email]: v })}
                   placeholder="min. 8 caracteres"
                 />
               </div>
               <div className="space-y-1">
                 <Label className="text-xs">Confirmar</Label>
-                <Input
-                  type="password"
+                <PasswordField
                   value={confirm[email] || ""}
-                  onChange={(e) => setConfirm({ ...confirm, [email]: e.target.value })}
+                  onChange={(v) => setConfirm({ ...confirm, [email]: v })}
                 />
               </div>
             </div>

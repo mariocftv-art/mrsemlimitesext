@@ -247,6 +247,78 @@ Tabelas: applications, activation_codes, devices, device_sessions. Interface adm
 6) Multi-idioma (PT-BR default; EN e ES prontos para tradução).
 
 Não prometa nem cite conteúdo pirata; foque em "seu provedor de streaming"/"IPTV licenciado". SEO otimizado (title, meta, JSON-LD Product).`),
+
+  s('iptv-headend-infra','iptv','🛰️','Headend + Infraestrutura Pro (Offshore + Restream)','Blueprint completo de Headend, servidores offshore, CMS Xtream/XUI One e ingestão via Restream com P2P.',
+`Monte o BLUEPRINT + PAINEL DE CONFIGURAÇÃO de INFRAESTRUTURA IPTV/P2P PROFISSIONAL para operar como provedor direto (não apenas revenda). Entregue em PT-BR, com design premium dark + acentos dourados, checklist visual passo a passo e formulários prontos para preencher com dados reais.
+
+============ 1) HEADEND (FONTE DO SINAL) ============
+Módulo "Headend" no painel com abas:
+- Captação: DVB-S/S2 (satélite), DVB-C (cabo), DVB-T/T2 (terrestre), IP Input (SRT/RTMP/UDP/HLS), Restream (link .ts / .m3u8 / Xtream).
+- Cadastro de IRDs / Encoders (hardware ou software): host, modelo, canais atribuídos, status online, bitrate, uptime.
+- Transcodificação: perfis ABR (240p/480p/720p/1080p) com FFmpeg presets (libx264, aac, HLS segment 6s). Aceleração NVENC/QSV se disponível. Fila de jobs com status.
+- Empacotamento: HLS (.m3u8) e MPEG-DASH, DRM opcional (Widevine/PlayReady placeholder).
+- Sugerir softwares: FFmpeg (open-source), FastoCloud Media Server, Wowza Streaming Engine, Nimble Streamer — com prós/contras e quando usar cada um.
+
+============ 2) SERVIDORES OFFSHORE ============
+Página "Infraestrutura" com catálogo pronto dos principais provedores offshore para IPTV/streaming e formulário para cadastrar credenciais SSH/API:
+- Satline.tv (infra broadcast com DVB tuners integrados)
+- QloudHost (offshore, alta banda, DMCA-friendly)
+- HostCay (Amsterdã, uplinks 10-20 Gbps, ideal VOD)
+- VSYS Host (Ucrânia, streaming de alta banda)
+- FlokiNET / Frantech / OrangeWebsite como alternativas
+Campos: provedor, região, IP, uplink Gbps, RAM, CPU, GPU (para transcode), storage TB, custo/mês, status. Health-check ping/latência automático (cron 5min).
+
+============ 3) MIDDLEWARE / CMS ============
+Comparativo e integração com os painéis mais usados:
+- Xtream UI / XUI One (revenda, P2P nativo em XUI One)
+- FastoCloud (media server + middleware + apps white-label)
+- CrocOTT (APIs completas, escalável)
+- Ministra/Stalker (legacy, MAG boxes)
+Página "CMS" para conectar via API (host + admin token) e sincronizar clientes, planos, streams com o painel MR.
+
+============ 4) RESTREAM SUPPLIERS (INGESTÃO RÁPIDA) ============
+Aba "Fornecedores/Restream" para quem ainda não tem Headend próprio:
+- Cadastro de fornecedores upstream: nome, host Xtream, user, pass OU URL M3U direta, tipo (canais/VOD/séries), preço/mês, créditos disponíveis, expiração.
+- Botão "Testar conexão" (get_live_streams count).
+- Importador em 1 clique para o catálogo local (usa a skill iptv-m3u-xtream).
+- Dica em UI: "Prefira HLS (.m3u8) — mais estável para P2P que MPEG-TS".
+- Aviso legal claro: use apenas fornecedores licenciados; a plataforma não hospeda conteúdo pirata.
+
+============ 5) P2P OVERLAY (WebRTC) ============
+Ativação global e por canal (integra com a skill iptv-p2p-cdn):
+- Toggle "Ativar P2P (WebRTC)" com estimativa de economia (~70% de banda em canais populares).
+- Tracker WSS próprio (docker one-liner) OU público (openwebtorrent).
+- Player web P2P-Media-Loader-Hlsjs; apps nativos = HTTP puro (deixar claro na UI).
+- Dashboard: % tráfego servido por P2P, peers ativos, GB economizados/mês, top canais.
+
+============ 6) DIFERENCIAÇÃO IPTV vs P2P (EDUCATIVO NA UI) ============
+Card explicativo no painel:
+- IPTV Unicast: 1 conexão por usuário direto do servidor → banda cara, escala linear.
+- P2P Híbrido: servidor entrega sinal inicial, usuários redistribuem via WebRTC → banda até 70% menor, mais estável em conexões lentas.
+
+============ 7) CHECKLIST DE LANÇAMENTO ============
+Wizard "Colocar no ar em 24h":
+[ ] Contratar servidor offshore (sugerir HostCay/QloudHost)
+[ ] Instalar Xtream UI ou XUI One (script one-liner pronto)
+[ ] Conectar 1 fornecedor Restream para começar
+[ ] Importar M3U + EPG XMLTV
+[ ] Ativar P2P nos canais top 20
+[ ] Configurar gateway Pix (Mercado Pago/Asaas)
+[ ] Publicar landing + teste grátis 6h
+[ ] Configurar WhatsApp para suporte
+
+============ SCHEMA (Supabase RLS) ============
+Adicionar tabelas: headend_sources (tipo, host, status, bitrate), encoders, offshore_servers, restream_suppliers, cms_integrations, p2p_settings, transcode_jobs. RLS por role (super_admin/master_reseller).
+
+============ SEGURANÇA & LEGAL ============
+- Nunca expor credenciais Xtream/SSH ao browser (server functions).
+- Rate-limit em endpoints de teste de conexão.
+- Termos de uso deixando claro: responsabilidade do provedor pelo licenciamento do conteúdo.
+- Logs de auditoria de todas as ações admin.
+
+DEPENDÊNCIAS: recharts, hls.js, p2p-media-loader-hlsjs, qrcode.react, @tanstack/react-table, react-hook-form + zod, sonner.
+
+Comece pela página "Infraestrutura" (offshore + restream + headend em 3 abas) + wizard de lançamento em 24h. Use tokens semânticos, zero cor hardcoded, dark premium com acentos dourados combinando com o resto do painel MR.`),
 ];
 
 export function buildSkillPrompt(skill) {

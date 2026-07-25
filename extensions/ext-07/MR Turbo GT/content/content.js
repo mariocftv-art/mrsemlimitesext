@@ -1630,22 +1630,30 @@
           box-shadow: 0 0 0 4px #f5dc8c, 0 0 20px 6px rgba(245,220,140,0.6);
         }
       }
+      .ilimitado-glow-active,
+      .ilimitado-glow-active * {
+        animation: none !important;
+        animation-name: none !important;
+        animation-duration: 0s !important;
+        transition: none !important;
+      }
       .ilimitado-glow-active {
         border-radius: 14px !important;
         position: relative !important;
         z-index: 10 !important;
-        animation: none !important;
-        outline: 2px solid #d4a94a !important;
+        outline: 2px solid #f5dc8c !important;
         outline-offset: 2px !important;
+        border-color: #f5dc8c !important;
         background:
           linear-gradient(135deg,
-            rgba(245,220,140,0.14) 0%,
-            rgba(212,169,74,0.20) 50%,
-            rgba(143,107,30,0.14) 100%) !important;
+            rgba(245,220,140,0.18) 0%,
+            rgba(212,169,74,0.26) 50%,
+            rgba(143,107,30,0.18) 100%) !important;
         box-shadow:
-          inset 0 0 0 1px rgba(245,220,140,0.40),
-          inset 0 0 26px rgba(212,169,74,0.22),
-          0 0 20px rgba(212,169,74,0.40) !important;
+          inset 0 0 0 1px rgba(245,220,140,0.55),
+          inset 0 0 30px rgba(212,169,74,0.28),
+          0 0 22px rgba(212,169,74,0.55) !important;
+        filter: none !important;
       }
       .ilimitado-glow-active::before {
         content: "MR TURBO GT · ARMADO — ENVIO DOURADO ATIVO";
@@ -1660,7 +1668,10 @@
         pointer-events: none;
         z-index: 11;
         text-shadow: 0 0 6px rgba(212,169,74,0.75), 0 1px 0 rgba(0,0,0,0.6);
+        animation: none !important;
+        opacity: 1 !important;
       }
+
       .ilimitado-btn-glow svg {
         color: #f5dc8c !important;
         filter: drop-shadow(0 0 5px #d4a94a) !important;

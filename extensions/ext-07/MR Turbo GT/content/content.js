@@ -1612,11 +1612,11 @@
     style.id = 'ilimitado-native-glow';
     style.textContent = `
       @keyframes il-border-gradient {
-        0%   { outline: 2px solid #6d28d9; outline-offset: 1px; filter: drop-shadow(0 0 3px rgba(109,40,217,0.5)); }
-        25%  { outline: 2px solid #ec4899; outline-offset: 2px; filter: drop-shadow(0 0 5px rgba(236,72,153,0.65)); }
-        50%  { outline: 2px solid #d946ef; outline-offset: 2px; filter: drop-shadow(0 0 7px rgba(217,70,239,0.65)); }
-        75%  { outline: 2px solid #e879f9; outline-offset: 2px; filter: drop-shadow(0 0 5px rgba(232,121,249,0.6)); }
-        100% { outline: 2px solid #6d28d9; outline-offset: 1px; filter: drop-shadow(0 0 3px rgba(109,40,217,0.5)); }
+        0%   { outline: 2px solid #8f6b1e; outline-offset: 1px; filter: drop-shadow(0 0 4px rgba(143,107,30,0.55)); }
+        25%  { outline: 2px solid #d4a94a; outline-offset: 2px; filter: drop-shadow(0 0 7px rgba(212,169,74,0.7)); }
+        50%  { outline: 2px solid #f5dc8c; outline-offset: 2px; filter: drop-shadow(0 0 10px rgba(245,220,140,0.75)); }
+        75%  { outline: 2px solid #d4a94a; outline-offset: 2px; filter: drop-shadow(0 0 7px rgba(212,169,74,0.7)); }
+        100% { outline: 2px solid #8f6b1e; outline-offset: 1px; filter: drop-shadow(0 0 4px rgba(143,107,30,0.55)); }
       }
       @keyframes il-dot-pulse {
         0%, 100% { opacity: 1; transform: scale(1); }
@@ -1624,37 +1624,44 @@
       }
       @keyframes il-ball-ring {
         0%, 100% {
-          box-shadow: 0 0 0 2px #ec4899, 0 0 10px 2px rgba(236,72,153,0.55);
+          box-shadow: 0 0 0 2px #d4a94a, 0 0 10px 2px rgba(212,169,74,0.55);
         }
         50% {
-          box-shadow: 0 0 0 4px #f0abfc, 0 0 20px 6px rgba(192,132,252,0.55);
+          box-shadow: 0 0 0 4px #f5dc8c, 0 0 20px 6px rgba(245,220,140,0.6);
         }
       }
       .ilimitado-glow-active {
-        /* box-shadow removido — declarações !important bloqueiam animações CSS */
         border-radius: 14px !important;
         position: relative !important;
         z-index: 10 !important;
         animation: il-border-gradient 3s linear infinite !important;
+        background:
+          linear-gradient(135deg,
+            rgba(245,220,140,0.14) 0%,
+            rgba(212,169,74,0.20) 50%,
+            rgba(143,107,30,0.14) 100%) !important;
+        box-shadow:
+          inset 0 0 0 1px rgba(245,220,140,0.40),
+          inset 0 0 26px rgba(212,169,74,0.22),
+          0 0 20px rgba(212,169,74,0.40) !important;
       }
-      /* MR EXT SEM LIMITES ATIVO — dentro do chat, canto inferior esquerdo */
       .ilimitado-glow-active::before {
-        content: "MR EXT SEM LIMITES ATIVO";
+        content: "MR TURBO GT · ARMADO — ENVIO DOURADO ATIVO";
         position: absolute;
         bottom: 6px;
         left: 12px;
         font-size: 9px;
-        font-weight: 700;
+        font-weight: 800;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        letter-spacing: 0.08em;
-        color: rgba(240,171,252,0.85);
+        letter-spacing: 0.14em;
+        color: #f5dc8c;
         pointer-events: none;
         z-index: 11;
-        text-shadow: 0 0 6px rgba(236,72,153,0.65);
+        text-shadow: 0 0 6px rgba(212,169,74,0.75), 0 1px 0 rgba(0,0,0,0.6);
       }
       .ilimitado-btn-glow svg {
-        color: #f0abfc !important;
-        filter: drop-shadow(0 0 4px #ec4899) !important;
+        color: #f5dc8c !important;
+        filter: drop-shadow(0 0 5px #d4a94a) !important;
       }
       /* ---- Floating SLIDING DOCK (MR TURBO GT — Modelo 3) ---- */
       #il-float-ball {

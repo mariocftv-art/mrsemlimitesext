@@ -2001,7 +2001,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             license_id: result.license_id,
           };
           const cur1 = (await chrome.storage.local.get('settings')).settings || {};
-          await chrome.storage.local.set({ licenseKey: storedKey, licenseSessionToken: result.session_token, settings: { ...cur1, licenseState: { status: 'valid' }, licenseKey: storedKey } });
+          const _pLS1 = cur1.licenseState || {};
+          const _exp1 = result.expires_at || (typeof result.days_remaining === 'number' ? new Date(Date.now() + result.days_remaining * 86400000).toISOString() : _pLS1.expiresAt || null);
+          await chrome.storage.local.set({ licenseKey: storedKey, licenseSessionToken: result.session_token, settings: { ...cur1, licenseState: { ..._pLS1, status: 'valid', expiresAt: _exp1 }, licenseKey: storedKey } });
           _licenseCache = { valid: true, session_token: result.session_token };
           _licenseCacheTime = Date.now();
           showMainApp();

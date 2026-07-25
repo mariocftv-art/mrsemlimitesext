@@ -32,6 +32,17 @@ export function AdminSetupGate({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("reset") === "1") {
+      window.localStorage.removeItem("mrsl.admins.v1");
+      window.localStorage.removeItem("mrsl.admin.session");
+      const url = new URL(window.location.href);
+      url.searchParams.delete("reset");
+      window.history.replaceState({}, "", url.toString());
+      toast.success("Credenciais resetadas. Defina uma nova senha.");
+      setMode("setup");
+      return;
+    }
     if (getSessionEmail()) setMode("ok");
     else if (isFirstRun()) setMode("setup");
     else setMode("login");

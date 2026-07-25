@@ -1303,8 +1303,11 @@ function initDirectChat() {
         addMessage('bot', '❌ ' + res.error);
         updateStatus('❌ Erro');
       } else {
-        addMessage('bot', res?.message || '⚡ Encaminhado ao Lovable');
-        updateStatus('');
+        updateStatus('⚡ Encaminhado ao Lovable');
+        // Limpa a conversa do painel — o prompt já foi para o Lovable
+        history = [];
+        try { callCommand('storage.set', { data: { history: [] } }); } catch(_) {}
+        renderHistory();
       }
     } catch (e) {
       addMessage('bot', '❌ ' + (e?.message || 'Erro'));
@@ -1317,6 +1320,7 @@ function initDirectChat() {
     renderFilePreview();
     sendBtn && (sendBtn.disabled = false);
   }
+
 
   sendBtn?.addEventListener('click', handleSend);
   messageEl?.addEventListener('keydown', (e) => {

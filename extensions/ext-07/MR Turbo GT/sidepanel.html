@@ -992,22 +992,22 @@
   <style id="ext7-gold-theme">
     /* ==== EXT7 MR TURBO GT — Painel Dourado Luxuoso ==== */
     :root{
-      --gold-1:#f7e08a; --gold-2:#e6c14a; --gold-3:#b8860b; --gold-4:#7a5a0a;
-      --gold-glow: 0 0 12px rgba(230,193,74,.55), 0 0 32px rgba(230,193,74,.25);
+      --gold-1:#f5dc8c; --gold-2:#d4a94a; --gold-3:#8f6b1e; --gold-4:#7a5a0a;
+      --gold-glow: 0 0 12px rgba(212,169,74,.55), 0 0 32px rgba(212,169,74,.25);
     }
     body{
       background:
-        radial-gradient(1200px 800px at 20% -10%, rgba(230,193,74,.10), transparent 60%),
-        radial-gradient(900px 700px at 110% 120%, rgba(184,134,11,.10), transparent 60%),
+        radial-gradient(1200px 800px at 20% -10%, rgba(212,169,74,.10), transparent 60%),
+        radial-gradient(900px 700px at 110% 120%, rgba(143,107,30,.10), transparent 60%),
         linear-gradient(180deg,#0d0a04 0%, #14100a 50%, #0a0805 100%) !important;
     }
     /* Header title in gold */
     .app-header-title{
-      background: linear-gradient(135deg,#f7e08a 0%,#e6c14a 40%,#b8860b 70%,#f7e08a 100%) !important;
+      background: linear-gradient(135deg,#f5dc8c 0%,#d4a94a 40%,#8f6b1e 70%,#f5dc8c 100%) !important;
       background-size: 200% 200% !important;
       -webkit-background-clip:text !important; background-clip:text !important;
       -webkit-text-fill-color:transparent !important; color:transparent !important;
-      text-shadow: 0 0 18px rgba(230,193,74,.35);
+      text-shadow: 0 0 18px rgba(212,169,74,.35);
       animation: ext7GoldShift 5s ease infinite;
       font-weight: 900 !important; letter-spacing:.5px !important;
     }
@@ -1015,75 +1015,75 @@
 
     /* Header + main frame gold borders and glow */
     .app-header, .app-shell, #mainApp{
-      border-color: rgba(230,193,74,.35) !important;
+      border-color: rgba(212,169,74,.35) !important;
     }
     .app-header{
-      background: linear-gradient(180deg, rgba(230,193,74,.08), rgba(0,0,0,.55)) !important;
-      border-bottom:1px solid rgba(230,193,74,.5) !important;
-      box-shadow: 0 2px 0 rgba(230,193,74,.15), 0 8px 24px -12px rgba(230,193,74,.35);
+      background: linear-gradient(180deg, rgba(212,169,74,.08), rgba(0,0,0,.55)) !important;
+      border-bottom:1px solid rgba(212,169,74,.5) !important;
+      box-shadow: 0 2px 0 rgba(212,169,74,.15), 0 8px 24px -12px rgba(212,169,74,.35);
     }
     /* Tabs gold */
     .mr-tab, .tab-btn{
-      border-color: rgba(230,193,74,.28) !important;
+      border-color: rgba(212,169,74,.28) !important;
       color: #f4d97a !important;
     }
     .mr-tab.active, .tab-btn.active{
       color:#fff !important;
-      background: linear-gradient(135deg, rgba(230,193,74,.28), rgba(184,134,11,.18)) !important;
-      border-color: rgba(230,193,74,.85) !important;
+      background: linear-gradient(135deg, rgba(212,169,74,.28), rgba(143,107,30,.18)) !important;
+      border-color: rgba(212,169,74,.85) !important;
       box-shadow: var(--gold-glow);
     }
     /* Buttons — power, send, generic */
     #sendBtn, .qa-btn, .btn-activate, #mrPowerToggle, .mr-power{
-      border:1px solid rgba(230,193,74,.55) !important;
-      background: linear-gradient(135deg, rgba(230,193,74,.18), rgba(184,134,11,.10)) !important;
+      border:1px solid rgba(212,169,74,.55) !important;
+      background: linear-gradient(135deg, rgba(212,169,74,.18), rgba(143,107,30,.10)) !important;
       color:#fff5cc !important;
-      box-shadow: 0 0 0 1px rgba(230,193,74,.15) inset, 0 6px 18px -10px rgba(230,193,74,.5);
+      box-shadow: 0 0 0 1px rgba(212,169,74,.15) inset, 0 6px 18px -10px rgba(212,169,74,.5);
       transition: box-shadow .25s ease, transform .2s ease, border-color .2s ease;
     }
     #sendBtn:hover, .qa-btn:hover, .btn-activate:hover, #mrPowerToggle:hover{
-      border-color:#f7e08a !important;
+      border-color:#f5dc8c !important;
       box-shadow: var(--gold-glow);
       transform: translateY(-1px);
     }
     /* Textarea — the "enviar mensagem no chat" field */
     #message{
-      border:1px solid rgba(230,193,74,.55) !important;
+      border:1px solid rgba(212,169,74,.55) !important;
       background: linear-gradient(180deg, rgba(20,15,6,.9), rgba(10,8,4,.92)) !important;
       color:#fff5cc !important;
-      box-shadow: 0 0 0 1px rgba(230,193,74,.12) inset, 0 0 12px rgba(230,193,74,.15);
+      box-shadow: 0 0 0 1px rgba(212,169,74,.12) inset, 0 0 12px rgba(212,169,74,.15);
     }
     #message:focus{
       outline:none !important;
-      border-color:#f7e08a !important;
-      box-shadow: 0 0 0 2px rgba(247,224,138,.35), var(--gold-glow) !important;
+      border-color:#f5dc8c !important;
+      box-shadow: 0 0 0 2px rgba(245,220,140,.35), var(--gold-glow) !important;
     }
-    #message::placeholder{ color: rgba(247,224,138,.55) !important; letter-spacing:.3px }
+    #message::placeholder{ color: rgba(245,220,140,.55) !important; letter-spacing:.3px }
     /* Chat bubbles + all separators */
     .bubble.bot, .bubble.user, .mr-item, .mr-section-title, .file-chip, .qs-chip{
-      border-color: rgba(230,193,74,.30) !important;
+      border-color: rgba(212,169,74,.30) !important;
     }
     .bubble.user{
-      background: linear-gradient(135deg, rgba(230,193,74,.22), rgba(184,134,11,.14)) !important;
+      background: linear-gradient(135deg, rgba(212,169,74,.22), rgba(143,107,30,.14)) !important;
       color:#fff !important;
     }
     /* Gold shimmering separator around composer */
     .composer, .app-footer, .tabs, .mr-tabs{
-      border-color: rgba(230,193,74,.35) !important;
-      box-shadow: inset 0 1px 0 rgba(230,193,74,.15);
+      border-color: rgba(212,169,74,.35) !important;
+      box-shadow: inset 0 1px 0 rgba(212,169,74,.15);
     }
     /* Brand badge */
     .mr6-brand-badge{
-      background: linear-gradient(135deg,#f7e08a,#b8860b) !important;
+      background: linear-gradient(135deg,#f5dc8c,#8f6b1e) !important;
       color:#1a1200 !important;
-      border:1px solid #f7e08a !important;
+      border:1px solid #f5dc8c !important;
       box-shadow: var(--gold-glow);
       font-weight:900 !important;
     }
     /* Little gold dots at the composer edges (subtle luxury detail) */
     .composer::before, .composer::after{
       content:""; position:absolute; width:6px; height:6px; border-radius:50%;
-      background: radial-gradient(circle,#fff6c2 0%,#e6c14a 50%,#7a5a0a 100%);
+      background: radial-gradient(circle,#fff2c0 0%,#d4a94a 50%,#7a5a0a 100%);
       box-shadow: var(--gold-glow);
       top:50%; transform:translateY(-50%);
     }
@@ -1093,8 +1093,8 @@
     /* ==== HARD OVERRIDES: kill neon cyan/pink, force gold everywhere ==== */
     body::after{
       background:
-        radial-gradient(ellipse at 50% 0%, rgba(230,193,74,.14), transparent 55%),
-        radial-gradient(ellipse at 50% 100%, rgba(184,134,11,.18), transparent 55%),
+        radial-gradient(ellipse at 50% 0%, rgba(212,169,74,.14), transparent 55%),
+        radial-gradient(ellipse at 50% 100%, rgba(143,107,30,.18), transparent 55%),
         linear-gradient(180deg, rgba(13,10,4,.55) 0%, rgba(13,10,4,.35) 40%, rgba(13,10,4,.85) 100%) !important;
     }
     .app-header, .action-bar, .tabs-bar, .mr-tabs, .input-area,
@@ -1102,87 +1102,87 @@
       background: linear-gradient(180deg, rgba(30,22,8,.78), rgba(15,11,4,.68)) !important;
       backdrop-filter: blur(14px) saturate(140%);
       -webkit-backdrop-filter: blur(14px) saturate(140%);
-      border-color: rgba(230,193,74,.35) !important;
+      border-color: rgba(212,169,74,.35) !important;
     }
     /* Any button variant */
     .action-btn, .qa-btn, .mr-btn, .nc-iconbtn, #sendBtn, .btn-activate, .mr-tab{
-      background: linear-gradient(135deg, rgba(230,193,74,.18), rgba(122,90,10,.12)) !important;
-      border:1px solid rgba(230,193,74,.55) !important;
+      background: linear-gradient(135deg, rgba(212,169,74,.18), rgba(122,90,10,.12)) !important;
+      border:1px solid rgba(212,169,74,.55) !important;
       color:#fff5cc !important;
-      box-shadow: 0 0 0 1px rgba(230,193,74,.12) inset,
-                  0 6px 18px -12px rgba(230,193,74,.55) !important;
+      box-shadow: 0 0 0 1px rgba(212,169,74,.12) inset,
+                  0 6px 18px -12px rgba(212,169,74,.55) !important;
       transition: box-shadow .25s ease, transform .2s ease, border-color .2s ease;
     }
     .action-btn:hover, .qa-btn:hover, .mr-btn:hover, .nc-iconbtn:hover,
     #sendBtn:hover, .btn-activate:hover{
-      border-color:#f7e08a !important;
+      border-color:#f5dc8c !important;
       box-shadow: var(--gold-glow) !important;
       transform: translateY(-1px);
       color:#fff !important;
     }
     .mr-tab.active{
-      background: linear-gradient(135deg, rgba(247,224,138,.35), rgba(184,134,11,.22)) !important;
-      border-color:#f7e08a !important;
+      background: linear-gradient(135deg, rgba(245,220,140,.35), rgba(143,107,30,.22)) !important;
+      border-color:#f5dc8c !important;
       color:#fff !important;
       box-shadow: var(--gold-glow) !important;
     }
     /* Chat bubbles */
     .bubble.bot{
       background: linear-gradient(180deg, rgba(28,20,6,.85), rgba(18,13,4,.85)) !important;
-      border:1px solid rgba(230,193,74,.28) !important;
+      border:1px solid rgba(212,169,74,.28) !important;
       color:#fff5cc !important;
     }
     .bubble.user{
-      background: linear-gradient(135deg,#e6c14a,#b8860b) !important;
+      background: linear-gradient(135deg,#d4a94a,#8f6b1e) !important;
       color:#1a1200 !important;
-      border:1px solid #f7e08a !important;
-      box-shadow: 0 4px 20px rgba(230,193,74,.35) !important;
+      border:1px solid #f5dc8c !important;
+      box-shadow: 0 4px 20px rgba(212,169,74,.35) !important;
     }
     /* Send button gets full gold ingot look */
     #sendBtn{
-      background: linear-gradient(135deg,#f7e08a 0%,#e6c14a 45%,#b8860b 100%) !important;
+      background: linear-gradient(135deg,#f5dc8c 0%,#d4a94a 45%,#8f6b1e 100%) !important;
       color:#1a1200 !important;
-      border:1px solid #f7e08a !important;
-      box-shadow: 0 4px 20px rgba(230,193,74,.55),
+      border:1px solid #f5dc8c !important;
+      box-shadow: 0 4px 20px rgba(212,169,74,.55),
                   0 0 0 1px rgba(255,246,194,.5) inset !important;
       font-weight:900 !important;
     }
     /* Scrollbar */
-    *::-webkit-scrollbar-thumb{ background: rgba(230,193,74,.35) !important; }
+    *::-webkit-scrollbar-thumb{ background: rgba(212,169,74,.35) !important; }
     /* Section titles */
     .mr-section-title, .action-bar-label, .quick-actions-label{
-      color:#f7e08a !important;
+      color:#f5dc8c !important;
       letter-spacing:1.2px !important;
     }
     /* License card */
     .lic-title{
-      background: linear-gradient(135deg,#f7e08a,#e6c14a,#b8860b,#f7e08a) !important;
+      background: linear-gradient(135deg,#f5dc8c,#d4a94a,#8f6b1e,#f5dc8c) !important;
       background-size:200% 200% !important;
       -webkit-background-clip:text !important;
       -webkit-text-fill-color:transparent !important;
     }
-    .lic-card{ border:1px solid rgba(230,193,74,.35) !important; }
+    .lic-card{ border:1px solid rgba(212,169,74,.35) !important; }
     .lic-field input{
-      border:1.5px solid rgba(230,193,74,.35) !important;
+      border:1.5px solid rgba(212,169,74,.35) !important;
       background: rgba(20,15,6,.85) !important;
       color:#fff5cc !important;
     }
     /* === NEO-CORE HEADER — cor de ouro no MR TURBO GT === */
     #ext3-home .nc-header{
-      border:1px solid rgba(230,193,74,.5) !important;
+      border:1px solid rgba(212,169,74,.5) !important;
       background:linear-gradient(135deg, rgba(30,22,8,.9), rgba(15,11,4,.85)) !important;
-      box-shadow: var(--gold-glow), inset 0 1px 0 rgba(247,224,138,.15) !important;
+      box-shadow: var(--gold-glow), inset 0 1px 0 rgba(245,220,140,.15) !important;
       border-radius:14px;
     }
     #ext3-home .nc-logo-mr{
-      background:linear-gradient(135deg,#f7e08a,#e6c14a 50%,#b8860b) !important;
+      background:linear-gradient(135deg,#f5dc8c,#d4a94a 50%,#8f6b1e) !important;
       color:#1a1200 !important;
-      border:1px solid #f7e08a !important;
+      border:1px solid #f5dc8c !important;
       box-shadow: var(--gold-glow);
       font-weight:900 !important;
     }
     #ext3-home .nc-header-info .t1{
-      background:linear-gradient(135deg,#f7e08a 0%,#fff6c2 40%,#e6c14a 70%,#b8860b 100%) !important;
+      background:linear-gradient(135deg,#f5dc8c 0%,#fff2c0 40%,#d4a94a 70%,#8f6b1e 100%) !important;
       background-size:200% 200% !important;
       -webkit-background-clip:text !important;
       background-clip:text !important;
@@ -1191,7 +1191,7 @@
       font-size:20px !important; font-weight:900 !important;
       letter-spacing:.5px !important;
       animation: ext7GoldShift 5s ease infinite;
-      text-shadow: 0 0 24px rgba(247,224,138,.35);
+      text-shadow: 0 0 24px rgba(245,220,140,.35);
     }
     #ext3-home .nc-header-info .t2{
       color:#f4d97a !important;
@@ -1199,36 +1199,36 @@
       letter-spacing:.4px !important;
     }
     #ext3-home .nc-iconbtn{
-      color:#f7e08a !important;
-      border:1px solid rgba(230,193,74,.45) !important;
+      color:#f5dc8c !important;
+      border:1px solid rgba(212,169,74,.45) !important;
       background:rgba(20,15,6,.7) !important;
     }
-    #ext3-home .nc-iconbtn:hover{ box-shadow: var(--gold-glow) !important; border-color:#f7e08a !important; }
+    #ext3-home .nc-iconbtn:hover{ box-shadow: var(--gold-glow) !important; border-color:#f5dc8c !important; }
 
     /* NC-cards (clock, timer, items) — moldura dourada */
     #ext3-home .nc-clock-card,
     #ext3-home .nc-timer-card,
     #ext3-home .nc-item,
     #ext3-home .nc-work{
-      border:1px solid rgba(230,193,74,.32) !important;
+      border:1px solid rgba(212,169,74,.32) !important;
       background:linear-gradient(180deg, rgba(28,20,6,.7), rgba(18,13,4,.85)) !important;
-      box-shadow: inset 0 1px 0 rgba(247,224,138,.08), 0 6px 22px -14px rgba(230,193,74,.4) !important;
+      box-shadow: inset 0 1px 0 rgba(245,220,140,.08), 0 6px 22px -14px rgba(212,169,74,.4) !important;
     }
     #ext3-home .nc-item:hover{
-      border-color: rgba(247,224,138,.6) !important;
+      border-color: rgba(245,220,140,.6) !important;
       box-shadow: var(--gold-glow) !important;
     }
     #ext3-home .nc-group-title, #ext3-home .nc-work-title{
       color:#f4d97a !important; letter-spacing:1.2px !important;
     }
     #ext3-home .nc-clock-digits, #ext3-home .nc-timer-digits{
-      color:#fff6c2 !important;
-      text-shadow: 0 0 18px rgba(247,224,138,.5) !important;
+      color:#fff2c0 !important;
+      text-shadow: 0 0 18px rgba(245,220,140,.5) !important;
     }
     #ext3-home .nc-item-icon{
-      background:linear-gradient(135deg, rgba(230,193,74,.28), rgba(184,134,11,.18)) !important;
-      color:#fff6c2 !important;
-      border:1px solid rgba(230,193,74,.4) !important;
+      background:linear-gradient(135deg, rgba(212,169,74,.28), rgba(143,107,30,.18)) !important;
+      color:#fff2c0 !important;
+      border:1px solid rgba(212,169,74,.4) !important;
     }
     #ext3-home .nc-item-chev{ color:#f4d97a !important; }
 
@@ -1236,8 +1236,8 @@
     .input-area, .composer{ position:relative; }
     .input-area::before, .input-area::after{
       content:""; position:absolute; width:8px; height:8px; border-radius:50%;
-      background: radial-gradient(circle at 30% 30%, #fff8d0 0%, #f7e08a 30%, #b8860b 75%, #4a3200 100%);
-      box-shadow: 0 0 10px rgba(247,224,138,.75), 0 0 22px rgba(230,193,74,.4);
+      background: radial-gradient(circle at 30% 30%, #fff4c8 0%, #f5dc8c 30%, #8f6b1e 75%, #4a3200 100%);
+      box-shadow: 0 0 10px rgba(245,220,140,.75), 0 0 22px rgba(212,169,74,.4);
       top:50%; transform:translateY(-50%); pointer-events:none;
     }
     .input-area::before{ left:6px } .input-area::after{ right:6px }
@@ -1257,18 +1257,18 @@
     }
 
     /* Force gold on any lingering neon overrides from earlier blocks */
-    .app-header-title{ background:linear-gradient(135deg,#f7e08a 0%,#fff6c2 30%,#e6c14a 60%,#b8860b 100%) !important; }
+    .app-header-title{ background:linear-gradient(135deg,#f5dc8c 0%,#fff2c0 30%,#d4a94a 60%,#8f6b1e 100%) !important; }
     /* EXT7 v7.0.4 — Título do topo (faixa dourada) precisa exibir o nome legível */
     .app-header-title.ext7-title-badge{
       -webkit-text-fill-color:#1a1206 !important;
       color:#1a1206 !important;
-      background:linear-gradient(90deg,#b8860b 0%,#f7e08a 25%,#fff6c2 50%,#f7e08a 75%,#b8860b 100%) !important;
+      background:linear-gradient(90deg,#8f6b1e 0%,#f5dc8c 25%,#fff2c0 50%,#f5dc8c 75%,#8f6b1e 100%) !important;
       -webkit-background-clip:padding-box !important;
       background-clip:padding-box !important;
       padding:5px 12px !important;
       border-radius:8px !important;
       border:1px solid rgba(255,246,194,.85) !important;
-      box-shadow:0 0 12px rgba(230,193,74,.55), inset 0 0 8px rgba(255,255,255,.35) !important;
+      box-shadow:0 0 12px rgba(212,169,74,.55), inset 0 0 8px rgba(255,255,255,.35) !important;
       font-weight:900 !important; letter-spacing:.6px !important;
       text-transform:uppercase !important;
       text-shadow:0 1px 0 rgba(255,255,255,.35) !important;
@@ -1277,10 +1277,10 @@
     }
     .tab-btn.active::after, .mr-tab.active::after,
     .app-header::after{
-      background:linear-gradient(90deg,transparent,#f7e08a,#e6c14a,#b8860b,transparent) !important;
-      box-shadow: 0 0 14px rgba(247,224,138,.6) !important;
+      background:linear-gradient(90deg,transparent,#f5dc8c,#d4a94a,#8f6b1e,transparent) !important;
+      box-shadow: 0 0 14px rgba(245,220,140,.6) !important;
     }
-    #mainApp::after{ background:linear-gradient(90deg,transparent,rgba(247,224,138,.45),transparent) !important; }
+    #mainApp::after{ background:linear-gradient(90deg,transparent,rgba(245,220,140,.45),transparent) !important; }
 
     /* ===================================================================
        EXT7 v7.0.3 — FINAL GOLD OVERRIDES (últimos, sobrescrevem qualquer neon)
@@ -1288,51 +1288,51 @@
     /* Prompt rápido — ícones e labels em ouro (mata pink/blue/violet do neon) */
     .qa-btn .qa-icon,
     .qa-btn[data-action] .qa-icon{
-      background: linear-gradient(135deg, rgba(247,224,138,.28), rgba(184,134,11,.18)) !important;
-      border:1px solid rgba(247,224,138,.55) !important;
-      color:#f7e08a !important;
-      box-shadow: 0 0 12px rgba(247,224,138,.35) inset !important;
+      background: linear-gradient(135deg, rgba(245,220,140,.28), rgba(143,107,30,.18)) !important;
+      border:1px solid rgba(245,220,140,.55) !important;
+      color:#f5dc8c !important;
+      box-shadow: 0 0 12px rgba(245,220,140,.35) inset !important;
     }
-    .qa-btn .qa-icon svg{ color:#f7e08a !important; stroke:#f7e08a !important; }
-    .qa-btn{ color:#fff5cc !important; border:1px solid rgba(230,193,74,.5) !important; background:linear-gradient(155deg, rgba(30,22,8,.9), rgba(15,11,4,.85)) !important; }
-    .qa-btn:hover{ border-color:#f7e08a !important; box-shadow: var(--gold-glow) !important; }
-    .qa-btn:hover .qa-icon{ color:#fff8d0 !important; box-shadow: var(--gold-glow) inset !important; }
+    .qa-btn .qa-icon svg{ color:#f5dc8c !important; stroke:#f5dc8c !important; }
+    .qa-btn{ color:#fff5cc !important; border:1px solid rgba(212,169,74,.5) !important; background:linear-gradient(155deg, rgba(30,22,8,.9), rgba(15,11,4,.85)) !important; }
+    .qa-btn:hover{ border-color:#f5dc8c !important; box-shadow: var(--gold-glow) !important; }
+    .qa-btn:hover .qa-icon{ color:#fff4c8 !important; box-shadow: var(--gold-glow) inset !important; }
 
     /* Left action-bar / mr-btn — força ouro */
-    .action-bar{ background:linear-gradient(180deg, rgba(30,22,8,.7), rgba(15,11,4,.85)) !important; border:1px solid rgba(230,193,74,.28) !important; border-radius:12px; padding:8px !important; }
+    .action-bar{ background:linear-gradient(180deg, rgba(30,22,8,.7), rgba(15,11,4,.85)) !important; border:1px solid rgba(212,169,74,.28) !important; border-radius:12px; padding:8px !important; }
     .action-btn, .action-bar > button{
-      background: linear-gradient(135deg, rgba(247,224,138,.22), rgba(184,134,11,.14)) !important;
-      border:1px solid rgba(247,224,138,.55) !important;
+      background: linear-gradient(135deg, rgba(245,220,140,.22), rgba(143,107,30,.14)) !important;
+      border:1px solid rgba(245,220,140,.55) !important;
       color:#fff5cc !important;
-      box-shadow: 0 4px 12px -6px rgba(230,193,74,.45), 0 0 0 1px rgba(247,224,138,.15) inset !important;
+      box-shadow: 0 4px 12px -6px rgba(212,169,74,.45), 0 0 0 1px rgba(245,220,140,.15) inset !important;
     }
     .action-btn:hover, .action-bar > button:hover{
-      background: linear-gradient(135deg, #f7e08a, #b8860b) !important;
+      background: linear-gradient(135deg, #f5dc8c, #8f6b1e) !important;
       color:#1a1200 !important;
-      border-color:#fff6c2 !important;
+      border-color:#fff2c0 !important;
       box-shadow: var(--gold-glow) !important;
     }
     .mr-btn{
-      background: linear-gradient(135deg, rgba(247,224,138,.20), rgba(184,134,11,.12)) !important;
-      border:1px solid rgba(247,224,138,.50) !important;
+      background: linear-gradient(135deg, rgba(245,220,140,.20), rgba(143,107,30,.12)) !important;
+      border:1px solid rgba(245,220,140,.50) !important;
       color:#fff5cc !important;
     }
-    .mr-btn:hover{ background:linear-gradient(135deg, rgba(247,224,138,.38), rgba(184,134,11,.22)) !important; border-color:#f7e08a !important; color:#fff !important; box-shadow: var(--gold-glow) !important; }
-    .mr-btn.primary{ background:linear-gradient(135deg,#f7e08a,#e6c14a,#b8860b) !important; color:#1a1200 !important; border-color:#fff6c2 !important; font-weight:800 !important; }
+    .mr-btn:hover{ background:linear-gradient(135deg, rgba(245,220,140,.38), rgba(143,107,30,.22)) !important; border-color:#f5dc8c !important; color:#fff !important; box-shadow: var(--gold-glow) !important; }
+    .mr-btn.primary{ background:linear-gradient(135deg,#f5dc8c,#d4a94a,#8f6b1e) !important; color:#1a1200 !important; border-color:#fff2c0 !important; font-weight:800 !important; }
 
     /* Power toggle — dourado quando ATIVA */
     #mrPowerToggle.mr-power,
     #mrPowerToggle{
-      background: linear-gradient(135deg,#f7e08a 0%,#e6c14a 50%,#b8860b 100%) !important;
-      border:1px solid #fff6c2 !important;
+      background: linear-gradient(135deg,#f5dc8c 0%,#d4a94a 50%,#8f6b1e 100%) !important;
+      border:1px solid #fff2c0 !important;
       color:#1a1200 !important;
-      box-shadow: 0 0 14px rgba(247,224,138,.55), 0 0 0 1px rgba(255,255,255,.2) inset !important;
+      box-shadow: 0 0 14px rgba(245,220,140,.55), 0 0 0 1px rgba(255,255,255,.2) inset !important;
       font-weight:900 !important;
       letter-spacing:.06em !important;
     }
     #mrPowerToggle .mr-power-dot{
-      background: radial-gradient(circle at 30% 30%, #fff8d0, #f7e08a 40%, #b8860b 100%) !important;
-      box-shadow: 0 0 10px #f7e08a, 0 0 18px rgba(247,224,138,.6) !important;
+      background: radial-gradient(circle at 30% 30%, #fff4c8, #f5dc8c 40%, #8f6b1e 100%) !important;
+      box-shadow: 0 0 10px #f5dc8c, 0 0 18px rgba(245,220,140,.6) !important;
       animation: mrGoldPulse 2s ease-in-out infinite;
     }
     #mrPowerToggle.off{
@@ -1342,25 +1342,25 @@
       box-shadow: 0 0 12px rgba(255,80,80,.35) !important;
     }
     #mrPowerToggle.off .mr-power-dot{ background:#ff5252 !important; box-shadow:0 0 10px #ff5252 !important; animation:none; }
-    @keyframes mrGoldPulse{ 0%,100%{ filter:drop-shadow(0 0 4px #f7e08a) } 50%{ filter:drop-shadow(0 0 10px #fff6c2) } }
+    @keyframes mrGoldPulse{ 0%,100%{ filter:drop-shadow(0 0 4px #f5dc8c) } 50%{ filter:drop-shadow(0 0 10px #fff2c0) } }
 
     /* Badge de dias restantes ao lado do power — dourado */
     #licenseInfo{
-      background: linear-gradient(135deg, rgba(247,224,138,.22), rgba(184,134,11,.14)) !important;
-      border:1px solid rgba(247,224,138,.5) !important;
+      background: linear-gradient(135deg, rgba(245,220,140,.22), rgba(143,107,30,.14)) !important;
+      border:1px solid rgba(245,220,140,.5) !important;
       color:#fff5cc !important;
       padding:3px 10px !important;
       border-radius:20px !important;
       font-weight:700 !important;
-      box-shadow: 0 0 0 1px rgba(247,224,138,.12) inset !important;
+      box-shadow: 0 0 0 1px rgba(245,220,140,.12) inset !important;
     }
 
     /* Aba ativa — DESTAQUE forte com halo dourado */
     .mr-tab.active{
-      background: linear-gradient(135deg, #f7e08a 0%, #e6c14a 50%, #b8860b 100%) !important;
+      background: linear-gradient(135deg, #f5dc8c 0%, #d4a94a 50%, #8f6b1e 100%) !important;
       color:#1a1200 !important;
-      border:1px solid #fff6c2 !important;
-      box-shadow: 0 0 22px rgba(247,224,138,.7), 0 0 0 2px rgba(255,246,194,.35) inset !important;
+      border:1px solid #fff2c0 !important;
+      box-shadow: 0 0 22px rgba(245,220,140,.7), 0 0 0 2px rgba(255,246,194,.35) inset !important;
       transform: scale(1.02);
       position:relative;
     }
@@ -1369,8 +1369,8 @@
       position:absolute !important;
       left:-4px !important; top:8% !important; bottom:8% !important;
       width:4px !important; border-radius:0 4px 4px 0 !important;
-      background: linear-gradient(180deg,#fff8d0,#f7e08a,#e6c14a,#b8860b) !important;
-      box-shadow: 0 0 12px #f7e08a, 0 0 20px rgba(247,224,138,.6) !important;
+      background: linear-gradient(180deg,#fff4c8,#f5dc8c,#d4a94a,#8f6b1e) !important;
+      box-shadow: 0 0 12px #f5dc8c, 0 0 20px rgba(245,220,140,.6) !important;
       animation: mrGoldPulse 2s ease-in-out infinite !important;
     }
     .mr-tab.active::after{ display:none !important; }
@@ -1383,13 +1383,13 @@
     .mr7-tab-ig.active{
       background: linear-gradient(135deg,#dd2a7b,#8134af) !important;
       color:#fff !important;
-      box-shadow: 0 0 22px rgba(221,42,123,.6), 0 0 0 2px rgba(247,224,138,.35) inset !important;
+      box-shadow: 0 0 22px rgba(221,42,123,.6), 0 0 0 2px rgba(245,220,140,.35) inset !important;
     }
 
     /* Textos "prompt rápido" / "ações" — label dourado */
     .lt-section{
-      color:#f7e08a !important;
-      text-shadow: 0 0 8px rgba(247,224,138,.35);
+      color:#f5dc8c !important;
+      text-shadow: 0 0 8px rgba(245,220,140,.35);
       font-weight:800 !important;
       letter-spacing:.14em !important;
     }
@@ -1397,8 +1397,8 @@
     /* Pedras de ouro maiores/mais brilhantes na área do prompt */
     .input-area::before, .input-area::after{
       width:11px !important; height:11px !important;
-      background: radial-gradient(circle at 30% 30%, #fff8d0 0%, #f7e08a 25%, #e6c14a 55%, #7a5a0a 100%) !important;
-      box-shadow: 0 0 14px #f7e08a, 0 0 26px rgba(247,224,138,.6), inset 0 -1px 3px rgba(0,0,0,.4) !important;
+      background: radial-gradient(circle at 30% 30%, #fff4c8 0%, #f5dc8c 25%, #d4a94a 55%, #7a5a0a 100%) !important;
+      box-shadow: 0 0 14px #f5dc8c, 0 0 26px rgba(245,220,140,.6), inset 0 -1px 3px rgba(0,0,0,.4) !important;
       animation: mrGoldPulse 2.5s ease-in-out infinite !important;
     }
     .input-area::before{ left:8px !important } .input-area::after{ right:8px !important }

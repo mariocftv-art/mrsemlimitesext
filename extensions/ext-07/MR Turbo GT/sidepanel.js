@@ -178,11 +178,14 @@ async function revalidateLicense(force = false) {
     licenseSessionToken = result.session_token;
     
     const cur = (await chrome.storage.local.get('settings')).settings || {};
+    const _prevLS = cur.licenseState || {};
+    const _exp = result.expires_at || (typeof result.days_remaining === 'number' ? new Date(Date.now() + result.days_remaining * 86400000).toISOString() : _prevLS.expiresAt || null);
     await chrome.storage.local.set({
       licenseSessionToken: result.session_token,
-      settings: { ...cur, licenseState: { status: 'valid' }, licenseKey: licenseKey },
+      settings: { ...cur, licenseState: { ..._prevLS, status: 'valid', expiresAt: _exp }, licenseKey: licenseKey },
     });
     licenseInfo = { days_remaining: result.days_remaining, hours_remaining: result.hours_remaining, license_id: result.license_id };
+    try { window.__mrUpdateLicenseBadges && window.__mrUpdateLicenseBadges(); } catch(_) {}
     
     _licenseCache = { valid: true, session_token: result.session_token };
     _licenseCacheTime = Date.now();
@@ -986,6 +989,7 @@ async function showMainApp() {
 
   // Inicializa a UI do chat diretamente (sem iframe)
   initDirectChat();
+  try { window.__mrUpdateLicenseBadges && window.__mrUpdateLicenseBadges(); } catch(_) {}
 }
 
 // ========== DIRECT CHAT UI (no iframe, no bridge) ==========
@@ -1252,11 +1256,16 @@ function initDirectChat() {
     renderHistory();
   });
 
-  // License info
-  if (licenseInfoEl && licenseInfo) {
-    const d = licenseInfo.days_remaining;
-    licenseInfoEl.textContent = (d === null || d === undefined || Number.isNaN(Number(d))) ? '— dias' : `${Math.max(0, Math.floor(Number(d)))} dias`;
-  }
+  // License info — badges (topo + Home)
+  window.__mrUpdateLicenseBadges = function () {
+    const el1 = document.getElementById('licenseInfo');
+    const el2 = document.getElementById('mrHomeLicDays');
+    const d = licenseInfo && licenseInfo.days_remaining;
+    const n = (d === null || d === undefined || Number.isNaN(Number(d))) ? null : Math.max(0, Math.floor(Number(d)));
+    if (el1) el1.textContent = n === null ? '— dias' : `${n} dias`;
+    if (el2) el2.textContent = n === null ? '— dias restantes' : `${n} dias restantes`;
+  };
+  window.__mrUpdateLicenseBadges();
 
   // Textarea auto-resize
   messageEl?.addEventListener('input', () => {
@@ -1993,7 +2002,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             license_id: result.license_id,
           };
           const cur1 = (await chrome.storage.local.get('settings')).settings || {};
-          await chrome.storage.local.set({ licenseKey: storedKey, licenseSessionToken: result.session_token, settings: { ...cur1, licenseState: { status: 'valid' }, licenseKey: storedKey } });
+          const _pLS1 = cur1.licenseState || {};
+          const _exp1 = result.expires_at || (typeof result.days_remaining === 'number' ? new Date(Date.now() + result.days_remaining * 86400000).toISOString() : _pLS1.expiresAt || null);
+          await chrome.storage.local.set({ licenseKey: storedKey, licenseSessionToken: result.session_token, settings: { ...cur1, licenseState: { ..._pLS1, status: 'valid', expiresAt: _exp1 }, licenseKey: storedKey } });
           _licenseCache = { valid: true, session_token: result.session_token };
           _licenseCacheTime = Date.now();
           showMainApp();
@@ -2010,7 +2021,9 @@ document.addEventListener('DOMContentLoaded', async () => {
           license_id: result.license_id,
         };
         const cur2 = (await chrome.storage.local.get('settings')).settings || {};
-        await chrome.storage.local.set({ licenseKey: storedKey, licenseSessionToken: result.session_token, settings: { ...cur2, licenseState: { status: 'valid' }, licenseKey: storedKey } });
+        const _pLS2 = cur2.licenseState || {};
+        const _exp2 = result.expires_at || (typeof result.days_remaining === 'number' ? new Date(Date.now() + result.days_remaining * 86400000).toISOString() : _pLS2.expiresAt || null);
+        await chrome.storage.local.set({ licenseKey: storedKey, licenseSessionToken: result.session_token, settings: { ...cur2, licenseState: { ..._pLS2, status: 'valid', expiresAt: _exp2 }, licenseKey: storedKey } });
         _licenseCache = { valid: true, session_token: result.session_token };
         _licenseCacheTime = Date.now();
         showMainApp();
@@ -2064,7 +2077,9 @@ document.addEventListener('DOMContentLoaded', async () => {
           };
           
           const cur3 = (await chrome.storage.local.get('settings')).settings || {};
-          await chrome.storage.local.set({ licenseKey: key, licenseSessionToken: result.session_token, settings: { ...cur3, licenseState: { status: 'valid' }, licenseKey: key } });
+          const _pLS3 = cur3.licenseState || {};
+          const _exp3 = result.expires_at || (typeof result.days_remaining === 'number' ? new Date(Date.now() + result.days_remaining * 86400000).toISOString() : _pLS3.expiresAt || null);
+          await chrome.storage.local.set({ licenseKey: key, licenseSessionToken: result.session_token, settings: { ...cur3, licenseState: { ..._pLS3, status: 'valid', expiresAt: _exp3 }, licenseKey: key } });
           if (licenseStatus) { licenseStatus.textContent = '✅ Licença ativada!'; licenseStatus.style.color = '#22c55e'; }
           showToast('Licença ativada com sucesso!', 'success');
           setTimeout(() => showMainApp(), 500);

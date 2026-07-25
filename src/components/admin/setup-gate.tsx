@@ -188,11 +188,10 @@ function LoginCard({ onDone, onReset }: { onDone: () => void; onReset: () => voi
         </div>
         <div className="space-y-1">
           <Label className="text-xs">Senha</Label>
-          <Input
-            type="password"
+          <PasswordField
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && submit()}
+            onChange={setPassword}
+            onEnter={submit}
           />
         </div>
         <Button
@@ -206,10 +205,28 @@ function LoginCard({ onDone, onReset }: { onDone: () => void; onReset: () => voi
         <button
           type="button"
           onClick={() => {
+            if (
+              confirm(
+                `Redefinir a senha de ${email}?\n\nO cadastro dessa conta será apagado e você poderá criar uma nova senha na tela de configuração inicial.`,
+              )
+            ) {
+              clearAdminPassword(email);
+              endSession();
+              toast.success("Senha resetada. Defina uma nova.");
+              onReset();
+            }
+          }}
+          className="w-full text-xs text-primary underline-offset-2 hover:underline"
+        >
+          Esqueci a senha
+        </button>
+        <button
+          type="button"
+          onClick={() => {
             endSession();
             onReset();
           }}
-          className="w-full text-xs text-muted-foreground underline-offset-2 hover:underline"
+          className="w-full text-[11px] text-muted-foreground underline-offset-2 hover:underline"
         >
           Resetar credenciais (voltar à configuração inicial)
         </button>

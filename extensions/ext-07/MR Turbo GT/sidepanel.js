@@ -1475,13 +1475,26 @@ function initDirectChat() {
   const micBtn = document.getElementById('micBtn');
   if (micBtn) {
     let _voiceRecording = false;
+    let _silenceTimer = null;
+    const SILENCE_MS = 5000;
+
+    const stopVoice = () => {
+      if (!_voiceRecording) return;
+      chrome.runtime.sendMessage({ type: 'VOICE_STOP' }, () => void chrome.runtime.lastError);
+      _voiceRecording = false;
+      micBtn.classList.remove('recording');
+      updateStatus('');
+    };
+    const armSilence = () => {
+      if (_silenceTimer) clearTimeout(_silenceTimer);
+      _silenceTimer = setTimeout(() => { stopVoice(); }, SILENCE_MS);
+    };
+    const clearSilence = () => { if (_silenceTimer) { clearTimeout(_silenceTimer); _silenceTimer = null; } };
 
     micBtn.addEventListener('click', () => {
       if (_voiceRecording) {
-        chrome.runtime.sendMessage({ type: 'VOICE_STOP' }, () => void chrome.runtime.lastError);
-        _voiceRecording = false;
-        micBtn.classList.remove('recording');
-        updateStatus('');
+        clearSilence();
+        stopVoice();
       } else {
         updateStatus('🎤 Iniciando...');
         micBtn.classList.add('recording');
@@ -1498,9 +1511,11 @@ function initDirectChat() {
         if (msg.status === 'started') {
           _voiceRecording = true;
           micBtn.classList.add('recording');
-          updateStatus('🎤 Ouvindo... fale agora');
+          updateStatus('🎤 Ouvindo... (para em 5s de silêncio)');
+          armSilence();
         } else if (msg.status === 'ended') {
           _voiceRecording = false;
+          clearSilence();
           micBtn.classList.remove('recording');
           updateStatus(messageEl?.value?.trim() ? '✅ Texto transcrito' : '');
           messageEl?.focus();
@@ -1509,8 +1524,10 @@ function initDirectChat() {
         messageEl.value = msg.text || '';
         messageEl.style.height = 'auto';
         messageEl.style.height = Math.min(messageEl.scrollHeight, 300) + 'px';
+        if (_voiceRecording) armSilence();
       } else if (msg.type === 'VOICE_ERROR') {
         _voiceRecording = false;
+        clearSilence();
         micBtn.classList.remove('recording');
         const errMap = {
           'not-allowed': '❌ Microfone bloqueado. Permita em chrome://settings/content/microphone',
@@ -1522,6 +1539,7 @@ function initDirectChat() {
       }
     });
   }
+
 
   chrome.runtime.onMessage.addListener((msg) => {
     if (msg?.action === 'executeSubAction' && msg.actionId) {

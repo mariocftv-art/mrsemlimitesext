@@ -313,7 +313,7 @@ function ExtensionsPage() {
                 className="gap-1.5 md:w-auto"
                 style={{ background: "linear-gradient(135deg,#ef4444,#f59e0b 45%,#22d3ee)", color: "#04061a" }}
                 onClick={() => {
-                  downloadZip(EXT7_ZIP_URL, "ext7-v7.1.1.zip");
+                  downloadZip(EXT7_ZIP_URL, "ext7-v7.1.2.zip");
                   toast.success("Download da EXT7 iniciado.");
                 }}
               >

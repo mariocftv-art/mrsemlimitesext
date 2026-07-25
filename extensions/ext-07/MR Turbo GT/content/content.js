@@ -2022,14 +2022,16 @@
       return candidates[0] || null;
     }
 
+    let _cockpitPositioned = false;
     function positionNearAskLovable(foundInput) {
-      if (!floatBall || ballManuallyMoved) return;
+      if (!floatBall || ballManuallyMoved || _cockpitPositioned) return;
       const anchor = findLovableSendAnchor(foundInput);
       const baseRect = anchor?.getBoundingClientRect?.() || foundInput?.getBoundingClientRect?.();
       if (!baseRect) return;
       const x = (anchor ? baseRect.left : baseRect.right) - 46;
       const y = baseRect.top + (baseRect.height / 2) - 59;
       applyFloatPosition(x, y, false);
+      _cockpitPositioned = true;
     }
 
     function closeSubMenu() {

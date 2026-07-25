@@ -2308,11 +2308,8 @@ Isso vai remover a marca d'água do Lovable. Aplique essa alteração agora.`,
 
     function updateFloatBall() {
       if (!floatBall) return;
-      if (STATE.active) {
-        floatBall.className = 'il-ball-ativo';
-      } else {
-        floatBall.className = 'il-ball-inativo';
-      }
+      floatBall.classList.toggle('il-ball-ativo', !!STATE.active);
+      floatBall.classList.toggle('il-ball-inativo', !STATE.active);
     }
 
     setInterval(async () => {

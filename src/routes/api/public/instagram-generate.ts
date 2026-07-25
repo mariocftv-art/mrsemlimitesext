@@ -113,14 +113,14 @@ function localCopy(prompt: string, type: string, duration: number): CreativeCopy
 function imagePrompt(scenePrompt: string, aspect: 'vertical' | 'square') {
   const subject = plainSubject(scenePrompt) || scenePrompt
   const orient = aspect === 'vertical'
-    ? 'vertical 9:16 composition, Instagram Reel frame'
-    : 'square 1:1 Instagram post composition'
+    ? 'vertical 9:16 composition (1080x1920), Instagram Reel frame'
+    : 'square 1:1 composition (1440x1440), Instagram feed post'
   return [
-    'hyperrealistic professional editorial photograph, literal real-world subject, not abstract art',
-    `subject: ${subject}`,
+    'ultra-realistic professional advertising photograph, single hero subject, one clear focal point',
+    `subject (ONE, not multiple, not duplicated, not collage): ${subject}`,
     orient,
-    'commercial photography, natural cinematic lighting, realistic materials, sharp focus, premium DSLR look, high detail, magazine ad composition',
-    'no text, no letters, no logos, no watermark, no bubbles, no gold abstract background, no geometric wallpaper, no generic decorative pattern, no cartoon, no 3d render',
+    'shot on Sony A7R V, 50mm f/1.8, cinematic natural lighting, shallow depth of field, crisp sharp focus on the hero subject, realistic materials and textures, magazine-grade commercial photo, 4K quality',
+    'STRICTLY AVOID: duplicated subjects, multiple copies of the same object, collage, split frame, mirrored subjects, text, letters, logos, watermarks, speech bubbles, abstract gold wallpaper, geometric pattern background, cartoon, 3d render, illustration',
   ].join(', ')
 }
 

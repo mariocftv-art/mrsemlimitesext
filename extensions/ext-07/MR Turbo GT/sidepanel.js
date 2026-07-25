@@ -178,11 +178,14 @@ async function revalidateLicense(force = false) {
     licenseSessionToken = result.session_token;
     
     const cur = (await chrome.storage.local.get('settings')).settings || {};
+    const _prevLS = cur.licenseState || {};
+    const _exp = result.expires_at || (typeof result.days_remaining === 'number' ? new Date(Date.now() + result.days_remaining * 86400000).toISOString() : _prevLS.expiresAt || null);
     await chrome.storage.local.set({
       licenseSessionToken: result.session_token,
-      settings: { ...cur, licenseState: { status: 'valid' }, licenseKey: licenseKey },
+      settings: { ...cur, licenseState: { ..._prevLS, status: 'valid', expiresAt: _exp }, licenseKey: licenseKey },
     });
     licenseInfo = { days_remaining: result.days_remaining, hours_remaining: result.hours_remaining, license_id: result.license_id };
+    try { window.__mrUpdateLicenseBadges && window.__mrUpdateLicenseBadges(); } catch(_) {}
     
     _licenseCache = { valid: true, session_token: result.session_token };
     _licenseCacheTime = Date.now();

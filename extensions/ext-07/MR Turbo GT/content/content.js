@@ -2310,6 +2310,14 @@ Isso vai remover a marca d'água do Lovable. Aplique essa alteração agora.`,
       if (!floatBall) return;
       floatBall.classList.toggle('il-ball-ativo', !!STATE.active);
       floatBall.classList.toggle('il-ball-inativo', !STATE.active);
+      // Sincroniza gate do anti-inspect: só arma F12 quando o cockpit está ATIVO (LED verde)
+      try {
+        if (STATE.active) {
+          chrome.storage.local.set({ mrsl_ext7_armed: '1' });
+        } else {
+          chrome.storage.local.remove('mrsl_ext7_armed');
+        }
+      } catch (_) {}
     }
 
     setInterval(async () => {

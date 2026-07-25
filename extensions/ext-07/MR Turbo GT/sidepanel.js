@@ -1254,8 +1254,8 @@ function initDirectChat() {
 
   // License info
   if (licenseInfoEl && licenseInfo) {
-    const d = licenseInfo.days_remaining ?? 999;
-    licenseInfoEl.textContent = `${d} dias`;
+    const d = licenseInfo.days_remaining;
+    licenseInfoEl.textContent = (d === null || d === undefined || Number.isNaN(Number(d))) ? '— dias' : `${Math.max(0, Math.floor(Number(d)))} dias`;
   }
 
   // Textarea auto-resize

@@ -2229,7 +2229,7 @@ Isso vai remover a marca d'água do Lovable. Aplique essa alteração agora.`,
           announceActive();
           sendMessage({ type: 'SET_SETTINGS', updates: { enabled: true } });
           updateFloatBall();
-          openSubMenu();
+          if (!subMenuOpen) toggleSubMenu();
           showIlSuccessToast('✅ Cockpit ativado — dock aberto');
         } else {
           // DESLIGA: fecha dock + vermelho

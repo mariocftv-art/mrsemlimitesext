@@ -101,7 +101,7 @@ const EXT4_ZIP_URL = "/__l5e/assets-v1/a9e2a317-8481-456e-9dc6-5df018c0cc59/MR S
 const EXT5_ZIP_URL = "/__l5e/assets-v1/0fa6bab6-004b-4a23-9b5a-3f1799e55597/MR-Sem-Limites-EXT5-v5.4.23.zip";
 import ext6Asset from "@/assets/ext6-v6.1.0.zip.asset.json";
 const EXT6_ZIP_URL = ext6Asset.url;
-import ext7Asset from "@/assets/ext7-v7.0.9.zip.asset.json";
+import ext7Asset from "@/assets/ext7-v7.1.0.zip.asset.json";
 const EXT7_ZIP_URL = ext7Asset.url;
 
 type Filter = "all" | ExtensionStatus;
@@ -313,11 +313,11 @@ function ExtensionsPage() {
                 className="gap-1.5 md:w-auto"
                 style={{ background: "linear-gradient(135deg,#ef4444,#f59e0b 45%,#22d3ee)", color: "#04061a" }}
                 onClick={() => {
-                  downloadZip(EXT7_ZIP_URL, "ext7-v7.0.9.zip");
+                  downloadZip(EXT7_ZIP_URL, "ext7-v7.1.0.zip");
                   toast.success("Download da EXT7 iniciado.");
                 }}
               >
-                <Download className="h-4 w-4" /> EXT7 v7.0.9 Download
+                <Download className="h-4 w-4" /> EXT7 v7.1.0 Download
               </Button>
               <Button variant="outline" className="gap-1.5 border-emerald-500/60 text-emerald-400 hover:bg-emerald-500/10 md:w-auto" onClick={openSupport}>
                 <MessageCircle className="h-4 w-4" /> Suporte

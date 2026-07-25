@@ -1,8 +1,8 @@
-# MR Turbo GT (EXT7) — v7.0.9
+# MR Turbo GT (EXT7) — v7.1.0
 
 Extensão premium unificando o melhor das EXT1/2/3/5/6 (sem a Orbe).
 
-## v7.0.9
+## v7.1.0
 - Cockpit Sliding Dock arrastável, nasce perto da seta de envio do Ask Lovable.
 - LED sólido: vermelho inativo, verde quando o Ask Lovable está armado.
 - Instagram corrigido: sintaxe do módulo, geração real de imagem/Reel, preview sincronizado e upload direto do MP4.

@@ -168,9 +168,6 @@
       'video/mp4;codecs=avc1.42E01E',
       'video/mp4;codecs=h264',
       'video/mp4',
-      'video/webm;codecs=vp9',
-      'video/webm;codecs=vp8',
-      'video/webm',
     ];
     return types.find((t) => window.MediaRecorder && MediaRecorder.isTypeSupported(t)) || '';
   }
@@ -408,7 +405,13 @@
       }
     }
 
-    const recorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 5_500_000, audioBitsPerSecond: 160_000 });
+    const audioBitsPerSecond = 160_000;
+    const maxVideoBytes = 360 * 1024 * 1024; // fica abaixo do teto prático de 400MB para Reels longos
+    const videoBitsPerSecond = Math.max(
+      1_800_000,
+      Math.min(5_500_000, Math.floor((maxVideoBytes * 8) / safeDuration) - audioBitsPerSecond),
+    );
+    const recorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond, audioBitsPerSecond });
     recorder.ondataavailable = (ev) => { if (ev.data && ev.data.size) chunks.push(ev.data); };
 
     const done = new Promise((resolve, reject) => {
@@ -418,8 +421,7 @@
           stream.getTracks().forEach((t) => t.stop());
           if (audioCtx) { try { await audioCtx.close(); } catch(_){} }
           const blob = new Blob(chunks, { type: mimeType });
-          const dataUrl = await blobToDataUrl(blob);
-          resolve({ blob, dataUrl, mimeType });
+          resolve({ blob, dataUrl: '', mimeType });
         } catch (e) { reject(e); }
       };
     });
@@ -549,11 +551,47 @@
     lines.slice(0, maxLines).forEach((l, i) => ctx.fillText(l, x, y + i * lineHeight));
   }
 
-  async function publishGeneratedMedia(dataUrl) {
+  async function publishGeneratedMedia(media, filenameHint) {
+    if (media instanceof Blob) {
+      const ext = String(media.type || '').includes('mp4') ? 'mp4' : String(media.type || '').includes('webm') ? 'webm' : 'bin';
+      const filename = filenameHint || `mr-reel-${Date.now()}.${ext}`;
+      const errors = [];
+
+      try {
+        const fd = new FormData();
+        fd.append('reqtype', 'fileupload');
+        fd.append('fileToUpload', media, filename);
+        const r = await fetch('https://catbox.moe/user/api.php', { method: 'POST', body: fd });
+        const text = (await r.text()).trim();
+        if (r.ok && /^https:\/\//i.test(text)) return text;
+        errors.push(`catbox ${r.status}`);
+      } catch (e) { errors.push(`catbox ${e?.message || e}`); }
+
+      try {
+        const fd = new FormData();
+        fd.append('file', media, filename);
+        const r = await fetch('https://0x0.st', { method: 'POST', body: fd });
+        const text = (await r.text()).trim();
+        if (r.ok && /^https:\/\//i.test(text)) return text;
+        errors.push(`0x0 ${r.status}`);
+      } catch (e) { errors.push(`0x0 ${e?.message || e}`); }
+
+      try {
+        const fd = new FormData();
+        fd.append('file', media, filename);
+        const r = await fetch('https://tmpfiles.org/api/v1/upload', { method: 'POST', body: fd });
+        const j = await r.json().catch(() => ({}));
+        if (r.ok && j?.data?.url) return String(j.data.url).replace('tmpfiles.org/', 'tmpfiles.org/dl/');
+        errors.push(`tmpfiles ${r.status}`);
+      } catch (e) { errors.push(`tmpfiles ${e?.message || e}`); }
+
+      throw new Error('Não consegui hospedar o vídeo público: ' + errors.join(' | '));
+    }
+
     const r = await fetch(MEDIA_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ data_url: dataUrl }),
+      body: JSON.stringify({ data_url: media }),
     });
     const d = await r.json().catch(() => ({}));
     if (!r.ok) throw new Error(d.error || `Falha ao preparar URL pública da mídia (${r.status})`);
@@ -801,30 +839,123 @@
     const duration = Math.max(REEL_MIN_DURATION_SEC, Math.min(REEL_MAX_DURATION_SEC, Number($('igDuration')?.value || REEL_MIN_DURATION_SEC) || REEL_MIN_DURATION_SEC));
     const soundtrack = ($('igSoundtrack')?.value) || 'auto';
     const voiceMode = ($('igVoiceMode')?.value) || 'male_consultant';
-    setBusy(btn, true, '📝 Enviando ao chat da IA…');
+    setBusy(btn, true, isReel ? '🎬 Gerando Reel real…' : '🎨 Gerando mídia real…');
     try {
-      const apiType = currentType === 'viral' ? 'post' : currentType;
+      const apiType = currentType === 'viral' || currentType === 'carousel' ? 'post' : currentType;
+      if (lastPreviewObjectUrl) {
+        try { URL.revokeObjectURL(lastPreviewObjectUrl); } catch (_) {}
+        lastPreviewObjectUrl = '';
+      }
+
+      log(isReel ? `🎬 Gerando 5 cenas + roteiro + legenda (${duration}s)…` : '🎨 Gerando imagem + título + legenda…');
+      const r = await fetch(GENERATE_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prompt: userPrompt,
+          type: apiType,
+          duration,
+          soundtrack,
+          voiceMode,
+          media: true,
+        }),
+      });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(d.error || `HTTP ${r.status}`);
+
+      const caption = [d.title, d.caption].filter(Boolean).join('\n\n');
+      const preview = $('igPreview');
+      const img = $('igPreviewImg');
+      const vid = $('igPreviewVideo');
+      const plan = $('igVideoPlan');
+      if (preview) preview.style.display = 'block';
+      if ($('igCaption')) $('igCaption').value = caption;
+
+      if (isReel) {
+        const sceneUrls = Array.isArray(d.scenes)
+          ? d.scenes.map((s) => s.b64 ? `data:${s.mime || 'image/jpeg'};base64,${s.b64}` : s.url).filter(Boolean)
+          : [];
+        if (plan) {
+          plan.style.display = 'block';
+          plan.textContent = [
+            '🎬 Roteiro sincronizado:',
+            d.video_script || 'Roteiro gerado automaticamente pelas cenas.',
+            '',
+            '🎙 Fala:',
+            d.voiceover || 'Voz masculina consultor.',
+            '',
+            '🎵 Trilha:',
+            d.soundtrack_suggestion || soundtrack,
+          ].join('\n');
+        }
+        log('🎞 Montando vídeo MP4 local com crossfade + Ken Burns…');
+        const video = await makeReelPreviewFromImage(d.media_url, d.title, soundtrack, d.voiceover, d.video_script, duration, sceneUrls);
+        if (!String(video.mimeType || '').includes('mp4')) {
+          throw new Error('Seu Chrome não liberou MP4/H.264 para Reels. Atualize o Chrome e gere novamente.');
+        }
+        lastGeneratedMime = video.mimeType;
+        lastPreviewObjectUrl = URL.createObjectURL(video.blob);
+        if (vid) {
+          vid.src = lastPreviewObjectUrl;
+          vid.style.display = 'block';
+          try { vid.load(); } catch (_) {}
+        }
+        if (img) { img.removeAttribute('src'); img.style.display = 'none'; }
+        log('☁️ Enviando MP4 para URL pública do Instagram…');
+        const publicVideoUrl = await publishGeneratedMedia(video.blob, `mr-turbo-gt-reel-${Date.now()}.mp4`);
+        if ($('igMediaUrl')) $('igMediaUrl').value = publicVideoUrl;
+        log('✅ Reel pronto: vídeo, roteiro, fala, trilha e legenda sincronizados. Clique em Publicar agora.', true);
+      } else {
+        if (!d.media_url) throw new Error('Servidor não retornou URL da mídia');
+        lastGeneratedMime = d.media_mime || 'image/jpeg';
+        if ($('igMediaUrl')) $('igMediaUrl').value = d.media_url;
+        if (plan) { plan.style.display = 'none'; plan.textContent = ''; }
+        if (vid) { vid.pause?.(); vid.removeAttribute('src'); vid.style.display = 'none'; }
+        if (img) { img.src = d.media_url; img.style.display = 'block'; }
+        log('✅ Imagem + título + legenda prontos. Clique em Publicar agora.', true);
+      }
+    } catch (e) {
+      log('❌ ' + (e?.message || e), false);
+      try {
+        const fallback = createLocalCreative(userPrompt, currentType, duration, getAiPick());
+        if ($('igCaption')) $('igCaption').value = [fallback.title, fallback.caption].filter(Boolean).join('\n\n');
+        const preview = $('igPreview'); if (preview) preview.style.display = 'block';
+        const img = $('igPreviewImg'); if (img) { img.src = fallback.media_url; img.style.display = 'block'; }
+        const vid = $('igPreviewVideo'); if (vid) { vid.pause?.(); vid.removeAttribute('src'); vid.style.display = 'none'; }
+        const plan = $('igVideoPlan');
+        if (plan && isReel) { plan.style.display = 'block'; plan.textContent = fallback.video_script; }
+      } catch (_) {}
+    } finally {
+      setBusy(btn, false);
+    }
+  }
+
+  async function sendPromptToLovable() {
+    const userPrompt = ($('igPrompt')?.value || '').trim();
+    if (!userPrompt) return log('❌ Descreva o que você quer gerar', false);
+    const isReel = currentType === 'reel';
+    const duration = Math.max(REEL_MIN_DURATION_SEC, Math.min(REEL_MAX_DURATION_SEC, Number($('igDuration')?.value || REEL_MIN_DURATION_SEC) || REEL_MIN_DURATION_SEC));
+    const soundtrack = ($('igSoundtrack')?.value) || 'auto';
+    const voiceMode = ($('igVoiceMode')?.value) || 'male_consultant';
+    try {
+      const apiType = currentType === 'viral' || currentType === 'carousel' ? 'post' : currentType;
       const prompt = buildInstagramPrompt(userPrompt, apiType, duration, soundtrack, voiceMode);
       const ta = document.getElementById('message');
       if (!ta) throw new Error('Chat da IA não encontrado no painel. Abra a aba Chat e tente novamente.');
       ta.value = prompt;
       ta.dispatchEvent(new Event('input', { bubbles: true }));
       try { ta.setSelectionRange(ta.value.length, ta.value.length); } catch (_) {}
-      // Ativa a aba Chat pra o usuário revisar e enviar manualmente
       try {
         document.querySelectorAll('.mr-tab').forEach((t) => t.classList.toggle('active', t.dataset.mrtab === 'chat'));
         document.querySelectorAll('.mr-panel').forEach((p) => p.classList.toggle('active', p.dataset.mrpanel === 'chat'));
         try { localStorage.setItem('mr21.lastTab', 'chat'); } catch (_) {}
       } catch (_) {}
       try { ta.focus(); } catch (_) {}
-      log('✅ Prompt do Instagram carregado no chat da IA. Revise e envie — a mídia e a legenda vão vir da IA que você escolheu na aba IAs (sem créditos do workspace). Depois cole a URL da mídia em "URL da mídia" abaixo e clique em Publicar.', true);
-      // Deixa o preview visível pra o usuário colar a URL manualmente
       const preview = $('igPreview');
       if (preview) preview.style.display = 'block';
+      log('✅ Prompt do Instagram carregado no chat da IA. Revise e envie se quiser gerar por fora.', true);
     } catch (e) {
       log('❌ ' + (e?.message || e), false);
-    } finally {
-      setBusy(btn, false);
     }
   }
 
@@ -866,7 +997,8 @@
     setBusy(btn, true, '⏳ Publicando…');
     log('⏳ Enviando ao Instagram…');
     try {
-      const apiType = currentType === 'viral' ? 'post' : currentType;
+      const hasMultipleUrls = media_url.split(',').map((u) => u.trim()).filter(Boolean).length > 1;
+      const apiType = currentType === 'viral' || (currentType === 'carousel' && !hasMultipleUrls) ? 'post' : currentType;
       const r = await fetch(PUBLISH_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -903,23 +1035,10 @@
     setBusy(btn, true, '⚡ Gerando mídia + legenda…');
     log('⚡ Auto: gerando mídia (Pollinations) e legenda…');
     try {
-      const r = await fetch(GENERATE_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt: userPrompt, type: apiType, duration, media: true }),
-      });
-      const d = await r.json();
-      if (!r.ok) throw new Error(d.error || `HTTP ${r.status}`);
-      const media_url = d.media_url;
-      const caption = [d.title, d.caption].filter(Boolean).join('\n\n');
-      if (!media_url) throw new Error('Servidor não retornou URL da mídia');
-      $('igMediaUrl').value = media_url;
-      $('igCaption').value = caption;
-      const preview = $('igPreview'); if (preview) preview.style.display = 'block';
-      try {
-        const img = $('igPreviewImg'); if (img) { img.src = media_url; img.style.display = 'block'; }
-        const vid = $('igPreviewVideo'); if (vid) vid.style.display = 'none';
-      } catch (_) {}
+      await generate();
+      const media_url = ($('igMediaUrl')?.value || '').trim();
+      const caption = ($('igCaption')?.value || '').trim();
+      if (!media_url) throw new Error('A mídia não ficou pronta para publicar');
       log('✅ Mídia gerada. Publicando no Instagram…', true);
       setBusy(btn, true, '📤 Publicando…');
       const r2 = await fetch(PUBLISH_URL, {
@@ -941,6 +1060,7 @@
     } finally {
       setBusy(btn, false);
     }
+  }
 
   function renderPromptGrid(gridId, items) {
     const grid = document.getElementById(gridId);
@@ -1000,6 +1120,7 @@
       b.addEventListener('click', () => switchSub(b.dataset.sub));
     });
     $('igGenerateBtn')?.addEventListener('click', generate);
+    $('igGenerateBtn')?.addEventListener('contextmenu', (e) => { e.preventDefault(); sendPromptToLovable(); });
     $('igGenerateAutoBtn')?.addEventListener('click', generateAndPublishAuto);
     $('igRegenBtn')?.addEventListener('click', generate);
     $('igPublishBtn')?.addEventListener('click', publish);

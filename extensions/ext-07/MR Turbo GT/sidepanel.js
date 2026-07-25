@@ -2020,7 +2020,9 @@ document.addEventListener('DOMContentLoaded', async () => {
           license_id: result.license_id,
         };
         const cur2 = (await chrome.storage.local.get('settings')).settings || {};
-        await chrome.storage.local.set({ licenseKey: storedKey, licenseSessionToken: result.session_token, settings: { ...cur2, licenseState: { status: 'valid' }, licenseKey: storedKey } });
+        const _pLS2 = cur2.licenseState || {};
+        const _exp2 = result.expires_at || (typeof result.days_remaining === 'number' ? new Date(Date.now() + result.days_remaining * 86400000).toISOString() : _pLS2.expiresAt || null);
+        await chrome.storage.local.set({ licenseKey: storedKey, licenseSessionToken: result.session_token, settings: { ...cur2, licenseState: { ..._pLS2, status: 'valid', expiresAt: _exp2 }, licenseKey: storedKey } });
         _licenseCache = { valid: true, session_token: result.session_token };
         _licenseCacheTime = Date.now();
         showMainApp();

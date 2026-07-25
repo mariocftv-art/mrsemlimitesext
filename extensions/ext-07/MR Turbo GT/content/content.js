@@ -1666,10 +1666,10 @@
       /* ---- Floating SLIDING DOCK (MR TURBO GT — Modelo 3) ---- */
       #il-float-ball {
         position: fixed;
-        left: 0 !important;
-        bottom: 76px !important;
-        top: auto !important;
-        right: auto !important;
+        left: auto;
+        bottom: auto;
+        top: auto;
+        right: auto;
         width: 34px;
         height: 118px;
         border-radius: 0 14px 14px 0;
@@ -1682,7 +1682,7 @@
           0 0 36px rgba(143,107,30,0.35),
           inset 0 1px 0 rgba(255,246,194,0.65),
           inset 0 -2px 6px rgba(74,54,8,0.55);
-        cursor: pointer;
+        cursor: grab;
         z-index: 2147483645;
         display: flex;
         flex-direction: column;
@@ -1691,7 +1691,7 @@
         padding: 10px 3px;
         user-select: none;
         will-change: auto;
-        touch-action: manipulation;
+        touch-action: none;
         font-family: -apple-system, "Segoe UI", sans-serif;
         overflow: visible;
       }
@@ -1709,7 +1709,7 @@
         opacity: .55;
         pointer-events: none;
       }
-      #il-float-ball:active { cursor: pointer; }
+      #il-float-ball:active { cursor: grabbing; }
       #il-float-ball img {
         display: none !important;
       }
@@ -1729,7 +1729,7 @@
         border-radius: 50%;
         border: 1.5px solid rgba(74,54,8,0.7);
         pointer-events: none;
-        animation: il-dot-pulse 2s ease-in-out infinite;
+        animation: none !important;
         flex-shrink: 0;
       }
       #il-float-ball.il-ball-ativo {
@@ -1742,6 +1742,7 @@
       #il-float-ball.il-ball-ativo .il-status-dot { background: #22c55e; box-shadow: 0 0 10px #22c55e; }
       #il-float-ball.il-ball-inativo .il-status-dot { background: #b91c1c; animation: none; box-shadow: 0 0 6px #7f1d1d; }
       #il-float-ball.il-ball-inativo { opacity: 0.9; }
+      #il-float-ball.il-dragging .il-sub-menu { display: none !important; }
       @keyframes il-toast-slide-in {
         from { opacity: 0; transform: translateX(30px); }
         to   { opacity: 1; transform: translateX(0); }
@@ -1807,6 +1808,19 @@
         transition: clip-path .35s cubic-bezier(.34,1.56,.64,1), opacity .25s ease;
         z-index: 2147483644;
       }
+      #il-float-ball.il-dock-left .il-sub-menu {
+        left: auto;
+        right: 100%;
+        margin-left: 0;
+        margin-right: -6px;
+        border-left: 1.5px solid #d4a94a;
+        border-right: none;
+        border-radius: 14px 0 0 14px;
+        padding: 6px 14px 6px 10px;
+        clip-path: inset(0 0 0 100%);
+      }
+      #il-float-ball.il-dock-left .il-sub-menu.il-open { clip-path: inset(0 0 0 0); }
+      #il-float-ball.il-dock-left .il-sub-menu.il-closing { clip-path: inset(0 0 0 100%); }
       .il-sub-menu.il-open {
         pointer-events: auto;
         opacity: 1;
@@ -1901,6 +1915,8 @@
       { id: 'watermark', label: 'Tirar Marca', icon: '<circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>', wm: true },
     ];
 
+    const COCKPIT_POS_KEY = 'mr_turbo_gt_cockpit_pos_v2';
+
     function cleanupLegacyFloatingControls() {
       try {
         document.querySelectorAll('#il-float-ball').forEach(el => {
@@ -1949,6 +1965,71 @@
       } else {
         menu.classList.remove('il-open');
       }
+    }
+
+    function clampFloatPosition(x, y) {
+      const margin = 8;
+      const w = 34;
+      const h = 118;
+      return {
+        x: Math.max(margin, Math.min(window.innerWidth - w - margin, Number(x) || margin)),
+        y: Math.max(margin, Math.min(window.innerHeight - h - margin, Number(y) || margin)),
+      };
+    }
+
+    function applyFloatPosition(x, y, persist) {
+      if (!floatBall) return;
+      const p = clampFloatPosition(x, y);
+      floatBall.style.left = `${p.x}px`;
+      floatBall.style.top = `${p.y}px`;
+      floatBall.style.right = 'auto';
+      floatBall.style.bottom = 'auto';
+      floatBall.classList.toggle('il-dock-left', p.x > window.innerWidth * 0.55);
+      if (persist) {
+        try { localStorage.setItem(COCKPIT_POS_KEY, JSON.stringify(p)); } catch (_) {}
+      }
+    }
+
+    function getSavedFloatPosition() {
+      try {
+        const raw = localStorage.getItem(COCKPIT_POS_KEY);
+        if (!raw) return null;
+        const p = JSON.parse(raw);
+        if (!Number.isFinite(Number(p?.x)) || !Number.isFinite(Number(p?.y))) return null;
+        return clampFloatPosition(p.x, p.y);
+      } catch (_) { return null; }
+    }
+
+    function findLovableSendAnchor(foundInput) {
+      const inputRect = foundInput?.getBoundingClientRect?.();
+      const candidates = Array.from(document.querySelectorAll('button')).filter((btn) => {
+        const r = btn.getBoundingClientRect();
+        if (r.width < 18 || r.height < 18 || r.width > 92 || r.height > 92) return false;
+        if (r.bottom < window.innerHeight * 0.45) return false;
+        const text = `${btn.getAttribute('aria-label') || ''} ${btn.title || ''} ${btn.textContent || ''}`.toLowerCase();
+        const looksLikeSend = /send|enviar|submit|arrow|seta|prompt/.test(text) || !!btn.querySelector('svg');
+        if (!looksLikeSend) return false;
+        if (!inputRect) return true;
+        const nearInputY = r.top < inputRect.bottom + 70 && r.bottom > inputRect.top - 30;
+        const nearInputX = r.left > inputRect.left + inputRect.width * 0.45;
+        return nearInputY && nearInputX;
+      });
+      candidates.sort((a, b) => {
+        const ra = a.getBoundingClientRect();
+        const rb = b.getBoundingClientRect();
+        return (rb.left + rb.bottom) - (ra.left + ra.bottom);
+      });
+      return candidates[0] || null;
+    }
+
+    function positionNearAskLovable(foundInput) {
+      if (!floatBall || ballManuallyMoved) return;
+      const anchor = findLovableSendAnchor(foundInput);
+      const baseRect = anchor?.getBoundingClientRect?.() || foundInput?.getBoundingClientRect?.();
+      if (!baseRect) return;
+      const x = (anchor ? baseRect.left : baseRect.right) - 46;
+      const y = baseRect.top + (baseRect.height / 2) - 59;
+      applyFloatPosition(x, y, false);
     }
 
     function closeSubMenu() {
@@ -2113,6 +2194,12 @@ Isso vai remover a marca d'água do Lovable. Aplique essa alteração agora.`,
       floatBall.title = 'MR TURBO GT — Clique para abrir/fechar ações rápidas';
       document.body.appendChild(floatBall);
 
+      const savedPos = getSavedFloatPosition();
+      if (savedPos) {
+        ballManuallyMoved = true;
+        applyFloatPosition(savedPos.x, savedPos.y, false);
+      }
+
       // Position sub-buttons in arc
       const menuEl = floatBall.querySelector('.il-sub-menu');
       positionSubButtons(menuEl);
@@ -2125,14 +2212,20 @@ Isso vai remover a marca d'água do Lovable. Aplique essa alteração agora.`,
         });
       });
 
-      // Click abre/fecha o dock. A extensão fica armada automaticamente quando a licença está válida.
+      // Clique arma o Ask Lovable (verde sólido) e abre/fecha o dock. Arraste para reposicionar.
       floatBall.addEventListener('click', (e) => {
         if (isDragging) return;
         if (e.target.closest('.il-sub-btn') || e.target.closest('.il-sub-menu')) return;
-        if (!STATE.active && STATE.licenseValid) {
-          STATE._manuallyActivated = true;
+        if (!STATE.licenseValid) {
+          showIlSuccessToast('❌ Valide sua licença para ativar o Ask Lovable');
+          return;
+        }
+        if (!STATE.active) {
           STATE.active = true;
+          STATE._manuallyActivated = true;
           announceActive();
+          sendMessage({ type: 'SET_SETTINGS', updates: { enabled: true } });
+          showIlSuccessToast('✅ Ask Lovable ativado — cockpit verde');
         }
         toggleSubMenu();
         updateFloatBall();
@@ -2173,13 +2266,43 @@ Isso vai remover a marca d'água do Lovable. Aplique essa alteração agora.`,
         }
       });
 
-      // Fixo na borda: sem arrastar, para não invadir o Ask Lovable nem duplicar posição.
+      // Arrastar livre: o cockpit nasce perto da seta de envio e pode ser reposicionado.
+      let downX = 0, downY = 0, startLeft = 0, startTop = 0, moved = false;
       floatBall.addEventListener('pointerdown', (e) => {
         if (e.button !== 0) return;
         if (e.target.closest('.il-sub-btn')) return;
+        const rect = floatBall.getBoundingClientRect();
+        downX = e.clientX;
+        downY = e.clientY;
+        startLeft = rect.left;
+        startTop = rect.top;
+        moved = false;
         isDragging = false;
-        ballManuallyMoved = false;
         e.preventDefault();
+        try { floatBall.setPointerCapture(e.pointerId); } catch (_) {}
+      });
+      floatBall.addEventListener('pointermove', (e) => {
+        if (e.buttons !== 1) return;
+        const dx = e.clientX - downX;
+        const dy = e.clientY - downY;
+        if (!moved && Math.hypot(dx, dy) < 5) return;
+        moved = true;
+        isDragging = true;
+        ballManuallyMoved = true;
+        closeSubMenu();
+        floatBall.classList.add('il-dragging');
+        applyFloatPosition(startLeft + dx, startTop + dy, true);
+      });
+      floatBall.addEventListener('pointerup', (e) => {
+        try { floatBall.releasePointerCapture(e.pointerId); } catch (_) {}
+        if (moved) {
+          e.preventDefault();
+          e.stopPropagation();
+          setTimeout(() => { isDragging = false; floatBall?.classList.remove('il-dragging'); }, 40);
+        } else {
+          isDragging = false;
+          floatBall.classList.remove('il-dragging');
+        }
       });
     }
 
@@ -2214,11 +2337,6 @@ Isso vai remover a marca d'água do Lovable. Aplique essa alteração agora.`,
         return;
       }
       STATE.licenseValid = true;
-      if (!STATE.active) {
-        STATE.active = true;
-        STATE._manuallyActivated = true;
-        announceActive();
-      }
       ensureFloatBall();
       cleanupLegacyFloatingControls();
       updateFloatBall();
@@ -2241,7 +2359,8 @@ Isso vai remover a marca d'água do Lovable. Aplique essa alteração agora.`,
         }
       }
 
-      // O Sliding Dock fica travado na borda esquerda; não segue mais o campo Ask Lovable.
+      // Se o usuário ainda não arrastou, o cockpit acompanha o começo da seta de envio do Ask Lovable.
+      positionNearAskLovable(foundInput);
 
       // Só aplica o glow quando a extensão está realmente ativa
       if (!STATE.active) {

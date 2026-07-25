@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
-import { KeyRound, LogIn, ShieldCheck } from "lucide-react";
+import { Eye, EyeOff, KeyRound, LogIn, ShieldCheck } from "lucide-react";
 import {
   ADMIN_EMAILS,
   type AdminEmail,
+  clearAdminPassword,
   endSession,
   getSessionEmail,
   isFirstRun,
@@ -101,19 +102,17 @@ function SetupCard({ onDone, onSkip }: { onDone: () => void; onSkip: () => void 
             <div className="grid gap-2 sm:grid-cols-2">
               <div className="space-y-1">
                 <Label className="text-xs">Nova senha</Label>
-                <Input
-                  type="password"
+                <PasswordField
                   value={pw[email] || ""}
-                  onChange={(e) => setPw({ ...pw, [email]: e.target.value })}
+                  onChange={(v) => setPw({ ...pw, [email]: v })}
                   placeholder="min. 8 caracteres"
                 />
               </div>
               <div className="space-y-1">
                 <Label className="text-xs">Confirmar</Label>
-                <Input
-                  type="password"
+                <PasswordField
                   value={confirm[email] || ""}
-                  onChange={(e) => setConfirm({ ...confirm, [email]: e.target.value })}
+                  onChange={(v) => setConfirm({ ...confirm, [email]: v })}
                 />
               </div>
             </div>
@@ -189,11 +188,10 @@ function LoginCard({ onDone, onReset }: { onDone: () => void; onReset: () => voi
         </div>
         <div className="space-y-1">
           <Label className="text-xs">Senha</Label>
-          <Input
-            type="password"
+          <PasswordField
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && submit()}
+            onChange={setPassword}
+            onEnter={submit}
           />
         </div>
         <Button
@@ -207,14 +205,66 @@ function LoginCard({ onDone, onReset }: { onDone: () => void; onReset: () => voi
         <button
           type="button"
           onClick={() => {
+            if (
+              confirm(
+                `Redefinir a senha de ${email}?\n\nO cadastro dessa conta será apagado e você poderá criar uma nova senha na tela de configuração inicial.`,
+              )
+            ) {
+              clearAdminPassword(email);
+              endSession();
+              toast.success("Senha resetada. Defina uma nova.");
+              onReset();
+            }
+          }}
+          className="w-full text-xs text-primary underline-offset-2 hover:underline"
+        >
+          Esqueci a senha
+        </button>
+        <button
+          type="button"
+          onClick={() => {
             endSession();
             onReset();
           }}
-          className="w-full text-xs text-muted-foreground underline-offset-2 hover:underline"
+          className="w-full text-[11px] text-muted-foreground underline-offset-2 hover:underline"
         >
           Resetar credenciais (voltar à configuração inicial)
         </button>
       </CardContent>
     </Card>
+  );
+}
+
+function PasswordField({
+  value,
+  onChange,
+  placeholder,
+  onEnter,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  placeholder?: string;
+  onEnter?: () => void;
+}) {
+  const [show, setShow] = useState(false);
+  return (
+    <div className="relative">
+      <Input
+        type={show ? "text" : "password"}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        onKeyDown={(e) => e.key === "Enter" && onEnter?.()}
+        className="pr-10"
+      />
+      <button
+        type="button"
+        aria-label={show ? "Ocultar senha" : "Mostrar senha"}
+        onClick={() => setShow((s) => !s)}
+        className="absolute inset-y-0 right-0 flex w-9 items-center justify-center text-muted-foreground hover:text-foreground"
+      >
+        {show ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+      </button>
+    </div>
   );
 }

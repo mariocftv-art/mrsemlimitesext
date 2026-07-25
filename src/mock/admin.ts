@@ -93,3 +93,9 @@ export function resetAllAdmins() {
   window.localStorage.removeItem(KEY_ADMINS);
   window.localStorage.removeItem(KEY_SESSION);
 }
+
+export function clearAdminPassword(email: AdminEmail) {
+  const admins = readAdmins();
+  delete admins[email];
+  writeAdmins(admins);
+}

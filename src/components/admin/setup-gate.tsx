@@ -219,3 +219,37 @@ function LoginCard({ onDone, onReset }: { onDone: () => void; onReset: () => voi
     </Card>
   );
 }
+
+function PasswordField({
+  value,
+  onChange,
+  placeholder,
+  onEnter,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  placeholder?: string;
+  onEnter?: () => void;
+}) {
+  const [show, setShow] = useState(false);
+  return (
+    <div className="relative">
+      <Input
+        type={show ? "text" : "password"}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        onKeyDown={(e) => e.key === "Enter" && onEnter?.()}
+        className="pr-10"
+      />
+      <button
+        type="button"
+        aria-label={show ? "Ocultar senha" : "Mostrar senha"}
+        onClick={() => setShow((s) => !s)}
+        className="absolute inset-y-0 right-0 flex w-9 items-center justify-center text-muted-foreground hover:text-foreground"
+      >
+        {show ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+      </button>
+    </div>
+  );
+}

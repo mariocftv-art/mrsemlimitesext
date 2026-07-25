@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
-import { KeyRound, LogIn, ShieldCheck } from "lucide-react";
+import { Eye, EyeOff, KeyRound, LogIn, ShieldCheck } from "lucide-react";
 import {
   ADMIN_EMAILS,
   type AdminEmail,
+  clearAdminPassword,
   endSession,
   getSessionEmail,
   isFirstRun,

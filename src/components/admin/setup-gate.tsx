@@ -90,11 +90,12 @@ function SetupCard({ onDone, onSkip }: { onDone: () => void; onSkip: () => void 
         </div>
         <CardTitle>Configuração inicial</CardTitle>
         <p className="text-sm text-muted-foreground">
-          Defina a senha dos dois administradores principais. Não existe senha padrão.
+          Defina a senha {emails.length > 1 ? "dos administradores pendentes" : "do administrador pendente"}.
+          Não existe senha padrão.
         </p>
       </CardHeader>
       <CardContent className="space-y-5">
-        {ADMIN_EMAILS.map((email) => (
+        {emails.map((email) => (
           <div key={email} className="space-y-2 rounded-lg border border-border/60 p-3">
             <p className="text-sm font-medium">{email}</p>
             <div className="grid gap-2 sm:grid-cols-2">
@@ -126,6 +127,13 @@ function SetupCard({ onDone, onSkip }: { onDone: () => void; onSkip: () => void 
         >
           <KeyRound className="mr-2 h-4 w-4" /> Salvar senhas
         </Button>
+        <button
+          type="button"
+          onClick={onSkip}
+          className="w-full text-xs text-muted-foreground underline-offset-2 hover:underline"
+        >
+          Já configurei antes · ir para o login
+        </button>
       </CardContent>
     </Card>
   );

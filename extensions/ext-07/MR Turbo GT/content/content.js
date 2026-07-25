@@ -1883,17 +1883,11 @@
     ];
 
     function positionSubButtons(menuEl) {
-      const btns = menuEl.querySelectorAll('.il-sub-btn');
-      const radius = 58;
-      const startAngle = -90; // top
-      const totalAngle = 280;
-      const step = totalAngle / (btns.length - 1);
-      btns.forEach((btn, i) => {
-        const angle = (startAngle + step * i) * Math.PI / 180;
-        const x = Math.cos(angle) * radius;
-        const y = Math.sin(angle) * radius;
-        btn.style.left = x + 'px';
-        btn.style.top = y + 'px';
+      // Sliding Dock: layout is flex-row via CSS; no absolute positioning needed.
+      // Kept as no-op for backwards compat.
+      if (!menuEl) return;
+      menuEl.querySelectorAll('.il-sub-btn').forEach(btn => {
+        btn.style.left = ''; btn.style.top = '';
       });
     }
 

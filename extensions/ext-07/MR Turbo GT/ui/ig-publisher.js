@@ -405,7 +405,13 @@
       }
     }
 
-    const recorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 5_500_000, audioBitsPerSecond: 160_000 });
+    const audioBitsPerSecond = 160_000;
+    const maxVideoBytes = 360 * 1024 * 1024; // fica abaixo do teto prático de 400MB para Reels longos
+    const videoBitsPerSecond = Math.max(
+      1_800_000,
+      Math.min(5_500_000, Math.floor((maxVideoBytes * 8) / safeDuration) - audioBitsPerSecond),
+    );
+    const recorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond, audioBitsPerSecond });
     recorder.ondataavailable = (ev) => { if (ev.data && ev.data.size) chunks.push(ev.data); };
 
     const done = new Promise((resolve, reject) => {
@@ -546,11 +552,47 @@
     lines.slice(0, maxLines).forEach((l, i) => ctx.fillText(l, x, y + i * lineHeight));
   }
 
-  async function publishGeneratedMedia(dataUrl) {
+  async function publishGeneratedMedia(media, filenameHint) {
+    if (media instanceof Blob) {
+      const ext = String(media.type || '').includes('mp4') ? 'mp4' : String(media.type || '').includes('webm') ? 'webm' : 'bin';
+      const filename = filenameHint || `mr-reel-${Date.now()}.${ext}`;
+      const errors = [];
+
+      try {
+        const fd = new FormData();
+        fd.append('reqtype', 'fileupload');
+        fd.append('fileToUpload', media, filename);
+        const r = await fetch('https://catbox.moe/user/api.php', { method: 'POST', body: fd });
+        const text = (await r.text()).trim();
+        if (r.ok && /^https:\/\//i.test(text)) return text;
+        errors.push(`catbox ${r.status}`);
+      } catch (e) { errors.push(`catbox ${e?.message || e}`); }
+
+      try {
+        const fd = new FormData();
+        fd.append('file', media, filename);
+        const r = await fetch('https://0x0.st', { method: 'POST', body: fd });
+        const text = (await r.text()).trim();
+        if (r.ok && /^https:\/\//i.test(text)) return text;
+        errors.push(`0x0 ${r.status}`);
+      } catch (e) { errors.push(`0x0 ${e?.message || e}`); }
+
+      try {
+        const fd = new FormData();
+        fd.append('file', media, filename);
+        const r = await fetch('https://tmpfiles.org/api/v1/upload', { method: 'POST', body: fd });
+        const j = await r.json().catch(() => ({}));
+        if (r.ok && j?.data?.url) return String(j.data.url).replace('tmpfiles.org/', 'tmpfiles.org/dl/');
+        errors.push(`tmpfiles ${r.status}`);
+      } catch (e) { errors.push(`tmpfiles ${e?.message || e}`); }
+
+      throw new Error('Não consegui hospedar o vídeo público: ' + errors.join(' | '));
+    }
+
     const r = await fetch(MEDIA_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ data_url: dataUrl }),
+      body: JSON.stringify({ data_url: media }),
     });
     const d = await r.json().catch(() => ({}));
     if (!r.ok) throw new Error(d.error || `Falha ao preparar URL pública da mídia (${r.status})`);
@@ -831,7 +873,9 @@
       if ($('igCaption')) $('igCaption').value = caption;
 
       if (isReel) {
-        const sceneUrls = Array.isArray(d.scenes) ? d.scenes.map((s) => s.url).filter(Boolean) : [];
+        const sceneUrls = Array.isArray(d.scenes)
+          ? d.scenes.map((s) => s.b64 ? `data:${s.mime || 'image/jpeg'};base64,${s.b64}` : s.url).filter(Boolean)
+          : [];
         if (plan) {
           plan.style.display = 'block';
           plan.textContent = [
@@ -859,7 +903,7 @@
         }
         if (img) { img.removeAttribute('src'); img.style.display = 'none'; }
         log('☁️ Enviando MP4 para URL pública do Instagram…');
-        const publicVideoUrl = await publishGeneratedMedia(video.dataUrl);
+        const publicVideoUrl = await publishGeneratedMedia(video.blob, `mr-turbo-gt-reel-${Date.now()}.mp4`);
         if ($('igMediaUrl')) $('igMediaUrl').value = publicVideoUrl;
         log('✅ Reel pronto: vídeo, roteiro, fala, trilha e legenda sincronizados. Clique em Publicar agora.', true);
       } else {

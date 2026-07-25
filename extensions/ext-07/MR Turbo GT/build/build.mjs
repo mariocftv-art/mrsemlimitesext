@@ -23,7 +23,7 @@ import { execSync } from 'node:child_process';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
-const NAME = 'MR Sem Limites EXT5';
+const NAME = 'MR Turbo GT';
 const DIST = path.join(ROOT, 'dist');
 
 const args = Object.fromEntries(

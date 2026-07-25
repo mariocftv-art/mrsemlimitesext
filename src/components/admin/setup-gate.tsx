@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { KeyRound, LogIn, ShieldCheck } from "lucide-react";
 import {
   ADMIN_EMAILS,
@@ -6,6 +6,7 @@ import {
   endSession,
   getSessionEmail,
   isFirstRun,
+  pendingAdmins,
   setPassword,
   startSession,
   verifyPassword,
@@ -30,9 +31,9 @@ export function AdminSetupGate({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    if (isFirstRun()) setMode("setup");
-    else if (!getSessionEmail()) setMode("login");
-    else setMode("ok");
+    if (getSessionEmail()) setMode("ok");
+    else if (isFirstRun()) setMode("setup");
+    else setMode("login");
   }, []);
 
   if (mode === "loading") return null;
@@ -40,7 +41,7 @@ export function AdminSetupGate({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       {mode === "setup" ? (
-        <SetupCard onDone={() => setMode("login")} />
+        <SetupCard onDone={() => setMode("login")} onSkip={() => setMode("login")} />
       ) : (
         <LoginCard onDone={() => setMode("ok")} onReset={() => setMode("setup")} />
       )}
@@ -48,13 +49,14 @@ export function AdminSetupGate({ children }: { children: React.ReactNode }) {
   );
 }
 
-function SetupCard({ onDone }: { onDone: () => void }) {
+function SetupCard({ onDone, onSkip }: { onDone: () => void; onSkip: () => void }) {
+  const emails = useMemo(() => pendingAdmins(), []);
   const [pw, setPw] = useState<Record<string, string>>({});
   const [confirm, setConfirm] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
 
   const submit = async () => {
-    for (const email of ADMIN_EMAILS) {
+    for (const email of emails) {
       if (!pw[email] || pw[email].length < 8) {
         toast.error(`Senha de ${email} precisa ter no mínimo 8 caracteres`);
         return;
@@ -66,7 +68,7 @@ function SetupCard({ onDone }: { onDone: () => void }) {
     }
     setBusy(true);
     try {
-      for (const email of ADMIN_EMAILS) {
+      for (const email of emails) {
         await setPassword(email as AdminEmail, pw[email]);
       }
       toast.success("Senhas configuradas. Faça login para continuar.");
@@ -75,6 +77,7 @@ function SetupCard({ onDone }: { onDone: () => void }) {
       setBusy(false);
     }
   };
+
 
   return (
     <Card className="glass w-full max-w-lg border-border/60">
@@ -87,11 +90,12 @@ function SetupCard({ onDone }: { onDone: () => void }) {
         </div>
         <CardTitle>Configuração inicial</CardTitle>
         <p className="text-sm text-muted-foreground">
-          Defina a senha dos dois administradores principais. Não existe senha padrão.
+          Defina a senha {emails.length > 1 ? "dos administradores pendentes" : "do administrador pendente"}.
+          Não existe senha padrão.
         </p>
       </CardHeader>
       <CardContent className="space-y-5">
-        {ADMIN_EMAILS.map((email) => (
+        {emails.map((email) => (
           <div key={email} className="space-y-2 rounded-lg border border-border/60 p-3">
             <p className="text-sm font-medium">{email}</p>
             <div className="grid gap-2 sm:grid-cols-2">
@@ -123,6 +127,13 @@ function SetupCard({ onDone }: { onDone: () => void }) {
         >
           <KeyRound className="mr-2 h-4 w-4" /> Salvar senhas
         </Button>
+        <button
+          type="button"
+          onClick={onSkip}
+          className="w-full text-xs text-muted-foreground underline-offset-2 hover:underline"
+        >
+          Já configurei antes · ir para o login
+        </button>
       </CardContent>
     </Card>
   );

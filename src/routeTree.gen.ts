@@ -38,6 +38,7 @@ import { Route as BackendRouteImport } from './routes/backend'
 import { Route as AssetsRouteImport } from './routes/assets'
 import { Route as ApiDocsRouteImport } from './routes/api-docs'
 import { Route as AnimationsRouteImport } from './routes/animations'
+import { Route as AdminSecureRouteImport } from './routes/admin-secure'
 import { Route as ActivationsRouteImport } from './routes/activations'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RuntimeIdRouteImport } from './routes/runtime.$id'
@@ -204,6 +205,11 @@ const AnimationsRoute = AnimationsRouteImport.update({
   path: '/animations',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminSecureRoute = AdminSecureRouteImport.update({
+  id: '/admin-secure',
+  path: '/admin-secure',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ActivationsRoute = ActivationsRouteImport.update({
   id: '/activations',
   path: '/activations',
@@ -318,6 +324,7 @@ const ApiPublicExtVersionRoute = ApiPublicExtVersionRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/activations': typeof ActivationsRoute
+  '/admin-secure': typeof AdminSecureRoute
   '/animations': typeof AnimationsRoute
   '/api-docs': typeof ApiDocsRoute
   '/assets': typeof AssetsRoute
@@ -369,6 +376,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/activations': typeof ActivationsRoute
+  '/admin-secure': typeof AdminSecureRoute
   '/animations': typeof AnimationsRoute
   '/api-docs': typeof ApiDocsRoute
   '/assets': typeof AssetsRoute
@@ -421,6 +429,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/activations': typeof ActivationsRoute
+  '/admin-secure': typeof AdminSecureRoute
   '/animations': typeof AnimationsRoute
   '/api-docs': typeof ApiDocsRoute
   '/assets': typeof AssetsRoute
@@ -474,6 +483,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/activations'
+    | '/admin-secure'
     | '/animations'
     | '/api-docs'
     | '/assets'
@@ -525,6 +535,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/activations'
+    | '/admin-secure'
     | '/animations'
     | '/api-docs'
     | '/assets'
@@ -576,6 +587,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/activations'
+    | '/admin-secure'
     | '/animations'
     | '/api-docs'
     | '/assets'
@@ -628,6 +640,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ActivationsRoute: typeof ActivationsRoute
+  AdminSecureRoute: typeof AdminSecureRoute
   AnimationsRoute: typeof AnimationsRoute
   ApiDocsRoute: typeof ApiDocsRoute
   AssetsRoute: typeof AssetsRoute
@@ -882,6 +895,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AnimationsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin-secure': {
+      id: '/admin-secure'
+      path: '/admin-secure'
+      fullPath: '/admin-secure'
+      preLoaderRoute: typeof AdminSecureRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/activations': {
       id: '/activations'
       path: '/activations'
@@ -1028,6 +1048,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ActivationsRoute: ActivationsRoute,
+  AdminSecureRoute: AdminSecureRoute,
   AnimationsRoute: AnimationsRoute,
   ApiDocsRoute: ApiDocsRoute,
   AssetsRoute: AssetsRoute,

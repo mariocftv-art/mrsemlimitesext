@@ -2118,6 +2118,51 @@ Isso vai remover a marca d'água do Lovable. Aplique essa alteração agora.`,
     };
 
     // Send action prompt from sub-button (direct, no sidepanel needed)
+    async function typeAndSendInLovableDirect(text) {
+      const findInput = () => {
+        const sels = [
+          'textarea[placeholder*="adorável" i]',
+          'textarea[placeholder*="Pergunte" i]',
+          'form textarea',
+          'textarea',
+          '[contenteditable="true"]',
+        ];
+        for (const s of sels) {
+          for (const el of document.querySelectorAll(s)) {
+            const r = el.getBoundingClientRect();
+            if (r.width > 100 && r.height > 20 && !el.disabled && !el.readOnly) return el;
+          }
+        }
+        return null;
+      };
+      let el = findInput();
+      for (let i = 0; i < 20 && !el; i++) { await new Promise(r => setTimeout(r, 150)); el = findInput(); }
+      if (!el) throw new Error('campo de chat não encontrado no Lovable');
+      el.focus();
+      if (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT') {
+        const proto = el.tagName === 'TEXTAREA' ? window.HTMLTextAreaElement.prototype : window.HTMLInputElement.prototype;
+        Object.getOwnPropertyDescriptor(proto, 'value').set.call(el, text);
+        el.dispatchEvent(new Event('input', { bubbles: true }));
+        el.dispatchEvent(new Event('change', { bubbles: true }));
+      } else {
+        el.innerText = text;
+        el.dispatchEvent(new InputEvent('input', { bubbles: true, inputType: 'insertText', data: text }));
+      }
+      await new Promise(r => setTimeout(r, 250));
+      const form = el.closest('form');
+      const scope = form || document;
+      const btns = Array.from(scope.querySelectorAll('button'));
+      let sendBtn = btns.find(b => b.type === 'submit')
+        || btns.find(b => /enviar|send/i.test((b.getAttribute('aria-label') || '') + ' ' + (b.textContent || '')))
+        || btns.find(b => {
+          const svg = b.querySelector('svg'); if (!svg) return false;
+          const c = (svg.getAttribute('class') || '') + ' ' + (svg.innerHTML || '');
+          return /arrow-up|send|lucide-send|lucide-arrow-up/i.test(c);
+        });
+      if (!sendBtn) throw new Error('botão de envio não encontrado');
+      sendBtn.click();
+    }
+
     async function sendSubAction(actionId) {
       closeSubMenu();
 
@@ -2128,27 +2173,8 @@ Isso vai remover a marca d'água do Lovable. Aplique essa alteração agora.`,
       showIlSuccessToast('🚀 ' + label + ' enviando…');
 
       try {
-        const s = await sendMessage({ type: 'GET_SETTINGS' });
-        if (!s?.lovableToken) { showIlSuccessToast('❌ Token não encontrado. Abra o sidepanel primeiro.'); return; }
-
-        const m = location.pathname.match(/\/projects\/([^/]+)/);
-        if (!m) { showIlSuccessToast('❌ Abra um projeto no Lovable'); return; }
-
-        const result = await handleSendTryToFix({
-          type: 'SEND_TRY_TO_FIX',
-          projectId: m[1],
-          text: prompt,
-          token: s.lovableToken,
-          sessionId: s.lovableSessionId || '',
-          gitSha: s.lovableClientGitSha || '',
-          attachments: [],
-        });
-
-        if (result?.ok) {
-          showIlSuccessToast('✅ ' + label + ' enviado ao Lovable!');
-        } else {
-          showIlSuccessToast('❌ Erro: ' + (result?.error || 'falha desconhecida'));
-        }
+        await typeAndSendInLovableDirect(prompt);
+        showIlSuccessToast('✅ ' + label + ' enviado ao Lovable!');
       } catch (e) {
         showIlSuccessToast('❌ ' + (e?.message || 'Erro ao enviar'));
       }

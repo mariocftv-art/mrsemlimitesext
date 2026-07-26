@@ -2114,27 +2114,16 @@ Isso vai remover a marca d'água do Lovable. Aplique essa alteração agora.`,
     async function sendSubAction(actionId) {
       closeSubMenu();
 
-      // Atalhos que apenas abrem uma aba do sidepanel (Skills/IAs/Vídeos)
-      const TAB_ACTIONS = { skills: 'skills', ias: 'ias', videos: 'videos' };
-      if (TAB_ACTIONS[actionId]) {
-        try {
-          chrome.runtime.sendMessage({ type: 'OPEN_SIDEPANEL_TAB', tab: TAB_ACTIONS[actionId] });
-        } catch (_) {}
-        showIlSuccessToast('📂 Abrindo ' + actionId.toUpperCase() + '…');
-        return;
-      }
-
       const prompt = SUB_PROMPTS[actionId];
-      if (!prompt) return;
+      if (!prompt) { showIlSuccessToast('❌ Ação não encontrada'); return; }
 
-      showIlSuccessToast('🚀 ' + actionId.charAt(0).toUpperCase() + actionId.slice(1) + ' enviando...');
+      const label = (SUB_BUTTONS.find(b => b.id === actionId)?.label) || actionId;
+      showIlSuccessToast('🚀 ' + label + ' enviando…');
 
       try {
-        // Get auth from storage
         const s = await sendMessage({ type: 'GET_SETTINGS' });
         if (!s?.lovableToken) { showIlSuccessToast('❌ Token não encontrado. Abra o sidepanel primeiro.'); return; }
 
-        // Extract projectId from URL
         const m = location.pathname.match(/\/projects\/([^/]+)/);
         if (!m) { showIlSuccessToast('❌ Abra um projeto no Lovable'); return; }
 
@@ -2149,7 +2138,7 @@ Isso vai remover a marca d'água do Lovable. Aplique essa alteração agora.`,
         });
 
         if (result?.ok) {
-          showIlSuccessToast('✅ ' + actionId.charAt(0).toUpperCase() + actionId.slice(1) + ' enviado!');
+          showIlSuccessToast('✅ ' + label + ' enviado ao Lovable!');
         } else {
           showIlSuccessToast('❌ Erro: ' + (result?.error || 'falha desconhecida'));
         }

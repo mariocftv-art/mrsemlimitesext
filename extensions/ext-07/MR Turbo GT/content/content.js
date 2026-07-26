@@ -2027,6 +2027,13 @@
 
     // Prompts for each action (same as sidebar QA_PROMPTS)
     const SUB_PROMPTS = {
+      skills: `Liste TODAS as skills e habilidades técnicas que você (Lovable AI) pode aplicar neste projeto, agrupadas por categoria (Frontend, Backend, Banco de Dados, DevOps, UI/UX, Segurança, Performance, Integrações, Automações, IA/ML). Para cada skill, dê 1 linha do que ela faz e sugira as 3 mais úteis para o estado atual deste projeto.`,
+
+      ias: `Analise o projeto atual e sugira quais IAs / modelos (GPT, Claude, Gemini, Llama, DALL-E, Midjourney, Whisper, ElevenLabs, etc.) fariam mais sentido integrar aqui. Para cada IA, mostre: (1) caso de uso concreto no projeto, (2) como integrar (SDK, API, edge function), (3) custo estimado, (4) exemplo de código pronto.`,
+
+      videos: `Adicione ao projeto suporte completo a geração/edição de vídeos com IA. Inclua: (1) integração com API de geração de vídeo (Runway, Pika, Sora ou similar), (2) upload/preview de vídeos, (3) player customizado, (4) transcrição automática (Whisper), (5) thumbnails automáticos, (6) UI moderna com controles e timeline. Faça tudo funcionar de ponta a ponta.`,
+
+
       corrigir: `Analise completamente todo o projeto e identifique TODOS os bugs, erros, falhas, comportamentos inesperados e possíveis problemas existentes na aplicação.
 
 Seu objetivo é realizar uma auditoria técnica profunda no sistema inteiro, corrigindo problemas de lógica, frontend, backend, integração, renderização, estado, banco de dados, responsividade e performance.

@@ -46,6 +46,7 @@ export const regenerateIntegrity = createServerFn({ method: "POST" })
   })
   .handler(async ({ data }) => {
     const nodePath = await import("node:path");
+    // @ts-expect-error — script sem tipos
     const mod = await import("../../scripts/security-integrity.mjs");
     const dir = nodePath.join(process.cwd(), EXT_ROOTS[data.extKey]);
     const res = await mod.generateIntegrity(dir);

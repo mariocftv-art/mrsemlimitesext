@@ -1655,22 +1655,7 @@
           0 0 22px rgba(212,169,74,0.55) !important;
         filter: none !important;
       }
-      .ilimitado-glow-active::before {
-        content: "MR TURBO GT · ARMADO — ENVIO DOURADO ATIVO";
-        position: absolute;
-        bottom: 6px;
-        left: 12px;
-        font-size: 9px;
-        font-weight: 800;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        letter-spacing: 0.14em;
-        color: #f5dc8c;
-        pointer-events: none;
-        z-index: 11;
-        text-shadow: 0 0 6px rgba(212,169,74,0.75), 0 1px 0 rgba(0,0,0,0.6);
-        animation: none !important;
-        opacity: 1 !important;
-      }
+      .ilimitado-glow-active::before { content: none !important; }
 
       .ilimitado-btn-glow svg {
         color: #f5dc8c !important;

@@ -1883,9 +1883,9 @@
     let subMenuOpen = false;
 
     const SUB_BUTTONS = [
-      { id: 'skills',    label: 'Skills',         icon: '<path d="M12 2l2.39 4.84L20 8l-4 3.9.94 5.47L12 14.77 7.06 17.37 8 11.9 4 8l5.61-1.16L12 2z"/>', tab: 'skills' },
-      { id: 'ias',       label: 'IAs',            icon: '<circle cx="12" cy="12" r="9"/><path d="M8 12a4 4 0 018 0"/><circle cx="12" cy="12" r="1.4"/>', tab: 'ias' },
-      { id: 'videos',    label: 'Vídeos',         icon: '<rect x="3" y="5" width="14" height="14" rx="2"/><polygon points="21 7 15 12 21 17 21 7"/>', tab: 'videos' },
+      { id: 'skills',    label: 'Skills',         icon: '<path d="M12 2l2.39 4.84L20 8l-4 3.9.94 5.47L12 14.77 7.06 17.37 8 11.9 4 8l5.61-1.16L12 2z"/>' },
+      { id: 'ias',       label: 'IAs',            icon: '<circle cx="12" cy="12" r="9"/><path d="M8 12a4 4 0 018 0"/><circle cx="12" cy="12" r="1.4"/>' },
+      { id: 'videos',    label: 'Vídeos',         icon: '<rect x="3" y="5" width="14" height="14" rx="2"/><polygon points="21 7 15 12 21 17 21 7"/>' },
       { id: 'melhorar',  label: 'Melhorar Código',icon: '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>' },
       { id: 'refatorar', label: 'Refatorar',      icon: '<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/><line x1="14" y1="4" x2="10" y2="20"/>' },
       { id: 'seguranca', label: 'Segurança',      icon: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/>' },

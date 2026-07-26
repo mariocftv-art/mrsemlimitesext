@@ -1883,13 +1883,13 @@
     let subMenuOpen = false;
 
     const SUB_BUTTONS = [
-      { id: 'corrigir', label: 'Corrigir', icon: '<path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>' },
-      { id: 'refatorar', label: 'Refatorar', icon: '<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/><line x1="14" y1="4" x2="10" y2="20"/>' },
-      { id: 'melhorar', label: 'Melhorar', icon: '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>' },
-      { id: 'otimizar', label: 'Otimizar', icon: '<path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>' },
-      { id: 'seguranca', label: 'Segurança', icon: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/>' },
-      { id: 'responsivo', label: 'Responsivo', icon: '<rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12" y2="18"/>' },
-      { id: 'watermark', label: 'Tirar Marca', icon: '<circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>', wm: true },
+      { id: 'skills',    label: 'Skills',         icon: '<path d="M12 2l2.39 4.84L20 8l-4 3.9.94 5.47L12 14.77 7.06 17.37 8 11.9 4 8l5.61-1.16L12 2z"/>', tab: 'skills' },
+      { id: 'ias',       label: 'IAs',            icon: '<circle cx="12" cy="12" r="9"/><path d="M8 12a4 4 0 018 0"/><circle cx="12" cy="12" r="1.4"/>', tab: 'ias' },
+      { id: 'videos',    label: 'Vídeos',         icon: '<rect x="3" y="5" width="14" height="14" rx="2"/><polygon points="21 7 15 12 21 17 21 7"/>', tab: 'videos' },
+      { id: 'melhorar',  label: 'Melhorar Código',icon: '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>' },
+      { id: 'refatorar', label: 'Refatorar',      icon: '<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/><line x1="14" y1="4" x2="10" y2="20"/>' },
+      { id: 'seguranca', label: 'Segurança',      icon: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/>' },
+      { id: 'watermark', label: "Tirar Marca d'água", icon: '<circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>', wm: true },
     ];
 
     const COCKPIT_POS_KEY = 'mr_turbo_gt_cockpit_pos_v2';

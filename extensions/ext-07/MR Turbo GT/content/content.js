@@ -1946,8 +1946,8 @@
 
     function clampFloatPosition(x, y) {
       const margin = 8;
-      const w = 34;
-      const h = 118;
+      const w = 168;
+      const h = 40;
       return {
         x: Math.max(margin, Math.min(window.innerWidth - w - margin, Number(x) || margin)),
         y: Math.max(margin, Math.min(window.innerHeight - h - margin, Number(y) || margin)),
@@ -1961,7 +1961,9 @@
       floatBall.style.top = `${p.y}px`;
       floatBall.style.right = 'auto';
       floatBall.style.bottom = 'auto';
-      floatBall.classList.toggle('il-dock-left', p.x > window.innerWidth * 0.55);
+      // Se está muito perto do topo, o dock abre para baixo em vez de cima
+      floatBall.classList.toggle('il-dock-top', p.y < 90);
+      floatBall.classList.remove('il-dock-left');
       if (persist) {
         try { localStorage.setItem(COCKPIT_POS_KEY, JSON.stringify(p)); } catch (_) {}
       }

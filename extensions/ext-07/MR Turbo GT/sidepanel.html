@@ -1422,27 +1422,22 @@
     .app-header-logo,.app-header-brand{width:24px !important;height:24px !important}
   }
 </style>
-<style id="mrsl-ext7-hero-header">
-  /* HERO HEADER — logo dourada completa "MR Sem Limites | Licensed" */
-  .app-header.ext7-header-hero{
-    display:flex;align-items:center;justify-content:space-between;gap:10px;
-    padding:14px 14px 18px !important;
-    background:linear-gradient(180deg,#050505 0%,#0a0906 60%,#100c05 100%) !important;
-    border-bottom:0 !important;position:relative;overflow:hidden;
+<style id="mrsl-ext7-chat-hero">
+  /* CHAT HERO — logo panorâmica dourada dentro da área do chat */
+  .banner.ext7-chat-hero{
+    display:flex;align-items:center;justify-content:center;
+    padding:14px 12px 12px;margin:6px 0 10px;
+    background:linear-gradient(180deg,rgba(10,9,6,.9) 0%,rgba(16,12,5,.6) 100%);
+    border-radius:14px;position:relative;overflow:hidden;
   }
-  .app-header.ext7-header-hero::after{
-    content:"";position:absolute;left:14px;right:14px;bottom:6px;height:1px;
+  .banner.ext7-chat-hero::after{
+    content:"";position:absolute;left:18px;right:18px;bottom:5px;height:1px;
     background:linear-gradient(90deg,transparent,#f5dc8c 20%,#d4a94a 50%,#f5dc8c 80%,transparent);
     box-shadow:0 0 12px rgba(212,169,74,.55);
   }
-  .ext7-hero-logo{
-    height:74px;max-width:calc(100% - 130px);width:auto;object-fit:contain;
-    display:block;filter:drop-shadow(0 0 14px rgba(212,169,74,.35));
-  }
-  .ext7-hero-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
-  @media (max-width:420px){
-    .ext7-hero-logo{height:58px}
-    .app-header.ext7-header-hero{padding:10px 10px 14px !important}
+  .banner.ext7-chat-hero img{
+    max-width:92%;height:auto;max-height:120px;object-fit:contain;
+    filter:drop-shadow(0 0 16px rgba(212,169,74,.35));
   }
 </style>
 

@@ -2166,11 +2166,10 @@ Isso vai remover a marca d'água do Lovable. Aplique essa alteração agora.`,
       });
       subMenuHtml += '</div>';
 
-      // Modelo 3 — Sliding Dock: pull-tab vertical com "MR" empilhado + LED de status
+      // Modelo 1 — Pill Bar: LED de status + rótulo "MR V12"
       floatBall.innerHTML = `
-        <div class="il-cockpit-mr">M</div>
-        <div class="il-cockpit-mr">R</div>
-        <div class="il-status-dot"></div>
+        <span class="il-status-dot"></span>
+        <span class="il-cockpit-mr">MR V12</span>
         ${subMenuHtml}
       `;
       floatBall.title = 'MR TURBO GT — Clique para abrir/fechar ações rápidas';

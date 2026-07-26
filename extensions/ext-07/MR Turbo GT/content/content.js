@@ -2114,8 +2114,14 @@ Isso vai remover a marca d'água do Lovable. Aplique essa alteração agora.`,
     async function sendSubAction(actionId) {
       closeSubMenu();
 
-      if (actionId === 'watermark') {
-        actionId = 'watermark'; // fall through to normal prompt send
+      // Atalhos que apenas abrem uma aba do sidepanel (Skills/IAs/Vídeos)
+      const TAB_ACTIONS = { skills: 'skills', ias: 'ias', videos: 'videos' };
+      if (TAB_ACTIONS[actionId]) {
+        try {
+          chrome.runtime.sendMessage({ type: 'OPEN_SIDEPANEL_TAB', tab: TAB_ACTIONS[actionId] });
+        } catch (_) {}
+        showIlSuccessToast('📂 Abrindo ' + actionId.toUpperCase() + '…');
+        return;
       }
 
       const prompt = SUB_PROMPTS[actionId];

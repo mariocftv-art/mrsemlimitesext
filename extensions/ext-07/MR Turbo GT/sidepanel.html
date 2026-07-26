@@ -1423,10 +1423,12 @@
   }
 </style>
 <style id="mrsl-ext7-chat-hero">
-  /* CHAT HERO — logo panorâmica edge-to-edge, sem moldura, com linha dourada animada abaixo */
+  /* CHAT HERO — logo panorâmica colada no topo, SEM linha dourada, SEM moldura */
+  .mr-chat-right{ padding-top:0 !important; }
+  .mr-chat-right > .mr-ia-chip:empty{ display:none !important; }
   .banner.ext7-chat-hero{
-    display:flex !important;align-items:center;justify-content:center;
-    padding:0 !important;margin:0 !important;
+    display:flex !important;align-items:flex-start;justify-content:center;
+    padding:0 !important;margin:0 0 6px 0 !important;
     background:transparent !important;
     border:none !important;border-radius:0 !important;
     box-shadow:none !important;
@@ -1434,30 +1436,22 @@
     max-height:none !important;
     width:100% !important;
   }
-  .banner.ext7-chat-hero::before{ content:none !important; }
-  .banner.ext7-chat-hero::after{
-    content:"";position:absolute;left:8px;right:8px;bottom:-2px;height:2px;
-    background:linear-gradient(90deg,transparent,#f5dc8c 15%,#d4a94a 50%,#f5dc8c 85%,transparent);
-    box-shadow:0 0 18px rgba(212,169,74,.85), 0 0 6px rgba(245,220,140,.9);
-    animation:mrsl-ext7-hero-glow 2.4s ease-in-out infinite;
-  }
-  @keyframes mrsl-ext7-hero-glow{
-    0%,100%{opacity:.65;filter:blur(0)}
-    50%{opacity:1;filter:blur(.4px)}
-  }
+  /* remove QUALQUER linha/traço abaixo da logo */
+  .banner.ext7-chat-hero::before,
+  .banner.ext7-chat-hero::after{ content:none !important; display:none !important; background:none !important; box-shadow:none !important; }
   .banner.ext7-chat-hero img{
     width:100% !important;max-width:100% !important;height:auto !important;
-    max-height:520px !important;min-height:320px;
-    object-fit:contain !important;object-position:center !important;
+    max-height:560px !important;min-height:340px;
+    object-fit:contain !important;object-position:center top !important;
     display:block !important;margin:0 !important;
     image-rendering:auto;
-    filter:drop-shadow(0 0 16px rgba(212,169,74,.35)) drop-shadow(0 0 6px rgba(0,0,0,.5)) !important;
+    filter:drop-shadow(0 0 14px rgba(212,169,74,.30)) drop-shadow(0 0 6px rgba(0,0,0,.5)) !important;
   }
-  @media (max-height:820px){ .banner.ext7-chat-hero img{max-height:420px !important;min-height:280px} }
-  @media (max-height:680px){ .banner.ext7-chat-hero img{max-height:320px !important;min-height:220px} }
-  @media (max-height:560px){ .banner.ext7-chat-hero img{max-height:240px !important;min-height:170px} }
-  /* aperta o empty-state para dar mais destaque à logo */
-  .chat-container .empty-state{padding-top:6px !important;gap:2px !important}
+  @media (max-height:820px){ .banner.ext7-chat-hero img{max-height:460px !important;min-height:300px} }
+  @media (max-height:680px){ .banner.ext7-chat-hero img{max-height:360px !important;min-height:240px} }
+  @media (max-height:560px){ .banner.ext7-chat-hero img{max-height:260px !important;min-height:180px} }
+  /* empty-state discreto para não roubar espaço do histórico */
+  .chat-container .empty-state{padding-top:4px !important;gap:2px !important}
   .chat-container .empty-state h3{font-size:14px !important}
   .chat-container .empty-state p{font-size:12px !important}
 </style>

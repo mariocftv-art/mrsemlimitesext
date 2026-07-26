@@ -62,6 +62,7 @@ export const hardenExtension = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const nodePath = await import("node:path");
     const nodeFs = await import("node:fs/promises");
+    // @ts-expect-error — script sem tipos
     const mod = await import("../../scripts/harden-ext.mjs");
     const src = nodePath.join(process.cwd(), EXT_ROOTS[data.extKey]);
     const ts = new Date().toISOString().replace(/[:.]/g, "-");

@@ -2007,8 +2007,9 @@
       const anchor = findLovableSendAnchor(foundInput);
       const baseRect = anchor?.getBoundingClientRect?.() || foundInput?.getBoundingClientRect?.();
       if (!baseRect) return;
-      const x = (anchor ? baseRect.left : baseRect.right) - 46;
-      const y = baseRect.top + (baseRect.height / 2) - 59;
+      // Encosta a pílula logo acima do input do Ask Lovable, alinhada à seta de envio
+      const x = (anchor ? baseRect.left : baseRect.right) - 180;
+      const y = baseRect.top - 52;
       applyFloatPosition(x, y, false);
       _cockpitPositioned = true;
     }

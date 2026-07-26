@@ -1883,9 +1883,9 @@
     let subMenuOpen = false;
 
     const SUB_BUTTONS = [
-      { id: 'skills',    label: 'Skills',         icon: '<path d="M12 2l2.39 4.84L20 8l-4 3.9.94 5.47L12 14.77 7.06 17.37 8 11.9 4 8l5.61-1.16L12 2z"/>', tab: 'skills' },
-      { id: 'ias',       label: 'IAs',            icon: '<circle cx="12" cy="12" r="9"/><path d="M8 12a4 4 0 018 0"/><circle cx="12" cy="12" r="1.4"/>', tab: 'ias' },
-      { id: 'videos',    label: 'Vídeos',         icon: '<rect x="3" y="5" width="14" height="14" rx="2"/><polygon points="21 7 15 12 21 17 21 7"/>', tab: 'videos' },
+      { id: 'skills',    label: 'Skills',         icon: '<path d="M12 2l2.39 4.84L20 8l-4 3.9.94 5.47L12 14.77 7.06 17.37 8 11.9 4 8l5.61-1.16L12 2z"/>' },
+      { id: 'ias',       label: 'IAs',            icon: '<circle cx="12" cy="12" r="9"/><path d="M8 12a4 4 0 018 0"/><circle cx="12" cy="12" r="1.4"/>' },
+      { id: 'videos',    label: 'Vídeos',         icon: '<rect x="3" y="5" width="14" height="14" rx="2"/><polygon points="21 7 15 12 21 17 21 7"/>' },
       { id: 'melhorar',  label: 'Melhorar Código',icon: '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>' },
       { id: 'refatorar', label: 'Refatorar',      icon: '<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/><line x1="14" y1="4" x2="10" y2="20"/>' },
       { id: 'seguranca', label: 'Segurança',      icon: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/>' },
@@ -2027,6 +2027,13 @@
 
     // Prompts for each action (same as sidebar QA_PROMPTS)
     const SUB_PROMPTS = {
+      skills: `Liste TODAS as skills e habilidades técnicas que você (Lovable AI) pode aplicar neste projeto, agrupadas por categoria (Frontend, Backend, Banco de Dados, DevOps, UI/UX, Segurança, Performance, Integrações, Automações, IA/ML). Para cada skill, dê 1 linha do que ela faz e sugira as 3 mais úteis para o estado atual deste projeto.`,
+
+      ias: `Analise o projeto atual e sugira quais IAs / modelos (GPT, Claude, Gemini, Llama, DALL-E, Midjourney, Whisper, ElevenLabs, etc.) fariam mais sentido integrar aqui. Para cada IA, mostre: (1) caso de uso concreto no projeto, (2) como integrar (SDK, API, edge function), (3) custo estimado, (4) exemplo de código pronto.`,
+
+      videos: `Adicione ao projeto suporte completo a geração/edição de vídeos com IA. Inclua: (1) integração com API de geração de vídeo (Runway, Pika, Sora ou similar), (2) upload/preview de vídeos, (3) player customizado, (4) transcrição automática (Whisper), (5) thumbnails automáticos, (6) UI moderna com controles e timeline. Faça tudo funcionar de ponta a ponta.`,
+
+
       corrigir: `Analise completamente todo o projeto e identifique TODOS os bugs, erros, falhas, comportamentos inesperados e possíveis problemas existentes na aplicação.
 
 Seu objetivo é realizar uma auditoria técnica profunda no sistema inteiro, corrigindo problemas de lógica, frontend, backend, integração, renderização, estado, banco de dados, responsividade e performance.
@@ -2114,27 +2121,16 @@ Isso vai remover a marca d'água do Lovable. Aplique essa alteração agora.`,
     async function sendSubAction(actionId) {
       closeSubMenu();
 
-      // Atalhos que apenas abrem uma aba do sidepanel (Skills/IAs/Vídeos)
-      const TAB_ACTIONS = { skills: 'skills', ias: 'ias', videos: 'videos' };
-      if (TAB_ACTIONS[actionId]) {
-        try {
-          chrome.runtime.sendMessage({ type: 'OPEN_SIDEPANEL_TAB', tab: TAB_ACTIONS[actionId] });
-        } catch (_) {}
-        showIlSuccessToast('📂 Abrindo ' + actionId.toUpperCase() + '…');
-        return;
-      }
-
       const prompt = SUB_PROMPTS[actionId];
-      if (!prompt) return;
+      if (!prompt) { showIlSuccessToast('❌ Ação não encontrada'); return; }
 
-      showIlSuccessToast('🚀 ' + actionId.charAt(0).toUpperCase() + actionId.slice(1) + ' enviando...');
+      const label = (SUB_BUTTONS.find(b => b.id === actionId)?.label) || actionId;
+      showIlSuccessToast('🚀 ' + label + ' enviando…');
 
       try {
-        // Get auth from storage
         const s = await sendMessage({ type: 'GET_SETTINGS' });
         if (!s?.lovableToken) { showIlSuccessToast('❌ Token não encontrado. Abra o sidepanel primeiro.'); return; }
 
-        // Extract projectId from URL
         const m = location.pathname.match(/\/projects\/([^/]+)/);
         if (!m) { showIlSuccessToast('❌ Abra um projeto no Lovable'); return; }
 
@@ -2149,7 +2145,7 @@ Isso vai remover a marca d'água do Lovable. Aplique essa alteração agora.`,
         });
 
         if (result?.ok) {
-          showIlSuccessToast('✅ ' + actionId.charAt(0).toUpperCase() + actionId.slice(1) + ' enviado!');
+          showIlSuccessToast('✅ ' + label + ' enviado ao Lovable!');
         } else {
           showIlSuccessToast('❌ Erro: ' + (result?.error || 'falha desconhecida'));
         }

@@ -1423,33 +1423,40 @@
   }
 </style>
 <style id="mrsl-ext7-chat-hero">
-  /* CHAT HERO — logo panorâmica dourada em moldura, ocupando destaque */
+  /* CHAT HERO — logo panorâmica dourada emoldurada, com destaque grande */
   .banner.ext7-chat-hero{
-    display:flex;align-items:center;justify-content:center;
-    padding:22px 18px 20px;margin:10px 8px 14px;
-    background:radial-gradient(120% 100% at 50% 0%,rgba(30,22,8,.95) 0%,rgba(10,9,6,.92) 60%,rgba(6,5,3,.9) 100%);
-    border-radius:18px;position:relative;overflow:hidden;
-    border:1.5px solid rgba(212,169,74,.55);
-    box-shadow:0 0 0 1px rgba(0,0,0,.6) inset, 0 8px 30px rgba(0,0,0,.55), 0 0 24px rgba(212,169,74,.18);
+    display:flex !important;align-items:center;justify-content:center;
+    padding:26px 20px 24px !important;margin:12px 10px 16px !important;
+    background:radial-gradient(120% 100% at 50% 0%,rgba(30,22,8,.95) 0%,rgba(10,9,6,.92) 60%,rgba(6,5,3,.9) 100%) !important;
+    border-radius:20px;position:relative;overflow:hidden;
+    border:1.5px solid rgba(212,169,74,.6) !important;
+    box-shadow:0 0 0 1px rgba(0,0,0,.6) inset, 0 10px 34px rgba(0,0,0,.6), 0 0 30px rgba(212,169,74,.22) !important;
+    max-height:none !important;
   }
   .banner.ext7-chat-hero::before{
-    content:"";position:absolute;inset:6px;border-radius:14px;
-    border:1px solid rgba(245,220,140,.28);pointer-events:none;
+    content:"";position:absolute;inset:8px;border-radius:16px;
+    border:1px solid rgba(245,220,140,.32);pointer-events:none;
   }
   .banner.ext7-chat-hero::after{
-    content:"";position:absolute;left:24px;right:24px;bottom:9px;height:1px;
+    content:"";position:absolute;left:28px;right:28px;bottom:11px;height:1px;
     background:linear-gradient(90deg,transparent,#f5dc8c 20%,#d4a94a 50%,#f5dc8c 80%,transparent);
-    box-shadow:0 0 14px rgba(212,169,74,.65);
+    box-shadow:0 0 14px rgba(212,169,74,.7);
   }
   .banner.ext7-chat-hero img{
-    width:auto;max-width:100%;height:auto;max-height:230px;
-    object-fit:contain;object-position:center;
-    display:block;margin:0 auto;
+    width:auto !important;max-width:100% !important;height:auto !important;
+    max-height:420px !important;min-height:280px;
+    object-fit:contain !important;object-position:center !important;
+    display:block !important;margin:0 auto !important;
     image-rendering:auto;
-    filter:drop-shadow(0 0 18px rgba(212,169,74,.35));
+    filter:drop-shadow(0 0 22px rgba(212,169,74,.45)) drop-shadow(0 0 8px rgba(0,0,0,.6)) !important;
   }
+  @media (max-height:820px){ .banner.ext7-chat-hero img{max-height:360px !important;min-height:240px} }
+  @media (max-height:680px){ .banner.ext7-chat-hero img{max-height:280px !important;min-height:200px} }
+  @media (max-height:560px){ .banner.ext7-chat-hero img{max-height:200px !important;min-height:150px} }
   /* aperta o empty-state para dar mais destaque à logo */
-  .chat-container .empty-state{padding-top:8px !important}
+  .chat-container .empty-state{padding-top:6px !important;gap:2px !important}
+  .chat-container .empty-state h3{font-size:14px !important}
+  .chat-container .empty-state p{font-size:12px !important}
 </style>
 
 </head>

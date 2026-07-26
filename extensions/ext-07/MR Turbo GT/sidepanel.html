@@ -1423,22 +1423,30 @@
   }
 </style>
 <style id="mrsl-ext7-chat-hero">
-  /* CHAT HERO — logo panorâmica dourada dentro da área do chat */
+  /* CHAT HERO — logo panorâmica dourada em moldura, ocupando destaque */
   .banner.ext7-chat-hero{
     display:flex;align-items:center;justify-content:center;
-    padding:14px 12px 12px;margin:6px 0 10px;
-    background:linear-gradient(180deg,rgba(10,9,6,.9) 0%,rgba(16,12,5,.6) 100%);
-    border-radius:14px;position:relative;overflow:hidden;
+    padding:22px 18px 20px;margin:10px 8px 14px;
+    background:radial-gradient(120% 100% at 50% 0%,rgba(30,22,8,.95) 0%,rgba(10,9,6,.92) 60%,rgba(6,5,3,.9) 100%);
+    border-radius:18px;position:relative;overflow:hidden;
+    border:1.5px solid rgba(212,169,74,.55);
+    box-shadow:0 0 0 1px rgba(0,0,0,.6) inset, 0 8px 30px rgba(0,0,0,.55), 0 0 24px rgba(212,169,74,.18);
+  }
+  .banner.ext7-chat-hero::before{
+    content:"";position:absolute;inset:6px;border-radius:14px;
+    border:1px solid rgba(245,220,140,.28);pointer-events:none;
   }
   .banner.ext7-chat-hero::after{
-    content:"";position:absolute;left:18px;right:18px;bottom:5px;height:1px;
+    content:"";position:absolute;left:24px;right:24px;bottom:9px;height:1px;
     background:linear-gradient(90deg,transparent,#f5dc8c 20%,#d4a94a 50%,#f5dc8c 80%,transparent);
-    box-shadow:0 0 12px rgba(212,169,74,.55);
+    box-shadow:0 0 14px rgba(212,169,74,.65);
   }
   .banner.ext7-chat-hero img{
-    max-width:92%;height:auto;max-height:120px;object-fit:contain;
-    filter:drop-shadow(0 0 16px rgba(212,169,74,.35));
+    width:100%;max-width:100%;height:auto;max-height:230px;object-fit:contain;
+    filter:drop-shadow(0 0 22px rgba(212,169,74,.45));
   }
+  /* aperta o empty-state para dar mais destaque à logo */
+  .chat-container .empty-state{padding-top:8px !important}
 </style>
 
 </head>

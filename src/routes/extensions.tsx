@@ -101,7 +101,7 @@ const EXT4_ZIP_URL = "/__l5e/assets-v1/a9e2a317-8481-456e-9dc6-5df018c0cc59/MR S
 const EXT5_ZIP_URL = "/__l5e/assets-v1/0fa6bab6-004b-4a23-9b5a-3f1799e55597/MR-Sem-Limites-EXT5-v5.4.23.zip";
 import ext6Asset from "@/assets/ext6-v6.1.0.zip.asset.json";
 const EXT6_ZIP_URL = ext6Asset.url;
-import ext7Asset from "@/assets/ext7-v7.2.0.zip.asset.json";
+import ext7Asset from "@/assets/ext7-v7.2.1.zip.asset.json";
 const EXT7_ZIP_URL = ext7Asset.url;
 
 type Filter = "all" | ExtensionStatus;

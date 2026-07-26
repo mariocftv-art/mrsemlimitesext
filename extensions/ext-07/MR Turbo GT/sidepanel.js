@@ -1304,10 +1304,7 @@ function initDirectChat() {
         updateStatus('❌ Erro');
       } else {
         updateStatus('⚡ Encaminhado ao Lovable');
-        // Limpa a conversa do painel — o prompt já foi para o Lovable
-        history = [];
-        try { callCommand('storage.set', { data: { history: [] } }); } catch(_) {}
-        renderHistory();
+        // Mantém o histórico visível no painel — só o input será limpo abaixo.
       }
     } catch (e) {
       addMessage('bot', '❌ ' + (e?.message || 'Erro'));

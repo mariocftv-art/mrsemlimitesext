@@ -1661,71 +1661,63 @@
         color: #f5dc8c !important;
         filter: drop-shadow(0 0 5px #d4a94a) !important;
       }
-      /* ---- Floating SLIDING DOCK (MR TURBO GT — Modelo 3) ---- */
+      /* ---- Floating PILL BAR COCKPIT (MR TURBO GT — Modelo 1) ---- */
       #il-float-ball {
         position: fixed;
-        left: auto;
-        bottom: auto;
-        top: auto;
-        right: auto;
-        width: 34px;
-        height: 118px;
-        border-radius: 0 14px 14px 0;
-        background:
-          linear-gradient(180deg,#f5dc8c 0%,#d4a94a 45%,#8f6b1e 100%);
+        left: auto; right: auto; top: auto; bottom: auto;
+        width: 168px;
+        height: 40px;
+        border-radius: 999px;
+        background: linear-gradient(180deg,#f7e29a 0%,#e6c264 22%,#c99a34 55%,#8f6b1e 100%);
         border: 1.5px solid #f5dc8c;
-        border-left: 0;
         box-shadow:
-          0 0 18px rgba(212,169,74,0.55),
-          0 0 36px rgba(143,107,30,0.35),
-          inset 0 1px 0 rgba(255,246,194,0.65),
+          0 0 14px rgba(212,169,74,0.55),
+          0 6px 22px rgba(0,0,0,0.55),
+          inset 0 1px 0 rgba(255,246,194,0.75),
           inset 0 -2px 6px rgba(74,54,8,0.55);
         cursor: grab;
         z-index: 2147483645;
         display: flex;
-        flex-direction: column;
         align-items: center;
-        justify-content: space-between;
-        padding: 10px 3px;
+        justify-content: center;
+        gap: 10px;
+        padding: 0 14px 0 12px;
         user-select: none;
-        will-change: auto;
         touch-action: none;
         font-family: -apple-system, "Segoe UI", sans-serif;
         overflow: visible;
       }
       #il-float-ball::before {
-        /* pull-tab knurl lines */
+        /* pílula interna preta (display) */
         content: '';
         position: absolute;
-        top: 50%; left: 50%;
-        transform: translate(-50%,-50%);
-        width: 4px; height: 22px;
-        background:
-          repeating-linear-gradient(180deg,
-            rgba(74,54,8,.65) 0 2px,
-            transparent 2px 4px);
-        opacity: .55;
+        inset: 5px 8px;
+        border-radius: 999px;
+        background: linear-gradient(180deg,#0a0703 0%,#1a1206 55%,#0a0703 100%);
+        box-shadow: inset 0 1px 0 rgba(0,0,0,.7), inset 0 0 12px rgba(0,0,0,.7);
         pointer-events: none;
       }
       #il-float-ball:active { cursor: grabbing; }
-      #il-float-ball img {
-        display: none !important;
-      }
+      #il-float-ball img,
       #il-float-ball .il-cockpit-label,
       #il-float-ball .il-cockpit-logo,
-      #il-float-ball .il-cockpit-icon { display:none !important; } /* legacy hidden */
+      #il-float-ball .il-cockpit-icon { display:none !important; }
       #il-float-ball .il-cockpit-mr {
-        font-size: 10px; font-weight: 900; letter-spacing: 0.16em;
-        color: #3b2a04;
-        text-shadow: 0 1px 0 rgba(255,246,194,0.55);
+        position: relative; z-index: 2;
+        font-size: 13px; font-weight: 800; letter-spacing: 0.18em;
+        font-family: "Trajan Pro","Cinzel","Playfair Display",Georgia,serif;
+        background: linear-gradient(180deg,#f7e29a,#d4a94a 55%,#8f6b1e);
+        -webkit-background-clip: text; background-clip: text;
+        -webkit-text-fill-color: transparent; color: transparent;
+        text-shadow: 0 1px 0 rgba(0,0,0,.6);
         pointer-events: none;
-        writing-mode: horizontal-tb;
+        white-space: nowrap;
       }
       #il-float-ball .il-status-dot {
-        position: relative;
-        width: 10px; height: 10px;
+        position: relative; z-index: 2;
+        width: 11px; height: 11px;
         border-radius: 50%;
-        border: 1.5px solid rgba(74,54,8,0.7);
+        border: 1.5px solid rgba(74,54,8,0.8);
         pointer-events: none;
         animation: none !important;
         flex-shrink: 0;
@@ -1733,13 +1725,23 @@
       #il-float-ball.il-ball-ativo {
         box-shadow:
           0 0 22px rgba(212,169,74,0.85),
-          0 0 44px rgba(143,107,30,0.55),
-          inset 0 1px 0 rgba(255,246,194,0.7),
+          0 8px 28px rgba(0,0,0,0.6),
+          inset 0 1px 0 rgba(255,246,194,0.85),
           inset 0 -2px 6px rgba(74,54,8,0.55);
       }
-      #il-float-ball.il-ball-ativo .il-status-dot { background: #22c55e !important; box-shadow: 0 0 10px #22c55e !important; animation: none !important; opacity: 1 !important; }
-      #il-float-ball.il-ball-inativo .il-status-dot { background: transparent !important; box-shadow: none !important; animation: none !important; border-color: rgba(74,54,8,0.6) !important; opacity: 0.5 !important; }
-      #il-float-ball.il-ball-inativo { opacity: 0.9; }
+      #il-float-ball.il-ball-ativo .il-status-dot {
+        background: #22c55e !important;
+        box-shadow: 0 0 10px #22c55e, 0 0 3px #fff inset !important;
+        animation: none !important; opacity: 1 !important;
+        border-color: rgba(255,255,255,.35) !important;
+      }
+      #il-float-ball.il-ball-inativo .il-status-dot {
+        background: #7a1a1a !important;
+        box-shadow: none !important; animation: none !important;
+        border-color: rgba(74,54,8,0.7) !important;
+        opacity: 0.9 !important;
+      }
+      #il-float-ball.il-ball-inativo { opacity: 0.92; }
       #il-float-ball.il-dragging .il-sub-menu { display: none !important; }
       @keyframes il-toast-slide-in {
         from { opacity: 0; transform: translateX(30px); }
@@ -1773,67 +1775,57 @@
         box-shadow: 0 4px 20px rgba(34,197,94,0.25), 0 0 0 1px rgba(34,197,94,0.1);
         letter-spacing: 0.01em;
       }
-      #il-success-toast.il-show {
-        animation: il-toast-slide-in 0.3s cubic-bezier(0.34,1.56,0.64,1) forwards;
-      }
-      #il-success-toast.il-hide {
-        animation: il-toast-slide-out 0.25s ease-in forwards;
-      }
+      #il-success-toast.il-show { animation: il-toast-slide-in 0.3s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+      #il-success-toast.il-hide { animation: il-toast-slide-out 0.25s ease-in forwards; }
 
-      /* ---- Sliding Dock horizontal (sub-buttons) ---- */
+      /* ---- Drawer horizontal ACIMA da pílula (sub-buttons) ---- */
       .il-sub-menu {
         position: absolute;
-        top: 50%; left: 100%;
-        transform: translateY(-50%);
+        left: 50%;
+        bottom: calc(100% + 10px);
+        top: auto;
+        transform: translateX(-50%);
         display: flex;
         flex-direction: row;
         align-items: center;
         gap: 6px;
-        padding: 6px 10px 6px 14px;
-        margin-left: -6px;
+        padding: 8px 12px;
         background: linear-gradient(180deg,#1c1408 0%,#2a1e0a 50%,#1c1408 100%);
         border: 1.5px solid #d4a94a;
-        border-left: none;
-        border-radius: 0 14px 14px 0;
+        border-radius: 14px;
         min-width: max-content;
         box-shadow:
-          0 6px 24px rgba(0,0,0,0.55),
-          0 0 18px rgba(212,169,74,0.35),
-          inset 0 1px 0 rgba(245,220,140,0.25);
+          0 8px 26px rgba(0,0,0,0.6),
+          0 0 20px rgba(212,169,74,0.35),
+          inset 0 1px 0 rgba(245,220,140,0.28);
         pointer-events: none;
         opacity: 0;
-        clip-path: inset(0 100% 0 0);
-        transition: clip-path .35s cubic-bezier(.34,1.56,.64,1), opacity .25s ease;
+        transform: translateX(-50%) translateY(6px) scale(0.96);
+        transition: opacity .22s ease, transform .28s cubic-bezier(.34,1.56,.64,1);
         z-index: 2147483644;
       }
-      #il-float-ball.il-dock-left .il-sub-menu {
-        left: auto;
-        right: 100%;
-        margin-left: 0;
-        margin-right: -6px;
-        border-left: 1.5px solid #d4a94a;
-        border-right: none;
-        border-radius: 14px 0 0 14px;
-        padding: 6px 14px 6px 10px;
-        clip-path: inset(0 0 0 100%);
-      }
-      #il-float-ball.il-dock-left .il-sub-menu.il-open { clip-path: inset(0 0 0 0); }
-      #il-float-ball.il-dock-left .il-sub-menu.il-closing { clip-path: inset(0 0 0 100%); }
       .il-sub-menu.il-open {
         pointer-events: auto;
         opacity: 1;
-        clip-path: inset(0 0 0 0);
+        transform: translateX(-50%) translateY(0) scale(1);
       }
-      .il-sub-menu.il-closing { pointer-events: none; opacity: 0; clip-path: inset(0 100% 0 0); }
+      .il-sub-menu.il-closing { pointer-events: none; opacity: 0; transform: translateX(-50%) translateY(6px) scale(0.96); }
+      /* Se o cockpit estiver muito no topo da tela, abre para baixo */
+      #il-float-ball.il-dock-top .il-sub-menu {
+        bottom: auto;
+        top: calc(100% + 10px);
+        transform: translateX(-50%) translateY(-6px) scale(0.96);
+      }
+      #il-float-ball.il-dock-top .il-sub-menu.il-open {
+        transform: translateX(-50%) translateY(0) scale(1);
+      }
       .il-sub-btn {
         position: relative;
         width: 40px; height: 40px;
         border-radius: 10px;
         background: linear-gradient(180deg,#2a1e0a,#1c1408);
         border: 1.5px solid #d4a94a;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        display: flex; align-items: center; justify-content: center;
         cursor: pointer;
         transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease, background .2s ease;
         box-shadow: inset 0 1px 0 rgba(245,220,140,0.18), 0 2px 8px rgba(0,0,0,0.35);
@@ -1841,11 +1833,8 @@
       }
       .il-sub-btn svg {
         width: 18px; height: 18px;
-        stroke: #f5dc8c;
-        fill: none;
-        stroke-width: 1.8;
-        stroke-linecap: round;
-        stroke-linejoin: round;
+        stroke: #f5dc8c; fill: none;
+        stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
         pointer-events: none;
         filter: drop-shadow(0 0 3px rgba(212,169,74,.45));
       }
@@ -1856,31 +1845,21 @@
         box-shadow: 0 0 14px rgba(245,220,140,.55), inset 0 1px 0 rgba(245,220,140,.35);
       }
       .il-sub-btn:active { transform: translateY(0) scale(0.95); }
-      /* Tooltip label (JS-positioned) */
       .il-sub-tooltip {
         position: fixed;
         white-space: nowrap;
         background: rgba(28,20,8,0.96);
         color: #f5dc8c;
-        font-size: 11px;
-        font-weight: 700;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
+        font-size: 11px; font-weight: 700;
+        letter-spacing: 0.08em; text-transform: uppercase;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        padding: 4px 10px;
-        border-radius: 6px;
+        padding: 4px 10px; border-radius: 6px;
         border: 1px solid rgba(212,169,74,0.55);
-        pointer-events: none;
-        z-index: 2147483647;
-        opacity: 0;
-        transition: opacity 0.2s ease, transform 0.2s ease;
+        pointer-events: none; z-index: 2147483647;
+        opacity: 0; transition: opacity .2s ease, transform .2s ease;
         transform: translateX(-50%) translateY(4px);
       }
-      .il-sub-tooltip.il-show {
-        opacity: 1;
-        transform: translateX(-50%) translateY(0);
-      }
-      /* Watermark button special color */
+      .il-sub-tooltip.il-show { opacity: 1; transform: translateX(-50%) translateY(0); }
       .il-sub-btn.il-wm-btn { border-color: #d97757; }
       .il-sub-btn.il-wm-btn svg { stroke: #fca5a5; }
       .il-sub-btn.il-wm-btn:hover { border-color: #fca5a5; box-shadow: 0 0 14px rgba(248,113,113,.5), inset 0 1px 0 rgba(252,165,165,.25); }

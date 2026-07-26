@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VideosRouteImport } from './routes/videos'
 import { Route as VersionsRouteImport } from './routes/versions'
 import { Route as ToolsRouteImport } from './routes/tools'
 import { Route as TermsOfServiceRouteImport } from './routes/terms-of-service'
@@ -42,6 +43,8 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as RuntimeIdRouteImport } from './routes/runtime.$id'
 import { Route as PreviewIdRouteImport } from './routes/preview.$id'
 import { Route as LiveIdRouteImport } from './routes/live.$id'
+import { Route as ApiPublicVideosTranscribeRouteImport } from './routes/api/public/videos-transcribe'
+import { Route as ApiPublicVideosKeyframesRouteImport } from './routes/api/public/videos-keyframes'
 import { Route as ApiPublicOrbeTtsRouteImport } from './routes/api/public/orbe-tts'
 import { Route as ApiPublicOrbeChatRouteImport } from './routes/api/public/orbe-chat'
 import { Route as ApiPublicInstagramWebhookRouteImport } from './routes/api/public/instagram-webhook'
@@ -53,6 +56,11 @@ import { Route as ApiPublicInstagramMediaRouteImport } from './routes/api/public
 import { Route as ApiPublicInstagramGenerateRouteImport } from './routes/api/public/instagram-generate'
 import { Route as ApiPublicExtVersionRouteImport } from './routes/api/public/ext-version'
 
+const VideosRoute = VideosRouteImport.update({
+  id: '/videos',
+  path: '/videos',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const VersionsRoute = VersionsRouteImport.update({
   id: '/versions',
   path: '/versions',
@@ -218,6 +226,18 @@ const LiveIdRoute = LiveIdRouteImport.update({
   path: '/live/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicVideosTranscribeRoute =
+  ApiPublicVideosTranscribeRouteImport.update({
+    id: '/api/public/videos-transcribe',
+    path: '/api/public/videos-transcribe',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicVideosKeyframesRoute =
+  ApiPublicVideosKeyframesRouteImport.update({
+    id: '/api/public/videos-keyframes',
+    path: '/api/public/videos-keyframes',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicOrbeTtsRoute = ApiPublicOrbeTtsRouteImport.update({
   id: '/api/public/orbe-tts',
   path: '/api/public/orbe-tts',
@@ -306,6 +326,7 @@ export interface FileRoutesByFullPath {
   '/terms-of-service': typeof TermsOfServiceRoute
   '/tools': typeof ToolsRoute
   '/versions': typeof VersionsRoute
+  '/videos': typeof VideosRoute
   '/live/$id': typeof LiveIdRoute
   '/preview/$id': typeof PreviewIdRoute
   '/runtime/$id': typeof RuntimeIdRoute
@@ -319,6 +340,8 @@ export interface FileRoutesByFullPath {
   '/api/public/instagram-webhook': typeof ApiPublicInstagramWebhookRoute
   '/api/public/orbe-chat': typeof ApiPublicOrbeChatRoute
   '/api/public/orbe-tts': typeof ApiPublicOrbeTtsRoute
+  '/api/public/videos-keyframes': typeof ApiPublicVideosKeyframesRoute
+  '/api/public/videos-transcribe': typeof ApiPublicVideosTranscribeRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -351,6 +374,7 @@ export interface FileRoutesByTo {
   '/terms-of-service': typeof TermsOfServiceRoute
   '/tools': typeof ToolsRoute
   '/versions': typeof VersionsRoute
+  '/videos': typeof VideosRoute
   '/live/$id': typeof LiveIdRoute
   '/preview/$id': typeof PreviewIdRoute
   '/runtime/$id': typeof RuntimeIdRoute
@@ -364,6 +388,8 @@ export interface FileRoutesByTo {
   '/api/public/instagram-webhook': typeof ApiPublicInstagramWebhookRoute
   '/api/public/orbe-chat': typeof ApiPublicOrbeChatRoute
   '/api/public/orbe-tts': typeof ApiPublicOrbeTtsRoute
+  '/api/public/videos-keyframes': typeof ApiPublicVideosKeyframesRoute
+  '/api/public/videos-transcribe': typeof ApiPublicVideosTranscribeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -397,6 +423,7 @@ export interface FileRoutesById {
   '/terms-of-service': typeof TermsOfServiceRoute
   '/tools': typeof ToolsRoute
   '/versions': typeof VersionsRoute
+  '/videos': typeof VideosRoute
   '/live/$id': typeof LiveIdRoute
   '/preview/$id': typeof PreviewIdRoute
   '/runtime/$id': typeof RuntimeIdRoute
@@ -410,6 +437,8 @@ export interface FileRoutesById {
   '/api/public/instagram-webhook': typeof ApiPublicInstagramWebhookRoute
   '/api/public/orbe-chat': typeof ApiPublicOrbeChatRoute
   '/api/public/orbe-tts': typeof ApiPublicOrbeTtsRoute
+  '/api/public/videos-keyframes': typeof ApiPublicVideosKeyframesRoute
+  '/api/public/videos-transcribe': typeof ApiPublicVideosTranscribeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -444,6 +473,7 @@ export interface FileRouteTypes {
     | '/terms-of-service'
     | '/tools'
     | '/versions'
+    | '/videos'
     | '/live/$id'
     | '/preview/$id'
     | '/runtime/$id'
@@ -457,6 +487,8 @@ export interface FileRouteTypes {
     | '/api/public/instagram-webhook'
     | '/api/public/orbe-chat'
     | '/api/public/orbe-tts'
+    | '/api/public/videos-keyframes'
+    | '/api/public/videos-transcribe'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -489,6 +521,7 @@ export interface FileRouteTypes {
     | '/terms-of-service'
     | '/tools'
     | '/versions'
+    | '/videos'
     | '/live/$id'
     | '/preview/$id'
     | '/runtime/$id'
@@ -502,6 +535,8 @@ export interface FileRouteTypes {
     | '/api/public/instagram-webhook'
     | '/api/public/orbe-chat'
     | '/api/public/orbe-tts'
+    | '/api/public/videos-keyframes'
+    | '/api/public/videos-transcribe'
   id:
     | '__root__'
     | '/'
@@ -534,6 +569,7 @@ export interface FileRouteTypes {
     | '/terms-of-service'
     | '/tools'
     | '/versions'
+    | '/videos'
     | '/live/$id'
     | '/preview/$id'
     | '/runtime/$id'
@@ -547,6 +583,8 @@ export interface FileRouteTypes {
     | '/api/public/instagram-webhook'
     | '/api/public/orbe-chat'
     | '/api/public/orbe-tts'
+    | '/api/public/videos-keyframes'
+    | '/api/public/videos-transcribe'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -580,6 +618,7 @@ export interface RootRouteChildren {
   TermsOfServiceRoute: typeof TermsOfServiceRoute
   ToolsRoute: typeof ToolsRoute
   VersionsRoute: typeof VersionsRoute
+  VideosRoute: typeof VideosRoute
   LiveIdRoute: typeof LiveIdRoute
   PreviewIdRoute: typeof PreviewIdRoute
   RuntimeIdRoute: typeof RuntimeIdRoute
@@ -593,10 +632,19 @@ export interface RootRouteChildren {
   ApiPublicInstagramWebhookRoute: typeof ApiPublicInstagramWebhookRoute
   ApiPublicOrbeChatRoute: typeof ApiPublicOrbeChatRoute
   ApiPublicOrbeTtsRoute: typeof ApiPublicOrbeTtsRoute
+  ApiPublicVideosKeyframesRoute: typeof ApiPublicVideosKeyframesRoute
+  ApiPublicVideosTranscribeRoute: typeof ApiPublicVideosTranscribeRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/videos': {
+      id: '/videos'
+      path: '/videos'
+      fullPath: '/videos'
+      preLoaderRoute: typeof VideosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/versions': {
       id: '/versions'
       path: '/versions'
@@ -828,6 +876,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LiveIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/videos-transcribe': {
+      id: '/api/public/videos-transcribe'
+      path: '/api/public/videos-transcribe'
+      fullPath: '/api/public/videos-transcribe'
+      preLoaderRoute: typeof ApiPublicVideosTranscribeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/videos-keyframes': {
+      id: '/api/public/videos-keyframes'
+      path: '/api/public/videos-keyframes'
+      fullPath: '/api/public/videos-keyframes'
+      preLoaderRoute: typeof ApiPublicVideosKeyframesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/orbe-tts': {
       id: '/api/public/orbe-tts'
       path: '/api/public/orbe-tts'
@@ -932,6 +994,7 @@ const rootRouteChildren: RootRouteChildren = {
   TermsOfServiceRoute: TermsOfServiceRoute,
   ToolsRoute: ToolsRoute,
   VersionsRoute: VersionsRoute,
+  VideosRoute: VideosRoute,
   LiveIdRoute: LiveIdRoute,
   PreviewIdRoute: PreviewIdRoute,
   RuntimeIdRoute: RuntimeIdRoute,
@@ -945,6 +1008,8 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicInstagramWebhookRoute: ApiPublicInstagramWebhookRoute,
   ApiPublicOrbeChatRoute: ApiPublicOrbeChatRoute,
   ApiPublicOrbeTtsRoute: ApiPublicOrbeTtsRoute,
+  ApiPublicVideosKeyframesRoute: ApiPublicVideosKeyframesRoute,
+  ApiPublicVideosTranscribeRoute: ApiPublicVideosTranscribeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

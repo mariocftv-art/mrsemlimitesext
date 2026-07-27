@@ -1441,24 +1441,23 @@
   .banner.ext7-chat-hero::after{ content:none !important; display:none !important; background:none !important; box-shadow:none !important; }
   .banner.ext7-chat-hero img{
     width:100% !important;max-width:100% !important;height:auto !important;
-    max-height:220px !important;min-height:160px;
+    max-height:560px !important;min-height:340px;
     object-fit:contain !important;object-position:center top !important;
     display:block !important;margin:0 !important;
     image-rendering:auto;
     filter:drop-shadow(0 0 14px rgba(212,169,74,.30)) drop-shadow(0 0 6px rgba(0,0,0,.5)) !important;
   }
-  @media (max-height:820px){ .banner.ext7-chat-hero img{max-height:200px !important;min-height:150px} }
-  @media (max-height:680px){ .banner.ext7-chat-hero img{max-height:180px !important;min-height:130px} }
-  @media (max-height:560px){ .banner.ext7-chat-hero img{max-height:150px !important;min-height:110px} }
+  @media (max-height:820px){ .banner.ext7-chat-hero img{max-height:460px !important;min-height:300px} }
+  @media (max-height:680px){ .banner.ext7-chat-hero img{max-height:360px !important;min-height:240px} }
+  @media (max-height:560px){ .banner.ext7-chat-hero img{max-height:260px !important;min-height:180px} }
   /* empty-state discreto para não roubar espaço do histórico */
   .chat-container .empty-state{padding-top:4px !important;gap:2px !important}
   .chat-container .empty-state h3{font-size:14px !important}
   .chat-container .empty-state p{font-size:12px !important}
-  /* PWA/narrow — input e histórico com mesmas proporções do PC */
+  /* PWA/narrow — só ajusta input; a LOGO fica intocada */
   @media (max-width:520px){
     #message{min-height:44px !important;max-height:40vh !important;font-size:14px !important}
     .input-area{padding:10px 12px 12px !important}
-    .banner.ext7-chat-hero img{max-height:170px !important;min-height:120px}
   }
 </style>
 

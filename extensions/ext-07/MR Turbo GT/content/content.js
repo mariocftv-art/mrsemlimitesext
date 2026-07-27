@@ -1872,6 +1872,25 @@
       #mr-front-ball,
       #mr-cockpit,
       #il-old-float-ball { display: none !important; }
+      /* PWA / mobile — mantém a pílula dourada horizontal igual ao PC */
+      @media (max-width: 720px) {
+        #il-float-ball {
+          width: 168px !important;
+          height: 40px !important;
+          min-width: 168px !important;
+          min-height: 40px !important;
+          border-radius: 999px !important;
+          padding: 0 14px 0 12px !important;
+          flex-direction: row !important;
+          aspect-ratio: auto !important;
+        }
+        #il-float-ball::before { inset: 5px 8px !important; border-radius: 999px !important; }
+        #il-float-ball .il-cockpit-mr { font-size: 13px !important; }
+      }
+      @media (max-width: 380px) {
+        #il-float-ball { width: 148px !important; min-width: 148px !important; }
+        #il-float-ball .il-cockpit-mr { font-size: 12px !important; letter-spacing: 0.14em !important; }
+      }
     `;
     document.head.appendChild(style);
 

@@ -39,6 +39,13 @@
     return;
   }
 
+  // Guarda anti-injeção dupla (reinjeção de auto-cura não duplica listeners).
+  if (window.__MR_TURBO_CS_LOADED__) {
+    return;
+  }
+  window.__MR_TURBO_CS_LOADED__ = true;
+
+
   const PROXY_BASE = "https://mrsemlimites.lovable.app/api/public/ext/functions/v1/lov4";
 
   // ── MR COMPOSER RESOLVER v7.3.0 ──────────────────────────────────────────
@@ -144,7 +151,7 @@
   // Guarda anti-duplicata (evita reenvio e gasto duplo de crédito)
   function mrcIsDuplicate(text) {
     const now = Date.now();
-    if (text && text === MRC.lastSentText && (now - MRC.lastSentAt) < 4000) return true;
+    if (text && text === MRC.lastSentText && (now - MRC.lastSentAt) < 15000) return true;
     MRC.lastSentText = text;
     MRC.lastSentAt = now;
     return false;
@@ -813,6 +820,13 @@
 
   function bindExtensionMessages() {
     chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
+
+      // Handshake: confirma que o content script está vivo nesta aba.
+      if (msg?.type === 'MRC_PING') {
+        sendResponse({ ok: true, pong: true, v: '7.3.1' });
+        return true;
+      }
+
       
       if (msg?.type === 'VOICE_START_TAB') {
         if (window._lovVoiceRec) { try { window._lovVoiceRec.abort(); } catch(e) {} }

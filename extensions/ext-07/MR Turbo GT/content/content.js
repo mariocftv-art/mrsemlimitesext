@@ -151,7 +151,7 @@
   // Guarda anti-duplicata (evita reenvio e gasto duplo de crédito)
   function mrcIsDuplicate(text) {
     const now = Date.now();
-    if (text && text === MRC.lastSentText && (now - MRC.lastSentAt) < 4000) return true;
+    if (text && text === MRC.lastSentText && (now - MRC.lastSentAt) < 15000) return true;
     MRC.lastSentText = text;
     MRC.lastSentAt = now;
     return false;

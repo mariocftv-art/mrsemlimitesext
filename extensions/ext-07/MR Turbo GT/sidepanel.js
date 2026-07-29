@@ -1907,16 +1907,8 @@ async function sendDirectLovableMessage(messageText) {
   // digitar no chat nativo do Lovable e clicar Enviar. O interceptor de fetch
   // (inject.js) aplica o fluxo ativo no envio real. O handler também reativa
   // a bolinha caso ela tenha sumido.
-  const resp = await new Promise((resolve) => {
-    try {
-      chrome.tabs.sendMessage(tab.id, { type: 'TYPE_AND_SEND_IN_LOVABLE', text: messageText }, (r) => {
-        void chrome.runtime.lastError;
-        resolve(r || { ok: false, error: 'sem resposta do content script' });
-      });
-    } catch (e) {
-      resolve({ ok: false, error: e?.message || String(e) });
-    }
-  });
+  const resp = await mrSendToContent(tab.id, { type: 'TYPE_AND_SEND_IN_LOVABLE', text: messageText });
+
 
   if (!resp?.ok) throw new Error(resp?.error || 'Falha ao enviar mensagem no chat.');
   return true;

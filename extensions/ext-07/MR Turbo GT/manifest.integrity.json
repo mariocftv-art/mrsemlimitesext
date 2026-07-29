@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-26T22:36:07.177Z",
+  "generatedAt": "2026-07-29T21:14:03.552Z",
   "algo": "sha256",
   "fileCount": 41,
   "files": {
@@ -7,7 +7,7 @@
     "background.js": "sha256-1d531319a2fcf4d95b9bad8498ec8fc6ebd4ec58ee3ca9ee76b3640396aced0f",
     "config/app.config.js": "sha256-b123d0a68e749804597829a3c39d522f4d2492e0d18bca849dffadc166406911",
     "content/content.css": "sha256-dd1b8699ca4d51a462d6ccffe177b5e46db7a287c22843372f3d9468bd2f798a",
-    "content/content.js": "sha256-a1117754c9c1714bb5c63b734769250dffefbbf259afb9868421ea9ad93fa012",
+    "content/content.js": "sha256-1e57dc3b827bae4bf104f688c2ae673780eb12eedaf3312f1cd7e70040f89179",
     "content/inject.js": "sha256-6bd26c6a15bea3aa02faa1825dab01f3f23f29dfd7febd7cc9a4eac450bc68c8",
     "content/sound-detector.js": "sha256-7c5df31d8b6efbffdb4cd59d9e7f4291fcb7daf6e009e34ed74535e395d9c7ee",
     "data/animations.js": "sha256-94513d2fc2b86fda1824bde53626515359456ba640d40a577bb05aabefba3456",
@@ -24,7 +24,7 @@
     "lib/constants.js": "sha256-f109fde8a27c5067dff5651eb3ab3126100a8c41facefa32b52d6617eef08277",
     "lib/license.js": "sha256-ddfcc24a95d17db870f3ca29cc39ce3dcf6787835b82636d55853bf8c5c51191",
     "lib/storage.js": "sha256-56ccc8991759604612381c50efdb8edffa0a2cb833b6280eca841e5e2e359604",
-    "manifest.json": "sha256-5af5d1e79cd61b5cf4feb5c0b1d20099a7b81474673a559f45668cfbf033e2ee",
+    "manifest.json": "sha256-e683f4bc7890c5136a52f778776b86e5f2b08d2b178f306f448a1b3f384ff65a",
     "offscreen.html": "sha256-cf8ce60a1476b69014f9f5723d04142e4e99af7f3ab7be4ef4dc00bbbf48cb88",
     "offscreen.js": "sha256-18ff9db85adcf5dd792bd55094d42ab75866fa50ab466e66e697c3770c8b8f10",
     "permission.html": "sha256-d97edbb9ed96d978cbb83e6b361fd8fb1970a04bcf0fe377ab2a45ca518cb8fd",
@@ -35,7 +35,7 @@
     "security/integrity.js": "sha256-c6edd343439986d98aaa9a5fd6e52ead5c210905c71ff61c8203c4daf6e4d527",
     "security/mr-security-pro.js": "sha256-6ca7bfefa4e01cb7017cd3fef6d01b933ee3c0a732cd6b63bfffe62a0aa95398",
     "security/protection.js": "sha256-40f038b921531f24f3e4086945f0e571b40e84aa531f480c6f9fa9c650e8ac5c",
-    "sidepanel.html": "sha256-01aa40837c80599a4e6255f1372926dc8d838851390e7c0bb4bee6ccb856e0e7",
+    "sidepanel.html": "sha256-a2c1e8b9622a93717621cd142c72b3e83eeae96aacdc0adf4c8d2f5e71843de8",
     "sidepanel.js": "sha256-39a35c21aeaf83017024c081682fa833744a7b1cc5210736c5e86d153ab03013",
     "ui/ia-picker.js": "sha256-40a88be7bbbdad014e4ee8e5d2f01f9941beab07d909ea9ee3dc1dede5c91034",
     "ui/ig-publisher.js": "sha256-ae0825fb318b88108d176f67f597414b2ba589437931d89538e95b41182d9cb1",

@@ -813,6 +813,13 @@
 
   function bindExtensionMessages() {
     chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
+
+      // Handshake: confirma que o content script está vivo nesta aba.
+      if (msg?.type === 'MRC_PING') {
+        sendResponse({ ok: true, pong: true, v: '7.3.1' });
+        return true;
+      }
+
       
       if (msg?.type === 'VOICE_START_TAB') {
         if (window._lovVoiceRec) { try { window._lovVoiceRec.abort(); } catch(e) {} }

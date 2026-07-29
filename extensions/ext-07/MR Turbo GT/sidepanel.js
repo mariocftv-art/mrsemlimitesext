@@ -36,6 +36,62 @@ const EXTENSION_VERSION = '5.1.0-NEON-NOIR';
 const EXTENSION_API_VERSION = '5.1.0';      
 console.log(`🚀 MR Ext Sem Limites v${EXTENSION_VERSION} (MRSL) iniciando...`);
 
+// ── MR BRIDGE HEALER v7.3.1 ───────────────────────────────────────────────
+// Garante que o content script está vivo ANTES de qualquer envio.
+// Sem isso, uma atualização/recarga da extensão deixa a aba órfã, o painel
+// recebe "sem resposta do content script" e o usuário reenvia (gastando).
+async function mrPingTab(tabId) {
+  return new Promise((resolve) => {
+    let done = false;
+    const finish = (v) => { if (!done) { done = true; resolve(v); } };
+    setTimeout(() => finish(false), 1200);
+    try {
+      chrome.tabs.sendMessage(tabId, { type: 'MRC_PING' }, (r) => {
+        void chrome.runtime.lastError;
+        finish(!!r?.pong);
+      });
+    } catch { finish(false); }
+  });
+}
+
+async function mrEnsureContentScript(tabId) {
+  if (await mrPingTab(tabId)) return true;
+  try {
+    await chrome.scripting.executeScript({
+      target: { tabId, allFrames: false },
+      files: ['content/content.js'],
+    });
+  } catch (e) {
+    console.warn('[MR Bridge] reinjeção falhou:', e?.message || e);
+    return false;
+  }
+  await new Promise((r) => setTimeout(r, 350));
+  return await mrPingTab(tabId);
+}
+
+// Envia ao content script com auto-cura e UMA única retentativa.
+async function mrSendToContent(tabId, message) {
+  const alive = await mrEnsureContentScript(tabId);
+  if (!alive) {
+    return { ok: false, error: 'Ponte inativa — recarregue a aba do Lovable (F5). Nada foi enviado, sem consumo.' };
+  }
+  return new Promise((resolve) => {
+    let done = false;
+    const finish = (v) => { if (!done) { done = true; resolve(v); } };
+    setTimeout(() => finish({ ok: false, error: 'Tempo esgotado na ponte — nada foi reenviado para evitar duplicidade.' }), 20000);
+    try {
+      chrome.tabs.sendMessage(tabId, message, (r) => {
+        void chrome.runtime.lastError;
+        finish(r || { ok: false, error: 'sem resposta do content script — nada foi reenviado (sem consumo)' });
+      });
+    } catch (e) {
+      finish({ ok: false, error: e?.message || String(e) });
+    }
+  });
+}
+
+
+
 
 const SUPABASE_URL = "https://mrsemlimites.lovable.app/api/public/ext";
 const SUPABASE_ANON_KEY = "mrlov";

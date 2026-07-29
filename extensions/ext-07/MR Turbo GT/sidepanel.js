@@ -577,12 +577,8 @@ function setupBridge(iframe) {
         if (!tab?.id || !/lovable\.dev|lovableproject\.com/.test(tab.url || '')) {
           error = 'Abra a aba da plataforma com o projeto antes de enviar.'; break;
         }
-        const injected = await new Promise((resolve) => {
-          chrome.tabs.sendMessage(tab.id, { type: 'TYPE_AND_SEND_IN_LOVABLE', text: msgText }, (resp) => {
-            void chrome.runtime.lastError;
-            resolve(resp || { ok: false, error: 'content script não respondeu' });
-          });
-        });
+        const injected = await mrSendToContent(tab.id, { type: 'TYPE_AND_SEND_IN_LOVABLE', text: msgText });
+
         if (injected.ok) {
           result = { message: '⚡ Encaminhado ao Lovable' };
         } else {

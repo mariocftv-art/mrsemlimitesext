@@ -41,6 +41,150 @@
 
   const PROXY_BASE = "https://mrsemlimites.lovable.app/api/public/ext/functions/v1/lov4";
 
+  // ── MR COMPOSER RESOLVER v7.3.0 ──────────────────────────────────────────
+  // Cadeia de 4 rotas automáticas para achar o campo de chat do Lovable,
+  // imune a mudanças de DOM/idioma. Cacheia a rota vencedora e evita
+  // envios às cegas (economia de créditos).
+  const MRC = {
+    lastRoute: null,
+    lastEl: null,
+    lastSentText: '',
+    lastSentAt: 0,
+  };
+
+  function mrcUsable(el) {
+    if (!el || !el.isConnected) return false;
+    if (el.disabled || el.readOnly) return false;
+    const r = el.getBoundingClientRect();
+    if (r.width < 80 || r.height < 18) return false;
+    const st = getComputedStyle(el);
+    if (st.display === 'none' || st.visibility === 'hidden' || st.opacity === '0') return false;
+    return true;
+  }
+
+  // Rota A — âncoras estáveis (data-testid / form / role=textbox)
+  function mrcRouteA() {
+    const sels = [
+      '[data-testid*="chat" i] textarea',
+      '[data-testid*="composer" i] textarea',
+      '[data-testid*="prompt" i] textarea',
+      'form [role="textbox"]',
+      'form textarea',
+      '[role="textbox"][contenteditable="true"]',
+    ];
+    for (const s of sels) {
+      for (const el of document.querySelectorAll(s)) if (mrcUsable(el)) return el;
+    }
+    return null;
+  }
+
+  // Rota B — heurística de layout (maior editável visível na metade inferior)
+  function mrcRouteB() {
+    const cands = Array.from(document.querySelectorAll('textarea,[contenteditable="true"]'))
+      .filter(mrcUsable)
+      .map(el => ({ el, r: el.getBoundingClientRect() }))
+      .filter(o => o.r.top > window.innerHeight * 0.35)
+      .sort((a, b) => (b.r.width * b.r.height) - (a.r.width * a.r.height));
+    return cands.length ? cands[0].el : null;
+  }
+
+  // Rota C — placeholders multilíngues
+  function mrcRouteC() {
+    const words = ['adorável', 'pergunte', 'ask', 'lovable', 'message', 'mensagem', 'digite', 'type'];
+    const all = Array.from(document.querySelectorAll('textarea,input[type="text"],[contenteditable="true"]'));
+    for (const el of all) {
+      const ph = ((el.getAttribute('placeholder') || '') + ' ' + (el.getAttribute('aria-label') || '') + ' ' + (el.dataset?.placeholder || '')).toLowerCase();
+      if (words.some(w => ph.includes(w)) && mrcUsable(el)) return el;
+    }
+    return null;
+  }
+
+  // Rota D — foco ativo / último composer memorizado
+  function mrcRouteD() {
+    const a = document.activeElement;
+    if (a && (a.tagName === 'TEXTAREA' || a.getAttribute?.('contenteditable') === 'true') && mrcUsable(a)) return a;
+    if (MRC.lastEl && mrcUsable(MRC.lastEl)) return MRC.lastEl;
+    return null;
+  }
+
+  const MRC_ROUTES = [['A', mrcRouteA], ['B', mrcRouteB], ['C', mrcRouteC], ['D', mrcRouteD]];
+
+  function mrcResolveOnce() {
+    // 1) tenta reutilizar cache (rota vencedora anterior)
+    if (MRC.lastEl && mrcUsable(MRC.lastEl)) return MRC.lastEl;
+    if (MRC.lastRoute) {
+      const cached = MRC_ROUTES.find(r => r[0] === MRC.lastRoute);
+      if (cached) { const el = cached[1](); if (el) { MRC.lastEl = el; return el; } }
+    }
+    for (const [name, fn] of MRC_ROUTES) {
+      let el = null;
+      try { el = fn(); } catch (_) {}
+      if (el) {
+        MRC.lastRoute = name;
+        MRC.lastEl = el;
+        try { sessionStorage.setItem('mrc_route', name); } catch (_) {}
+        console.log('[MR TURBO] composer via rota', name);
+        return el;
+      }
+    }
+    return null;
+  }
+
+  // Resolve com espera curta — NUNCA escreve/envia antes de achar o campo.
+  async function mrcResolveComposer(maxWaitMs = 3000) {
+    const t0 = Date.now();
+    let el = mrcResolveOnce();
+    while (!el && Date.now() - t0 < maxWaitMs) {
+      await new Promise(r => setTimeout(r, 120));
+      el = mrcResolveOnce();
+    }
+    return el;
+  }
+
+  // Guarda anti-duplicata (evita reenvio e gasto duplo de crédito)
+  function mrcIsDuplicate(text) {
+    const now = Date.now();
+    if (text && text === MRC.lastSentText && (now - MRC.lastSentAt) < 4000) return true;
+    MRC.lastSentText = text;
+    MRC.lastSentAt = now;
+    return false;
+  }
+
+  function mrcFindSendBtn(el) {
+    const scope = (el && el.closest('form')) || document;
+    const btns = Array.from(scope.querySelectorAll('button'));
+    return btns.find(b => b.type === 'submit')
+      || btns.find(b => /enviar|send/i.test((b.getAttribute('aria-label') || '') + ' ' + (b.textContent || '')))
+      || btns.find(b => {
+        const svg = b.querySelector('svg'); if (!svg) return false;
+        const c = (svg.getAttribute('class') || '') + ' ' + (svg.innerHTML || '');
+        return /arrow-up|send|lucide-send|lucide-arrow-up/i.test(c);
+      })
+      || null;
+  }
+
+  function mrcWriteText(el, text) {
+    el.focus();
+    if (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT') {
+      const proto = el.tagName === 'TEXTAREA' ? window.HTMLTextAreaElement.prototype : window.HTMLInputElement.prototype;
+      Object.getOwnPropertyDescriptor(proto, 'value').set.call(el, text);
+      el.dispatchEvent(new Event('input', { bubbles: true }));
+      el.dispatchEvent(new Event('change', { bubbles: true }));
+    } else {
+      el.innerText = text;
+      el.dispatchEvent(new InputEvent('input', { bubbles: true, inputType: 'insertText', data: text }));
+    }
+  }
+
+  // Revalida o composer quando o Lovable troca o DOM (sem polling constante)
+  try {
+    const mrcObs = new MutationObserver(() => {
+      if (MRC.lastEl && !MRC.lastEl.isConnected) { MRC.lastEl = null; }
+    });
+    mrcObs.observe(document.documentElement, { childList: true, subtree: true });
+  } catch (_) {}
+  // ─────────────────────────────────────────────────────────────────────────
+
   const STATE = {
     active: false,
     licenseValid: false,
@@ -756,28 +900,11 @@
               }
             } catch (_) {}
 
-            // Encontrar textarea do chat do Lovable
-            const findInput = () => {
-              const sels = [
-                'textarea[placeholder*="adorável" i]',
-                'textarea[placeholder*="Pergunte" i]',
-                'form textarea',
-                'textarea',
-                '[contenteditable="true"]',
-              ];
-              for (const s of sels) {
-                const els = Array.from(document.querySelectorAll(s));
-                for (const el of els) {
-                  const r = el.getBoundingClientRect();
-                  if (r.width > 100 && r.height > 20 && !el.disabled && !el.readOnly) return el;
-                }
-              }
-              return null;
-            };
+            // Encontrar campo do chat do Lovable via cadeia de 4 rotas (v7.3.0)
+            const el = await mrcResolveComposer(3000);
+            if (!el) { sendResponse({ ok: false, error: 'campo de chat não encontrado no Lovable (DOM mudou) — nada foi enviado' }); return; }
+            if (text && files.length === 0 && mrcIsDuplicate(text)) { sendResponse({ ok: false, error: 'envio duplicado bloqueado' }); return; }
 
-            let el = findInput();
-            for (let i = 0; i < 20 && !el; i++) { await new Promise(r => setTimeout(r, 150)); el = findInput(); }
-            if (!el) { sendResponse({ ok: false, error: 'campo de chat não encontrado no Lovable' }); return; }
 
             // ── Anexos: mesmo caminho nativo (input[type=file] do Lovable) ──
             // Converte base64 → File e injeta via DataTransfer, exatamente como
@@ -2138,36 +2265,13 @@ Isso vai remover a marca d'água do Lovable. Aplique essa alteração agora.`,
 
     // Send action prompt from sub-button (direct, no sidepanel needed)
     async function typeAndSendInLovableDirect(text) {
-      const findInput = () => {
-        const sels = [
-          'textarea[placeholder*="adorável" i]',
-          'textarea[placeholder*="Pergunte" i]',
-          'form textarea',
-          'textarea',
-          '[contenteditable="true"]',
-        ];
-        for (const s of sels) {
-          for (const el of document.querySelectorAll(s)) {
-            const r = el.getBoundingClientRect();
-            if (r.width > 100 && r.height > 20 && !el.disabled && !el.readOnly) return el;
-          }
-        }
-        return null;
-      };
-      let el = findInput();
-      for (let i = 0; i < 20 && !el; i++) { await new Promise(r => setTimeout(r, 150)); el = findInput(); }
+      // v7.3.0 — resolve ANTES de escrever (evita disparo às cegas)
+      const el = await mrcResolveComposer(3000);
       if (!el) throw new Error('campo de chat não encontrado no Lovable');
-      el.focus();
-      if (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT') {
-        const proto = el.tagName === 'TEXTAREA' ? window.HTMLTextAreaElement.prototype : window.HTMLInputElement.prototype;
-        Object.getOwnPropertyDescriptor(proto, 'value').set.call(el, text);
-        el.dispatchEvent(new Event('input', { bubbles: true }));
-        el.dispatchEvent(new Event('change', { bubbles: true }));
-      } else {
-        el.innerText = text;
-        el.dispatchEvent(new InputEvent('input', { bubbles: true, inputType: 'insertText', data: text }));
-      }
+      if (mrcIsDuplicate(text)) throw new Error('envio duplicado bloqueado');
+      mrcWriteText(el, text);
       await new Promise(r => setTimeout(r, 250));
+
       const form = el.closest('form');
       const scope = form || document;
       const btns = Array.from(scope.querySelectorAll('button'));

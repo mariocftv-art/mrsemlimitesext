@@ -900,28 +900,11 @@
               }
             } catch (_) {}
 
-            // Encontrar textarea do chat do Lovable
-            const findInput = () => {
-              const sels = [
-                'textarea[placeholder*="adorável" i]',
-                'textarea[placeholder*="Pergunte" i]',
-                'form textarea',
-                'textarea',
-                '[contenteditable="true"]',
-              ];
-              for (const s of sels) {
-                const els = Array.from(document.querySelectorAll(s));
-                for (const el of els) {
-                  const r = el.getBoundingClientRect();
-                  if (r.width > 100 && r.height > 20 && !el.disabled && !el.readOnly) return el;
-                }
-              }
-              return null;
-            };
+            // Encontrar campo do chat do Lovable via cadeia de 4 rotas (v7.3.0)
+            const el = await mrcResolveComposer(3000);
+            if (!el) { sendResponse({ ok: false, error: 'campo de chat não encontrado no Lovable (DOM mudou) — nada foi enviado' }); return; }
+            if (text && files.length === 0 && mrcIsDuplicate(text)) { sendResponse({ ok: false, error: 'envio duplicado bloqueado' }); return; }
 
-            let el = findInput();
-            for (let i = 0; i < 20 && !el; i++) { await new Promise(r => setTimeout(r, 150)); el = findInput(); }
-            if (!el) { sendResponse({ ok: false, error: 'campo de chat não encontrado no Lovable' }); return; }
 
             // ── Anexos: mesmo caminho nativo (input[type=file] do Lovable) ──
             // Converte base64 → File e injeta via DataTransfer, exatamente como

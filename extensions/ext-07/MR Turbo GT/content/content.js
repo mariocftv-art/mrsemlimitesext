@@ -2282,36 +2282,13 @@ Isso vai remover a marca d'água do Lovable. Aplique essa alteração agora.`,
 
     // Send action prompt from sub-button (direct, no sidepanel needed)
     async function typeAndSendInLovableDirect(text) {
-      const findInput = () => {
-        const sels = [
-          'textarea[placeholder*="adorável" i]',
-          'textarea[placeholder*="Pergunte" i]',
-          'form textarea',
-          'textarea',
-          '[contenteditable="true"]',
-        ];
-        for (const s of sels) {
-          for (const el of document.querySelectorAll(s)) {
-            const r = el.getBoundingClientRect();
-            if (r.width > 100 && r.height > 20 && !el.disabled && !el.readOnly) return el;
-          }
-        }
-        return null;
-      };
-      let el = findInput();
-      for (let i = 0; i < 20 && !el; i++) { await new Promise(r => setTimeout(r, 150)); el = findInput(); }
+      // v7.3.0 — resolve ANTES de escrever (evita disparo às cegas)
+      const el = await mrcResolveComposer(3000);
       if (!el) throw new Error('campo de chat não encontrado no Lovable');
-      el.focus();
-      if (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT') {
-        const proto = el.tagName === 'TEXTAREA' ? window.HTMLTextAreaElement.prototype : window.HTMLInputElement.prototype;
-        Object.getOwnPropertyDescriptor(proto, 'value').set.call(el, text);
-        el.dispatchEvent(new Event('input', { bubbles: true }));
-        el.dispatchEvent(new Event('change', { bubbles: true }));
-      } else {
-        el.innerText = text;
-        el.dispatchEvent(new InputEvent('input', { bubbles: true, inputType: 'insertText', data: text }));
-      }
+      if (mrcIsDuplicate(text)) throw new Error('envio duplicado bloqueado');
+      mrcWriteText(el, text);
       await new Promise(r => setTimeout(r, 250));
+
       const form = el.closest('form');
       const scope = form || document;
       const btns = Array.from(scope.querySelectorAll('button'));

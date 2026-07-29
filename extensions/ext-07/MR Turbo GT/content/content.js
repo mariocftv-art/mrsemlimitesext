@@ -39,6 +39,13 @@
     return;
   }
 
+  // Guarda anti-injeção dupla (reinjeção de auto-cura não duplica listeners).
+  if (window.__MR_TURBO_CS_LOADED__) {
+    return;
+  }
+  window.__MR_TURBO_CS_LOADED__ = true;
+
+
   const PROXY_BASE = "https://mrsemlimites.lovable.app/api/public/ext/functions/v1/lov4";
 
   // ── MR COMPOSER RESOLVER v7.3.0 ──────────────────────────────────────────

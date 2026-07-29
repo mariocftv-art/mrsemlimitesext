@@ -1133,13 +1133,10 @@ async function callCommand(command, payload) {
             error = 'Abra um projeto na aba ativa primeiro.';
             break;
           }
-          const resp = await new Promise((resolve) => {
-            chrome.tabs.sendMessage(
-              tab.id,
-              { type: 'TYPE_AND_SEND_IN_LOVABLE', text: msgText, files: normalized },
-              (r) => { void chrome.runtime.lastError; resolve(r || { ok: false, error: 'sem resposta do content script' }); }
-            );
+          const resp = await mrSendToContent(tab.id, {
+            type: 'TYPE_AND_SEND_IN_LOVABLE', text: msgText, files: normalized,
           });
+
           if (resp?.ok) {
             result = { message: hasFiles ? '⚡ Encaminhado ao Lovable + anexo' : '⚡ Encaminhado ao Lovable' };
           } else {

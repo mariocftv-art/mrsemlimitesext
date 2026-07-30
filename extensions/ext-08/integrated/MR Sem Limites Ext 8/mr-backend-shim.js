@@ -29,22 +29,74 @@
       }
     }
 
+    // Host de contingência (build de preview sempre atualizado).
+    var MR_FALLBACK = "project--44455b56-b609-45e7-8e53-9fd580b3ca9f-dev.lovable.app";
+
+    function isApi(url) {
+      try { return String(url).indexOf("/api/public/") !== -1; } catch (_) { return false; }
+    }
+
+    function looksLikeHtml(res) {
+      try {
+        var ct = res && res.headers && res.headers.get ? res.headers.get("content-type") || "" : "";
+        if (ct.indexOf("application/json") !== -1) return false;
+        if (ct.indexOf("text/event-stream") !== -1) return false;
+        return true;
+      } catch (_) { return false; }
+    }
+
     // --- fetch ---------------------------------------------------------
     try {
       var origFetch = globalThis.fetch;
       if (typeof origFetch === "function") {
         globalThis.fetch = function (input, init) {
+          var self = this;
+          var target = typeof input === "string" ? input : input && input.url;
           try {
             if (typeof input === "string") {
               input = rewrite(input);
+              target = input;
             } else if (input && typeof input.url === "string" && LEGACY.test(input.url)) {
               input = new Request(rewrite(input.url), input);
+              target = input.url;
             }
           } catch (_) {}
-          return origFetch.call(this, input, init);
+
+          var p = origFetch.call(self, input, init);
+          if (!isApi(target)) return p;
+
+          // Failover: se o backend publicado ainda não tem a rota (HTML/404),
+          // repete a chamada no host de preview para não quebrar a extensão.
+          return p.then(function (res) {
+            if (res && res.ok && !looksLikeHtml(res)) return res;
+            var alt = String(target).replace(MR_HOST, MR_FALLBACK);
+            if (alt === String(target)) return res;
+            return origFetch.call(self, alt, init).then(function (r2) {
+              if (r2 && r2.ok && !looksLikeHtml(r2)) return r2;
+              return res;
+            }).catch(function () { return res; });
+          }).catch(function (err) {
+            var alt = String(target).replace(MR_HOST, MR_FALLBACK);
+            if (alt === String(target)) throw err;
+            return origFetch.call(self, alt, init);
+          }).then(function (res) {
+            // Última barreira: nunca devolver HTML para um JSON.parse().
+            if (res && looksLikeHtml(res)) {
+              return new Response(
+                JSON.stringify({
+                  ok: false,
+                  valid: false,
+                  error: "Backend MR Sem Limites indisponível no momento. Tente novamente.",
+                }),
+                { status: 200, headers: { "content-type": "application/json" } },
+              );
+            }
+            return res;
+          });
         };
       }
     } catch (_) {}
+
 
     // --- XMLHttpRequest ------------------------------------------------
     try {

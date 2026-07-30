@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "MR Sem Limites Ext 8",
-  "version": "8.0.0",
-  "description": "MR Sem Limites EXT8 — assistente premium com IA, chat de voz e vibe coding. Backend oficial MR Sem Limites.",
+  "version": "8.0.1",
+  "description": "MR SEM LIMITES ESPECIAL — EXT8: assistente premium com IA, chat de voz e vibe coding. Backend oficial MR Sem Limites.",
   "permissions": [
     "activeTab",
     "scripting",
@@ -17,7 +17,9 @@
     "https://api.lovable.dev/*",
     "https://*.lovable.dev/*",
     "https://*.lovableproject.com/*",
-    "https://*.lovable.app/*"
+    "https://*.lovable.app/*",
+    "https://project--44455b56-b609-45e7-8e53-9fd580b3ca9f-dev.lovable.app/*",
+    "https://project--44455b56-b609-45e7-8e53-9fd580b3ca9f.lovable.app/*"
   ],
   "action": {
     "default_title": "MR SEM LIMITES · EXT8"
@@ -74,7 +76,8 @@
         "popup.html",
         "icon.png",
         "mr-backend-shim.js",
-        "mr-security-pro.js"
+        "mr-security-pro.js",
+        "logo-mr8.png"
       ],
       "matches": [
         "https://lovable.dev/*",

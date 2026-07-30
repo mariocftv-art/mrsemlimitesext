@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-07-30T01:13:00.046Z",
+  "generatedAt": "2026-07-30T01:29:27.520Z",
   "algo": "sha256",
   "fileCount": 3,
   "files": {
-    "background.js": "sha256-4ba529db3c03bdea5060f849ef270b6295072dcabcf8307d24cd75ccb5f98c9c",
-    "manifest.json": "sha256-028e46e58067af178022cc9b5c2458908fdfeea0656028ca4fa4b2241269d0a7",
-    "popup.html": "sha256-5ec4d73690d4f090030e07c6843f70f0ccca00939a702c1268a1bbd6a9a9d385"
+    "background.js": "sha256-927e2ec589ae751eb8a4cc78543c5d47fec4e53d7b9d4417e7ac6b52102b9b17",
+    "manifest.json": "sha256-d69fa18a26e0327af5d3717d95ffbc5301177d8772612787ffc8b30a410cbcf3",
+    "popup.html": "sha256-06bf325fe9d403e16471cd8ac981d5d28ab61453787e14d3d37ed692b7d1859b"
   }
 }

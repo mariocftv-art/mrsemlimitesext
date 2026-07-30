@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "LOV QYRON - Premium AI Assistant",
-  "version": "6.1.1",
-  "description": "Extensão premium com IA Neural, Chat de Voz em tempo real, Vibe Coding e Remover Marca (v6.1.1 + Migração Supabase (fix CSP))",
+  "name": "MR Sem Limites Ext 8",
+  "version": "8.0.0",
+  "description": "MR Sem Limites EXT8 — assistente premium com IA, chat de voz e vibe coding. Backend oficial MR Sem Limites.",
   "permissions": [
     "activeTab",
     "scripting",
@@ -12,15 +12,15 @@
     "sidePanel"
   ],
   "host_permissions": [
+    "https://mrsemlimitesext.lovable.app/*",
     "https://lovable.dev/*",
     "https://api.lovable.dev/*",
     "https://*.lovable.dev/*",
     "https://*.lovableproject.com/*",
-    "https://*.lovable.app/*",
-    "https://qyrondev.lovable.app/*"
+    "https://*.lovable.app/*"
   ],
   "action": {
-    "default_title": "LOV QYRON"
+    "default_title": "MR SEM LIMITES · EXT8"
   },
   "side_panel": {
     "default_path": "popup.html"
@@ -48,6 +48,8 @@
         "https://*.lovable.app/*"
       ],
       "js": [
+        "mr-backend-shim.js",
+        "mr-security-pro.js",
         "content.bundle.js"
       ],
       "run_at": "document_idle",
@@ -70,7 +72,9 @@
         "popup.bundle.js",
         "jszip.min.js",
         "popup.html",
-        "icon.png"
+        "icon.png",
+        "mr-backend-shim.js",
+        "mr-security-pro.js"
       ],
       "matches": [
         "https://lovable.dev/*",

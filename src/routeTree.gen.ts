@@ -50,6 +50,7 @@ import { Route as ApiPublicValidateLicenseRouteImport } from './routes/api/publi
 import { Route as ApiPublicSecurityVersionRouteImport } from './routes/api/public/security-version'
 import { Route as ApiPublicSecurityValidateLicenseRouteImport } from './routes/api/public/security-validate-license'
 import { Route as ApiPublicSecurityLogsRouteImport } from './routes/api/public/security-logs'
+import { Route as ApiPublicQyronAiChatRouteImport } from './routes/api/public/qyron-ai-chat'
 import { Route as ApiPublicOrbeTtsRouteImport } from './routes/api/public/orbe-tts'
 import { Route as ApiPublicOrbeChatRouteImport } from './routes/api/public/orbe-chat'
 import { Route as ApiPublicLicenseHeartbeatRouteImport } from './routes/api/public/license-heartbeat'
@@ -274,6 +275,11 @@ const ApiPublicSecurityLogsRoute = ApiPublicSecurityLogsRouteImport.update({
   path: '/api/public/security-logs',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicQyronAiChatRoute = ApiPublicQyronAiChatRouteImport.update({
+  id: '/api/public/qyron-ai-chat',
+  path: '/api/public/qyron-ai-chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicOrbeTtsRoute = ApiPublicOrbeTtsRouteImport.update({
   id: '/api/public/orbe-tts',
   path: '/api/public/orbe-tts',
@@ -398,6 +404,7 @@ export interface FileRoutesByFullPath {
   '/api/public/license-heartbeat': typeof ApiPublicLicenseHeartbeatRoute
   '/api/public/orbe-chat': typeof ApiPublicOrbeChatRoute
   '/api/public/orbe-tts': typeof ApiPublicOrbeTtsRoute
+  '/api/public/qyron-ai-chat': typeof ApiPublicQyronAiChatRoute
   '/api/public/security-logs': typeof ApiPublicSecurityLogsRoute
   '/api/public/security-validate-license': typeof ApiPublicSecurityValidateLicenseRoute
   '/api/public/security-version': typeof ApiPublicSecurityVersionRoute
@@ -454,6 +461,7 @@ export interface FileRoutesByTo {
   '/api/public/license-heartbeat': typeof ApiPublicLicenseHeartbeatRoute
   '/api/public/orbe-chat': typeof ApiPublicOrbeChatRoute
   '/api/public/orbe-tts': typeof ApiPublicOrbeTtsRoute
+  '/api/public/qyron-ai-chat': typeof ApiPublicQyronAiChatRoute
   '/api/public/security-logs': typeof ApiPublicSecurityLogsRoute
   '/api/public/security-validate-license': typeof ApiPublicSecurityValidateLicenseRoute
   '/api/public/security-version': typeof ApiPublicSecurityVersionRoute
@@ -511,6 +519,7 @@ export interface FileRoutesById {
   '/api/public/license-heartbeat': typeof ApiPublicLicenseHeartbeatRoute
   '/api/public/orbe-chat': typeof ApiPublicOrbeChatRoute
   '/api/public/orbe-tts': typeof ApiPublicOrbeTtsRoute
+  '/api/public/qyron-ai-chat': typeof ApiPublicQyronAiChatRoute
   '/api/public/security-logs': typeof ApiPublicSecurityLogsRoute
   '/api/public/security-validate-license': typeof ApiPublicSecurityValidateLicenseRoute
   '/api/public/security-version': typeof ApiPublicSecurityVersionRoute
@@ -569,6 +578,7 @@ export interface FileRouteTypes {
     | '/api/public/license-heartbeat'
     | '/api/public/orbe-chat'
     | '/api/public/orbe-tts'
+    | '/api/public/qyron-ai-chat'
     | '/api/public/security-logs'
     | '/api/public/security-validate-license'
     | '/api/public/security-version'
@@ -625,6 +635,7 @@ export interface FileRouteTypes {
     | '/api/public/license-heartbeat'
     | '/api/public/orbe-chat'
     | '/api/public/orbe-tts'
+    | '/api/public/qyron-ai-chat'
     | '/api/public/security-logs'
     | '/api/public/security-validate-license'
     | '/api/public/security-version'
@@ -681,6 +692,7 @@ export interface FileRouteTypes {
     | '/api/public/license-heartbeat'
     | '/api/public/orbe-chat'
     | '/api/public/orbe-tts'
+    | '/api/public/qyron-ai-chat'
     | '/api/public/security-logs'
     | '/api/public/security-validate-license'
     | '/api/public/security-version'
@@ -738,6 +750,7 @@ export interface RootRouteChildren {
   ApiPublicLicenseHeartbeatRoute: typeof ApiPublicLicenseHeartbeatRoute
   ApiPublicOrbeChatRoute: typeof ApiPublicOrbeChatRoute
   ApiPublicOrbeTtsRoute: typeof ApiPublicOrbeTtsRoute
+  ApiPublicQyronAiChatRoute: typeof ApiPublicQyronAiChatRoute
   ApiPublicSecurityLogsRoute: typeof ApiPublicSecurityLogsRoute
   ApiPublicSecurityValidateLicenseRoute: typeof ApiPublicSecurityValidateLicenseRoute
   ApiPublicSecurityVersionRoute: typeof ApiPublicSecurityVersionRoute
@@ -1035,6 +1048,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicSecurityLogsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/qyron-ai-chat': {
+      id: '/api/public/qyron-ai-chat'
+      path: '/api/public/qyron-ai-chat'
+      fullPath: '/api/public/qyron-ai-chat'
+      preLoaderRoute: typeof ApiPublicQyronAiChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/orbe-tts': {
       id: '/api/public/orbe-tts'
       path: '/api/public/orbe-tts'
@@ -1178,6 +1198,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicLicenseHeartbeatRoute: ApiPublicLicenseHeartbeatRoute,
   ApiPublicOrbeChatRoute: ApiPublicOrbeChatRoute,
   ApiPublicOrbeTtsRoute: ApiPublicOrbeTtsRoute,
+  ApiPublicQyronAiChatRoute: ApiPublicQyronAiChatRoute,
   ApiPublicSecurityLogsRoute: ApiPublicSecurityLogsRoute,
   ApiPublicSecurityValidateLicenseRoute: ApiPublicSecurityValidateLicenseRoute,
   ApiPublicSecurityVersionRoute: ApiPublicSecurityVersionRoute,

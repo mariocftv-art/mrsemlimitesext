@@ -115,28 +115,31 @@
     } catch (_) {}
 
     // --- dashboard url persistido (usado como base pela extensão) -------
+    var DASH_KEY = "mrsemlimites_dashboard_url";
     try {
       if (typeof localStorage !== "undefined") {
-        var KEY = "qyron_dashboard_url";
-        var cur = localStorage.getItem(KEY);
-        if (!cur || LEGACY.test(cur)) {
-          localStorage.setItem(KEY, "https://" + MR_HOST);
+        var cur = localStorage.getItem(DASH_KEY);
+        if (!cur || String(cur).indexOf(MR_HOST) === -1) {
+          localStorage.setItem(DASH_KEY, "https://" + MR_HOST);
         }
       }
     } catch (_) {}
 
     try {
       if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.local) {
-        chrome.storage.local.get(["qyron_dashboard_url"], function (v) {
+        chrome.storage.local.get([DASH_KEY], function (v) {
           try {
-            var u = v && v.qyron_dashboard_url;
-            if (!u || LEGACY.test(String(u))) {
-              chrome.storage.local.set({ qyron_dashboard_url: "https://" + MR_HOST });
+            var u = v && v[DASH_KEY];
+            if (!u || String(u).indexOf(MR_HOST) === -1) {
+              var patch = {};
+              patch[DASH_KEY] = "https://" + MR_HOST;
+              chrome.storage.local.set(patch);
             }
           } catch (_) {}
         });
       }
     } catch (_) {}
+
 
     globalThis.MR_EXT8_BACKEND = { host: MR_HOST, base: "https://" + MR_HOST, rewrite: rewrite };
   } catch (_) {}

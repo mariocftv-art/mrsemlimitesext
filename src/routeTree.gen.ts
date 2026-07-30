@@ -46,6 +46,7 @@ import { Route as PreviewIdRouteImport } from './routes/preview.$id'
 import { Route as LiveIdRouteImport } from './routes/live.$id'
 import { Route as ApiPublicVideosTranscribeRouteImport } from './routes/api/public/videos-transcribe'
 import { Route as ApiPublicVideosKeyframesRouteImport } from './routes/api/public/videos-keyframes'
+import { Route as ApiPublicValidateLicenseRouteImport } from './routes/api/public/validate-license'
 import { Route as ApiPublicSecurityVersionRouteImport } from './routes/api/public/security-version'
 import { Route as ApiPublicSecurityValidateLicenseRouteImport } from './routes/api/public/security-validate-license'
 import { Route as ApiPublicSecurityLogsRouteImport } from './routes/api/public/security-logs'
@@ -247,6 +248,12 @@ const ApiPublicVideosKeyframesRoute =
     path: '/api/public/videos-keyframes',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicValidateLicenseRoute =
+  ApiPublicValidateLicenseRouteImport.update({
+    id: '/api/public/validate-license',
+    path: '/api/public/validate-license',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicSecurityVersionRoute =
   ApiPublicSecurityVersionRouteImport.update({
     id: '/api/public/security-version',
@@ -370,6 +377,7 @@ export interface FileRoutesByFullPath {
   '/api/public/security-logs': typeof ApiPublicSecurityLogsRoute
   '/api/public/security-validate-license': typeof ApiPublicSecurityValidateLicenseRoute
   '/api/public/security-version': typeof ApiPublicSecurityVersionRoute
+  '/api/public/validate-license': typeof ApiPublicValidateLicenseRoute
   '/api/public/videos-keyframes': typeof ApiPublicVideosKeyframesRoute
   '/api/public/videos-transcribe': typeof ApiPublicVideosTranscribeRoute
 }
@@ -422,6 +430,7 @@ export interface FileRoutesByTo {
   '/api/public/security-logs': typeof ApiPublicSecurityLogsRoute
   '/api/public/security-validate-license': typeof ApiPublicSecurityValidateLicenseRoute
   '/api/public/security-version': typeof ApiPublicSecurityVersionRoute
+  '/api/public/validate-license': typeof ApiPublicValidateLicenseRoute
   '/api/public/videos-keyframes': typeof ApiPublicVideosKeyframesRoute
   '/api/public/videos-transcribe': typeof ApiPublicVideosTranscribeRoute
 }
@@ -475,6 +484,7 @@ export interface FileRoutesById {
   '/api/public/security-logs': typeof ApiPublicSecurityLogsRoute
   '/api/public/security-validate-license': typeof ApiPublicSecurityValidateLicenseRoute
   '/api/public/security-version': typeof ApiPublicSecurityVersionRoute
+  '/api/public/validate-license': typeof ApiPublicValidateLicenseRoute
   '/api/public/videos-keyframes': typeof ApiPublicVideosKeyframesRoute
   '/api/public/videos-transcribe': typeof ApiPublicVideosTranscribeRoute
 }
@@ -529,6 +539,7 @@ export interface FileRouteTypes {
     | '/api/public/security-logs'
     | '/api/public/security-validate-license'
     | '/api/public/security-version'
+    | '/api/public/validate-license'
     | '/api/public/videos-keyframes'
     | '/api/public/videos-transcribe'
   fileRoutesByTo: FileRoutesByTo
@@ -581,6 +592,7 @@ export interface FileRouteTypes {
     | '/api/public/security-logs'
     | '/api/public/security-validate-license'
     | '/api/public/security-version'
+    | '/api/public/validate-license'
     | '/api/public/videos-keyframes'
     | '/api/public/videos-transcribe'
   id:
@@ -633,6 +645,7 @@ export interface FileRouteTypes {
     | '/api/public/security-logs'
     | '/api/public/security-validate-license'
     | '/api/public/security-version'
+    | '/api/public/validate-license'
     | '/api/public/videos-keyframes'
     | '/api/public/videos-transcribe'
   fileRoutesById: FileRoutesById
@@ -686,6 +699,7 @@ export interface RootRouteChildren {
   ApiPublicSecurityLogsRoute: typeof ApiPublicSecurityLogsRoute
   ApiPublicSecurityValidateLicenseRoute: typeof ApiPublicSecurityValidateLicenseRoute
   ApiPublicSecurityVersionRoute: typeof ApiPublicSecurityVersionRoute
+  ApiPublicValidateLicenseRoute: typeof ApiPublicValidateLicenseRoute
   ApiPublicVideosKeyframesRoute: typeof ApiPublicVideosKeyframesRoute
   ApiPublicVideosTranscribeRoute: typeof ApiPublicVideosTranscribeRoute
 }
@@ -951,6 +965,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicVideosKeyframesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/validate-license': {
+      id: '/api/public/validate-license'
+      path: '/api/public/validate-license'
+      fullPath: '/api/public/validate-license'
+      preLoaderRoute: typeof ApiPublicValidateLicenseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/security-version': {
       id: '/api/public/security-version'
       path: '/api/public/security-version'
@@ -1094,6 +1115,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicSecurityLogsRoute: ApiPublicSecurityLogsRoute,
   ApiPublicSecurityValidateLicenseRoute: ApiPublicSecurityValidateLicenseRoute,
   ApiPublicSecurityVersionRoute: ApiPublicSecurityVersionRoute,
+  ApiPublicValidateLicenseRoute: ApiPublicValidateLicenseRoute,
   ApiPublicVideosKeyframesRoute: ApiPublicVideosKeyframesRoute,
   ApiPublicVideosTranscribeRoute: ApiPublicVideosTranscribeRoute,
 }

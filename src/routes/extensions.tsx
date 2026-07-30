@@ -103,7 +103,7 @@ import ext6Asset from "@/assets/ext6-v6.1.0.zip.asset.json";
 const EXT6_ZIP_URL = ext6Asset.url;
 import ext7Asset from "@/assets/ext7-v7.3.1.zip.asset.json";
 const EXT7_ZIP_URL = ext7Asset.url;
-import ext8Asset from "@/assets/ext8-v8.0.0.zip.asset.json";
+import ext8Asset from "@/assets/ext8-v8.0.1.zip.asset.json";
 const EXT8_ZIP_URL = ext8Asset.url;
 
 
@@ -341,11 +341,11 @@ function ExtensionsPage() {
                 className="gap-1.5 md:w-auto"
                 style={{ background: "linear-gradient(135deg,#00f2ff,#b347ff 55%,#ff2ecf)", color: "#04061a" }}
                 onClick={() => {
-                  downloadZip(EXT8_ZIP_URL, "MR-Sem-Limites-EXT8-v8.0.0.zip");
-                  toast.success("Download da EXT8 iniciado.");
+                  downloadZip(EXT8_ZIP_URL, "MR-Sem-Limites-EXT8-v8.0.1.zip");
+                  toast.success("Download da EXT8 v8.0.1 iniciado.");
                 }}
               >
-                <Download className="h-4 w-4" /> EXT8 v8.0.0 Download
+                <Download className="h-4 w-4" /> EXT8 v8.0.1 Download
               </Button>
               <Button variant="outline" className="gap-1.5 border-emerald-500/60 text-emerald-400 hover:bg-emerald-500/10 md:w-auto" onClick={openSupport}>
                 <MessageCircle className="h-4 w-4" /> Suporte

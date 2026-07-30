@@ -3,7 +3,7 @@
  * ----------------------------------
  * Camada ADITIVA. Não altera UI, prompts, motor ou fluxo da extensão.
  * Função única: garantir que TODA chamada de rede saia para o backend
- * oficial MR Sem Limites, nunca para o backend antigo (qyrondev).
+ * oficial MR Sem Limites, nunca para qualquer host herdado.
  *
  * Regras:
  *  1. Se algo aqui falhar, engolir o erro — a extensão nunca pode piorar.
@@ -17,17 +17,21 @@
     globalThis.__MR_EXT8_BACKEND_SHIM__ = true;
 
     var MR_HOST = "mrsemlimitesext.lovable.app";
-    var LEGACY = /(^|\/\/)([a-z0-9-]+\.)?qyrondev\.lovable\.app/i;
+    // Qualquer host *.lovable.app que não seja o oficial e sirva /api/public/
+    // é considerado herdado e reescrito para o backend MR Sem Limites.
+    var LEGACY = /^https?:\/\/([a-z0-9-]+\.)*lovable\.app\/api\/public\//i;
 
     function rewrite(url) {
       try {
         if (typeof url !== "string") return url;
+        if (url.indexOf(MR_HOST) !== -1) return url;
         if (!LEGACY.test(url)) return url;
-        return url.replace(/([a-z0-9-]+\.)?qyrondev\.lovable\.app/gi, MR_HOST);
+        return url.replace(/^(https?:\/\/)([a-z0-9-]+\.)*lovable\.app/i, "$1" + MR_HOST);
       } catch (_) {
         return url;
       }
     }
+
 
     // Host de contingência (build de preview sempre atualizado).
     var MR_FALLBACK = "project--44455b56-b609-45e7-8e53-9fd580b3ca9f-dev.lovable.app";
@@ -111,28 +115,31 @@
     } catch (_) {}
 
     // --- dashboard url persistido (usado como base pela extensão) -------
+    var DASH_KEY = "mrsemlimites_dashboard_url";
     try {
       if (typeof localStorage !== "undefined") {
-        var KEY = "qyron_dashboard_url";
-        var cur = localStorage.getItem(KEY);
-        if (!cur || LEGACY.test(cur)) {
-          localStorage.setItem(KEY, "https://" + MR_HOST);
+        var cur = localStorage.getItem(DASH_KEY);
+        if (!cur || String(cur).indexOf(MR_HOST) === -1) {
+          localStorage.setItem(DASH_KEY, "https://" + MR_HOST);
         }
       }
     } catch (_) {}
 
     try {
       if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.local) {
-        chrome.storage.local.get(["qyron_dashboard_url"], function (v) {
+        chrome.storage.local.get([DASH_KEY], function (v) {
           try {
-            var u = v && v.qyron_dashboard_url;
-            if (!u || LEGACY.test(String(u))) {
-              chrome.storage.local.set({ qyron_dashboard_url: "https://" + MR_HOST });
+            var u = v && v[DASH_KEY];
+            if (!u || String(u).indexOf(MR_HOST) === -1) {
+              var patch = {};
+              patch[DASH_KEY] = "https://" + MR_HOST;
+              chrome.storage.local.set(patch);
             }
           } catch (_) {}
         });
       }
     } catch (_) {}
+
 
     globalThis.MR_EXT8_BACKEND = { host: MR_HOST, base: "https://" + MR_HOST, rewrite: rewrite };
   } catch (_) {}

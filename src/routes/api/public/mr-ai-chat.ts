@@ -2,8 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 
 /**
  * EXT8 — chat de IA (streaming SSE compatível com OpenAI).
- * POST /api/public/qyron-ai-chat { model, messages }
- * Header opcional: X-Qyron-License
+ * POST /api/public/mr-ai-chat { model, messages }
+ * Header opcional: X-MrSemLimites-License
  *
  * Roda no Lovable AI Gateway do backend MR Sem Limites.
  * Isolado: nenhuma outra extensão consome esta rota.
@@ -12,7 +12,7 @@ import { createFileRoute } from "@tanstack/react-router";
 const CORS: Record<string, string> = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type, X-Qyron-License",
+  "Access-Control-Allow-Headers": "Content-Type, X-MrSemLimites-License",
   "Access-Control-Max-Age": "86400",
 };
 
@@ -37,7 +37,7 @@ function errStream(message: string): Response {
   });
 }
 
-export const Route = createFileRoute("/api/public/qyron-ai-chat")({
+export const Route = createFileRoute("/api/public/mr-ai-chat")({
   server: {
     handlers: {
       OPTIONS: async () => new Response(null, { status: 204, headers: CORS }),

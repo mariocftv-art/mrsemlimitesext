@@ -24,4 +24,4 @@ os bundles (`background.js`, `content.bundle.js`, `popup.bundle.js`).
 - `/api/public/license-activation`
 - `/api/public/license-heartbeat`
 - `/api/public/license-deactivate`
-- `/api/public/qyron-ai-chat`
+- `/api/public/mr-ai-chat`

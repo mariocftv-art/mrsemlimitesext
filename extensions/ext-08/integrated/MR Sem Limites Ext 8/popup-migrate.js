@@ -1,12 +1,12 @@
   (function(){
     const $ = id => document.getElementById(id);
-    const overlay = $('qyron-migrate-overlay');
+    const overlay = $('mrsemlimites-migrate-overlay');
     const log = m => { const el=$('qm-log'); el.textContent += (el.textContent?'\n':'') + m; el.scrollTop = el.scrollHeight; };
     const err = m => { const el=$('qm-log'); el.innerHTML += (el.textContent?'<br>':'') + '<span style="color:#f87171">✕ '+m+'</span>'; el.scrollTop = el.scrollHeight; };
     const ok = m => { const el=$('qm-log'); el.innerHTML += (el.textContent?'<br>':'') + '<span style="color:#4ade80">✓ '+m+'</span>'; el.scrollTop = el.scrollHeight; };
 
-    $('qyron-migrate-btn')?.addEventListener('click', () => { overlay.style.display='block'; $('qm-log').innerHTML=''; });
-    $('qyron-migrate-close')?.addEventListener('click', () => overlay.style.display='none');
+    $('mrsemlimites-migrate-btn')?.addEventListener('click', () => { overlay.style.display='block'; $('qm-log').innerHTML=''; });
+    $('mrsemlimites-migrate-close')?.addEventListener('click', () => overlay.style.display='none');
 
     function normalizeUrl(u){ return (u||'').trim().replace(/\/+$/,''); }
     function getCreds(){

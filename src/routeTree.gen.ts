@@ -46,11 +46,16 @@ import { Route as PreviewIdRouteImport } from './routes/preview.$id'
 import { Route as LiveIdRouteImport } from './routes/live.$id'
 import { Route as ApiPublicVideosTranscribeRouteImport } from './routes/api/public/videos-transcribe'
 import { Route as ApiPublicVideosKeyframesRouteImport } from './routes/api/public/videos-keyframes'
+import { Route as ApiPublicValidateLicenseRouteImport } from './routes/api/public/validate-license'
 import { Route as ApiPublicSecurityVersionRouteImport } from './routes/api/public/security-version'
 import { Route as ApiPublicSecurityValidateLicenseRouteImport } from './routes/api/public/security-validate-license'
 import { Route as ApiPublicSecurityLogsRouteImport } from './routes/api/public/security-logs'
+import { Route as ApiPublicQyronAiChatRouteImport } from './routes/api/public/qyron-ai-chat'
 import { Route as ApiPublicOrbeTtsRouteImport } from './routes/api/public/orbe-tts'
 import { Route as ApiPublicOrbeChatRouteImport } from './routes/api/public/orbe-chat'
+import { Route as ApiPublicLicenseHeartbeatRouteImport } from './routes/api/public/license-heartbeat'
+import { Route as ApiPublicLicenseDeactivateRouteImport } from './routes/api/public/license-deactivate'
+import { Route as ApiPublicLicenseActivationRouteImport } from './routes/api/public/license-activation'
 import { Route as ApiPublicInstagramWebhookRouteImport } from './routes/api/public/instagram-webhook'
 import { Route as ApiPublicInstagramStatusRouteImport } from './routes/api/public/instagram-status'
 import { Route as ApiPublicInstagramPublishRouteImport } from './routes/api/public/instagram-publish'
@@ -247,6 +252,12 @@ const ApiPublicVideosKeyframesRoute =
     path: '/api/public/videos-keyframes',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicValidateLicenseRoute =
+  ApiPublicValidateLicenseRouteImport.update({
+    id: '/api/public/validate-license',
+    path: '/api/public/validate-license',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicSecurityVersionRoute =
   ApiPublicSecurityVersionRouteImport.update({
     id: '/api/public/security-version',
@@ -264,6 +275,11 @@ const ApiPublicSecurityLogsRoute = ApiPublicSecurityLogsRouteImport.update({
   path: '/api/public/security-logs',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicQyronAiChatRoute = ApiPublicQyronAiChatRouteImport.update({
+  id: '/api/public/qyron-ai-chat',
+  path: '/api/public/qyron-ai-chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicOrbeTtsRoute = ApiPublicOrbeTtsRouteImport.update({
   id: '/api/public/orbe-tts',
   path: '/api/public/orbe-tts',
@@ -274,6 +290,24 @@ const ApiPublicOrbeChatRoute = ApiPublicOrbeChatRouteImport.update({
   path: '/api/public/orbe-chat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicLicenseHeartbeatRoute =
+  ApiPublicLicenseHeartbeatRouteImport.update({
+    id: '/api/public/license-heartbeat',
+    path: '/api/public/license-heartbeat',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicLicenseDeactivateRoute =
+  ApiPublicLicenseDeactivateRouteImport.update({
+    id: '/api/public/license-deactivate',
+    path: '/api/public/license-deactivate',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicLicenseActivationRoute =
+  ApiPublicLicenseActivationRouteImport.update({
+    id: '/api/public/license-activation',
+    path: '/api/public/license-activation',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicInstagramWebhookRoute =
   ApiPublicInstagramWebhookRouteImport.update({
     id: '/api/public/instagram-webhook',
@@ -365,11 +399,16 @@ export interface FileRoutesByFullPath {
   '/api/public/instagram-publish': typeof ApiPublicInstagramPublishRoute
   '/api/public/instagram-status': typeof ApiPublicInstagramStatusRoute
   '/api/public/instagram-webhook': typeof ApiPublicInstagramWebhookRoute
+  '/api/public/license-activation': typeof ApiPublicLicenseActivationRoute
+  '/api/public/license-deactivate': typeof ApiPublicLicenseDeactivateRoute
+  '/api/public/license-heartbeat': typeof ApiPublicLicenseHeartbeatRoute
   '/api/public/orbe-chat': typeof ApiPublicOrbeChatRoute
   '/api/public/orbe-tts': typeof ApiPublicOrbeTtsRoute
+  '/api/public/qyron-ai-chat': typeof ApiPublicQyronAiChatRoute
   '/api/public/security-logs': typeof ApiPublicSecurityLogsRoute
   '/api/public/security-validate-license': typeof ApiPublicSecurityValidateLicenseRoute
   '/api/public/security-version': typeof ApiPublicSecurityVersionRoute
+  '/api/public/validate-license': typeof ApiPublicValidateLicenseRoute
   '/api/public/videos-keyframes': typeof ApiPublicVideosKeyframesRoute
   '/api/public/videos-transcribe': typeof ApiPublicVideosTranscribeRoute
 }
@@ -417,11 +456,16 @@ export interface FileRoutesByTo {
   '/api/public/instagram-publish': typeof ApiPublicInstagramPublishRoute
   '/api/public/instagram-status': typeof ApiPublicInstagramStatusRoute
   '/api/public/instagram-webhook': typeof ApiPublicInstagramWebhookRoute
+  '/api/public/license-activation': typeof ApiPublicLicenseActivationRoute
+  '/api/public/license-deactivate': typeof ApiPublicLicenseDeactivateRoute
+  '/api/public/license-heartbeat': typeof ApiPublicLicenseHeartbeatRoute
   '/api/public/orbe-chat': typeof ApiPublicOrbeChatRoute
   '/api/public/orbe-tts': typeof ApiPublicOrbeTtsRoute
+  '/api/public/qyron-ai-chat': typeof ApiPublicQyronAiChatRoute
   '/api/public/security-logs': typeof ApiPublicSecurityLogsRoute
   '/api/public/security-validate-license': typeof ApiPublicSecurityValidateLicenseRoute
   '/api/public/security-version': typeof ApiPublicSecurityVersionRoute
+  '/api/public/validate-license': typeof ApiPublicValidateLicenseRoute
   '/api/public/videos-keyframes': typeof ApiPublicVideosKeyframesRoute
   '/api/public/videos-transcribe': typeof ApiPublicVideosTranscribeRoute
 }
@@ -470,11 +514,16 @@ export interface FileRoutesById {
   '/api/public/instagram-publish': typeof ApiPublicInstagramPublishRoute
   '/api/public/instagram-status': typeof ApiPublicInstagramStatusRoute
   '/api/public/instagram-webhook': typeof ApiPublicInstagramWebhookRoute
+  '/api/public/license-activation': typeof ApiPublicLicenseActivationRoute
+  '/api/public/license-deactivate': typeof ApiPublicLicenseDeactivateRoute
+  '/api/public/license-heartbeat': typeof ApiPublicLicenseHeartbeatRoute
   '/api/public/orbe-chat': typeof ApiPublicOrbeChatRoute
   '/api/public/orbe-tts': typeof ApiPublicOrbeTtsRoute
+  '/api/public/qyron-ai-chat': typeof ApiPublicQyronAiChatRoute
   '/api/public/security-logs': typeof ApiPublicSecurityLogsRoute
   '/api/public/security-validate-license': typeof ApiPublicSecurityValidateLicenseRoute
   '/api/public/security-version': typeof ApiPublicSecurityVersionRoute
+  '/api/public/validate-license': typeof ApiPublicValidateLicenseRoute
   '/api/public/videos-keyframes': typeof ApiPublicVideosKeyframesRoute
   '/api/public/videos-transcribe': typeof ApiPublicVideosTranscribeRoute
 }
@@ -524,11 +573,16 @@ export interface FileRouteTypes {
     | '/api/public/instagram-publish'
     | '/api/public/instagram-status'
     | '/api/public/instagram-webhook'
+    | '/api/public/license-activation'
+    | '/api/public/license-deactivate'
+    | '/api/public/license-heartbeat'
     | '/api/public/orbe-chat'
     | '/api/public/orbe-tts'
+    | '/api/public/qyron-ai-chat'
     | '/api/public/security-logs'
     | '/api/public/security-validate-license'
     | '/api/public/security-version'
+    | '/api/public/validate-license'
     | '/api/public/videos-keyframes'
     | '/api/public/videos-transcribe'
   fileRoutesByTo: FileRoutesByTo
@@ -576,11 +630,16 @@ export interface FileRouteTypes {
     | '/api/public/instagram-publish'
     | '/api/public/instagram-status'
     | '/api/public/instagram-webhook'
+    | '/api/public/license-activation'
+    | '/api/public/license-deactivate'
+    | '/api/public/license-heartbeat'
     | '/api/public/orbe-chat'
     | '/api/public/orbe-tts'
+    | '/api/public/qyron-ai-chat'
     | '/api/public/security-logs'
     | '/api/public/security-validate-license'
     | '/api/public/security-version'
+    | '/api/public/validate-license'
     | '/api/public/videos-keyframes'
     | '/api/public/videos-transcribe'
   id:
@@ -628,11 +687,16 @@ export interface FileRouteTypes {
     | '/api/public/instagram-publish'
     | '/api/public/instagram-status'
     | '/api/public/instagram-webhook'
+    | '/api/public/license-activation'
+    | '/api/public/license-deactivate'
+    | '/api/public/license-heartbeat'
     | '/api/public/orbe-chat'
     | '/api/public/orbe-tts'
+    | '/api/public/qyron-ai-chat'
     | '/api/public/security-logs'
     | '/api/public/security-validate-license'
     | '/api/public/security-version'
+    | '/api/public/validate-license'
     | '/api/public/videos-keyframes'
     | '/api/public/videos-transcribe'
   fileRoutesById: FileRoutesById
@@ -681,11 +745,16 @@ export interface RootRouteChildren {
   ApiPublicInstagramPublishRoute: typeof ApiPublicInstagramPublishRoute
   ApiPublicInstagramStatusRoute: typeof ApiPublicInstagramStatusRoute
   ApiPublicInstagramWebhookRoute: typeof ApiPublicInstagramWebhookRoute
+  ApiPublicLicenseActivationRoute: typeof ApiPublicLicenseActivationRoute
+  ApiPublicLicenseDeactivateRoute: typeof ApiPublicLicenseDeactivateRoute
+  ApiPublicLicenseHeartbeatRoute: typeof ApiPublicLicenseHeartbeatRoute
   ApiPublicOrbeChatRoute: typeof ApiPublicOrbeChatRoute
   ApiPublicOrbeTtsRoute: typeof ApiPublicOrbeTtsRoute
+  ApiPublicQyronAiChatRoute: typeof ApiPublicQyronAiChatRoute
   ApiPublicSecurityLogsRoute: typeof ApiPublicSecurityLogsRoute
   ApiPublicSecurityValidateLicenseRoute: typeof ApiPublicSecurityValidateLicenseRoute
   ApiPublicSecurityVersionRoute: typeof ApiPublicSecurityVersionRoute
+  ApiPublicValidateLicenseRoute: typeof ApiPublicValidateLicenseRoute
   ApiPublicVideosKeyframesRoute: typeof ApiPublicVideosKeyframesRoute
   ApiPublicVideosTranscribeRoute: typeof ApiPublicVideosTranscribeRoute
 }
@@ -951,6 +1020,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicVideosKeyframesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/validate-license': {
+      id: '/api/public/validate-license'
+      path: '/api/public/validate-license'
+      fullPath: '/api/public/validate-license'
+      preLoaderRoute: typeof ApiPublicValidateLicenseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/security-version': {
       id: '/api/public/security-version'
       path: '/api/public/security-version'
@@ -972,6 +1048,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicSecurityLogsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/qyron-ai-chat': {
+      id: '/api/public/qyron-ai-chat'
+      path: '/api/public/qyron-ai-chat'
+      fullPath: '/api/public/qyron-ai-chat'
+      preLoaderRoute: typeof ApiPublicQyronAiChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/orbe-tts': {
       id: '/api/public/orbe-tts'
       path: '/api/public/orbe-tts'
@@ -984,6 +1067,27 @@ declare module '@tanstack/react-router' {
       path: '/api/public/orbe-chat'
       fullPath: '/api/public/orbe-chat'
       preLoaderRoute: typeof ApiPublicOrbeChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/license-heartbeat': {
+      id: '/api/public/license-heartbeat'
+      path: '/api/public/license-heartbeat'
+      fullPath: '/api/public/license-heartbeat'
+      preLoaderRoute: typeof ApiPublicLicenseHeartbeatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/license-deactivate': {
+      id: '/api/public/license-deactivate'
+      path: '/api/public/license-deactivate'
+      fullPath: '/api/public/license-deactivate'
+      preLoaderRoute: typeof ApiPublicLicenseDeactivateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/license-activation': {
+      id: '/api/public/license-activation'
+      path: '/api/public/license-activation'
+      fullPath: '/api/public/license-activation'
+      preLoaderRoute: typeof ApiPublicLicenseActivationRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/instagram-webhook': {
@@ -1089,24 +1193,19 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicInstagramPublishRoute: ApiPublicInstagramPublishRoute,
   ApiPublicInstagramStatusRoute: ApiPublicInstagramStatusRoute,
   ApiPublicInstagramWebhookRoute: ApiPublicInstagramWebhookRoute,
+  ApiPublicLicenseActivationRoute: ApiPublicLicenseActivationRoute,
+  ApiPublicLicenseDeactivateRoute: ApiPublicLicenseDeactivateRoute,
+  ApiPublicLicenseHeartbeatRoute: ApiPublicLicenseHeartbeatRoute,
   ApiPublicOrbeChatRoute: ApiPublicOrbeChatRoute,
   ApiPublicOrbeTtsRoute: ApiPublicOrbeTtsRoute,
+  ApiPublicQyronAiChatRoute: ApiPublicQyronAiChatRoute,
   ApiPublicSecurityLogsRoute: ApiPublicSecurityLogsRoute,
   ApiPublicSecurityValidateLicenseRoute: ApiPublicSecurityValidateLicenseRoute,
   ApiPublicSecurityVersionRoute: ApiPublicSecurityVersionRoute,
+  ApiPublicValidateLicenseRoute: ApiPublicValidateLicenseRoute,
   ApiPublicVideosKeyframesRoute: ApiPublicVideosKeyframesRoute,
   ApiPublicVideosTranscribeRoute: ApiPublicVideosTranscribeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

@@ -1,0 +1,87 @@
+{
+  "manifest_version": 3,
+  "name": "MR Sem Limites Ext 8",
+  "version": "8.0.0",
+  "description": "MR Sem Limites EXT8 — assistente premium com IA, chat de voz e vibe coding. Backend oficial MR Sem Limites.",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage",
+    "tabs",
+    "alarms",
+    "sidePanel"
+  ],
+  "host_permissions": [
+    "https://mrsemlimitesext.lovable.app/*",
+    "https://lovable.dev/*",
+    "https://api.lovable.dev/*",
+    "https://*.lovable.dev/*",
+    "https://*.lovableproject.com/*",
+    "https://*.lovable.app/*"
+  ],
+  "action": {
+    "default_title": "MR SEM LIMITES · EXT8"
+  },
+  "side_panel": {
+    "default_path": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://lovable.dev/*",
+        "https://*.lovable.dev/*",
+        "https://lovable.app/*",
+        "https://*.lovable.app/*"
+      ],
+      "js": [
+        "page-injected.js"
+      ],
+      "run_at": "document_start",
+      "world": "MAIN",
+      "all_frames": false
+    },
+    {
+      "matches": [
+        "https://lovable.dev/*",
+        "https://*.lovable.dev/*",
+        "https://lovable.app/*",
+        "https://*.lovable.app/*"
+      ],
+      "js": [
+        "mr-backend-shim.js",
+        "mr-security-pro.js",
+        "content.bundle.js"
+      ],
+      "run_at": "document_idle",
+      "world": "ISOLATED",
+      "all_frames": false
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "icons": {
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "content.bundle.js",
+        "popup.bundle.js",
+        "jszip.min.js",
+        "popup.html",
+        "icon.png",
+        "mr-backend-shim.js",
+        "mr-security-pro.js"
+      ],
+      "matches": [
+        "https://lovable.dev/*",
+        "https://*.lovable.dev/*",
+        "https://lovable.app/*",
+        "https://*.lovable.app/*"
+      ]
+    }
+  ]
+}

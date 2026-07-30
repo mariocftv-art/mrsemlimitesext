@@ -39,7 +39,9 @@
     function looksLikeHtml(res) {
       try {
         var ct = res && res.headers && res.headers.get ? res.headers.get("content-type") || "" : "";
-        return ct.indexOf("application/json") === -1;
+        if (ct.indexOf("application/json") !== -1) return false;
+        if (ct.indexOf("text/event-stream") !== -1) return false;
+        return true;
       } catch (_) { return false; }
     }
 

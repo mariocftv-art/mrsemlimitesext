@@ -99,29 +99,29 @@
     }
 
     /* ── Banner ─────────────────────────────────────────────── */
-    .qyron-banner {
+    .mrsemlimites-banner {
       flex-shrink: 0; width: 100%; height: 110px;
       overflow: hidden; position: relative;
       border-bottom: 1px solid var(--border-accent);
     }
-    .qyron-banner img {
+    .mrsemlimites-banner img {
       width: 100%; height: 100%;
       object-fit: cover;
       filter: brightness(0.85) contrast(1.15) saturate(1.2);
       transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
     }
-    .qyron-banner::after {
+    .mrsemlimites-banner::after {
       content: ''; position: absolute; inset: 0;
       background:
         linear-gradient(to bottom, transparent 40%, var(--bg-main) 100%),
         linear-gradient(90deg, rgba(125,211,252,0.08), transparent 50%, rgba(255,46,207,0.08));
     }
-    .qyron-banner::before {
+    .mrsemlimites-banner::before {
       content: ''; position: absolute; inset: 0; z-index: 2;
       background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(125,211,252,0.025) 3px, rgba(125,211,252,0.025) 4px);
       pointer-events: none;
     }
-    .qyron-banner:hover img { transform: scale(1.06); }
+    .mrsemlimites-banner:hover img { transform: scale(1.06); }
 
     /* ── Aviso não-Lovable ─────────────────────────────────── */
     .non-lovable-warning {
@@ -785,7 +785,7 @@
       <button class="tab" data-tab="library" title="Biblioteca"><span class="tab-ico">❒</span><span class="tab-label">Biblioteca</span></button>
       <button class="tab" data-tab="advanced-ai" title="IA Neural"><span class="tab-ico">⌬</span><span class="tab-label">IA Neural</span></button>
       <div style="width:28px;height:1px;background:linear-gradient(90deg,transparent,rgba(125,211,252,.35),transparent);margin:4px 0"></div>
-      <button class="tab dock-action" id="qyron-migrate-btn" title="Migrar para Supabase (Premium)" type="button" style="position:relative">
+      <button class="tab dock-action" id="mrsemlimites-migrate-btn" title="Migrar para Supabase (Premium)" type="button" style="position:relative">
         <span class="tab-ico" aria-hidden="true">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M4 7h16"/><path d="M4 12h10"/><path d="M4 17h16"/><path d="m17 9 3 3-3 3"/>
@@ -811,7 +811,7 @@
     <div class="content-col">
 
     <!-- Futuristic Banner -->
-    <div class="qyron-banner">
+    <div class="mrsemlimites-banner">
       <img src="logo-mr8.png" alt="MR SEM LIMITES ESPECIAL" />
     </div>
 
@@ -832,7 +832,7 @@
 
   <!-- ══ CHAT ══════════════════════════════════════════════════════════════ -->
   <div class="panel active" id="panel-chat" style="position:relative">
-    <!-- QYRON — Interceptar chat do Lovable -->
+    <!-- MRSEMLIMITES — Interceptar chat do Lovable -->
     <div id="qy-intercept-bar" style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;margin:10px 12px 0;border:1px solid rgba(0,212,255,0.35);border-radius:14px;background:linear-gradient(135deg,rgba(0,212,255,0.08),rgba(2,132,199,0.06))">
       <div style="display:flex;flex-direction:column;gap:2px">
         <div style="font-size:12px;font-weight:800;color:#7dd3fc;letter-spacing:0.14em;text-transform:uppercase">Interceptar Chat</div>
@@ -1111,14 +1111,14 @@
   <script src="popup.bundle.js"></script>
 
   <!-- ══ MIGRATION ASSISTANT (Premium) ═══════════════════════════════════════ -->
-  <div id="qyron-migrate-overlay" style="display:none;position:fixed;inset:0;background:rgba(3,10,20,0.92);backdrop-filter:blur(14px);z-index:10000;padding:24px;overflow-y:auto;font-family:'Space Grotesk',sans-serif;color:#fafafa">
+  <div id="mrsemlimites-migrate-overlay" style="display:none;position:fixed;inset:0;background:rgba(3,10,20,0.92);backdrop-filter:blur(14px);z-index:10000;padding:24px;overflow-y:auto;font-family:'Space Grotesk',sans-serif;color:#fafafa">
     <div style="max-width:640px;margin:0 auto;background:linear-gradient(160deg,#112338,#06121f);border:1px solid rgba(125,211,252,0.35);border-radius:18px;padding:26px;box-shadow:0 20px 60px rgba(0,0,0,0.6),0 0 40px rgba(56,189,248,0.15)">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
         <div>
           <div style="font-size:10px;letter-spacing:0.3em;color:#fbbf24;font-weight:800">★ PREMIUM</div>
           <h2 style="font-size:18px;font-weight:700;letter-spacing:0.15em;background:linear-gradient(135deg,#bae6fd,#38bdf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-top:4px">MIGRAÇÃO SUPABASE</h2>
         </div>
-        <button id="qyron-migrate-close" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#fafafa;width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:16px">✕</button>
+        <button id="mrsemlimites-migrate-close" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#fafafa;width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:16px">✕</button>
       </div>
 
       <p style="font-size:12px;color:#9a9aa3;line-height:1.6;margin-bottom:18px">Migra automaticamente o banco (tabelas + dados) e usuários do seu projeto exportado para uma conta Supabase própria. <b style="color:#7dd3fc">Você deixa de ficar refém da hospedagem atual.</b></p>

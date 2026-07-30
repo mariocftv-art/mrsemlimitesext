@@ -52,6 +52,7 @@ import { Route as ApiPublicSecurityValidateLicenseRouteImport } from './routes/a
 import { Route as ApiPublicSecurityLogsRouteImport } from './routes/api/public/security-logs'
 import { Route as ApiPublicOrbeTtsRouteImport } from './routes/api/public/orbe-tts'
 import { Route as ApiPublicOrbeChatRouteImport } from './routes/api/public/orbe-chat'
+import { Route as ApiPublicLicenseHeartbeatRouteImport } from './routes/api/public/license-heartbeat'
 import { Route as ApiPublicLicenseActivationRouteImport } from './routes/api/public/license-activation'
 import { Route as ApiPublicInstagramWebhookRouteImport } from './routes/api/public/instagram-webhook'
 import { Route as ApiPublicInstagramStatusRouteImport } from './routes/api/public/instagram-status'
@@ -282,6 +283,12 @@ const ApiPublicOrbeChatRoute = ApiPublicOrbeChatRouteImport.update({
   path: '/api/public/orbe-chat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicLicenseHeartbeatRoute =
+  ApiPublicLicenseHeartbeatRouteImport.update({
+    id: '/api/public/license-heartbeat',
+    path: '/api/public/license-heartbeat',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicLicenseActivationRoute =
   ApiPublicLicenseActivationRouteImport.update({
     id: '/api/public/license-activation',
@@ -380,6 +387,7 @@ export interface FileRoutesByFullPath {
   '/api/public/instagram-status': typeof ApiPublicInstagramStatusRoute
   '/api/public/instagram-webhook': typeof ApiPublicInstagramWebhookRoute
   '/api/public/license-activation': typeof ApiPublicLicenseActivationRoute
+  '/api/public/license-heartbeat': typeof ApiPublicLicenseHeartbeatRoute
   '/api/public/orbe-chat': typeof ApiPublicOrbeChatRoute
   '/api/public/orbe-tts': typeof ApiPublicOrbeTtsRoute
   '/api/public/security-logs': typeof ApiPublicSecurityLogsRoute
@@ -434,6 +442,7 @@ export interface FileRoutesByTo {
   '/api/public/instagram-status': typeof ApiPublicInstagramStatusRoute
   '/api/public/instagram-webhook': typeof ApiPublicInstagramWebhookRoute
   '/api/public/license-activation': typeof ApiPublicLicenseActivationRoute
+  '/api/public/license-heartbeat': typeof ApiPublicLicenseHeartbeatRoute
   '/api/public/orbe-chat': typeof ApiPublicOrbeChatRoute
   '/api/public/orbe-tts': typeof ApiPublicOrbeTtsRoute
   '/api/public/security-logs': typeof ApiPublicSecurityLogsRoute
@@ -489,6 +498,7 @@ export interface FileRoutesById {
   '/api/public/instagram-status': typeof ApiPublicInstagramStatusRoute
   '/api/public/instagram-webhook': typeof ApiPublicInstagramWebhookRoute
   '/api/public/license-activation': typeof ApiPublicLicenseActivationRoute
+  '/api/public/license-heartbeat': typeof ApiPublicLicenseHeartbeatRoute
   '/api/public/orbe-chat': typeof ApiPublicOrbeChatRoute
   '/api/public/orbe-tts': typeof ApiPublicOrbeTtsRoute
   '/api/public/security-logs': typeof ApiPublicSecurityLogsRoute
@@ -545,6 +555,7 @@ export interface FileRouteTypes {
     | '/api/public/instagram-status'
     | '/api/public/instagram-webhook'
     | '/api/public/license-activation'
+    | '/api/public/license-heartbeat'
     | '/api/public/orbe-chat'
     | '/api/public/orbe-tts'
     | '/api/public/security-logs'
@@ -599,6 +610,7 @@ export interface FileRouteTypes {
     | '/api/public/instagram-status'
     | '/api/public/instagram-webhook'
     | '/api/public/license-activation'
+    | '/api/public/license-heartbeat'
     | '/api/public/orbe-chat'
     | '/api/public/orbe-tts'
     | '/api/public/security-logs'
@@ -653,6 +665,7 @@ export interface FileRouteTypes {
     | '/api/public/instagram-status'
     | '/api/public/instagram-webhook'
     | '/api/public/license-activation'
+    | '/api/public/license-heartbeat'
     | '/api/public/orbe-chat'
     | '/api/public/orbe-tts'
     | '/api/public/security-logs'
@@ -708,6 +721,7 @@ export interface RootRouteChildren {
   ApiPublicInstagramStatusRoute: typeof ApiPublicInstagramStatusRoute
   ApiPublicInstagramWebhookRoute: typeof ApiPublicInstagramWebhookRoute
   ApiPublicLicenseActivationRoute: typeof ApiPublicLicenseActivationRoute
+  ApiPublicLicenseHeartbeatRoute: typeof ApiPublicLicenseHeartbeatRoute
   ApiPublicOrbeChatRoute: typeof ApiPublicOrbeChatRoute
   ApiPublicOrbeTtsRoute: typeof ApiPublicOrbeTtsRoute
   ApiPublicSecurityLogsRoute: typeof ApiPublicSecurityLogsRoute
@@ -1021,6 +1035,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicOrbeChatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/license-heartbeat': {
+      id: '/api/public/license-heartbeat'
+      path: '/api/public/license-heartbeat'
+      fullPath: '/api/public/license-heartbeat'
+      preLoaderRoute: typeof ApiPublicLicenseHeartbeatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/license-activation': {
       id: '/api/public/license-activation'
       path: '/api/public/license-activation'
@@ -1132,6 +1153,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicInstagramStatusRoute: ApiPublicInstagramStatusRoute,
   ApiPublicInstagramWebhookRoute: ApiPublicInstagramWebhookRoute,
   ApiPublicLicenseActivationRoute: ApiPublicLicenseActivationRoute,
+  ApiPublicLicenseHeartbeatRoute: ApiPublicLicenseHeartbeatRoute,
   ApiPublicOrbeChatRoute: ApiPublicOrbeChatRoute,
   ApiPublicOrbeTtsRoute: ApiPublicOrbeTtsRoute,
   ApiPublicSecurityLogsRoute: ApiPublicSecurityLogsRoute,

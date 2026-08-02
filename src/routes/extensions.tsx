@@ -105,6 +105,8 @@ import ext7Asset from "@/assets/ext7-v7.3.1.zip.asset.json";
 const EXT7_ZIP_URL = ext7Asset.url;
 import ext8Asset from "@/assets/ext8-v8.0.2.zip.asset.json";
 const EXT8_ZIP_URL = ext8Asset.url;
+import ext9Asset from "@/assets/ext9-mrturbo-modificada.zip.asset.json";
+const EXT9_ZIP_URL = ext9Asset.url;
 
 
 type Filter = "all" | ExtensionStatus;
@@ -353,6 +355,33 @@ function ExtensionsPage() {
             </div>
           </CardContent>
         </Card>
+      <Card className="glass mb-4 border-amber-400/50">
+          <CardContent className="flex flex-col gap-3 p-4 md:flex-row md:items-center md:justify-between">
+            <div className="space-y-1">
+              <p className="text-sm font-semibold">◆ EXT9 — MR Turbo Modificada</p>
+              <p className="text-xs text-muted-foreground">
+                Versão modificada do MR Turbo GT enviada por você, <b>sem nenhuma alteração</b> — arquivada como EXT9 e disponível para download direto. Isolada das demais extensões.
+              </p>
+            </div>
+            <div className="flex flex-col gap-2 md:flex-row md:w-auto">
+              <Button
+                className="gap-1.5 md:w-auto"
+                style={{ background: "linear-gradient(135deg,#f5dc8c,#c9a227)", color: "#1a1206" }}
+                onClick={() => {
+                  downloadZip(EXT9_ZIP_URL, "MR-Sem-Limites-EXT9-MRTurbo-Modificada.zip");
+                  toast.success("Download da EXT9 (MR Turbo Modificada) iniciado.");
+                }}
+              >
+                <Download className="h-4 w-4" /> EXT9 MR Turbo Modificada
+              </Button>
+              <Button variant="outline" className="gap-1.5 border-emerald-500/60 text-emerald-400 hover:bg-emerald-500/10 md:w-auto" onClick={openSupport}>
+                <MessageCircle className="h-4 w-4" /> Suporte
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+
 
 
 

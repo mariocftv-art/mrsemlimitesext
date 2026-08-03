@@ -345,11 +345,11 @@ function ExtensionsPage() {
                 className="gap-1.5 md:w-auto"
                 style={{ background: "linear-gradient(135deg,#f5dc8c,#d4a94a 45%,#8f6b1e)", color: "#141008" }}
                 onClick={() => {
-                  downloadZip(EXT_FINAL7_ZIP_URL, "MR-Sem-Limites-FINAL7-ULTRA-v7.9.0.zip");
+                  downloadZip(EXT_FINAL7_ZIP_URL, "MR-Sem-Limites-FINAL7-ULTRA-v7.9.1.zip");
                   toast.success("Download da EXT FINAL 7 ULTRA VELOZ iniciado.");
                 }}
               >
-                <Download className="h-4 w-4" /> FINAL 7 ULTRA v7.9.0 Download
+                <Download className="h-4 w-4" /> FINAL 7 ULTRA v7.9.1 Download
               </Button>
               <Button variant="outline" className="gap-1.5 border-emerald-500/60 text-emerald-400 hover:bg-emerald-500/10 md:w-auto" onClick={openSupport}>
                 <MessageCircle className="h-4 w-4" /> Suporte

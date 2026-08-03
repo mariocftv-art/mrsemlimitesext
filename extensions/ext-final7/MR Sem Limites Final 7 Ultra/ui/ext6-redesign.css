@@ -1,0 +1,415 @@
+/* ==========================================================================
+   MR Sem Limites 6 — HOLO GRID redesign
+   Camada puramente visual. Não altera lógica JS.
+   Estética: futurista holográfica — cyan/violet/magenta neon + glass + grid.
+   Totalmente distinta da EXT5 (Gold & Black).
+   ========================================================================== */
+
+:root {
+  --mr6-bg-0: #04061a;
+  --mr6-bg-1: #080b26;
+  --mr6-bg-2: #0d1240;
+
+  --mr6-glass: rgba(14, 20, 55, 0.55);
+  --mr6-glass-strong: rgba(14, 20, 55, 0.82);
+  --mr6-border: rgba(120, 200, 255, 0.18);
+  --mr6-border-strong: rgba(120, 200, 255, 0.42);
+
+  --mr6-cyan: #22d3ee;
+  --mr6-cyan-glow: rgba(34, 211, 238, 0.55);
+  --mr6-violet: #8b5cf6;
+  --mr6-violet-glow: rgba(139, 92, 246, 0.55);
+  --mr6-magenta: #ec4899;
+  --mr6-magenta-glow: rgba(236, 72, 153, 0.55);
+  --mr6-lime: #a3e635;
+
+  --mr6-text: #e6f2ff;
+  --mr6-text-sub: #96a7c9;
+  --mr6-radius: 14px;
+  --mr6-radius-lg: 20px;
+
+  --mr6-gradient: linear-gradient(135deg, var(--mr6-cyan), var(--mr6-violet) 55%, var(--mr6-magenta));
+  --mr6-gradient-soft: linear-gradient(135deg, rgba(34,211,238,.18), rgba(139,92,246,.18) 55%, rgba(236,72,153,.18));
+  --mr6-shadow-glow: 0 0 32px rgba(139, 92, 246, 0.35), 0 0 12px rgba(34, 211, 238, 0.25);
+}
+
+/* ---- Fundo base ---- */
+html, body {
+  background: radial-gradient(120% 100% at 20% 0%, #0d1240 0%, #04061a 60%) !important;
+  color: var(--mr6-text) !important;
+}
+
+/* Grade holográfica */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(34,211,238,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(139,92,246,0.06) 1px, transparent 1px);
+  background-size: 48px 48px, 48px 48px;
+  mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, #000 40%, transparent 90%);
+  animation: mr6-grid-drift 18s linear infinite;
+}
+
+/* Halos de cor */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(600px 400px at 8% 10%, rgba(34,211,238,0.22), transparent 65%),
+    radial-gradient(600px 400px at 92% 25%, rgba(139,92,246,0.22), transparent 65%),
+    radial-gradient(700px 500px at 50% 100%, rgba(236,72,153,0.18), transparent 65%);
+  animation: mr6-halo 12s ease-in-out infinite alternate;
+}
+
+@keyframes mr6-grid-drift {
+  0%   { background-position: 0 0, 0 0; }
+  100% { background-position: 48px 48px, 48px 48px; }
+}
+@keyframes mr6-halo {
+  0%   { opacity: .7; transform: translate3d(0,0,0); }
+  100% { opacity: 1;  transform: translate3d(-8px,6px,0); }
+}
+
+/* ---- Body / layout base ---- */
+.mr-body { position: relative; z-index: 1; }
+
+/* ---- Sidebar de abas ---- */
+.mr-tabs {
+  background: var(--mr6-glass) !important;
+  border-right: 1px solid var(--mr6-border) !important;
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+}
+
+.mr-tab {
+  color: var(--mr6-text-sub) !important;
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  border-radius: 12px !important;
+  margin: 3px 6px !important;
+  transition: all .25s ease !important;
+  font-size: 10px !important;
+  letter-spacing: .3px !important;
+  position: relative;
+}
+.mr-tab:hover {
+  color: var(--mr6-text) !important;
+  background: linear-gradient(135deg, rgba(34,211,238,.08), rgba(139,92,246,.08)) !important;
+  border-color: var(--mr6-border) !important;
+  transform: translateX(2px);
+}
+.mr-tab.active {
+  color: #fff !important;
+  background: var(--mr6-gradient-soft) !important;
+  border-color: var(--mr6-border-strong) !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06), 0 0 18px rgba(139,92,246,.22);
+}
+.mr-tab.active::before {
+  content: "";
+  position: absolute;
+  left: -6px; top: 20%; bottom: 20%;
+  width: 3px;
+  border-radius: 2px;
+  background: var(--mr6-gradient);
+  box-shadow: 0 0 10px var(--mr6-violet-glow);
+}
+
+/* Aba Skills — pulso holográfico */
+.mr6-tab-skills.active,
+.mr6-tab-skills:hover {
+  background: linear-gradient(135deg, rgba(34,211,238,.22), rgba(236,72,153,.22)) !important;
+}
+
+/* ---- Painéis ---- */
+.mr-panel {
+  background: transparent !important;
+}
+.mr-panel-scroll {
+  background: transparent !important;
+}
+
+/* Cards genéricos existentes recebem tratamento glass */
+.mr-card,
+.mr-home-hero,
+.mr-license-line,
+[data-mrpanel] .mr-section-title + .mr-grid > * {
+  background: var(--mr6-glass) !important;
+  border: 1px solid var(--mr6-border) !important;
+  border-radius: var(--mr6-radius) !important;
+  backdrop-filter: blur(10px) saturate(130%);
+  -webkit-backdrop-filter: blur(10px) saturate(130%);
+  transition: all .25s ease;
+}
+.mr-card:hover {
+  border-color: var(--mr6-border-strong) !important;
+  transform: translateY(-2px);
+  box-shadow: var(--mr6-shadow-glow);
+}
+
+.mr-card-icon {
+  background: var(--mr6-gradient-soft) !important;
+  color: var(--mr6-cyan) !important;
+  border: 1px solid var(--mr6-border) !important;
+}
+
+.mr-section-title {
+  color: var(--mr6-text) !important;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+  font-size: 11px !important;
+  opacity: .85;
+  position: relative;
+  padding-left: 10px;
+}
+.mr-section-title::before {
+  content:"";
+  position:absolute; left:0; top:50%; transform:translateY(-50%);
+  width:3px; height:14px; border-radius:2px;
+  background: var(--mr6-gradient);
+  box-shadow: 0 0 8px var(--mr6-violet-glow);
+}
+
+.mr-pill {
+  background: var(--mr6-gradient-soft) !important;
+  color: var(--mr6-cyan) !important;
+  border: 1px solid var(--mr6-border-strong) !important;
+  font-weight: 700;
+  letter-spacing: .3px;
+}
+
+/* ---- Chat / textarea highlight ---- */
+textarea#message,
+textarea:focus,
+input[type="text"]:focus,
+input[type="search"]:focus {
+  outline: none !important;
+  border-color: rgba(34,211,238,.6) !important;
+  box-shadow: 0 0 0 3px rgba(34,211,238,.15), 0 0 24px rgba(139,92,246,.18) !important;
+}
+
+/* ==========================================================================
+   Skills panel — EXT6
+   ========================================================================== */
+.mr6-skills-hero {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  margin-bottom: 14px;
+  background: var(--mr6-glass-strong);
+  border: 1px solid var(--mr6-border-strong);
+  border-radius: var(--mr6-radius-lg);
+  backdrop-filter: blur(14px) saturate(140%);
+  position: relative;
+  overflow: hidden;
+}
+.mr6-skills-hero::before {
+  content:"";
+  position:absolute; inset:-40%;
+  background: conic-gradient(from 0deg, transparent 0deg, rgba(34,211,238,.18) 60deg, transparent 120deg, rgba(236,72,153,.18) 180deg, transparent 240deg, rgba(139,92,246,.18) 300deg, transparent 360deg);
+  animation: mr6-hero-rotate 14s linear infinite;
+  pointer-events:none;
+}
+@keyframes mr6-hero-rotate { to { transform: rotate(360deg); } }
+
+.mr6-skills-hero-icon {
+  position: relative;
+  width: 52px; height: 52px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px;
+  border-radius: 14px;
+  background: var(--mr6-gradient);
+  color: #04061a;
+  box-shadow: var(--mr6-shadow-glow);
+  flex-shrink: 0;
+}
+.mr6-skills-title {
+  position: relative;
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -.3px;
+  background: linear-gradient(135deg, #fff, #96e6ff 50%, #d8b4fe);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.mr6-skills-sub {
+  position: relative;
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: var(--mr6-text-sub);
+  line-height: 1.4;
+}
+
+.mr6-skills-search-wrap {
+  margin-bottom: 12px;
+}
+.mr6-skills-search {
+  width: 100%;
+  padding: 12px 14px;
+  background: var(--mr6-glass);
+  border: 1px solid var(--mr6-border);
+  border-radius: var(--mr6-radius);
+  color: var(--mr6-text);
+  font-size: 13px;
+  font-family: inherit;
+  backdrop-filter: blur(10px);
+}
+.mr6-skills-search::placeholder { color: var(--mr6-text-sub); }
+
+.mr6-skills-cats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+.mr6-skills-cat {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  background: var(--mr6-glass);
+  border: 1px solid var(--mr6-border);
+  border-radius: 999px;
+  color: var(--mr6-text-sub);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .3px;
+  cursor: pointer;
+  transition: all .2s ease;
+}
+.mr6-skills-cat:hover {
+  color: var(--mr6-text);
+  border-color: var(--mr6-border-strong);
+  transform: translateY(-1px);
+}
+.mr6-skills-cat.active {
+  background: var(--mr6-gradient);
+  color: #04061a;
+  border-color: transparent;
+  box-shadow: 0 4px 16px rgba(139,92,246,.35);
+}
+.mr6-skills-cat span { font-size: 12px; }
+
+.mr6-skills-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+.mr6-skill-card {
+  display: grid;
+  grid-template-columns: 44px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px;
+  background: var(--mr6-glass);
+  border: 1px solid var(--mr6-border);
+  border-radius: var(--mr6-radius);
+  color: var(--mr6-text);
+  text-align: left;
+  cursor: pointer;
+  transition: all .22s ease;
+  backdrop-filter: blur(10px) saturate(130%);
+  position: relative;
+  overflow: hidden;
+}
+.mr6-skill-card::before {
+  content:"";
+  position:absolute; left:0; top:0; bottom:0;
+  width: 3px;
+  background: var(--mr6-gradient);
+  opacity: 0;
+  transition: opacity .22s ease;
+}
+.mr6-skill-card:hover {
+  border-color: var(--mr6-border-strong);
+  transform: translateX(3px);
+  box-shadow: 0 8px 24px rgba(4,6,26,.5), 0 0 0 1px rgba(34,211,238,.18);
+  background: linear-gradient(135deg, rgba(34,211,238,.06), rgba(139,92,246,.06));
+}
+.mr6-skill-card:hover::before { opacity: 1; }
+
+.mr6-skill-icon {
+  width: 44px; height: 44px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  border-radius: 12px;
+  background: var(--mr6-gradient-soft);
+  border: 1px solid var(--mr6-border);
+}
+.mr6-skill-body { min-width: 0; }
+.mr6-skill-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--mr6-text);
+  margin-bottom: 2px;
+  letter-spacing: .1px;
+}
+.mr6-skill-desc {
+  font-size: 11.5px;
+  color: var(--mr6-text-sub);
+  line-height: 1.35;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.mr6-skill-arrow {
+  font-size: 16px;
+  color: var(--mr6-cyan);
+  opacity: .6;
+  transition: all .22s ease;
+}
+.mr6-skill-card:hover .mr6-skill-arrow {
+  opacity: 1;
+  transform: translateX(3px);
+  color: var(--mr6-magenta);
+}
+
+.mr6-skills-empty {
+  padding: 30px 14px;
+  text-align: center;
+  color: var(--mr6-text-sub);
+  font-size: 13px;
+  background: var(--mr6-glass);
+  border: 1px dashed var(--mr6-border);
+  border-radius: var(--mr6-radius);
+}
+.mr6-skills-foot {
+  margin-top: 18px;
+  text-align: center;
+  font-size: 10.5px;
+  color: var(--mr6-text-sub);
+  opacity: .75;
+  letter-spacing: .3px;
+}
+
+/* ---- Botão update + WhatsApp mantêm identidade, mas ajustam glow ---- */
+#mrUpdateBtn {
+  background: var(--mr6-gradient) !important;
+  color: #04061a !important;
+  box-shadow: 0 0 18px var(--mr6-violet-glow) !important;
+}
+#mrUpdateBadge { color: var(--mr6-cyan) !important; }
+
+/* Ajustes finos para melhor legibilidade sobre fundo escuro */
+.mr-panel h1, .mr-panel h2, .mr-panel h3, .mr-panel h4 { color: var(--mr6-text) !important; }
+.mr-panel p, .mr-panel label, .mr-panel span:not(.mr-pill) { color: var(--mr6-text) !important; }
+
+/* Botões primários genéricos herdam gradiente holográfico */
+.mr-panel button.primary,
+.mr-panel .btn-primary {
+  background: var(--mr6-gradient) !important;
+  color: #04061a !important;
+  border: 0 !important;
+  box-shadow: 0 6px 20px rgba(139,92,246,.35) !important;
+}

@@ -307,6 +307,38 @@
       #sendBtn{width:32px;height:32px;min-width:32px}
       #message{padding:6px 8px;font-size:11px}
     }
+
+    /* ===== EXT7 LAYOUT PORT — rail lateral dourada (somente visual) ===== */
+    .mr-shell{display:flex;flex-direction:row;height:100vh;width:100%;overflow:hidden}
+    .mr-rail{width:124px;min-width:124px;display:flex;flex-direction:column;gap:4px;
+      padding:8px 6px 10px;background:linear-gradient(180deg,#0e0d0a,#08080a);
+      border-right:1px solid rgba(245,220,140,.22);overflow-y:auto;overflow-x:hidden;flex-shrink:0}
+    .mr-rail::-webkit-scrollbar{width:4px}
+    .mr-rail::-webkit-scrollbar-thumb{background:rgba(245,220,140,.25);border-radius:4px}
+    .rail-title{font-size:8px;letter-spacing:1.4px;text-transform:uppercase;color:rgba(245,220,140,.55);
+      font-weight:800;padding:6px 4px 2px}
+    .mr-main{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden}
+    .mr-rail .action-bar{display:flex!important;flex-direction:column!important;align-items:stretch!important;
+      gap:4px!important;padding:0!important;border-bottom:none!important;flex-wrap:nowrap!important}
+    .mr-rail .action-bar > *{width:100%;justify-content:center;font-size:9px!important;padding:7px 4px!important;
+      border-radius:8px!important;text-align:center}
+    .mr-rail .quick-actions{display:grid!important;grid-template-columns:1fr!important;gap:4px!important;
+      padding:0!important;border-bottom:none!important}
+    .mr-rail .qa-btn{flex-direction:row!important;justify-content:flex-start!important;gap:6px!important;
+      min-height:32px!important;padding:6px 7px!important;font-size:8.5px!important;text-align:left!important;
+      border-radius:8px!important;letter-spacing:.6px}
+    .mr-rail .qa-btn .qa-icon svg{width:13px!important;height:13px!important}
+    @media (max-width:420px){
+      .mr-rail{width:104px;min-width:104px}
+      .mr-rail .qa-btn{font-size:8px!important}
+    }
+    @media (max-width:340px){
+      .mr-rail{width:52px;min-width:52px;padding:6px 4px}
+      .rail-title{display:none}
+      .mr-rail .action-bar > *{font-size:0!important;padding:6px 2px!important;min-height:26px}
+      .mr-rail .qa-btn{justify-content:center!important;font-size:0!important;gap:0!important;min-height:30px!important}
+      .mr-rail .qa-btn .qa-icon svg{width:15px!important;height:15px!important}
+    }
   </style>
 </head>
 <body>
@@ -359,6 +391,26 @@
 
   <!-- MAIN APP (built-in, no iframe) -->
   <div id="mainApp">
+    <div class="mr-shell">
+      <aside class="mr-rail">
+        <div class="rail-title">A&Ccedil;&Otilde;ES</div>
+    <div class="action-bar">
+      <button id="downloadBtn" class="action-btn">&#11015; Download</button>
+      <button id="removeWatermarkBtn" class="action-btn">&#10005; TIRAR MARCA D'AGUA</button>
+      <button id="clearBtn">&#128465; Limpar</button>
+      <button id="logoutBtn" class="action-btn">Sair</button>
+    </div>
+        <div class="rail-title">PROMPT R&Aacute;PIDO</div>
+    <div class="quick-actions">
+      <button class="qa-btn" data-action="corrigir"><span class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg></span>CORRIGIR</button>
+      <button class="qa-btn" data-action="refatorar"><span class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/><line x1="14" y1="4" x2="10" y2="20"/></svg></span>REFATORAR</button>
+      <button class="qa-btn" data-action="melhorar"><span class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span>MELHORAR</button>
+      <button class="qa-btn" data-action="otimizar"><span class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></span>OTIMIZAR</button>
+      <button class="qa-btn" data-action="seguranca"><span class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></span>SEGURAN&Ccedil;A</button>
+      <button class="qa-btn" data-action="responsivo"><span class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg></span>RESPONSIVO</button>
+    </div>
+      </aside>
+      <div class="mr-main">
     <div class="app-header">
       <div class="app-header-left">
         <span class="app-header-title">MR SEM LIMITES · MOTOR ULTRA TURBO</span>
@@ -368,21 +420,7 @@
         <button id="publishBtn" class="action-btn">Publish</button>
       </div>
     </div>
-    <div class="action-bar">
-      <button id="downloadBtn" class="action-btn">&#11015; Download</button>
-      <button id="removeWatermarkBtn" class="action-btn">&#10005; TIRAR MARCA D'AGUA</button>
-      <button id="clearBtn">&#128465; Limpar</button>
-      <button id="logoutBtn" class="action-btn">Sair</button>
-    </div>
     <div class="banner"><img src="banner.gif" alt="MR SEM LIMITES FINAL 7 ULTRA VELOZ"></div>
-    <div class="quick-actions">
-      <button class="qa-btn" data-action="corrigir"><span class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg></span>CORRIGIR</button>
-      <button class="qa-btn" data-action="refatorar"><span class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/><line x1="14" y1="4" x2="10" y2="20"/></svg></span>REFATORAR</button>
-      <button class="qa-btn" data-action="melhorar"><span class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span>MELHORAR</button>
-      <button class="qa-btn" data-action="otimizar"><span class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></span>OTIMIZAR</button>
-      <button class="qa-btn" data-action="seguranca"><span class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></span>SEGURAN&Ccedil;A</button>
-      <button class="qa-btn" data-action="responsivo"><span class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg></span>RESPONSIVO</button>
-    </div>
     <div id="chatPanel">
       <div id="history">
         <div class="empty-state">
@@ -410,6 +448,8 @@
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
           </button>
         </div>
+      </div>
+    </div>
       </div>
     </div>
     <div class="app-footer">Powered by Ilimitado MR &bull; BLACK & GOLD</div>

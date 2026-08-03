@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "MR Sem Limites Final 7 Ultra Veloz",
-  "version": "7.9.5",
+  "version": "7.9.6",
   "description": "MR Sem Limites Final 7 Ultra Veloz — Black & Gold, chat nativo, créditos congelados e prompts ilimitados no Lovable.",
   "permissions": [
     "storage",

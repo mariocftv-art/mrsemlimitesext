@@ -7,8 +7,8 @@ const EXTENSION_VERSION = '5.1.0-NEON-NOIR'; // versão exibida para o usuário
 const EXTENSION_API_VERSION = '5.1.0';      // versão enviada ao backend (whitelist)
 console.log(`🚀 Ilimitado MR Extension v${EXTENSION_VERSION} (BLACK & GOLD) iniciando...`);
 
-const SUPABASE_URL = 'https://wvelcefgihlxcnrmslul.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind2ZWxjZWZnaWhseGNucm1zbHVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxNDUzMDcsImV4cCI6MjA5NDcyMTMwN30.NuzN6PlTAdCI_36DWG_4C2UAGLEe5hmVppxoake7-6s';
+const SUPABASE_URL = 'https://mrsemlimites.lovable.app/api/public/ext';
+const SUPABASE_ANON_KEY = 'mrlov';
 const REMOTE_ORIGIN = SUPABASE_URL;
 const WHATSAPP_FALLBACK_URL = 'https://w.app/lovableilimitado';
 

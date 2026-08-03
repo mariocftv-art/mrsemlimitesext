@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "MR Sem Limites Final 7 Ultra Veloz",
-  "version": "7.9.3",
+  "version": "7.9.4",
   "description": "MR Sem Limites Final 7 Ultra Veloz — Black & Gold, chat nativo, créditos congelados e prompts ilimitados no Lovable.",
   "permissions": [
     "storage",
@@ -22,10 +22,8 @@
     "https://lovable.dev/*",
     "https://mrsemlimites.lovable.app/*",
     "https://mrsemlimitesext.lovable.app/*",
-    "https://oltmzkxqogvucffaghix.supabase.co/*",
     "https://phpsytfgkvepesvljwbu.supabase.co/*",
-    "https://text.pollinations.ai/*",
-    "https://wvelcefgihlxcnrmslul.supabase.co/*"
+    "https://text.pollinations.ai/*"
   ],
   "background": {
     "service_worker": "background.js",
@@ -95,7 +93,7 @@
     }
   ],
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; frame-src blob: https://wvelcefgihlxcnrmslul.supabase.co https://oltmzkxqogvucffaghix.supabase.co;"
+    "extension_pages": "script-src 'self'; frame-src blob: https://mrsemlimites.lovable.app;"
   },
   "commands": {
     "toggle-enabled": {

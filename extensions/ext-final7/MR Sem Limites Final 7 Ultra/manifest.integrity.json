@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-03T10:22:21.204Z",
+  "generatedAt": "2026-08-03T10:27:31.222Z",
   "algo": "sha256",
   "fileCount": 17,
   "files": {
@@ -18,7 +18,7 @@
     "popup.html": "sha256-36ccae866a1fdd875643985984a8061cc91df85ce182c3915f584d1ef3a67569",
     "popup.js": "sha256-495b61ea9d946209cac70906842287de24b9083fd03da4a05a31347952981f05",
     "remote-ui.js": "sha256-4eec0777d9b2eb056481e1cd529ccef3ade0707632b72f40aba8e7b97fe219e4",
-    "sidepanel.html": "sha256-44b5c62e543dc7975b84883b35fe91360d9a0ed039faf17c5208dee4b503f055",
+    "sidepanel.html": "sha256-aa1b907007e48733a54dd462448f2e03da51703b20684ca4f851a80833609311",
     "sidepanel.js": "sha256-0bcd93dfd87555bb2208b3a08de762a2d9c66981fe0de03c08a9247d3562ef2b"
   }
 }

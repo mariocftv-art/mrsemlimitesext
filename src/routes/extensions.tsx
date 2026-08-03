@@ -103,7 +103,7 @@ import ext6Asset from "@/assets/ext6-v6.1.0.zip.asset.json";
 const EXT6_ZIP_URL = ext6Asset.url;
 import ext7Asset from "@/assets/ext7-v7.3.1.zip.asset.json";
 const EXT7_ZIP_URL = ext7Asset.url;
-import extFinal7Asset from "@/assets/extfinal7-v7.9.0.zip.asset.json";
+import extFinal7Asset from "@/assets/extfinal7-v7.9.1.zip.asset.json";
 const EXT_FINAL7_ZIP_URL = extFinal7Asset.url;
 import ext8Asset from "@/assets/ext8-v8.0.2.zip.asset.json";
 const EXT8_ZIP_URL = ext8Asset.url;

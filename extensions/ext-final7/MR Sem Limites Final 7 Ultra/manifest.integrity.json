@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-03T09:58:48.584Z",
+  "generatedAt": "2026-08-03T10:06:04.297Z",
   "algo": "sha256",
   "fileCount": 17,
   "files": {
@@ -9,10 +9,10 @@
     "content/inject.js": "sha256-369f2f899f772d9e4680042e7f60d888e5b6ea1e13a959ea1bb6216ab34efa45",
     "hide-element.js": "sha256-3f6601121aa7490cd95eaade369b8586429f9642dddd6b829c4b66996f7bffe2",
     "lib/anti-inspect.js": "sha256-0224a50d80d849034146145093e56de26197b6fba341e215f98885edd6134647",
-    "lib/constants.js": "sha256-141d9b649b60bce6a20115d6ffdca0e71cb7cc5e4d54fdbe549e85338231e43f",
+    "lib/constants.js": "sha256-06d5233c474e37960a7756dfe4c61a6b0a161e6a3b3d2d2519530fdfd9cef97e",
     "lib/license.js": "sha256-19e0ce686878d66ea883effb4e379f44b1204c067eaeab315cadc044522f1ebf",
     "lib/storage.js": "sha256-9b32e3ba3d539b6c72d89625806d29ca1624efb69e32c57394aa0ca86a3ecfd1",
-    "manifest.json": "sha256-e876492b91ebe5f71d39b168398692bc5fae967e982f39a77a2eccd199152293",
+    "manifest.json": "sha256-b6df029dd354ef333875297985b9d950972e9ce4577beaf6e17031de2c40e1df",
     "offscreen.html": "sha256-ef459b18672aeb1b0a44852828c3dfd9e79a3926614917e22c5bfaa0e44cbc5e",
     "permission.html": "sha256-c36acf79f9332ea7b07745331c33ada54265eeac8aff800b4c6dd659dd8a3dac",
     "popup.html": "sha256-36ccae866a1fdd875643985984a8061cc91df85ce182c3915f584d1ef3a67569",

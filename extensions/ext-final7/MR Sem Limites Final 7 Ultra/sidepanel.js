@@ -106,52 +106,33 @@ function friendlyLicenseError(raw) {
   return '\u274c Licença inválida. Verifique a chave e tente novamente.';
 }
 
-// ========== LICENSE — validação direta via validate-license-v2 ==========
+// ========== LICENSE — validação canônica via background / inject-config ==========
 async function validateLicense(key) {
-  const hwid = await generateHWID();
-  const deviceInfo = {
-    screen: `${screen.width}x${screen.height}`,
-    color_depth: screen.colorDepth,
-    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    language: navigator.language,
-    platform: navigator.platform,
-    cores: navigator.hardwareConcurrency || 0,
-  };
-
-  // Retry até 4x com backoff para erros transitórios (DB + rede/Failed to fetch)
-  const DELAYS = [0, 1500, 3000, 5000];
-  let lastResult = null;
-  for (let attempt = 0; attempt < 4; attempt++) {
-    if (attempt > 0) {
-      console.warn(`⚠️ validateLicense retry ${attempt}/3 após ${DELAYS[attempt]}ms...`);
-      await new Promise(r => setTimeout(r, DELAYS[attempt]));
-    }
-    try {
-      console.log('🔐 Validando licença:', key.substring(0, 8) + '***', `(tentativa ${attempt + 1})`);
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 30000); // timeout 30s
-      const response = await fetch(`${SUPABASE_URL}/functions/v1/validate-license-v2`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${SUPABASE_ANON_KEY}`, 'apikey': SUPABASE_ANON_KEY },
-        body: JSON.stringify({ license_key: key, hwid: hwid, device_info: deviceInfo }),
-        signal: controller.signal,
+  return new Promise((resolve) => {
+    chrome.runtime.sendMessage({ type: 'VALIDATE_LICENSE', key }, (state) => {
+      const runtimeError = chrome.runtime.lastError;
+      if (runtimeError || !state) {
+        resolve({ status: 'transient', message: runtimeError?.message || 'Serviço de licença não respondeu' });
+        return;
+      }
+      if (state.status !== 'valid') {
+        resolve({ status: state.status || 'invalid', message: state.error || 'Licença inválida', reason: state.reason || null });
+        return;
+      }
+      const daysRemaining = state.expiresAt
+        ? Math.max(0, (new Date(state.expiresAt).getTime() - Date.now()) / 86400000)
+        : null;
+      resolve({
+        status: 'valid',
+        session_token: state.licenseHash || btoa(key).slice(0, 32),
+        days_remaining: daysRemaining,
+        hours_remaining: daysRemaining === null ? null : daysRemaining * 24,
+        license_id: state.licenseHash || null,
+        plan: state.plan || null,
+        expires_at: state.expiresAt || null,
       });
-      clearTimeout(timeoutId);
-      lastResult = await response.json();
-      // Sucesso — retorna imediatamente
-      if (lastResult.status === 'valid') return lastResult;
-      // Supabase pode retornar o erro em 'message' ou em 'error'
-      const errText = String(lastResult.message || lastResult.error || '');
-      const isRetryable = /database|db error|connection|timeout|internal|server error|503|502|504/i.test(errText);
-      if (!isRetryable) return lastResult; // Erro definitivo (licenca invalida, expirada etc) - nao retry
-    } catch (e) {
-      console.error('❌ Erro ao validar licença:', e?.message || e);
-      lastResult = { status: 'error', message: e?.name === 'AbortError' ? 'Timeout na validação' : (e?.message || 'Erro de conexão') };
-      // Erros de rede (Failed to fetch, AbortError) → retry
-      if (attempt < 3) continue;
-    }
-  }
-  return lastResult;
+    });
+  });
 }
 
 async function revalidateLicense(force = false) {
@@ -170,11 +151,9 @@ async function revalidateLicense(force = false) {
   const result = await validateLicense(licenseKey);
   if (result.status === 'valid') {
     licenseSessionToken = result.session_token;
-    // Salva licenseState em settings para que o content.js (gateLicense) reconheça a licença
-    const cur = (await chrome.storage.local.get('settings')).settings || {};
     await chrome.storage.local.set({
       licenseSessionToken: result.session_token,
-      settings: { ...cur, licenseState: { status: 'valid' }, licenseKey: licenseKey },
+      licenseKey,
     });
     licenseInfo = { days_remaining: result.days_remaining, hours_remaining: result.hours_remaining, license_id: result.license_id };
     // Atualiza cache
@@ -2025,8 +2004,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             hours_remaining: result.hours_remaining,
             license_id: result.license_id,
           };
-          const cur1 = (await chrome.storage.local.get('settings')).settings || {};
-          await chrome.storage.local.set({ licenseKey: storedKey, licenseSessionToken: result.session_token, settings: { ...cur1, licenseState: { status: 'valid' }, licenseKey: storedKey } });
+           await chrome.storage.local.set({ licenseKey: storedKey, licenseSessionToken: result.session_token });
           _licenseCache = { valid: true, session_token: result.session_token };
           _licenseCacheTime = Date.now();
           showMainApp();
@@ -2043,8 +2021,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           hours_remaining: result.hours_remaining,
           license_id: result.license_id,
         };
-        const cur2 = (await chrome.storage.local.get('settings')).settings || {};
-        await chrome.storage.local.set({ licenseKey: storedKey, licenseSessionToken: result.session_token, settings: { ...cur2, licenseState: { status: 'valid' }, licenseKey: storedKey } });
+         await chrome.storage.local.set({ licenseKey: storedKey, licenseSessionToken: result.session_token });
         _licenseCache = { valid: true, session_token: result.session_token };
         _licenseCacheTime = Date.now();
         showMainApp();
@@ -2098,8 +2075,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             license_id: result.license_id,
           };
           // Salva nos dois formatos para compatibilidade total
-          const cur3 = (await chrome.storage.local.get('settings')).settings || {};
-          await chrome.storage.local.set({ licenseKey: key, licenseSessionToken: result.session_token, settings: { ...cur3, licenseState: { status: 'valid' }, licenseKey: key } });
+          await chrome.storage.local.set({ licenseKey: key, licenseSessionToken: result.session_token });
           if (licenseStatus) { licenseStatus.textContent = '✅ Licença ativada!'; licenseStatus.style.color = '#22c55e'; }
           showToast('Licença ativada com sucesso!', 'success');
           setTimeout(() => showMainApp(), 500);

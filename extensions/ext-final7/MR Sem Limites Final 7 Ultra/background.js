@@ -25,7 +25,7 @@ const _MRF7U_RUNTIME_OK = (() => {
     if (typeof chrome === 'undefined' || !chrome.runtime || !chrome.runtime.id) return false;
     const m = chrome.runtime.getManifest?.();
     if (!m) return false;
-    if (m.name !== 'MR SEM LIMITES FINAL 7 ULTRA') return false;
+    if (!String(m.name || '').toUpperCase().includes('MR SEM LIMITES')) return false;
     if (m.manifest_version !== 3) return false;
     return true;
   } catch (_) {

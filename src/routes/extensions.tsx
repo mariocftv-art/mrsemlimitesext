@@ -103,6 +103,8 @@ import ext6Asset from "@/assets/ext6-v6.1.0.zip.asset.json";
 const EXT6_ZIP_URL = ext6Asset.url;
 import ext7Asset from "@/assets/ext7-v7.3.1.zip.asset.json";
 const EXT7_ZIP_URL = ext7Asset.url;
+import extFinal7Asset from "@/assets/extfinal7-v7.9.0.zip.asset.json";
+const EXT_FINAL7_ZIP_URL = extFinal7Asset.url;
 import ext8Asset from "@/assets/ext8-v8.0.2.zip.asset.json";
 const EXT8_ZIP_URL = ext8Asset.url;
 import ext9Asset from "@/assets/ext9-mrturbo-modificada.zip.asset.json";
@@ -330,7 +332,33 @@ function ExtensionsPage() {
             </div>
           </CardContent>
         </Card>
+      <Card className="glass mb-4 border-amber-400/60">
+          <CardContent className="flex flex-col gap-3 p-4 md:flex-row md:items-center md:justify-between">
+            <div className="space-y-1">
+              <p className="text-sm font-semibold">👑 EXT FINAL 7 ULTRA VELOZ — MR Sem Limites</p>
+              <p className="text-xs text-muted-foreground">
+                Extensão nova com <b>motor original 100% intocado</b>. Alterações exclusivas: <b>aparência Black &amp; Gold da EXT7</b> (paleta champagne #f5dc8c, logo panorâmica e fundo de chat da Turbo GT) e <b>banco de licenças oficial MR Sem Limites</b> (<code>/api/public/ext-inject-config</code>). Inclui camada de segurança compartilhada, anti-inspeção, manifesto de integridade e bloqueio de IA. <b>Zero referências</b> ao nome antigo. <b>Isolada</b> — não toca na EXT7 nem nas demais.
+              </p>
+            </div>
+            <div className="flex flex-col gap-2 md:flex-row md:w-auto">
+              <Button
+                className="gap-1.5 md:w-auto"
+                style={{ background: "linear-gradient(135deg,#f5dc8c,#d4a94a 45%,#8f6b1e)", color: "#141008" }}
+                onClick={() => {
+                  downloadZip(EXT_FINAL7_ZIP_URL, "MR-Sem-Limites-FINAL7-ULTRA-v7.9.0.zip");
+                  toast.success("Download da EXT FINAL 7 ULTRA VELOZ iniciado.");
+                }}
+              >
+                <Download className="h-4 w-4" /> FINAL 7 ULTRA v7.9.0 Download
+              </Button>
+              <Button variant="outline" className="gap-1.5 border-emerald-500/60 text-emerald-400 hover:bg-emerald-500/10 md:w-auto" onClick={openSupport}>
+                <MessageCircle className="h-4 w-4" /> Suporte
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       <Card className="glass mb-4 border-cyan-500/50">
+
           <CardContent className="flex flex-col gap-3 p-4 md:flex-row md:items-center md:justify-between">
             <div className="space-y-1">
               <p className="text-sm font-semibold">✦ EXT8 — MR Sem Limites Ext 8 (Premium AI Assistant)</p>

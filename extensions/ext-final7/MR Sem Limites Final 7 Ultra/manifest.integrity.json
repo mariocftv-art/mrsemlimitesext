@@ -1,0 +1,24 @@
+{
+  "generatedAt": "2026-08-03T09:39:41.230Z",
+  "algo": "sha256",
+  "fileCount": 17,
+  "files": {
+    "background.js": "sha256-e1925b7c8984f3ae15f4d8ffab7a142323208df5a023f2b9b201892aa4c8df13",
+    "content/content.css": "sha256-eeba7fa1c55528d75ae1134d87b42436310567076992ffd97b461384bcd3f84d",
+    "content/content.js": "sha256-b0ddc63b825ff71816299f5f0d876151c1c8df473f2cd19827c71c00f3caf96b",
+    "content/inject.js": "sha256-369f2f899f772d9e4680042e7f60d888e5b6ea1e13a959ea1bb6216ab34efa45",
+    "hide-element.js": "sha256-3f6601121aa7490cd95eaade369b8586429f9642dddd6b829c4b66996f7bffe2",
+    "lib/anti-inspect.js": "sha256-0224a50d80d849034146145093e56de26197b6fba341e215f98885edd6134647",
+    "lib/constants.js": "sha256-141d9b649b60bce6a20115d6ffdca0e71cb7cc5e4d54fdbe549e85338231e43f",
+    "lib/license.js": "sha256-19e0ce686878d66ea883effb4e379f44b1204c067eaeab315cadc044522f1ebf",
+    "lib/storage.js": "sha256-9b32e3ba3d539b6c72d89625806d29ca1624efb69e32c57394aa0ca86a3ecfd1",
+    "manifest.json": "sha256-9bd57c6fc3ad3ce17538ac9f681278274b94ed5fbc755c85cb869fc5d0337d6a",
+    "offscreen.html": "sha256-ef459b18672aeb1b0a44852828c3dfd9e79a3926614917e22c5bfaa0e44cbc5e",
+    "permission.html": "sha256-c36acf79f9332ea7b07745331c33ada54265eeac8aff800b4c6dd659dd8a3dac",
+    "popup.html": "sha256-36ccae866a1fdd875643985984a8061cc91df85ce182c3915f584d1ef3a67569",
+    "popup.js": "sha256-cbe7d9a8405c8a046ad1e652ba09cd4a2f829499b5b60333f4c7f3bbeb73e1bb",
+    "remote-ui.js": "sha256-4eec0777d9b2eb056481e1cd529ccef3ade0707632b72f40aba8e7b97fe219e4",
+    "sidepanel.html": "sha256-bf2ffc7a7a2857e628a3f71e0b2113a35b84630eedeae45103a75b2c2b668e3c",
+    "sidepanel.js": "sha256-c3958384ff531101e004e24e5e8e91d6c397f33333300f5337b5586c9557ef8f"
+  }
+}

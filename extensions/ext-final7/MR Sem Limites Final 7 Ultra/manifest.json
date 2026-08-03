@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "MR Sem Limites Final 7 Ultra Veloz",
-  "version": "7.9.2",
+  "version": "7.9.3",
   "description": "MR Sem Limites Final 7 Ultra Veloz — Black & Gold, chat nativo, créditos congelados e prompts ilimitados no Lovable.",
   "permissions": [
     "storage",
@@ -20,6 +20,7 @@
     "https://generativelanguage.googleapis.com/*",
     "https://lovable-api.com/*",
     "https://lovable.dev/*",
+    "https://mrsemlimites.lovable.app/*",
     "https://mrsemlimitesext.lovable.app/*",
     "https://oltmzkxqogvucffaghix.supabase.co/*",
     "https://phpsytfgkvepesvljwbu.supabase.co/*",

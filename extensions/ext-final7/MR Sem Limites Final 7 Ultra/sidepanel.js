@@ -9,7 +9,7 @@ console.log(`🚀 Ilimitado MR Extension v${EXTENSION_VERSION} (BLACK & GOLD) in
 
 const SUPABASE_URL = 'https://mrsemlimites.lovable.app/api/public/ext';
 const SUPABASE_ANON_KEY = 'mrlov';
-const REMOTE_ORIGIN = SUPABASE_URL;
+const REMOTE_ORIGIN = 'https://mrsemlimites.lovable.app';
 const WHATSAPP_FALLBACK_URL = 'https://w.app/lovableilimitado';
 
 // Session state

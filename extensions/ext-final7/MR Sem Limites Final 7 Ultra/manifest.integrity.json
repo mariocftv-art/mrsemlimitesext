@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-04T00:39:28.265Z",
+  "generatedAt": "2026-08-04T00:39:58.954Z",
   "algo": "sha256",
   "fileCount": 28,
   "files": {
@@ -19,7 +19,7 @@
     "lib/constants.js": "sha256-06d5233c474e37960a7756dfe4c61a6b0a161e6a3b3d2d2519530fdfd9cef97e",
     "lib/license.js": "sha256-19e0ce686878d66ea883effb4e379f44b1204c067eaeab315cadc044522f1ebf",
     "lib/storage.js": "sha256-9b32e3ba3d539b6c72d89625806d29ca1624efb69e32c57394aa0ca86a3ecfd1",
-    "manifest.json": "sha256-134f5698de8343d212f34b4f1d9ac579f0847aa71f885d4c8d44651d162ad7b6",
+    "manifest.json": "sha256-4a6a0def01bc29e304e09eeeb3cba68193cf018a44ac2cef0d04ef04a11b0dcd",
     "offscreen.html": "sha256-ef459b18672aeb1b0a44852828c3dfd9e79a3926614917e22c5bfaa0e44cbc5e",
     "permission.html": "sha256-c36acf79f9332ea7b07745331c33ada54265eeac8aff800b4c6dd659dd8a3dac",
     "popup.html": "sha256-36ccae866a1fdd875643985984a8061cc91df85ce182c3915f584d1ef3a67569",

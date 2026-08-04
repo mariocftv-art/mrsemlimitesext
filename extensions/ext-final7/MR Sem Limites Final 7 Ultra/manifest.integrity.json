@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-08-03T10:39:44.798Z",
+  "generatedAt": "2026-08-04T00:39:58.954Z",
   "algo": "sha256",
   "fileCount": 28,
   "files": {
-    "background.js": "sha256-be2a178d2ad06b0fa80a02acf42b927e6b25a4424ef4856ab1a73917865b9db6",
+    "background.js": "sha256-efe611fad74749a944352f6e579b639d290f148f8c2377e4866f5e71d605acf5",
     "content/content.css": "sha256-eeba7fa1c55528d75ae1134d87b42436310567076992ffd97b461384bcd3f84d",
-    "content/content.js": "sha256-b0ddc63b825ff71816299f5f0d876151c1c8df473f2cd19827c71c00f3caf96b",
+    "content/content.js": "sha256-27df890a859365c29a2eb67aabe09dddb445665896ced935951b33012d2c4574",
     "content/inject.js": "sha256-369f2f899f772d9e4680042e7f60d888e5b6ea1e13a959ea1bb6216ab34efa45",
     "data/animations.js": "sha256-94513d2fc2b86fda1824bde53626515359456ba640d40a577bb05aabefba3456",
     "data/components.js": "sha256-8c4ceb333ce04809109ba448db344c76cb8093b033d644cf6da14462d7ddd657",
@@ -19,7 +19,7 @@
     "lib/constants.js": "sha256-06d5233c474e37960a7756dfe4c61a6b0a161e6a3b3d2d2519530fdfd9cef97e",
     "lib/license.js": "sha256-19e0ce686878d66ea883effb4e379f44b1204c067eaeab315cadc044522f1ebf",
     "lib/storage.js": "sha256-9b32e3ba3d539b6c72d89625806d29ca1624efb69e32c57394aa0ca86a3ecfd1",
-    "manifest.json": "sha256-457c8eb654c05ecdebd4e6f603f9893cbbb9973db79418a439df5ddf24b86985",
+    "manifest.json": "sha256-4a6a0def01bc29e304e09eeeb3cba68193cf018a44ac2cef0d04ef04a11b0dcd",
     "offscreen.html": "sha256-ef459b18672aeb1b0a44852828c3dfd9e79a3926614917e22c5bfaa0e44cbc5e",
     "permission.html": "sha256-c36acf79f9332ea7b07745331c33ada54265eeac8aff800b4c6dd659dd8a3dac",
     "popup.html": "sha256-36ccae866a1fdd875643985984a8061cc91df85ce182c3915f584d1ef3a67569",

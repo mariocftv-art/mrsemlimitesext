@@ -16,7 +16,7 @@ export const SEED_EXTENSIONS: ExtensionRecord[] = [
     status: "production",
     tone: "cyan",
     sourceDir: "extensions/ext-01/integrated/MR Sem Limites Reformulada 2.1",
-    packagedZip: "/MR%20Sem%20Limites%20EXT1.zip",
+    packagedZip: "/MR Sem Limites EXT1.zip",
     assets: {},
     manifest: {
       manifestVersion: 3,
@@ -53,7 +53,7 @@ export const SEED_EXTENSIONS: ExtensionRecord[] = [
     status: "development",
     tone: "violet",
     sourceDir: "extensions/ext-04/integrated/metodo4-v17",
-    packagedZip: "/Metodo%20Quatro%20v17.zip",
+    packagedZip: "/Metodo Quatro v17.zip",
     assets: {},
 
     manifest: {

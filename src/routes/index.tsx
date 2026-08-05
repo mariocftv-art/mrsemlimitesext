@@ -113,7 +113,7 @@ function FactoryDashboard() {
                     <div className="min-w-0">
                       <p className="truncate text-sm font-semibold">{e.name}</p>
                       <p className="text-[11px] uppercase tracking-widest text-muted-foreground">
-                        {e.code} · v{e.version}
+                        {e.code} · v{e.version} · <span className="text-primary/70">Ativo</span>
                       </p>
                     </div>
                   </div>

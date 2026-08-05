@@ -177,15 +177,6 @@ function ExtensionsPage() {
           />
         ))}
       </div>
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {extensions.map((ext) => (
-          <ExtensionCard
-            key={ext.id}
-            ext={ext}
-            onEdit={() => setEditing(ext)}
-          />
-        ))}
-      </div>
 
       <NewExtensionWizard open={wizardOpen} onOpenChange={setWizardOpen} />
       <ImportExtensionDialog open={importOpen} onOpenChange={setImportOpen} />

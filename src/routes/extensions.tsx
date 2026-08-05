@@ -7,6 +7,7 @@ import {
   Copy,
   Download,
   Eye,
+  FileArchive,
   FolderOpen,
   GitBranch,
   Hammer,
@@ -19,6 +20,7 @@ import {
   Trash2,
   Upload,
 } from "lucide-react";
+
 
 const SUPPORT_WHATSAPP_URL =
   "https://wa.me/5511962579428?text=" +

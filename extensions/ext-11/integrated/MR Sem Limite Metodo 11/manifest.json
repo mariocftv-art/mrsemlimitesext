@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "🚀 EXT11 — MR Sem Limite Ext 11 (Novo Método v4)",
+  "name": "🚀 EXT11 — MR Sem Limite Ext 11 Final (Novo Método v4)",
   "version": "1.2.0",
-  "description": "A unificação suprema: Motor original do Método 4 (EXT4) com o design Black & Gold Cockpit da EXT7. Versão 1.2.0. Inclui todas as abas profissionais, banco de licenças oficial MR Sem Limites, camada de segurança mr-security-pro.js, anti-inspeção F12 e manifesto de integridade.",
+  "description": "A unificação suprema final: Motor original do Método 4 (EXT4) com o design Black & Gold Cockpit da EXT7. Versão 1.2.0. Inclui todas as abas profissionais, banco de licenças oficial MR Sem Limites, motor de comandos V4 sincronizado, anti-inspeção F12 e manifesto de integridade.",
   "permissions": [
     "storage",
     "cookies",

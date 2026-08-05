@@ -226,12 +226,14 @@ function ExtensionsPage() {
                   variant="outline"
                   className="h-9 gap-2 border-destructive/30 bg-destructive/5 text-destructive hover:bg-destructive/10"
                   onClick={() => {
-                    if (ext.id === "ext-01") {
-                      toast.error("A extensão seed não pode ser excluída.");
+                    if (ext.id.startsWith("ext-")) {
+                      toast.error("Extensões do sistema não podem ser excluídas.");
                       return;
                     }
                     if (confirm(`Excluir permanentemente "${ext.name}"?`)) {
-                      if (deleteCustomExtension(ext.id)) toast.success("Extensão excluída.");
+                      if (deleteCustomExtension(ext.id)) {
+                        toast.success("Extensão excluída.");
+                      }
                     }
                   }}
                 >

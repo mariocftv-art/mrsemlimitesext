@@ -666,6 +666,7 @@ const TONES: { value: NeonTone; label: string; color: string }[] = [
   { value: "violet", label: "Violeta", color: "var(--neon-violet)" },
   { value: "magenta", label: "Magenta", color: "var(--neon-magenta)" },
   { value: "lime", label: "Lima", color: "var(--neon-lime)" },
+  { value: "amber", label: "Ouro", color: "#f59e0b" },
 ];
 
 const WIZARD_STEPS = ["Nome", "Código", "Logo", "Cor", "Descrição", "Estrutura"] as const;

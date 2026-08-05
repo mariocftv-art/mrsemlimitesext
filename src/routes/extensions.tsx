@@ -94,7 +94,9 @@ function useFactoryExtensions() {
 function ExtensionsPage() {
   const extensions = useFactoryExtensions();
   const ext1 = extensions.find((e) => e.code === "EXT1");
+  const ext2 = extensions.find((e) => e.code === "EXT2");
   const ext1Zip = ext1?.packagedZip ?? EXT1_ZIP_URL;
+  const ext2Zip = ext2?.packagedZip ?? "/Metodo%20Quatro%20v17.zip";
   const [filter, setFilter] = useState<Filter>("all");
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<Sort>("updated");
@@ -146,6 +148,10 @@ function ExtensionsPage() {
     downloadZip(ext1Zip, "MR Sem Limites EXT1.zip");
   };
 
+  const downloadExt2 = () => {
+    downloadZip(ext2Zip, "Metodo Quatro EXT2.zip");
+  };
+
   return (
     <AppShell
       title="Minhas Extensões"
@@ -172,12 +178,13 @@ function ExtensionsPage() {
       }
 
     >
-      <Card className="glass mb-4 border-primary/40">
+      <div className="mb-4 grid gap-4 md:grid-cols-2">
+        <Card className="glass border-primary/40">
           <CardContent className="flex flex-col gap-3 p-4 md:flex-row md:items-center md:justify-between">
             <div className="space-y-1">
               <p className="text-sm font-semibold">EXT1 Download</p>
               <p className="text-xs text-muted-foreground">
-                Baixe o ZIP, descompacte e no Chrome use “Carregar sem compactação” na pasta interna “MR Sem Limites EXT1”, onde está o manifest.json.
+                Baixe o ZIP da EXT1 e no Chrome use “Carregar sem compactação” na pasta interna com o manifest.json.
               </p>
             </div>
             <Button className="gap-1.5 md:w-auto" onClick={downloadExt1}>
@@ -185,6 +192,25 @@ function ExtensionsPage() {
             </Button>
           </CardContent>
         </Card>
+
+        <Card className="glass border-violet-500/40">
+          <CardContent className="flex flex-col gap-3 p-4 md:flex-row md:items-center md:justify-between">
+            <div className="space-y-1">
+              <p className="text-sm font-semibold">EXT2 Download (Método 4)</p>
+              <p className="text-xs text-muted-foreground">
+                Baixe o ZIP da EXT2 (Método Quatro v17) para carregar no Chrome.
+              </p>
+            </div>
+            <Button 
+              className="gap-1.5 md:w-auto" 
+              onClick={downloadExt2}
+              style={{ background: "var(--neon-violet)", color: "#fff" }}
+            >
+              <Download className="h-4 w-4" /> EXT2 Download
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
 
       <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex flex-wrap gap-1.5">
@@ -358,9 +384,13 @@ function ExtensionCard({ ext, onEdit }: { ext: ExtensionRecord; onEdit: () => vo
           </Badge>
         </div>
 
-        {ext.code === "EXT1" && ext.packagedZip && (
-          <Button className="w-full gap-1.5" onClick={() => downloadZip(ext.packagedZip!, "MR Sem Limites EXT1.zip")}>
-            <Download className="h-4 w-4" /> EXT1 Download
+        {(ext.code === "EXT1" || ext.code === "EXT2") && ext.packagedZip && (
+          <Button 
+            className="w-full gap-1.5" 
+            onClick={() => downloadZip(ext.packagedZip!, `${ext.code}.zip`)}
+            style={ext.code === "EXT2" ? { background: "var(--neon-violet)", color: "#fff" } : {}}
+          >
+            <Download className="h-4 w-4" /> {ext.code} Download
           </Button>
         )}
 

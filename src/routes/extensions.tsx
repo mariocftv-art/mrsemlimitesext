@@ -160,14 +160,6 @@ function ExtensionsPage() {
         <div className="flex gap-2">
           <Button
             size="sm"
-            variant="outline"
-            className="gap-1.5"
-            onClick={() => setImportOpen(true)}
-          >
-            <Upload className="h-4 w-4" /> Importar Extensão
-          </Button>
-          <Button
-            size="sm"
             className="gap-1.5"
             style={{ background: "var(--gradient-neon)", color: "var(--primary-foreground)" }}
             onClick={() => setWizardOpen(true)}

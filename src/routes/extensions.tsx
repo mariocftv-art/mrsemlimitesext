@@ -178,38 +178,49 @@ function ExtensionsPage() {
       }
 
     >
-      <div className="mb-4 grid gap-4 md:grid-cols-2">
-        <Card className="glass border-primary/40">
-          <CardContent className="flex flex-col gap-3 p-4 md:flex-row md:items-center md:justify-between">
-            <div className="space-y-1">
-              <p className="text-sm font-semibold">EXT1 Download</p>
-              <p className="text-xs text-muted-foreground">
-                Baixe o ZIP da EXT1 e no Chrome use “Carregar sem compactação” na pasta interna com o manifest.json.
-              </p>
-            </div>
-            <Button className="gap-1.5 md:w-auto" onClick={downloadExt1}>
-              <Download className="h-4 w-4" /> EXT1 Download
-            </Button>
-          </CardContent>
-        </Card>
+      <div className="mb-6 grid gap-4 md:grid-cols-2">
+        {ext1 && (
+          <Card className="glass border-primary/40">
+            <CardContent className="flex items-center justify-between p-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-border/60 bg-background/40">
+                  <Puzzle className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <p className="text-sm font-bold">{ext1.name}</p>
+                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground">EXTENSÃO UM</p>
+                </div>
+              </div>
+              <Button size="sm" className="gap-1.5" onClick={downloadExt1}>
+                <Download className="h-4 w-4" /> Download
+              </Button>
+            </CardContent>
+          </Card>
+        )}
 
-        <Card className="glass border-violet-500/40">
-          <CardContent className="flex flex-col gap-3 p-4 md:flex-row md:items-center md:justify-between">
-            <div className="space-y-1">
-              <p className="text-sm font-semibold">EXT2 Download (Método 4)</p>
-              <p className="text-xs text-muted-foreground">
-                Baixe o ZIP da EXT2 (Método Quatro v17) para carregar no Chrome.
-              </p>
-            </div>
-            <Button 
-              className="gap-1.5 md:w-auto" 
-              onClick={downloadExt2}
-              style={{ background: "var(--neon-violet)", color: "#fff" }}
-            >
-              <Download className="h-4 w-4" /> EXT2 Download
-            </Button>
-          </CardContent>
-        </Card>
+        {ext2 && (
+          <Card className="glass border-violet-500/40">
+            <CardContent className="flex items-center justify-between p-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-border/60 bg-background/40">
+                  <Puzzle className="h-5 w-5 text-violet-400" />
+                </div>
+                <div>
+                  <p className="text-sm font-bold">{ext2.name}</p>
+                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground">EXTENSÃO DOIS</p>
+                </div>
+              </div>
+              <Button 
+                size="sm" 
+                className="gap-1.5" 
+                onClick={downloadExt2}
+                style={{ background: "var(--neon-violet)", color: "#fff" }}
+              >
+                <Download className="h-4 w-4" /> Download
+              </Button>
+            </CardContent>
+          </Card>
+        )}
       </div>
 
       <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
@@ -301,7 +312,7 @@ function downloadZip(url: string, filename: string) {
       a.download = filename;
       a.click();
       URL.revokeObjectURL(a.href);
-      toast.success("Download da EXT1 iniciado.");
+      toast.success("Download iniciado.");
     })
     .catch((err) => toast.error(err instanceof Error ? err.message : "Falha no download."));
 }
@@ -403,41 +414,19 @@ function ExtensionCard({ ext, onEdit }: { ext: ExtensionRecord; onEdit: () => vo
           <InfoRow k="Pasta" v={ext.id} mono />
         </div>
 
-        <div className="grid grid-cols-3 gap-1.5">
+        <div className="grid grid-cols-2 gap-1.5">
           <ActionBtn icon={Eye} label="Live" asChild>
             <Link to="/live/$id" params={{ id: ext.id }}>Live</Link>
-          </ActionBtn>
-          <ActionBtn icon={Eye} label="Preview" asChild>
-            <Link to="/preview/$id" params={{ id: ext.id }}>Preview</Link>
           </ActionBtn>
           <ActionBtn icon={Bug} label="Runtime" asChild>
             <Link to="/runtime/$id" params={{ id: ext.id }}>Runtime</Link>
           </ActionBtn>
-          <ActionBtn icon={Pencil} label="Editar" onClick={onEdit} />
           <ActionBtn icon={FolderOpen} label="Projeto" asChild>
             <Link to="/editor" search={{}}>Projeto</Link>
           </ActionBtn>
           <ActionBtn icon={Hammer} label="Build" asChild>
             <Link to="/build-center">Build</Link>
           </ActionBtn>
-          <ActionBtn icon={ImageIcon} label="Assets" asChild>
-            <Link to="/assets">Assets</Link>
-          </ActionBtn>
-          <ActionBtn icon={GitBranch} label="Versões" asChild>
-            <Link to="/versions">Versões</Link>
-          </ActionBtn>
-          <ActionBtn icon={Copy} label="Duplicar" onClick={handleDuplicate} />
-          <ActionBtn
-            icon={ext.status === "archived" ? ArchiveRestore : Archive}
-            label={ext.status === "archived" ? "Restaurar" : "Arquivar"}
-            onClick={handleArchive}
-          />
-          {ext.packagedZip && (
-            <ActionBtn icon={Download} label="ZIP" onClick={() => downloadZip(ext.packagedZip!, `${ext.code}.zip`)} />
-          )}
-          {!isSeed && (
-            <ActionBtn icon={Trash2} label="Excluir" onClick={handleDelete} destructive />
-          )}
         </div>
       </CardContent>
     </Card>

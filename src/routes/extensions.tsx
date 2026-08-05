@@ -344,9 +344,6 @@ function ExtensionCard({ ext, onEdit }: { ext: ExtensionRecord; onEdit: () => vo
             onClick={() => downloadZip(ext.packagedZip || `/api/build/${ext.id}/latest`, `${ext.name}.zip`)} 
             highlighted
           />
-          {ext.packagedZip && (
-            <ActionBtn icon={FileArchive} label="ZIP" onClick={() => downloadZip(ext.packagedZip!, `${ext.code}.zip`)} />
-          )}
           {!isSeed && (
             <ActionBtn icon={Trash2} label="Excluir" onClick={handleDelete} destructive />
           )}

@@ -32,7 +32,7 @@
  * ╚══════════════════════════════════════════════════════════════════════════════╝
  */
 
-const EXTENSION_VERSION = '5.1.0-NEON-NOIR'; 
+const EXTENSION_VERSION = '7.3.3'; 
 const EXTENSION_API_VERSION = '5.1.0';      
 console.log(`🚀 MR Ext Sem Limites v${EXTENSION_VERSION} (MRSL) iniciando...`);
 

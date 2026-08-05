@@ -120,8 +120,8 @@ export const SEED_EXTENSIONS: ExtensionRecord[] = [
     builds: [],
     versions: [
       {
-        version: "7.3.1",
-        releasedAt: "2026-08-04",
+        version: "7.3.3",
+        releasedAt: "2026-08-05",
         notes: "Correção de ponte e anti-inspeção.",
         changes: ["MR BRIDGE HEALER", "F12 Security"],
       },

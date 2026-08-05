@@ -1,11 +1,9 @@
 {/*
 FASE 16 — IMPORTAÇÃO DA EXT2 (MÉTODO QUATRO)
 O usuário forneceu os arquivos do Método Quatro v17 (Extensão + Backend).
-A Factory agora reconhece oficialmente a EXT4.
+A Factory agora reconhece oficialmente a EXT2 (anteriormente EXT4 no seed).
 Arquivos mapeados em: extensions/ext-04/integrated/metodo4-v17
-Backend mapeado em: /tmp/factory/backend (aguardando integração de rotas).
-Status: Mapeamento de arquivos 100%, Mock de Chrome API 100%, Auditoria de endpoints 80% (Ofuscado).
-A Factory está pronta para rodar o Método Quatro v17 no Runtime Viewer.
+Status: Download da EXT2 gerado e corrigido na rota /extensions.
 */}
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {

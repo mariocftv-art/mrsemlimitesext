@@ -1,4 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import ext1ZipAsset from "@/assets/ext1_v26_zip.asset.json";
+import ext2ZipAsset from "@/assets/ext2_v26_zip.asset.json";
 import ext3ZipAsset from "@/assets/ext3_v26_zip.asset.json";
 import { useMemo, useState, useSyncExternalStore } from "react";
 import {
@@ -96,8 +98,8 @@ function ExtensionsPage() {
   const extensions = useFactoryExtensions();
   const ext1 = extensions.find((e) => e.code === "EXT1");
   const ext2 = extensions.find((e) => e.code === "EXT2");
-  const ext1Zip = ext1?.packagedZip ?? EXT1_ZIP_URL;
-  const ext2Zip = ext2?.packagedZip ?? "/Metodo Quatro v2.2.zip";
+  const ext1Zip = ext1?.packagedZip ?? ext1ZipAsset.url;
+  const ext2Zip = ext2?.packagedZip ?? ext2ZipAsset.url;
   const ext3 = extensions.find((e) => e.code === "EXT3");
   const ext3Zip = ext3?.packagedZip || ext3ZipAsset.url;
   const [filter, setFilter] = useState<Filter>("all");

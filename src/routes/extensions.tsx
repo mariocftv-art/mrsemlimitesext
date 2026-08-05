@@ -384,9 +384,13 @@ function ExtensionCard({ ext, onEdit }: { ext: ExtensionRecord; onEdit: () => vo
           </Badge>
         </div>
 
-        {ext.code === "EXT1" && ext.packagedZip && (
-          <Button className="w-full gap-1.5" onClick={() => downloadZip(ext.packagedZip!, "MR Sem Limites EXT1.zip")}>
-            <Download className="h-4 w-4" /> EXT1 Download
+        {(ext.code === "EXT1" || ext.code === "EXT2") && ext.packagedZip && (
+          <Button 
+            className="w-full gap-1.5" 
+            onClick={() => downloadZip(ext.packagedZip!, `${ext.code}.zip`)}
+            style={ext.code === "EXT2" ? { background: "var(--neon-violet)", color: "#fff" } : {}}
+          >
+            <Download className="h-4 w-4" /> {ext.code} Download
           </Button>
         )}
 

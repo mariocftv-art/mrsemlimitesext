@@ -224,10 +224,18 @@ function ExtensionsPage() {
                 <Button
                   size="sm"
                   variant="outline"
-                  className="h-9 gap-2 border-emerald-500/30 bg-emerald-500/5 text-emerald-500 hover:bg-emerald-500/10"
-                  onClick={openSupport}
+                  className="h-9 gap-2 border-destructive/30 bg-destructive/5 text-destructive hover:bg-destructive/10"
+                  onClick={() => {
+                    if (ext.id === "ext-01") {
+                      toast.error("A extensão seed não pode ser excluída.");
+                      return;
+                    }
+                    if (confirm(`Excluir permanentemente "${ext.name}"?`)) {
+                      if (deleteCustomExtension(ext.id)) toast.success("Extensão excluída.");
+                    }
+                  }}
                 >
-                  <MessageCircle className="h-4 w-4" /> Suporte
+                  <Trash2 className="h-4 w-4" /> Excluir
                 </Button>
 
                 <div className="ml-2">

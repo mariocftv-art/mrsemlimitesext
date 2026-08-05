@@ -106,20 +106,6 @@ import ext6Asset from "@/assets/ext6-v6.1.0.zip.asset.json";
 const EXT6_ZIP_URL = ext6Asset.url;
 import ext7Asset from "@/assets/ext7-v7.3.1.zip.asset.json";
 const EXT7_ZIP_URL = ext7Asset.url;
-import extFinal7Asset from "@/assets/extfinal7-v7.9.8.zip.asset.json";
-const EXT_FINAL7_ZIP_URL = extFinal7Asset.url;
-import ext8Asset from "@/assets/ext8-v8.0.2.zip.asset.json";
-const EXT8_ZIP_URL = ext8Asset.url;
-import ext9Asset from "@/assets/ext9-mrturbo-modificada.zip.asset.json";
-const EXT9_ZIP_URL = ext9Asset.url;
-import ext10Asset from "@/assets/ext10-v10.0.0.zip.asset.json";
-const EXT10_ZIP_URL = ext10Asset.url;
-import ext11Asset from "@/assets/ext11-v1.2.1.zip.asset.json";
-const EXT11_ZIP_URL = ext11Asset.url;
-import ext12Asset from "@/assets/ext12-v1.2.2.zip.asset.json";
-const EXT12_ZIP_URL = ext12Asset.url;
-import ext14Asset from "@/assets/ext14-v1.0.0.zip.asset.json";
-const EXT14_ZIP_URL = ext14Asset.url;
 
 
 

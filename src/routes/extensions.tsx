@@ -223,69 +223,15 @@ function ExtensionsPage() {
         )}
       </div>
 
-      <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-        <div className="flex flex-wrap gap-1.5">
-          {(["all", "production", "development", "testing", "archived"] as Filter[]).map((f) => (
-            <Button
-              key={f}
-              size="sm"
-              variant={filter === f ? "default" : "outline"}
-              onClick={() => setFilter(f)}
-              className="h-8 gap-1.5 text-xs"
-            >
-              {f === "all" ? "Todas" : statusMeta[f].label}
-              <span className="rounded bg-background/40 px-1.5 text-[10px] text-muted-foreground">
-                {counts[f]}
-              </span>
-            </Button>
-          ))}
-        </div>
-
-        <div className="flex gap-2">
-          <div className="relative w-full min-w-[240px]">
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Buscar por nome, código ou slug..."
-              className="h-9 border-border/60 bg-secondary/40 pl-9 text-sm"
-            />
-          </div>
-          <Select value={sort} onValueChange={(v) => setSort(v as Sort)}>
-            <SelectTrigger className="h-9 w-[180px] border-border/60 bg-secondary/40 text-sm">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="updated">Última atualização</SelectItem>
-              <SelectItem value="name">Nome</SelectItem>
-              <SelectItem value="version">Versão</SelectItem>
-              <SelectItem value="status">Status</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+      <div className="grid gap-4 md:grid-cols-2">
+        {filtered.map((e) => (
+          <ExtensionCard
+            key={e.id}
+            ext={e}
+            onEdit={() => setEditing(e)}
+          />
+        ))}
       </div>
-
-      {filtered.length === 0 ? (
-        <Card className="glass border-border/60">
-          <CardContent className="flex flex-col items-center justify-center gap-3 py-16 text-center text-sm text-muted-foreground">
-            <Puzzle className="h-8 w-8 text-primary" />
-            <p>Nenhuma extensão corresponde aos filtros.</p>
-            <Button variant="outline" size="sm" onClick={() => setWizardOpen(true)}>
-              <Plus className="mr-1.5 h-4 w-4" /> Criar nova extensão
-            </Button>
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {filtered.map((e) => (
-            <ExtensionCard
-              key={e.id}
-              ext={e}
-              onEdit={() => setEditing(e)}
-            />
-          ))}
-        </div>
-      )}
 
       <NewExtensionWizard open={wizardOpen} onOpenChange={setWizardOpen} />
       <ImportExtensionDialog open={importOpen} onOpenChange={setImportOpen} />
@@ -395,15 +341,6 @@ function ExtensionCard({ ext, onEdit }: { ext: ExtensionRecord; onEdit: () => vo
           </Badge>
         </div>
 
-        {(ext.code === "EXT1" || ext.code === "EXT2") && ext.packagedZip && (
-          <Button 
-            className="w-full gap-1.5" 
-            onClick={() => downloadZip(ext.packagedZip!, `${ext.code}.zip`)}
-            style={ext.code === "EXT2" ? { background: "var(--neon-violet)", color: "#fff" } : {}}
-          >
-            <Download className="h-4 w-4" /> {ext.code} Download
-          </Button>
-        )}
 
         <p className="line-clamp-2 text-xs text-muted-foreground">{ext.description}</p>
 

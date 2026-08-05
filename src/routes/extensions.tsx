@@ -78,7 +78,7 @@ const statusMeta: Record<ExtensionStatus, { label: string; dot: string; color: s
   archived: { label: "Arquivada", dot: "⚪", color: "#94a3b8" },
 };
 
-const EXT1_ZIP_URL = "/MR%20Sem%20Limites%20EXT1.zip";
+const EXT1_ZIP_URL = "/MR Sem Limites EXT1.zip";
 
 type Filter = "all" | ExtensionStatus;
 type Sort = "name" | "version" | "updated" | "status";
@@ -96,7 +96,7 @@ function ExtensionsPage() {
   const ext1 = extensions.find((e) => e.code === "EXT1");
   const ext2 = extensions.find((e) => e.code === "EXT2");
   const ext1Zip = ext1?.packagedZip ?? EXT1_ZIP_URL;
-  const ext2Zip = ext2?.packagedZip ?? "/Metodo%20Quatro%20v17.zip";
+  const ext2Zip = ext2?.packagedZip ?? "/Metodo Quatro v17.zip";
   const [filter, setFilter] = useState<Filter>("all");
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<Sort>("updated");
@@ -170,7 +170,7 @@ function ExtensionsPage() {
       }
 
     >
-      <div className="mb-6 grid gap-4 md:grid-cols-2">
+      <div className="grid gap-4 md:grid-cols-2">
         {ext1 && (
           <Card className="glass border-primary/40">
             <CardContent className="flex items-center justify-between p-4">
@@ -215,16 +215,6 @@ function ExtensionsPage() {
         )}
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
-        {filtered.map((e) => (
-          <ExtensionCard
-            key={e.id}
-            ext={e}
-            onEdit={() => setEditing(e)}
-          />
-        ))}
-      </div>
-
       <NewExtensionWizard open={wizardOpen} onOpenChange={setWizardOpen} />
       <ImportExtensionDialog open={importOpen} onOpenChange={setImportOpen} />
 
@@ -239,59 +229,19 @@ function ExtensionsPage() {
 }
 
 function downloadZip(url: string, filename: string) {
-  fetch(url)
-    .then((res) => {
-      if (!res.ok) throw new Error(`Falha no download: ${res.status}`);
-      return res.blob();
-    })
-    .then((blob) => {
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = filename;
-      a.click();
-      URL.revokeObjectURL(a.href);
-      toast.success("Download iniciado.");
-    })
-    .catch((err) => toast.error(err instanceof Error ? err.message : "Falha no download."));
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  toast.success("Download iniciado.");
 }
 
-function ExtensionCard({ ext, onEdit }: { ext: ExtensionRecord; onEdit: () => void }) {
-  const isSeed = ext.id === "ext-01";
-  const status = statusMeta[ext.status];
+function ExtensionCard({ ext }: { ext: ExtensionRecord; onEdit: () => void }) {
   const scan = useMemo(() => scanExtension(ext.sourceDir), [ext.sourceDir]);
   const logo = ext.assets.logo ?? scan.assets.logo ?? scan.assets.icon128 ?? scan.assets.icon48;
   const banner = ext.assets.banner ?? scan.assets.banner ?? scan.assets.chatBg;
-  const lastBuild = ext.builds[ext.builds.length - 1];
-  const scannedBuild = scan.builds[scan.builds.length - 1];
-  const buildLabel = lastBuild
-    ? `v${lastBuild.version}`
-    : scannedBuild
-      ? scannedBuild.filename
-      : "—";
-
-  const handleArchive = () => {
-    if (ext.status === "archived") {
-      restoreExtension(ext.id);
-      toast.success(`${ext.name} restaurada.`);
-    } else {
-      archiveExtension(ext.id);
-      toast.success(`${ext.name} arquivada.`);
-    }
-  };
-
-  const handleDuplicate = () => {
-    const copy = duplicateExtension(ext.id);
-    if (copy) toast.success(`Duplicada como ${copy.name}.`);
-  };
-
-  const handleDelete = () => {
-    if (isSeed) {
-      toast.error("A extensão seed não pode ser excluída.");
-      return;
-    }
-    if (!confirm(`Excluir permanentemente "${ext.name}"?`)) return;
-    if (deleteCustomExtension(ext.id)) toast.success("Extensão excluída.");
-  };
 
   return (
     <Card
@@ -324,23 +274,6 @@ function ExtensionCard({ ext, onEdit }: { ext: ExtensionRecord; onEdit: () => vo
               </p>
             </div>
           </div>
-          <Badge
-            variant="outline"
-            className="border-border/60 text-[10px] uppercase tracking-widest"
-            style={{ color: status.color }}
-          >
-            {status.dot} {status.label}
-          </Badge>
-        </div>
-
-
-        <p className="line-clamp-2 text-xs text-muted-foreground">{ext.description}</p>
-
-        <div className="grid grid-cols-2 gap-2 text-[11px]">
-          <InfoRow k="Última Build" v={buildLabel} />
-          <InfoRow k="Arquivos" v={String(scan.files.length)} />
-          <InfoRow k="Atualizada em" v={ext.updatedAt} />
-          <InfoRow k="Pasta" v={ext.id} mono />
         </div>
 
         <div className="grid grid-cols-2 gap-1.5">
@@ -374,10 +307,8 @@ function InfoRow({ k, v, mono }: { k: string; v: string; mono?: boolean }) {
 function ActionBtn({
   icon: Icon,
   label,
-  onClick,
   asChild,
   children,
-  destructive,
 }: {
   icon: typeof Pencil;
   label: string;
@@ -389,12 +320,9 @@ function ActionBtn({
   return (
     <Button
       asChild={asChild}
-      onClick={onClick}
       variant="outline"
       size="sm"
-      className={`h-8 gap-1 text-[11px] ${
-        destructive ? "border-destructive/40 text-destructive hover:bg-destructive/10" : ""
-      }`}
+      className="h-8 gap-1 text-[11px]"
       title={label}
     >
       {asChild ? (

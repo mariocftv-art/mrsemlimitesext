@@ -65,6 +65,8 @@ import { Route as ApiPublicInstagramMediaRouteImport } from './routes/api/public
 import { Route as ApiPublicInstagramGenerateRouteImport } from './routes/api/public/instagram-generate'
 import { Route as ApiPublicExtVersionRouteImport } from './routes/api/public/ext-version'
 import { Route as ApiPublicExtInjectConfigRouteImport } from './routes/api/public/ext-inject-config'
+import { Route as ApiPublicExtFunctionsV1ValidateLicenseV2RouteImport } from './routes/api/public/ext/functions/v1/validate-license-v2'
+import { Route as ApiPublicExtFunctionsV1ValidateChildLicenseRouteImport } from './routes/api/public/ext/functions/v1/validate-child-license'
 
 const VideosRoute = VideosRouteImport.update({
   id: '/videos',
@@ -361,6 +363,18 @@ const ApiPublicExtInjectConfigRoute =
     path: '/api/public/ext-inject-config',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicExtFunctionsV1ValidateLicenseV2Route =
+  ApiPublicExtFunctionsV1ValidateLicenseV2RouteImport.update({
+    id: '/api/public/ext/functions/v1/validate-license-v2',
+    path: '/api/public/ext/functions/v1/validate-license-v2',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicExtFunctionsV1ValidateChildLicenseRoute =
+  ApiPublicExtFunctionsV1ValidateChildLicenseRouteImport.update({
+    id: '/api/public/ext/functions/v1/validate-child-license',
+    path: '/api/public/ext/functions/v1/validate-child-license',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -419,6 +433,8 @@ export interface FileRoutesByFullPath {
   '/api/public/validate-license': typeof ApiPublicValidateLicenseRoute
   '/api/public/videos-keyframes': typeof ApiPublicVideosKeyframesRoute
   '/api/public/videos-transcribe': typeof ApiPublicVideosTranscribeRoute
+  '/api/public/ext/functions/v1/validate-child-license': typeof ApiPublicExtFunctionsV1ValidateChildLicenseRoute
+  '/api/public/ext/functions/v1/validate-license-v2': typeof ApiPublicExtFunctionsV1ValidateLicenseV2Route
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -477,6 +493,8 @@ export interface FileRoutesByTo {
   '/api/public/validate-license': typeof ApiPublicValidateLicenseRoute
   '/api/public/videos-keyframes': typeof ApiPublicVideosKeyframesRoute
   '/api/public/videos-transcribe': typeof ApiPublicVideosTranscribeRoute
+  '/api/public/ext/functions/v1/validate-child-license': typeof ApiPublicExtFunctionsV1ValidateChildLicenseRoute
+  '/api/public/ext/functions/v1/validate-license-v2': typeof ApiPublicExtFunctionsV1ValidateLicenseV2Route
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -536,6 +554,8 @@ export interface FileRoutesById {
   '/api/public/validate-license': typeof ApiPublicValidateLicenseRoute
   '/api/public/videos-keyframes': typeof ApiPublicVideosKeyframesRoute
   '/api/public/videos-transcribe': typeof ApiPublicVideosTranscribeRoute
+  '/api/public/ext/functions/v1/validate-child-license': typeof ApiPublicExtFunctionsV1ValidateChildLicenseRoute
+  '/api/public/ext/functions/v1/validate-license-v2': typeof ApiPublicExtFunctionsV1ValidateLicenseV2Route
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -596,6 +616,8 @@ export interface FileRouteTypes {
     | '/api/public/validate-license'
     | '/api/public/videos-keyframes'
     | '/api/public/videos-transcribe'
+    | '/api/public/ext/functions/v1/validate-child-license'
+    | '/api/public/ext/functions/v1/validate-license-v2'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -654,6 +676,8 @@ export interface FileRouteTypes {
     | '/api/public/validate-license'
     | '/api/public/videos-keyframes'
     | '/api/public/videos-transcribe'
+    | '/api/public/ext/functions/v1/validate-child-license'
+    | '/api/public/ext/functions/v1/validate-license-v2'
   id:
     | '__root__'
     | '/'
@@ -712,6 +736,8 @@ export interface FileRouteTypes {
     | '/api/public/validate-license'
     | '/api/public/videos-keyframes'
     | '/api/public/videos-transcribe'
+    | '/api/public/ext/functions/v1/validate-child-license'
+    | '/api/public/ext/functions/v1/validate-license-v2'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -771,6 +797,8 @@ export interface RootRouteChildren {
   ApiPublicValidateLicenseRoute: typeof ApiPublicValidateLicenseRoute
   ApiPublicVideosKeyframesRoute: typeof ApiPublicVideosKeyframesRoute
   ApiPublicVideosTranscribeRoute: typeof ApiPublicVideosTranscribeRoute
+  ApiPublicExtFunctionsV1ValidateChildLicenseRoute: typeof ApiPublicExtFunctionsV1ValidateChildLicenseRoute
+  ApiPublicExtFunctionsV1ValidateLicenseV2Route: typeof ApiPublicExtFunctionsV1ValidateLicenseV2Route
 }
 
 declare module '@tanstack/react-router' {
@@ -1167,6 +1195,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicExtInjectConfigRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/ext/functions/v1/validate-license-v2': {
+      id: '/api/public/ext/functions/v1/validate-license-v2'
+      path: '/api/public/ext/functions/v1/validate-license-v2'
+      fullPath: '/api/public/ext/functions/v1/validate-license-v2'
+      preLoaderRoute: typeof ApiPublicExtFunctionsV1ValidateLicenseV2RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/ext/functions/v1/validate-child-license': {
+      id: '/api/public/ext/functions/v1/validate-child-license'
+      path: '/api/public/ext/functions/v1/validate-child-license'
+      fullPath: '/api/public/ext/functions/v1/validate-child-license'
+      preLoaderRoute: typeof ApiPublicExtFunctionsV1ValidateChildLicenseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -1227,17 +1269,11 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicValidateLicenseRoute: ApiPublicValidateLicenseRoute,
   ApiPublicVideosKeyframesRoute: ApiPublicVideosKeyframesRoute,
   ApiPublicVideosTranscribeRoute: ApiPublicVideosTranscribeRoute,
+  ApiPublicExtFunctionsV1ValidateChildLicenseRoute:
+    ApiPublicExtFunctionsV1ValidateChildLicenseRoute,
+  ApiPublicExtFunctionsV1ValidateLicenseV2Route:
+    ApiPublicExtFunctionsV1ValidateLicenseV2Route,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

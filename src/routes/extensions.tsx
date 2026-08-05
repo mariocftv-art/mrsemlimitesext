@@ -662,7 +662,10 @@ function ActionBtn({
       size="sm"
       className={`h-8 gap-1 text-[11px] ${
         destructive ? "border-destructive/40 text-destructive hover:bg-destructive/10" : ""
+      } ${
+        highlighted ? "border-amber-500/50 bg-amber-500/10 text-amber-500 hover:bg-amber-500/20 shadow-[0_0_10px_-5px_#f5dc8c]" : ""
       }`}
+
       title={label}
     >
       {asChild ? (

@@ -42,7 +42,7 @@ export const DEFAULT_BACKEND_CONFIG: BackendConfig = {
   API_BASE_URL: "https://mrsemlimites.lovable.app/api/public/ext",
   PUBLIC_API_URL: "https://mrsemlimites.lovable.app/api/public",
   EXTENSION_ID: "metodo-quatro",
-  CLIENT_VERSION: "17.0.0",
+  CLIENT_VERSION: "1.2.2",
   PRODUCT_SLUG: "metodo-quatro",
   API_KEY: "metodo4",
 };

@@ -1,25 +1,24 @@
 {
   "manifest_version": 3,
-  "name": "MR Sem Limite",
+  "name": "Lovable ∞",
   "version": "17.0",
   "description": "Extensão premium com validação de licença, modo plano e automação inteligente.",
   "permissions": ["storage", "activeTab", "scripting", "tabs", "sidePanel", "webRequest"],
   "host_permissions": [
-    "https://mrsemlimitesext.lovable.app/*",
     "https://*.lovable.dev/*",
     "https://api.lovable.dev/*",
     "https://lovable.dev/*",
     "https://*.lovable.app/*",
     "https://api.lovable.app/*",
     "https://lovable.app/*",
-
-
-
+    "https://cvbgrjauqjawrsyknhyj.supabase.co/*",
+    "https://dwpuqewnfibeldegvimp.supabase.co/*",
+    "https://hckncgrfhedoswsdkyni.supabase.co/*",
     "https://storage.googleapis.com/*"
   ],
   "action": {
     "default_icon": { "16": "icon.png", "48": "icon.png", "128": "icon.png" },
-    "default_title": "MR Sem Limite"
+    "default_title": "Lovable ∞"
   },
   "icons": { "16": "icon.png", "48": "icon.png", "128": "icon.png" },
   "side_panel": {

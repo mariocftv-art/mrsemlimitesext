@@ -1037,7 +1037,7 @@ function simBootstrap(): string {
       var store = { local:{}, sync:{}, session:{}, managed:{} };
       if (sim.storage === 'filled') {
         store.local = {
-          mr_license_key: 'SIM-XXXX-XXXX-XXXX',
+          mr_license_key: 'PZT68-8P5UV-7AKER-C7HY5',
           mr_license_status: sim.license || 'none',
           mr_version: sim.version || '2.2.7',
           mr_last_sync: Date.now(),

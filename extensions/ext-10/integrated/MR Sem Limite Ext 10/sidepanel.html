@@ -7,66 +7,27 @@
   <style>
     :root {
       --bg-primary: #0a0a0b;
-      --bg-secondary: #13131f;
       --accent-gold: #c6a35f;
-      --accent-gold-glow: rgba(198, 163, 95, 0.3);
-      --text-primary: #ffffff;
-      --text-secondary: #a1a1aa;
-      --border-color: rgba(198, 163, 95, 0.2);
     }
-    
     body {
       margin: 0;
       padding: 0;
       background-color: var(--bg-primary);
-      color: var(--text-primary);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       height: 100vh;
-      display: flex;
-      flex-direction: column;
       overflow: hidden;
     }
-
-    #sp-body {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      overflow-y: auto;
-      position: relative;
-    }
-
-    #auth-screen {
-      display: none;
-    }
-
-    .sp-license-gate {
-      padding: 40px 20px;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-    }
-
-    /* Estilos base para garantir visibilidade */
-    .sp-tabs { display: flex; border-bottom: 1px solid var(--border-color); }
-    .sp-tab-content { flex: 1; padding: 15px; }
   </style>
+  <link rel="stylesheet" href="sidepanel.css">
 </head>
 <body>
-  <div id="sp-body">
-    <!-- O JavaScript injetará o conteúdo aqui (Gate de Licença ou Dashboard) -->
-    <div style="padding: 20px; text-align: center; color: var(--accent-gold);">
-      Inicializando...
-    </div>
-  </div>
-  
+  <div id="sp-body"></div>
   <div id="auth-screen"></div>
+  <div id="root"></div>
 
-  <!-- Scripts na ordem correta -->
   <script src="i18n.js"></script>
   <script src="sidepanel-templates.js"></script>
+  <!-- O bundle.js parece conter a lógica principal de UI -->
+  <script src="sidepanel.bundle.js"></script>
   <script src="sidepanel.js"></script>
 </body>
 </html>

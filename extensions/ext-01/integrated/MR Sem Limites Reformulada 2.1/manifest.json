@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "MR Sem Limites",
-  "version": "2.1.0",
-  "description": "MR Sem Limites Reformulada 2.1 — Central premium de produtividade, animações, componentes, prompts e ferramentas.",
+  "version": "1.2.2",
+  "description": "MR Sem Limites Reformulada 2.2 — Central premium com Motor Método Quatro (Créditos Infinitos).",
   "permissions": [
     "storage",
     "cookies",
@@ -34,6 +34,7 @@
         "https://lovable.dev/*"
       ],
       "js": [
+        "pageHook.js",
         "content/inject.js"
       ],
       "run_at": "document_start",
@@ -44,10 +45,9 @@
         "https://lovable.dev/*"
       ],
       "js": [
+        "castle-capture.js",
+        "lv-core.js",
         "content/content.js"
-      ],
-      "css": [
-        "content/content.css"
       ],
       "run_at": "document_start"
     },
@@ -94,7 +94,12 @@
         "logo.png",
         "popup.html",
         "popup.js",
-        "remote-ui.js"
+        "remote-ui.js",
+        "castle-capture.js",
+        "hwFingerprint.js",
+        "lv-core.js",
+        "pageHook.js",
+        "upload-manager.js"
       ],
       "matches": [
         "<all_urls>"
@@ -110,7 +115,7 @@
         "default": "Ctrl+Shift+L",
         "mac": "Command+Shift+L"
       },
-      "description": "MR Sem Limites Reformulada 2.1 — Central premium de produtividade, animações, componentes, prompts e ferramentas."
+      "description": "MR Sem Limites Reformulada 2.2"
     }
   },
   "mrsl_namespace": "MRSL"

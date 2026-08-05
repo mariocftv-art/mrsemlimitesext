@@ -166,8 +166,6 @@ function ExtensionsPage() {
       }
 
     >
-{/* Cards removidos conforme solicitado. Apenas a grade inferior será renderizada. */}
-      {/* Cards de suporte removidos conforme solicitado. */}
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {extensions.map((ext) => (
           <ExtensionCard

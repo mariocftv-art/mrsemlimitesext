@@ -51,18 +51,11 @@ export function getAllExtensions(): ExtensionRecord[] {
   if (cachedSnapshot) return cachedSnapshot;
   const seedIds = new Set(SEED_EXTENSIONS.map((s) => s.id));
   const customAll = readCustom();
-  
-  // Filtramos extensões marcadas como deletadas (via notes ou flag custom)
-  const custom = customAll.filter((c) => !seedIds.has(c.id) && c.notes !== 'DELETED_BY_USER');
-  
+  const custom = customAll.filter((c) => !seedIds.has(c.id));
   const overrides = new Map(
     customAll.filter((c) => seedIds.has(c.id)).map((c) => [c.id, c] as const),
   );
-  
-  const seedWithOverrides = SEED_EXTENSIONS
-    .map((s) => overrides.get(s.id) ?? s)
-    .filter(s => (s as any).notes !== 'DELETED_BY_USER'); // Remove seed marcadas como deletadas
-    
+  const seedWithOverrides = SEED_EXTENSIONS.map((s) => overrides.get(s.id) ?? s);
   cachedSnapshot = [...seedWithOverrides, ...custom];
   return cachedSnapshot;
 }
@@ -177,33 +170,12 @@ export function duplicateExtension(id: string): ExtensionRecord | undefined {
   });
 }
 
-/** Remove extensões custom ou marcadas como deletáveis (seedIds). */
+/** Remove somente extensões custom (não permite deletar seed). */
 export function deleteCustomExtension(id: string): boolean {
-  // Agora permitimos deletar qualquer coisa que o usuário queira remover do snapshot,
-  // salvando um override vazio ou simplesmente filtrando da lista custom.
-  // Se for seed, precisamos salvar uma flag de "deletada" no storage custom.
-  const custom = readCustom();
   const seedIds = new Set(SEED_EXTENSIONS.map((s) => s.id));
-  
-  if (seedIds.has(id)) {
-    // Se for seed, marcamos como deletada no custom
-    const updated = custom.filter(c => c.id !== id);
-    // Adicionamos um placeholder com flag deletada se necessário, 
-    // mas a lógica do getAllExtensions prefere remover do cachedSnapshot.
-    // Vamos simplificar: se for seed e quisermos deletar, 
-    // precisamos que getAllExtensions ignore ela.
-    
-    // Vou adicionar uma propriedade 'deleted' no registro para o getAllExtensions filtrar.
-    const record = SEED_EXTENSIONS.find(s => s.id === id);
-    if (record) {
-      updated.push({ ...record, status: 'archived', notes: 'DELETED_BY_USER' } as any);
-    }
-    writeCustom(updated);
-    return true;
-  }
-
-  const filtered = custom.filter((c) => c.id !== id);
-  writeCustom(filtered);
+  if (seedIds.has(id)) return false;
+  const custom = readCustom().filter((c) => c.id !== id);
+  writeCustom(custom);
   return true;
 }
 

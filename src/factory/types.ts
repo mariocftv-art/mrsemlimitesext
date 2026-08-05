@@ -8,7 +8,7 @@ export type ExtensionStatus =
   | "testing"
   | "archived";
 
-export type NeonTone = "cyan" | "violet" | "magenta" | "lime" | "amber";
+export type NeonTone = "cyan" | "violet" | "magenta" | "lime";
 
 export interface ExtensionAssets {
   logo?: string;      // dataURL ou URL

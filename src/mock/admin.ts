@@ -39,16 +39,8 @@ function writeAdmins(a: StoredAdmins) {
 }
 
 export function isFirstRun(): boolean {
-  // Só considera "primeira execução" quando NENHUM admin tem senha.
-  // Assim, se um dos administradores já configurou a senha, o painel
-  // vai direto para a tela de login em vez de pedir setup novamente.
   const a = readAdmins();
-  return ADMIN_EMAILS.every((e) => !a[e]);
-}
-
-export function pendingAdmins(): AdminEmail[] {
-  const a = readAdmins();
-  return ADMIN_EMAILS.filter((e) => !a[e]) as AdminEmail[];
+  return ADMIN_EMAILS.some((e) => !a[e]);
 }
 
 export function hasAdmin(email: string): boolean {
@@ -92,10 +84,4 @@ export function resetAllAdmins() {
   if (typeof window === "undefined") return;
   window.localStorage.removeItem(KEY_ADMINS);
   window.localStorage.removeItem(KEY_SESSION);
-}
-
-export function clearAdminPassword(email: AdminEmail) {
-  const admins = readAdmins();
-  delete admins[email];
-  writeAdmins(admins);
 }

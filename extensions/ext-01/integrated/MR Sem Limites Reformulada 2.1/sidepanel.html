@@ -423,95 +423,9 @@
     .mr-input,.mr-output{width:100%;padding:8px 10px;border-radius:9px;background:rgba(0,0,0,.35);border:1px solid var(--border);color:#fff;font-size:11.5px;font-family:'JetBrains Mono',monospace;outline:none;resize:vertical;min-height:60px}
     .mr-input:focus{border-color:rgba(236,72,153,.5)}
     .mr-empty{text-align:center;padding:40px 20px;color:rgba(255,255,255,.4);font-size:12px}
-    .mr-fav{position:absolute;top:8px;right:8px;background:none;border:none;color:rgba(255,255,255,.35);cursor:pointer;font-size:14px;padding:2px;z-index:2}
+    .mr-fav{position:absolute;top:8px;right:8px;background:none;border:none;color:rgba(255,255,255,.35);cursor:pointer;font-size:14px;padding:2px}
     .mr-fav.on{color:#f472b6;text-shadow:0 0 6px #ec4899}
-
-    /* Preview extras */
-    .prev-warm{background:linear-gradient(120deg,#f97316,#ec4899,#a855f7);background-size:300% 300%;animation:prevGrad 5s ease infinite}
-    .prev-cool{background:linear-gradient(120deg,#0ea5e9,#6366f1,#8b5cf6);background-size:300% 300%;animation:prevGrad 5s ease infinite}
-    .prev-pink{background:linear-gradient(120deg,#ec4899,#f472b6,#a855f7);background-size:300% 300%;animation:prevGrad 5s ease infinite}
-    .prev-blue{background:linear-gradient(120deg,#1d4ed8,#3b82f6,#22d3ee);background-size:300% 300%;animation:prevGrad 5s ease infinite}
-    .prev-mono{background:linear-gradient(120deg,#111827,#1f2937,#374151);background-size:300% 300%;animation:prevGrad 6s ease infinite}
-    .prev-cyber{background:linear-gradient(120deg,#0f172a,#7c3aed,#ec4899,#22d3ee);background-size:400% 400%;animation:prevGrad 4s ease infinite}
-    .mr-preview-icon{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:22px;filter:drop-shadow(0 0 8px rgba(0,0,0,.6))}
-
-    /* Header ON/OFF toggle */
-    .mr-power{display:inline-flex;align-items:center;gap:6px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.32);color:#4ade80;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;cursor:pointer;transition:.2s;letter-spacing:.02em}
-    .mr-power:hover{filter:brightness(1.15)}
-    .mr-power .mr-power-dot{width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 8px #22c55e}
-    .mr-power.off{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.32);color:#f87171}
-    .mr-power.off .mr-power-dot{background:#ef4444;box-shadow:0 0 8px #ef4444}
-
-    /* Pro quick actions (nova linha explícita) */
-    .qa-pro{display:flex;gap:6px;padding:8px 12px;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid var(--border);background:linear-gradient(180deg,rgba(59,130,246,.05),transparent)}
-    .qa-pro::-webkit-scrollbar{display:none}
-    .qa-pro-btn{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid rgba(236,72,153,.22);color:#f0e8ff;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;transition:.2s;letter-spacing:.02em}
-    .qa-pro-btn:hover{background:linear-gradient(135deg,rgba(236,72,153,.2),rgba(59,130,246,.2));border-color:rgba(236,72,153,.5);transform:translateY(-1px)}
-    .qa-pro-btn:active{transform:scale(.97)}
-    .qa-pro-btn .qa-pro-ico{font-size:13px}
-
-    /* Ref hint (imagem como referência) */
-    .mr-ref-hint{display:none;align-items:center;gap:8px;padding:6px 12px;background:rgba(59,130,246,.08);border-top:1px solid rgba(59,130,246,.2);border-bottom:1px solid rgba(59,130,246,.2);color:#93c5fd;font-size:11px}
-    .mr-ref-hint.show{display:flex}
-    .mr-ref-hint label{display:inline-flex;align-items:center;gap:5px;cursor:pointer;font-weight:600}
-    .mr-ref-hint input{accent-color:#3b82f6}
-
-    /* ============================================================
-       V4 — LATERAL SIDEBAR FUTURISTA (tabs verticais à esquerda)
-       ============================================================ */
-    .mr-body{display:flex;flex:1;min-height:0;overflow:hidden;position:relative}
-    .mr-tabs{flex-direction:column;flex-wrap:nowrap;width:84px;flex:0 0 84px;height:100%;overflow-y:auto;overflow-x:hidden;padding:10px 6px;gap:6px;border-right:1px solid rgba(236,72,153,.22);border-bottom:none;background:linear-gradient(180deg,rgba(24,18,46,.95),rgba(10,6,19,.95));position:relative;box-shadow:inset -1px 0 0 rgba(59,130,246,.08),4px 0 24px -12px rgba(236,72,153,.4)}
-    .mr-tabs::before{content:"";position:absolute;top:0;left:0;right:0;height:120px;background:radial-gradient(circle at top,rgba(236,72,153,.22),transparent 70%);pointer-events:none;z-index:0}
-    .mr-tabs::after{content:"";position:absolute;bottom:0;left:0;right:0;height:120px;background:radial-gradient(circle at bottom,rgba(59,130,246,.18),transparent 70%);pointer-events:none;z-index:0}
-    .mr-tab{position:relative;z-index:1;flex:0 0 auto;flex-direction:column;justify-content:center;align-items:center;gap:4px;width:100%;min-height:60px;padding:8px 4px;border-radius:12px;font-size:9px;font-weight:800;letter-spacing:.05em;line-height:1.15;text-align:center;white-space:normal;word-break:break-word;color:rgba(240,232,255,.6);background:rgba(255,255,255,.02);border:1px solid transparent;transition:transform .22s ease,background .22s ease,color .22s ease,box-shadow .22s ease}
-    .mr-tab:hover{color:#fff;background:linear-gradient(135deg,rgba(236,72,153,.14),rgba(59,130,246,.1));border-color:rgba(236,72,153,.32);transform:translateX(2px)}
-    .mr-tab.active{color:#fff;background:linear-gradient(135deg,rgba(236,72,153,.3),rgba(59,130,246,.28));border-color:rgba(236,72,153,.55);box-shadow:0 0 0 1px rgba(236,72,153,.3),0 6px 22px -8px rgba(236,72,153,.55),inset 0 0 14px rgba(59,130,246,.18);animation:mrTabGlow 3s ease-in-out infinite}
-    .mr-tab.active::before{content:"";position:absolute;left:-7px;top:20%;bottom:20%;width:3px;border-radius:3px;background:linear-gradient(180deg,#ec4899,#8b5cf6,#3b82f6);box-shadow:0 0 10px #ec4899,0 0 18px #3b82f6;animation:mrPulseBar 2.4s ease-in-out infinite}
-    @keyframes mrPulseBar{0%,100%{opacity:1;transform:scaleY(1)}50%{opacity:.55;transform:scaleY(.85)}}
-    @keyframes mrTabGlow{0%,100%{box-shadow:0 0 0 1px rgba(236,72,153,.3),0 6px 22px -8px rgba(236,72,153,.55),inset 0 0 14px rgba(59,130,246,.18)}50%{box-shadow:0 0 0 1px rgba(236,72,153,.5),0 8px 28px -6px rgba(236,72,153,.75),inset 0 0 18px rgba(59,130,246,.28)}}
-    .mr-panel{flex:1;min-width:0;min-height:0;height:100%}
-    .mr-panel-scroll{height:100%}
-    /* narrow-screen sidebar shrink */
-    @media (max-width:380px){
-      .mr-tabs{width:70px;flex-basis:70px}
-      .mr-tab{min-height:52px;font-size:8.5px;padding:6px 2px}
-    }
-    @media (max-height:520px){
-      .mr-tabs{padding:6px 4px;gap:4px}
-      .mr-tab{min-height:46px;font-size:8.5px;padding:5px 2px}
-    }
-
-    /* ============================================================
-       V5 — Painel de escolha de IA
-       ============================================================ */
-    .mr-ia-card{position:relative;padding:12px;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid var(--border);cursor:pointer;transition:.22s;overflow:hidden;display:flex;flex-direction:column;gap:6px}
-    .mr-ia-card:hover{transform:translateY(-2px);border-color:rgba(236,72,153,.4);box-shadow:0 10px 26px -14px rgba(236,72,153,.5)}
-    .mr-ia-card.selected{border-color:rgba(236,72,153,.65);background:linear-gradient(135deg,rgba(236,72,153,.18),rgba(59,130,246,.16));box-shadow:0 0 0 1px rgba(236,72,153,.4),0 10px 30px -12px rgba(236,72,153,.55);animation:mrTabGlow 3.4s ease-in-out infinite}
-    .mr-ia-head{display:flex;align-items:center;gap:8px}
-    .mr-ia-emoji{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;background:linear-gradient(135deg,rgba(236,72,153,.28),rgba(59,130,246,.28));flex-shrink:0}
-    .mr-ia-title{font-size:12.5px;font-weight:800;color:#fff;line-height:1.15;flex:1;min-width:0}
-    .mr-ia-score{font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;background:rgba(59,130,246,.18);color:#93c5fd;border:1px solid rgba(59,130,246,.32);white-space:nowrap}
-    .mr-ia-score.hi{background:rgba(34,197,94,.15);color:#4ade80;border-color:rgba(34,197,94,.35)}
-    .mr-ia-score.mid{background:rgba(250,204,21,.12);color:#facc15;border-color:rgba(250,204,21,.3)}
-    .mr-ia-power{font-size:10.5px;color:rgba(255,255,255,.7);line-height:1.35}
-    .mr-ia-tag{display:inline-block;font-size:9px;font-weight:700;padding:2px 6px;border-radius:999px;background:rgba(236,72,153,.14);color:#f472b6;border:1px solid rgba(236,72,153,.28);letter-spacing:.04em;text-transform:uppercase;margin-top:2px;align-self:flex-start}
-    .mr-ia-check{position:absolute;top:8px;right:8px;width:18px;height:18px;border-radius:50%;background:linear-gradient(135deg,#ec4899,#3b82f6);color:#fff;font-size:11px;font-weight:900;display:none;align-items:center;justify-content:center;box-shadow:0 0 10px rgba(236,72,153,.6)}
-    .mr-ia-card.selected .mr-ia-check{display:flex}
-
-    /* Badge no topo do chat mostrando IA escolhida */
-    .mr-ia-chip{display:none;align-items:center;gap:6px;margin:6px 12px 0;padding:5px 10px;border-radius:999px;background:linear-gradient(135deg,rgba(236,72,153,.18),rgba(59,130,246,.18));border:1px solid rgba(236,72,153,.4);color:#fff;font-size:11px;font-weight:700;width:fit-content;box-shadow:0 0 12px rgba(236,72,153,.25)}
-    .mr-ia-chip.show{display:inline-flex}
-    .mr-ia-chip .mr-ia-chip-x{background:none;border:none;color:rgba(255,255,255,.7);cursor:pointer;font-size:14px;line-height:1;padding:0 0 0 4px}
-    .mr-ia-chip .mr-ia-chip-x:hover{color:#fff}
-    .mr-ia-quick{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:4px 0 10px}
-    .mr-ia-qbtn{position:relative;display:flex;align-items:center;gap:8px;padding:11px 12px;border-radius:12px;border:1px solid rgba(236,72,153,.35);background:linear-gradient(135deg,rgba(236,72,153,.18),rgba(59,130,246,.18));color:#fff;font-size:12px;font-weight:800;cursor:pointer;transition:.22s;text-align:left;overflow:hidden;box-shadow:0 6px 18px -10px rgba(236,72,153,.5)}
-    .mr-ia-qbtn:hover{transform:translateY(-2px);border-color:rgba(236,72,153,.7);box-shadow:0 12px 28px -10px rgba(236,72,153,.75)}
-    .mr-ia-qbtn.selected{border-color:#ec4899;background:linear-gradient(135deg,rgba(236,72,153,.4),rgba(59,130,246,.35));box-shadow:0 0 0 1px rgba(236,72,153,.6),0 0 22px rgba(236,72,153,.55);animation:mrTabGlow 3s ease-in-out infinite}
-    .mr-ia-qbtn .qemj{font-size:18px}
-    .mr-ia-qbtn .qttl{flex:1;line-height:1.1;min-width:0}
-    .mr-ia-qbtn .qsub{display:block;font-size:9.5px;font-weight:600;color:rgba(255,255,255,.7);margin-top:2px;letter-spacing:.03em}
   </style>
-
 
 </head>
 <body>
@@ -569,32 +483,26 @@
         <img src="logo.png" class="app-header-logo" alt=""><span class="app-header-title">MR Sem Limites</span>
       </div>
       <div class="app-header-right">
-        <button id="mrPowerToggle" class="mr-power" title="Ativar/Desativar extensão"><span class="mr-power-dot"></span><span id="mrPowerLabel">ATIVA</span></button>
         <span id="licenseInfo">--</span>
         <button id="publishBtn" class="action-btn">Publish</button>
         <div class="app-header-brand" title="MR Sem Limites"><img src="logo.png" alt="MR Sem Limites"></div>
       </div>
     </div>
 
-    <!-- V4 — Sidebar lateral vertical (Chat como padrão) -->
-    <div class="mr-body">
-    <nav class="mr-tabs" id="mrTabs" role="tablist" aria-orientation="vertical">
-      <button class="mr-tab active" data-mrtab="chat" role="tab">💬<br>Chat</button>
-      <button class="mr-tab" data-mrtab="ias" role="tab">🧠<br>IAs</button>
-      <button class="mr-tab" data-mrtab="comp" role="tab">🧩<br>Comp.</button>
-      <button class="mr-tab" data-mrtab="anim" role="tab">✨<br>Anim.</button>
-      <button class="mr-tab" data-mrtab="img" role="tab">🎨<br>Imagens IA</button>
-      <button class="mr-tab" data-mrtab="vid" role="tab">🎬<br>Vídeos IA</button>
-      <button class="mr-tab" data-mrtab="tpl" role="tab">📦<br>Templates</button>
-      <button class="mr-tab" data-mrtab="prompts" role="tab">📋<br>Prompts</button>
-      <button class="mr-tab" data-mrtab="tools" role="tab">🛠<br>Ferram.</button>
-      <button class="mr-tab" data-mrtab="fav" role="tab">⭐<br>Favoritos</button>
-      <button class="mr-tab" data-mrtab="config" role="tab">⚙<br>Config.</button>
-      <button class="mr-tab" data-mrtab="home" role="tab">🏠<br>Início</button>
+    <!-- Reformulada 2.1 — tab bar -->
+    <nav class="mr-tabs" id="mrTabs" role="tablist">
+      <button class="mr-tab active" data-mrtab="home" role="tab">🏠 Home</button>
+      <button class="mr-tab" data-mrtab="chat" role="tab">💬 Chat</button>
+      <button class="mr-tab" data-mrtab="anim" role="tab">✨ Animações</button>
+      <button class="mr-tab" data-mrtab="comp" role="tab">🧩 Componentes</button>
+      <button class="mr-tab" data-mrtab="prompts" role="tab">🚀 Prompts</button>
+      <button class="mr-tab" data-mrtab="tools" role="tab">🛠 Ferramentas</button>
+      <button class="mr-tab" data-mrtab="config" role="tab">⚙️ Config</button>
+
     </nav>
 
     <!-- Home -->
-    <section class="mr-panel" data-mrpanel="home">
+    <section class="mr-panel active" data-mrpanel="home">
       <div class="mr-panel-scroll">
         <div class="mr-home-hero">
           <h2>Bem-vindo à MR Sem Limites</h2>
@@ -631,8 +539,7 @@
     </section>
 
     <!-- Chat (existente — IDs preservados) -->
-    <section class="mr-panel active" data-mrpanel="chat">
-      <div class="mr-ia-chip" id="mrIaChip"><span id="mrIaChipText">🧠 Modo: Padrão</span><button class="mr-ia-chip-x" id="mrIaChipClear" title="Remover direcionamento">✕</button></div>
+    <section class="mr-panel" data-mrpanel="chat">
       <div class="action-bar">
         <button id="downloadBtn" class="action-btn">&#11015; Download</button>
         <button id="removeWatermarkBtn" class="action-btn">&#10005; TIRAR MARCA D'AGUA</button>
@@ -648,8 +555,6 @@
         <button class="qa-btn" data-action="seguranca"><span class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></span>SEGURAN&Ccedil;A</button>
         <button class="qa-btn" data-action="responsivo"><span class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg></span>RESPONSIVO</button>
       </div>
-      <!-- Botões rápidos Pro (ações explícitas, roteadas via UI module) -->
-      <div class="qa-pro" id="mrQaPro"></div>
       <div id="chatPanel">
         <div id="history">
           <div class="empty-state">
@@ -660,9 +565,6 @@
         <div id="quickSuggestions"></div>
         <div id="status"></div>
         <div id="filePreview"></div>
-        <div class="mr-ref-hint" id="mrRefHint">
-          <label><input type="checkbox" id="mrRefOnly" checked> Imagem apenas como <b>referência visual</b> — gerar código, não imagem</label>
-        </div>
         <div class="input-area">
           <div class="input-enhance-row">
             <button id="enhanceBtn">&#10024; <span>Otimizar com IA</span></button>
@@ -684,37 +586,7 @@
       </div>
     </section>
 
-    <!-- IAs — Escolha do modelo/direcionamento (UI-only, não altera backend) -->
-    <section class="mr-panel" data-mrpanel="ias">
-      <div class="mr-panel-scroll">
-        <div class="mr-home-hero" style="padding:14px">
-          <h2 style="font-size:16px">🧠 Escolha a IA que vai trabalhar</h2>
-          <p>Selecione um modo abaixo. Tudo que você enviar no <b>Chat</b> será direcionado para essa IA — código, imagem, vídeo, contexto e mais. Você pode trocar a qualquer momento.</p>
-          <div class="mr-license-line">
-            <span class="mr-pill" id="mrIaActiveBadge">Modo ativo: Padrão</span>
-            <button class="mr-btn" id="mrIaClear" style="margin-left:auto;flex:0 0 auto;padding:5px 10px;font-size:10.5px">Limpar seleção</button>
-          </div>
-        </div>
-
-        <div class="mr-section-title">⚡ Acesso rápido — toque e use</div>
-        <div class="mr-ia-quick" id="mrIaQuick"></div>
-
-        <div class="mr-section-title">Modelos de texto (raciocínio, código, chat)</div>
-        <div class="mr-grid" id="mrIaGridText"></div>
-
-        <div class="mr-section-title">Modelos de imagem</div>
-        <div class="mr-grid" id="mrIaGridImg"></div>
-
-        <div class="mr-section-title">Modelos de vídeo</div>
-        <div class="mr-grid" id="mrIaGridVid"></div>
-
-        <p style="font-size:10.5px;color:rgba(255,255,255,.5);margin:6px 2px">
-          A escolha adiciona uma instrução curta ao início da sua mensagem no Chat, direcionando a IA correta.
-          O envio, licença e integração com o Lovable permanecem exatamente iguais.
-        </p>
-      </div>
-    </section>
-
+    <!-- Animações -->
     <section class="mr-panel" data-mrpanel="anim">
       <div class="mr-panel-scroll">
         <div class="mr-toolbar">
@@ -747,50 +619,7 @@
       </div>
     </section>
 
-    <!-- Imagens IA -->
-    <section class="mr-panel" data-mrpanel="img">
-      <div class="mr-panel-scroll">
-        <div class="mr-toolbar">
-          <input class="mr-search" id="mrImgSearch" placeholder="🔍 Buscar categoria de imagem...">
-        </div>
-        <div class="mr-toolbar" id="mrImgCats"></div>
-        <div class="mr-grid" id="mrImgGrid"></div>
-      </div>
-    </section>
-
-    <!-- Vídeos IA -->
-    <section class="mr-panel" data-mrpanel="vid">
-      <div class="mr-panel-scroll">
-        <div class="mr-toolbar">
-          <input class="mr-search" id="mrVidSearch" placeholder="🔍 Buscar categoria de vídeo...">
-        </div>
-        <div class="mr-toolbar" id="mrVidCats"></div>
-        <div class="mr-grid" id="mrVidGrid"></div>
-      </div>
-    </section>
-
-    <!-- Templates SaaS -->
-    <section class="mr-panel" data-mrpanel="tpl">
-      <div class="mr-panel-scroll">
-        <div class="mr-toolbar">
-          <input class="mr-search" id="mrTplSearch" placeholder="🔍 Buscar template SaaS...">
-        </div>
-        <div class="mr-toolbar" id="mrTplCats"></div>
-        <div class="mr-grid" id="mrTplGrid"></div>
-      </div>
-    </section>
-
-    <!-- Favoritos -->
-    <section class="mr-panel" data-mrpanel="fav">
-      <div class="mr-panel-scroll">
-        <div class="mr-section-title">⭐ Seus favoritos</div>
-        <div class="mr-toolbar" id="mrFavCats"></div>
-        <div class="mr-grid" id="mrFavGrid"></div>
-      </div>
-    </section>
-
     <!-- Ferramentas -->
-
     <section class="mr-panel" data-mrpanel="tools">
       <div class="mr-panel-scroll">
         <div class="mr-tool-block">
@@ -867,9 +696,6 @@
     </section>
 
 
-
-
-    </div><!-- /.mr-body -->
     <div class="app-footer">Powered by MR Sem Limites Reformulada 2.1 &bull; MR Sem Limites 2026 Brasil</div>
   </div>
 
@@ -879,11 +705,6 @@
   <script src="ui/sound-settings.js"></script>
   <script type="module" src="ui/sidepanel-ui.js"></script>
 
-  <!-- V5 — Painel "IAs": seletor de modo (UI-only, não altera backend/licença) -->
-  <script src="ui/ia-picker.js"></script>
 
-
-
-  <script src="security/mr-security-pro.js" defer></script>
 </body>
 </html>

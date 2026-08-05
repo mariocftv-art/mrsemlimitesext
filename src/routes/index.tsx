@@ -17,26 +17,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { factoryStats, listSummaries, type NeonTone } from "@/factory";
 
-export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "MR Extension Factory" },
-      { name: "description", content: "Painel profissional para gerenciar extensões Chrome MR Sem Limites." },
-      { property: "og:title", content: "MR Extension Factory" },
-      { property: "og:description", content: "Gerencie builds, extensões e downloads da MR Sem Limites." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-    ],
-  }),
-  component: FactoryDashboard,
-});
+export const Route = createFileRoute("/")({ component: FactoryDashboard });
 
 const glow: Record<NeonTone, string> = {
   cyan: "var(--neon-cyan)",
   violet: "var(--neon-violet)",
   magenta: "var(--neon-magenta)",
   lime: "var(--neon-lime)",
-  amber: "#f59e0b",
 };
 
 const statusLabel: Record<string, string> = {
@@ -114,7 +101,7 @@ function FactoryDashboard() {
                     <div className="min-w-0">
                       <p className="truncate text-sm font-semibold">{e.name}</p>
                       <p className="text-[11px] uppercase tracking-widest text-muted-foreground">
-                        {e.code} · v{e.version} · <span className="text-primary/70">Ativo</span>
+                        {e.code} · v{e.version}
                       </p>
                     </div>
                   </div>
@@ -179,7 +166,7 @@ function FactoryDashboard() {
         <CardContent className="grid gap-3 text-sm md:grid-cols-3">
           <StatusTile label="Backend" value="Desconectado (modo Factory)" tone="muted" />
           <StatusTile label="Extensões isoladas" value={`${stats.total} slot(s) ativo(s)`} tone="ok" />
-          <StatusTile label="Constituição" value="FACTORY_CONSTITUTION.md" tone="ok" icon={Package} />
+          <StatusTile label="Documentação" value="FACTORY_MASTER.md" tone="ok" icon={Package} />
         </CardContent>
       </Card>
     </AppShell>

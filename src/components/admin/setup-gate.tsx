@@ -1,13 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
-import { Eye, EyeOff, KeyRound, LogIn, ShieldCheck } from "lucide-react";
+import { useEffect, useState } from "react";
+import { KeyRound, LogIn, ShieldCheck } from "lucide-react";
 import {
   ADMIN_EMAILS,
   type AdminEmail,
-  clearAdminPassword,
   endSession,
   getSessionEmail,
   isFirstRun,
-  pendingAdmins,
   setPassword,
   startSession,
   verifyPassword,
@@ -32,20 +30,9 @@ export function AdminSetupGate({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("reset") === "1") {
-      window.localStorage.removeItem("mrsl.admins.v1");
-      window.localStorage.removeItem("mrsl.admin.session");
-      const url = new URL(window.location.href);
-      url.searchParams.delete("reset");
-      window.history.replaceState({}, "", url.toString());
-      toast.success("Credenciais resetadas. Defina uma nova senha.");
-      setMode("setup");
-      return;
-    }
-    if (getSessionEmail()) setMode("ok");
-    else if (isFirstRun()) setMode("setup");
-    else setMode("login");
+    if (isFirstRun()) setMode("setup");
+    else if (!getSessionEmail()) setMode("login");
+    else setMode("ok");
   }, []);
 
   if (mode === "loading") return null;
@@ -53,7 +40,7 @@ export function AdminSetupGate({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       {mode === "setup" ? (
-        <SetupCard onDone={() => setMode("login")} onSkip={() => setMode("login")} />
+        <SetupCard onDone={() => setMode("login")} />
       ) : (
         <LoginCard onDone={() => setMode("ok")} onReset={() => setMode("setup")} />
       )}
@@ -61,14 +48,13 @@ export function AdminSetupGate({ children }: { children: React.ReactNode }) {
   );
 }
 
-function SetupCard({ onDone, onSkip }: { onDone: () => void; onSkip: () => void }) {
-  const emails = useMemo(() => pendingAdmins(), []);
+function SetupCard({ onDone }: { onDone: () => void }) {
   const [pw, setPw] = useState<Record<string, string>>({});
   const [confirm, setConfirm] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
 
   const submit = async () => {
-    for (const email of emails) {
+    for (const email of ADMIN_EMAILS) {
       if (!pw[email] || pw[email].length < 8) {
         toast.error(`Senha de ${email} precisa ter no mínimo 8 caracteres`);
         return;
@@ -80,7 +66,7 @@ function SetupCard({ onDone, onSkip }: { onDone: () => void; onSkip: () => void 
     }
     setBusy(true);
     try {
-      for (const email of emails) {
+      for (const email of ADMIN_EMAILS) {
         await setPassword(email as AdminEmail, pw[email]);
       }
       toast.success("Senhas configuradas. Faça login para continuar.");
@@ -89,7 +75,6 @@ function SetupCard({ onDone, onSkip }: { onDone: () => void; onSkip: () => void 
       setBusy(false);
     }
   };
-
 
   return (
     <Card className="glass w-full max-w-lg border-border/60">
@@ -102,28 +87,29 @@ function SetupCard({ onDone, onSkip }: { onDone: () => void; onSkip: () => void 
         </div>
         <CardTitle>Configuração inicial</CardTitle>
         <p className="text-sm text-muted-foreground">
-          Defina a senha {emails.length > 1 ? "dos administradores pendentes" : "do administrador pendente"}.
-          Não existe senha padrão.
+          Defina a senha dos dois administradores principais. Não existe senha padrão.
         </p>
       </CardHeader>
       <CardContent className="space-y-5">
-        {emails.map((email) => (
+        {ADMIN_EMAILS.map((email) => (
           <div key={email} className="space-y-2 rounded-lg border border-border/60 p-3">
             <p className="text-sm font-medium">{email}</p>
             <div className="grid gap-2 sm:grid-cols-2">
               <div className="space-y-1">
                 <Label className="text-xs">Nova senha</Label>
-                <PasswordField
+                <Input
+                  type="password"
                   value={pw[email] || ""}
-                  onChange={(v) => setPw({ ...pw, [email]: v })}
+                  onChange={(e) => setPw({ ...pw, [email]: e.target.value })}
                   placeholder="min. 8 caracteres"
                 />
               </div>
               <div className="space-y-1">
                 <Label className="text-xs">Confirmar</Label>
-                <PasswordField
+                <Input
+                  type="password"
                   value={confirm[email] || ""}
-                  onChange={(v) => setConfirm({ ...confirm, [email]: v })}
+                  onChange={(e) => setConfirm({ ...confirm, [email]: e.target.value })}
                 />
               </div>
             </div>
@@ -137,13 +123,6 @@ function SetupCard({ onDone, onSkip }: { onDone: () => void; onSkip: () => void 
         >
           <KeyRound className="mr-2 h-4 w-4" /> Salvar senhas
         </Button>
-        <button
-          type="button"
-          onClick={onSkip}
-          className="w-full text-xs text-muted-foreground underline-offset-2 hover:underline"
-        >
-          Já configurei antes · ir para o login
-        </button>
       </CardContent>
     </Card>
   );
@@ -199,10 +178,11 @@ function LoginCard({ onDone, onReset }: { onDone: () => void; onReset: () => voi
         </div>
         <div className="space-y-1">
           <Label className="text-xs">Senha</Label>
-          <PasswordField
+          <Input
+            type="password"
             value={password}
-            onChange={setPassword}
-            onEnter={submit}
+            onChange={(e) => setPassword(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && submit()}
           />
         </div>
         <Button
@@ -216,66 +196,14 @@ function LoginCard({ onDone, onReset }: { onDone: () => void; onReset: () => voi
         <button
           type="button"
           onClick={() => {
-            if (
-              confirm(
-                `Redefinir a senha de ${email}?\n\nO cadastro dessa conta será apagado e você poderá criar uma nova senha na tela de configuração inicial.`,
-              )
-            ) {
-              clearAdminPassword(email);
-              endSession();
-              toast.success("Senha resetada. Defina uma nova.");
-              onReset();
-            }
-          }}
-          className="w-full text-xs text-primary underline-offset-2 hover:underline"
-        >
-          Esqueci a senha
-        </button>
-        <button
-          type="button"
-          onClick={() => {
             endSession();
             onReset();
           }}
-          className="w-full text-[11px] text-muted-foreground underline-offset-2 hover:underline"
+          className="w-full text-xs text-muted-foreground underline-offset-2 hover:underline"
         >
           Resetar credenciais (voltar à configuração inicial)
         </button>
       </CardContent>
     </Card>
-  );
-}
-
-function PasswordField({
-  value,
-  onChange,
-  placeholder,
-  onEnter,
-}: {
-  value: string;
-  onChange: (v: string) => void;
-  placeholder?: string;
-  onEnter?: () => void;
-}) {
-  const [show, setShow] = useState(false);
-  return (
-    <div className="relative">
-      <Input
-        type={show ? "text" : "password"}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        onKeyDown={(e) => e.key === "Enter" && onEnter?.()}
-        className="pr-10"
-      />
-      <button
-        type="button"
-        aria-label={show ? "Ocultar senha" : "Mostrar senha"}
-        onClick={() => setShow((s) => !s)}
-        className="absolute inset-y-0 right-0 flex w-9 items-center justify-center text-muted-foreground hover:text-foreground"
-      >
-        {show ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-      </button>
-    </div>
   );
 }

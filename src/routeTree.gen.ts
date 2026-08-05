@@ -9,25 +9,19 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as VideosRouteImport } from './routes/videos'
 import { Route as VersionsRouteImport } from './routes/versions'
 import { Route as ToolsRouteImport } from './routes/tools'
-import { Route as TermsOfServiceRouteImport } from './routes/terms-of-service'
-import { Route as SupportRouteImport } from './routes/support'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SecurityRouteImport } from './routes/security'
 import { Route as PromptsRouteImport } from './routes/prompts'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ProductsRouteImport } from './routes/products'
-import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as LogsRouteImport } from './routes/logs'
 import { Route as LicensesRouteImport } from './routes/licenses'
-import { Route as InstagramPreviewRouteImport } from './routes/instagram-preview'
 import { Route as ExtensionsRouteImport } from './routes/extensions'
 import { Route as EditorRouteImport } from './routes/editor'
 import { Route as DownloadsRouteImport } from './routes/downloads'
 import { Route as DevicesRouteImport } from './routes/devices'
-import { Route as DataDeletionRouteImport } from './routes/data-deletion'
 import { Route as CustomersRouteImport } from './routes/customers'
 import { Route as ComponentsRouteImport } from './routes/components'
 import { Route as CompatibilityRouteImport } from './routes/compatibility'
@@ -38,41 +32,12 @@ import { Route as BackendRouteImport } from './routes/backend'
 import { Route as AssetsRouteImport } from './routes/assets'
 import { Route as ApiDocsRouteImport } from './routes/api-docs'
 import { Route as AnimationsRouteImport } from './routes/animations'
-import { Route as AdminSecureRouteImport } from './routes/admin-secure'
 import { Route as ActivationsRouteImport } from './routes/activations'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RuntimeIdRouteImport } from './routes/runtime.$id'
 import { Route as PreviewIdRouteImport } from './routes/preview.$id'
 import { Route as LiveIdRouteImport } from './routes/live.$id'
-import { Route as ApiPublicVideosTranscribeRouteImport } from './routes/api/public/videos-transcribe'
-import { Route as ApiPublicVideosKeyframesRouteImport } from './routes/api/public/videos-keyframes'
-import { Route as ApiPublicValidateLicenseRouteImport } from './routes/api/public/validate-license'
-import { Route as ApiPublicSecurityVersionRouteImport } from './routes/api/public/security-version'
-import { Route as ApiPublicSecurityValidateLicenseRouteImport } from './routes/api/public/security-validate-license'
-import { Route as ApiPublicSecurityLogsRouteImport } from './routes/api/public/security-logs'
-import { Route as ApiPublicOrbeTtsRouteImport } from './routes/api/public/orbe-tts'
-import { Route as ApiPublicOrbeChatRouteImport } from './routes/api/public/orbe-chat'
-import { Route as ApiPublicMrAiChatRouteImport } from './routes/api/public/mr-ai-chat'
-import { Route as ApiPublicLicenseHeartbeatRouteImport } from './routes/api/public/license-heartbeat'
-import { Route as ApiPublicLicenseDeactivateRouteImport } from './routes/api/public/license-deactivate'
-import { Route as ApiPublicLicenseActivationRouteImport } from './routes/api/public/license-activation'
-import { Route as ApiPublicInstagramWebhookRouteImport } from './routes/api/public/instagram-webhook'
-import { Route as ApiPublicInstagramStatusRouteImport } from './routes/api/public/instagram-status'
-import { Route as ApiPublicInstagramPublishRouteImport } from './routes/api/public/instagram-publish'
-import { Route as ApiPublicInstagramOauthStartRouteImport } from './routes/api/public/instagram-oauth-start'
-import { Route as ApiPublicInstagramOauthCallbackRouteImport } from './routes/api/public/instagram-oauth-callback'
-import { Route as ApiPublicInstagramMediaRouteImport } from './routes/api/public/instagram-media'
-import { Route as ApiPublicInstagramGenerateRouteImport } from './routes/api/public/instagram-generate'
-import { Route as ApiPublicExtVersionRouteImport } from './routes/api/public/ext-version'
-import { Route as ApiPublicExtInjectConfigRouteImport } from './routes/api/public/ext-inject-config'
-import { Route as ApiPublicExtFunctionsV1ValidateLicenseV2RouteImport } from './routes/api/public/ext/functions/v1/validate-license-v2'
-import { Route as ApiPublicExtFunctionsV1ValidateChildLicenseRouteImport } from './routes/api/public/ext/functions/v1/validate-child-license'
 
-const VideosRoute = VideosRouteImport.update({
-  id: '/videos',
-  path: '/videos',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const VersionsRoute = VersionsRouteImport.update({
   id: '/versions',
   path: '/versions',
@@ -81,16 +46,6 @@ const VersionsRoute = VersionsRouteImport.update({
 const ToolsRoute = ToolsRouteImport.update({
   id: '/tools',
   path: '/tools',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TermsOfServiceRoute = TermsOfServiceRouteImport.update({
-  id: '/terms-of-service',
-  path: '/terms-of-service',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SupportRoute = SupportRouteImport.update({
-  id: '/support',
-  path: '/support',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SettingsRoute = SettingsRouteImport.update({
@@ -118,11 +73,6 @@ const ProductsRoute = ProductsRouteImport.update({
   path: '/products',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
-  id: '/privacy-policy',
-  path: '/privacy-policy',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const LogsRoute = LogsRouteImport.update({
   id: '/logs',
   path: '/logs',
@@ -131,11 +81,6 @@ const LogsRoute = LogsRouteImport.update({
 const LicensesRoute = LicensesRouteImport.update({
   id: '/licenses',
   path: '/licenses',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const InstagramPreviewRoute = InstagramPreviewRouteImport.update({
-  id: '/instagram-preview',
-  path: '/instagram-preview',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ExtensionsRoute = ExtensionsRouteImport.update({
@@ -156,11 +101,6 @@ const DownloadsRoute = DownloadsRouteImport.update({
 const DevicesRoute = DevicesRouteImport.update({
   id: '/devices',
   path: '/devices',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DataDeletionRoute = DataDeletionRouteImport.update({
-  id: '/data-deletion',
-  path: '/data-deletion',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CustomersRoute = CustomersRouteImport.update({
@@ -213,11 +153,6 @@ const AnimationsRoute = AnimationsRouteImport.update({
   path: '/animations',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminSecureRoute = AdminSecureRouteImport.update({
-  id: '/admin-secure',
-  path: '/admin-secure',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ActivationsRoute = ActivationsRouteImport.update({
   id: '/activations',
   path: '/activations',
@@ -243,143 +178,10 @@ const LiveIdRoute = LiveIdRouteImport.update({
   path: '/live/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicVideosTranscribeRoute =
-  ApiPublicVideosTranscribeRouteImport.update({
-    id: '/api/public/videos-transcribe',
-    path: '/api/public/videos-transcribe',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicVideosKeyframesRoute =
-  ApiPublicVideosKeyframesRouteImport.update({
-    id: '/api/public/videos-keyframes',
-    path: '/api/public/videos-keyframes',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicValidateLicenseRoute =
-  ApiPublicValidateLicenseRouteImport.update({
-    id: '/api/public/validate-license',
-    path: '/api/public/validate-license',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicSecurityVersionRoute =
-  ApiPublicSecurityVersionRouteImport.update({
-    id: '/api/public/security-version',
-    path: '/api/public/security-version',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicSecurityValidateLicenseRoute =
-  ApiPublicSecurityValidateLicenseRouteImport.update({
-    id: '/api/public/security-validate-license',
-    path: '/api/public/security-validate-license',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicSecurityLogsRoute = ApiPublicSecurityLogsRouteImport.update({
-  id: '/api/public/security-logs',
-  path: '/api/public/security-logs',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicOrbeTtsRoute = ApiPublicOrbeTtsRouteImport.update({
-  id: '/api/public/orbe-tts',
-  path: '/api/public/orbe-tts',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicOrbeChatRoute = ApiPublicOrbeChatRouteImport.update({
-  id: '/api/public/orbe-chat',
-  path: '/api/public/orbe-chat',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicMrAiChatRoute = ApiPublicMrAiChatRouteImport.update({
-  id: '/api/public/mr-ai-chat',
-  path: '/api/public/mr-ai-chat',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicLicenseHeartbeatRoute =
-  ApiPublicLicenseHeartbeatRouteImport.update({
-    id: '/api/public/license-heartbeat',
-    path: '/api/public/license-heartbeat',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicLicenseDeactivateRoute =
-  ApiPublicLicenseDeactivateRouteImport.update({
-    id: '/api/public/license-deactivate',
-    path: '/api/public/license-deactivate',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicLicenseActivationRoute =
-  ApiPublicLicenseActivationRouteImport.update({
-    id: '/api/public/license-activation',
-    path: '/api/public/license-activation',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicInstagramWebhookRoute =
-  ApiPublicInstagramWebhookRouteImport.update({
-    id: '/api/public/instagram-webhook',
-    path: '/api/public/instagram-webhook',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicInstagramStatusRoute =
-  ApiPublicInstagramStatusRouteImport.update({
-    id: '/api/public/instagram-status',
-    path: '/api/public/instagram-status',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicInstagramPublishRoute =
-  ApiPublicInstagramPublishRouteImport.update({
-    id: '/api/public/instagram-publish',
-    path: '/api/public/instagram-publish',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicInstagramOauthStartRoute =
-  ApiPublicInstagramOauthStartRouteImport.update({
-    id: '/api/public/instagram-oauth-start',
-    path: '/api/public/instagram-oauth-start',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicInstagramOauthCallbackRoute =
-  ApiPublicInstagramOauthCallbackRouteImport.update({
-    id: '/api/public/instagram-oauth-callback',
-    path: '/api/public/instagram-oauth-callback',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicInstagramMediaRoute = ApiPublicInstagramMediaRouteImport.update({
-  id: '/api/public/instagram-media',
-  path: '/api/public/instagram-media',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicInstagramGenerateRoute =
-  ApiPublicInstagramGenerateRouteImport.update({
-    id: '/api/public/instagram-generate',
-    path: '/api/public/instagram-generate',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicExtVersionRoute = ApiPublicExtVersionRouteImport.update({
-  id: '/api/public/ext-version',
-  path: '/api/public/ext-version',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicExtInjectConfigRoute =
-  ApiPublicExtInjectConfigRouteImport.update({
-    id: '/api/public/ext-inject-config',
-    path: '/api/public/ext-inject-config',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicExtFunctionsV1ValidateLicenseV2Route =
-  ApiPublicExtFunctionsV1ValidateLicenseV2RouteImport.update({
-    id: '/api/public/ext/functions/v1/validate-license-v2',
-    path: '/api/public/ext/functions/v1/validate-license-v2',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicExtFunctionsV1ValidateChildLicenseRoute =
-  ApiPublicExtFunctionsV1ValidateChildLicenseRouteImport.update({
-    id: '/api/public/ext/functions/v1/validate-child-license',
-    path: '/api/public/ext/functions/v1/validate-child-license',
-    getParentRoute: () => rootRouteImport,
-  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/activations': typeof ActivationsRoute
-  '/admin-secure': typeof AdminSecureRoute
   '/animations': typeof AnimationsRoute
   '/api-docs': typeof ApiDocsRoute
   '/assets': typeof AssetsRoute
@@ -390,56 +192,26 @@ export interface FileRoutesByFullPath {
   '/compatibility': typeof CompatibilityRoute
   '/components': typeof ComponentsRoute
   '/customers': typeof CustomersRoute
-  '/data-deletion': typeof DataDeletionRoute
   '/devices': typeof DevicesRoute
   '/downloads': typeof DownloadsRoute
   '/editor': typeof EditorRoute
   '/extensions': typeof ExtensionsRoute
-  '/instagram-preview': typeof InstagramPreviewRoute
   '/licenses': typeof LicensesRoute
   '/logs': typeof LogsRoute
-  '/privacy-policy': typeof PrivacyPolicyRoute
   '/products': typeof ProductsRoute
   '/profile': typeof ProfileRoute
   '/prompts': typeof PromptsRoute
   '/security': typeof SecurityRoute
   '/settings': typeof SettingsRoute
-  '/support': typeof SupportRoute
-  '/terms-of-service': typeof TermsOfServiceRoute
   '/tools': typeof ToolsRoute
   '/versions': typeof VersionsRoute
-  '/videos': typeof VideosRoute
   '/live/$id': typeof LiveIdRoute
   '/preview/$id': typeof PreviewIdRoute
   '/runtime/$id': typeof RuntimeIdRoute
-  '/api/public/ext-inject-config': typeof ApiPublicExtInjectConfigRoute
-  '/api/public/ext-version': typeof ApiPublicExtVersionRoute
-  '/api/public/instagram-generate': typeof ApiPublicInstagramGenerateRoute
-  '/api/public/instagram-media': typeof ApiPublicInstagramMediaRoute
-  '/api/public/instagram-oauth-callback': typeof ApiPublicInstagramOauthCallbackRoute
-  '/api/public/instagram-oauth-start': typeof ApiPublicInstagramOauthStartRoute
-  '/api/public/instagram-publish': typeof ApiPublicInstagramPublishRoute
-  '/api/public/instagram-status': typeof ApiPublicInstagramStatusRoute
-  '/api/public/instagram-webhook': typeof ApiPublicInstagramWebhookRoute
-  '/api/public/license-activation': typeof ApiPublicLicenseActivationRoute
-  '/api/public/license-deactivate': typeof ApiPublicLicenseDeactivateRoute
-  '/api/public/license-heartbeat': typeof ApiPublicLicenseHeartbeatRoute
-  '/api/public/mr-ai-chat': typeof ApiPublicMrAiChatRoute
-  '/api/public/orbe-chat': typeof ApiPublicOrbeChatRoute
-  '/api/public/orbe-tts': typeof ApiPublicOrbeTtsRoute
-  '/api/public/security-logs': typeof ApiPublicSecurityLogsRoute
-  '/api/public/security-validate-license': typeof ApiPublicSecurityValidateLicenseRoute
-  '/api/public/security-version': typeof ApiPublicSecurityVersionRoute
-  '/api/public/validate-license': typeof ApiPublicValidateLicenseRoute
-  '/api/public/videos-keyframes': typeof ApiPublicVideosKeyframesRoute
-  '/api/public/videos-transcribe': typeof ApiPublicVideosTranscribeRoute
-  '/api/public/ext/functions/v1/validate-child-license': typeof ApiPublicExtFunctionsV1ValidateChildLicenseRoute
-  '/api/public/ext/functions/v1/validate-license-v2': typeof ApiPublicExtFunctionsV1ValidateLicenseV2Route
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/activations': typeof ActivationsRoute
-  '/admin-secure': typeof AdminSecureRoute
   '/animations': typeof AnimationsRoute
   '/api-docs': typeof ApiDocsRoute
   '/assets': typeof AssetsRoute
@@ -450,57 +222,27 @@ export interface FileRoutesByTo {
   '/compatibility': typeof CompatibilityRoute
   '/components': typeof ComponentsRoute
   '/customers': typeof CustomersRoute
-  '/data-deletion': typeof DataDeletionRoute
   '/devices': typeof DevicesRoute
   '/downloads': typeof DownloadsRoute
   '/editor': typeof EditorRoute
   '/extensions': typeof ExtensionsRoute
-  '/instagram-preview': typeof InstagramPreviewRoute
   '/licenses': typeof LicensesRoute
   '/logs': typeof LogsRoute
-  '/privacy-policy': typeof PrivacyPolicyRoute
   '/products': typeof ProductsRoute
   '/profile': typeof ProfileRoute
   '/prompts': typeof PromptsRoute
   '/security': typeof SecurityRoute
   '/settings': typeof SettingsRoute
-  '/support': typeof SupportRoute
-  '/terms-of-service': typeof TermsOfServiceRoute
   '/tools': typeof ToolsRoute
   '/versions': typeof VersionsRoute
-  '/videos': typeof VideosRoute
   '/live/$id': typeof LiveIdRoute
   '/preview/$id': typeof PreviewIdRoute
   '/runtime/$id': typeof RuntimeIdRoute
-  '/api/public/ext-inject-config': typeof ApiPublicExtInjectConfigRoute
-  '/api/public/ext-version': typeof ApiPublicExtVersionRoute
-  '/api/public/instagram-generate': typeof ApiPublicInstagramGenerateRoute
-  '/api/public/instagram-media': typeof ApiPublicInstagramMediaRoute
-  '/api/public/instagram-oauth-callback': typeof ApiPublicInstagramOauthCallbackRoute
-  '/api/public/instagram-oauth-start': typeof ApiPublicInstagramOauthStartRoute
-  '/api/public/instagram-publish': typeof ApiPublicInstagramPublishRoute
-  '/api/public/instagram-status': typeof ApiPublicInstagramStatusRoute
-  '/api/public/instagram-webhook': typeof ApiPublicInstagramWebhookRoute
-  '/api/public/license-activation': typeof ApiPublicLicenseActivationRoute
-  '/api/public/license-deactivate': typeof ApiPublicLicenseDeactivateRoute
-  '/api/public/license-heartbeat': typeof ApiPublicLicenseHeartbeatRoute
-  '/api/public/mr-ai-chat': typeof ApiPublicMrAiChatRoute
-  '/api/public/orbe-chat': typeof ApiPublicOrbeChatRoute
-  '/api/public/orbe-tts': typeof ApiPublicOrbeTtsRoute
-  '/api/public/security-logs': typeof ApiPublicSecurityLogsRoute
-  '/api/public/security-validate-license': typeof ApiPublicSecurityValidateLicenseRoute
-  '/api/public/security-version': typeof ApiPublicSecurityVersionRoute
-  '/api/public/validate-license': typeof ApiPublicValidateLicenseRoute
-  '/api/public/videos-keyframes': typeof ApiPublicVideosKeyframesRoute
-  '/api/public/videos-transcribe': typeof ApiPublicVideosTranscribeRoute
-  '/api/public/ext/functions/v1/validate-child-license': typeof ApiPublicExtFunctionsV1ValidateChildLicenseRoute
-  '/api/public/ext/functions/v1/validate-license-v2': typeof ApiPublicExtFunctionsV1ValidateLicenseV2Route
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/activations': typeof ActivationsRoute
-  '/admin-secure': typeof AdminSecureRoute
   '/animations': typeof AnimationsRoute
   '/api-docs': typeof ApiDocsRoute
   '/assets': typeof AssetsRoute
@@ -511,58 +253,28 @@ export interface FileRoutesById {
   '/compatibility': typeof CompatibilityRoute
   '/components': typeof ComponentsRoute
   '/customers': typeof CustomersRoute
-  '/data-deletion': typeof DataDeletionRoute
   '/devices': typeof DevicesRoute
   '/downloads': typeof DownloadsRoute
   '/editor': typeof EditorRoute
   '/extensions': typeof ExtensionsRoute
-  '/instagram-preview': typeof InstagramPreviewRoute
   '/licenses': typeof LicensesRoute
   '/logs': typeof LogsRoute
-  '/privacy-policy': typeof PrivacyPolicyRoute
   '/products': typeof ProductsRoute
   '/profile': typeof ProfileRoute
   '/prompts': typeof PromptsRoute
   '/security': typeof SecurityRoute
   '/settings': typeof SettingsRoute
-  '/support': typeof SupportRoute
-  '/terms-of-service': typeof TermsOfServiceRoute
   '/tools': typeof ToolsRoute
   '/versions': typeof VersionsRoute
-  '/videos': typeof VideosRoute
   '/live/$id': typeof LiveIdRoute
   '/preview/$id': typeof PreviewIdRoute
   '/runtime/$id': typeof RuntimeIdRoute
-  '/api/public/ext-inject-config': typeof ApiPublicExtInjectConfigRoute
-  '/api/public/ext-version': typeof ApiPublicExtVersionRoute
-  '/api/public/instagram-generate': typeof ApiPublicInstagramGenerateRoute
-  '/api/public/instagram-media': typeof ApiPublicInstagramMediaRoute
-  '/api/public/instagram-oauth-callback': typeof ApiPublicInstagramOauthCallbackRoute
-  '/api/public/instagram-oauth-start': typeof ApiPublicInstagramOauthStartRoute
-  '/api/public/instagram-publish': typeof ApiPublicInstagramPublishRoute
-  '/api/public/instagram-status': typeof ApiPublicInstagramStatusRoute
-  '/api/public/instagram-webhook': typeof ApiPublicInstagramWebhookRoute
-  '/api/public/license-activation': typeof ApiPublicLicenseActivationRoute
-  '/api/public/license-deactivate': typeof ApiPublicLicenseDeactivateRoute
-  '/api/public/license-heartbeat': typeof ApiPublicLicenseHeartbeatRoute
-  '/api/public/mr-ai-chat': typeof ApiPublicMrAiChatRoute
-  '/api/public/orbe-chat': typeof ApiPublicOrbeChatRoute
-  '/api/public/orbe-tts': typeof ApiPublicOrbeTtsRoute
-  '/api/public/security-logs': typeof ApiPublicSecurityLogsRoute
-  '/api/public/security-validate-license': typeof ApiPublicSecurityValidateLicenseRoute
-  '/api/public/security-version': typeof ApiPublicSecurityVersionRoute
-  '/api/public/validate-license': typeof ApiPublicValidateLicenseRoute
-  '/api/public/videos-keyframes': typeof ApiPublicVideosKeyframesRoute
-  '/api/public/videos-transcribe': typeof ApiPublicVideosTranscribeRoute
-  '/api/public/ext/functions/v1/validate-child-license': typeof ApiPublicExtFunctionsV1ValidateChildLicenseRoute
-  '/api/public/ext/functions/v1/validate-license-v2': typeof ApiPublicExtFunctionsV1ValidateLicenseV2Route
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/activations'
-    | '/admin-secure'
     | '/animations'
     | '/api-docs'
     | '/assets'
@@ -573,56 +285,26 @@ export interface FileRouteTypes {
     | '/compatibility'
     | '/components'
     | '/customers'
-    | '/data-deletion'
     | '/devices'
     | '/downloads'
     | '/editor'
     | '/extensions'
-    | '/instagram-preview'
     | '/licenses'
     | '/logs'
-    | '/privacy-policy'
     | '/products'
     | '/profile'
     | '/prompts'
     | '/security'
     | '/settings'
-    | '/support'
-    | '/terms-of-service'
     | '/tools'
     | '/versions'
-    | '/videos'
     | '/live/$id'
     | '/preview/$id'
     | '/runtime/$id'
-    | '/api/public/ext-inject-config'
-    | '/api/public/ext-version'
-    | '/api/public/instagram-generate'
-    | '/api/public/instagram-media'
-    | '/api/public/instagram-oauth-callback'
-    | '/api/public/instagram-oauth-start'
-    | '/api/public/instagram-publish'
-    | '/api/public/instagram-status'
-    | '/api/public/instagram-webhook'
-    | '/api/public/license-activation'
-    | '/api/public/license-deactivate'
-    | '/api/public/license-heartbeat'
-    | '/api/public/mr-ai-chat'
-    | '/api/public/orbe-chat'
-    | '/api/public/orbe-tts'
-    | '/api/public/security-logs'
-    | '/api/public/security-validate-license'
-    | '/api/public/security-version'
-    | '/api/public/validate-license'
-    | '/api/public/videos-keyframes'
-    | '/api/public/videos-transcribe'
-    | '/api/public/ext/functions/v1/validate-child-license'
-    | '/api/public/ext/functions/v1/validate-license-v2'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/activations'
-    | '/admin-secure'
     | '/animations'
     | '/api-docs'
     | '/assets'
@@ -633,56 +315,26 @@ export interface FileRouteTypes {
     | '/compatibility'
     | '/components'
     | '/customers'
-    | '/data-deletion'
     | '/devices'
     | '/downloads'
     | '/editor'
     | '/extensions'
-    | '/instagram-preview'
     | '/licenses'
     | '/logs'
-    | '/privacy-policy'
     | '/products'
     | '/profile'
     | '/prompts'
     | '/security'
     | '/settings'
-    | '/support'
-    | '/terms-of-service'
     | '/tools'
     | '/versions'
-    | '/videos'
     | '/live/$id'
     | '/preview/$id'
     | '/runtime/$id'
-    | '/api/public/ext-inject-config'
-    | '/api/public/ext-version'
-    | '/api/public/instagram-generate'
-    | '/api/public/instagram-media'
-    | '/api/public/instagram-oauth-callback'
-    | '/api/public/instagram-oauth-start'
-    | '/api/public/instagram-publish'
-    | '/api/public/instagram-status'
-    | '/api/public/instagram-webhook'
-    | '/api/public/license-activation'
-    | '/api/public/license-deactivate'
-    | '/api/public/license-heartbeat'
-    | '/api/public/mr-ai-chat'
-    | '/api/public/orbe-chat'
-    | '/api/public/orbe-tts'
-    | '/api/public/security-logs'
-    | '/api/public/security-validate-license'
-    | '/api/public/security-version'
-    | '/api/public/validate-license'
-    | '/api/public/videos-keyframes'
-    | '/api/public/videos-transcribe'
-    | '/api/public/ext/functions/v1/validate-child-license'
-    | '/api/public/ext/functions/v1/validate-license-v2'
   id:
     | '__root__'
     | '/'
     | '/activations'
-    | '/admin-secure'
     | '/animations'
     | '/api-docs'
     | '/assets'
@@ -693,57 +345,27 @@ export interface FileRouteTypes {
     | '/compatibility'
     | '/components'
     | '/customers'
-    | '/data-deletion'
     | '/devices'
     | '/downloads'
     | '/editor'
     | '/extensions'
-    | '/instagram-preview'
     | '/licenses'
     | '/logs'
-    | '/privacy-policy'
     | '/products'
     | '/profile'
     | '/prompts'
     | '/security'
     | '/settings'
-    | '/support'
-    | '/terms-of-service'
     | '/tools'
     | '/versions'
-    | '/videos'
     | '/live/$id'
     | '/preview/$id'
     | '/runtime/$id'
-    | '/api/public/ext-inject-config'
-    | '/api/public/ext-version'
-    | '/api/public/instagram-generate'
-    | '/api/public/instagram-media'
-    | '/api/public/instagram-oauth-callback'
-    | '/api/public/instagram-oauth-start'
-    | '/api/public/instagram-publish'
-    | '/api/public/instagram-status'
-    | '/api/public/instagram-webhook'
-    | '/api/public/license-activation'
-    | '/api/public/license-deactivate'
-    | '/api/public/license-heartbeat'
-    | '/api/public/mr-ai-chat'
-    | '/api/public/orbe-chat'
-    | '/api/public/orbe-tts'
-    | '/api/public/security-logs'
-    | '/api/public/security-validate-license'
-    | '/api/public/security-version'
-    | '/api/public/validate-license'
-    | '/api/public/videos-keyframes'
-    | '/api/public/videos-transcribe'
-    | '/api/public/ext/functions/v1/validate-child-license'
-    | '/api/public/ext/functions/v1/validate-license-v2'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ActivationsRoute: typeof ActivationsRoute
-  AdminSecureRoute: typeof AdminSecureRoute
   AnimationsRoute: typeof AnimationsRoute
   ApiDocsRoute: typeof ApiDocsRoute
   AssetsRoute: typeof AssetsRoute
@@ -754,62 +376,26 @@ export interface RootRouteChildren {
   CompatibilityRoute: typeof CompatibilityRoute
   ComponentsRoute: typeof ComponentsRoute
   CustomersRoute: typeof CustomersRoute
-  DataDeletionRoute: typeof DataDeletionRoute
   DevicesRoute: typeof DevicesRoute
   DownloadsRoute: typeof DownloadsRoute
   EditorRoute: typeof EditorRoute
   ExtensionsRoute: typeof ExtensionsRoute
-  InstagramPreviewRoute: typeof InstagramPreviewRoute
   LicensesRoute: typeof LicensesRoute
   LogsRoute: typeof LogsRoute
-  PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   ProductsRoute: typeof ProductsRoute
   ProfileRoute: typeof ProfileRoute
   PromptsRoute: typeof PromptsRoute
   SecurityRoute: typeof SecurityRoute
   SettingsRoute: typeof SettingsRoute
-  SupportRoute: typeof SupportRoute
-  TermsOfServiceRoute: typeof TermsOfServiceRoute
   ToolsRoute: typeof ToolsRoute
   VersionsRoute: typeof VersionsRoute
-  VideosRoute: typeof VideosRoute
   LiveIdRoute: typeof LiveIdRoute
   PreviewIdRoute: typeof PreviewIdRoute
   RuntimeIdRoute: typeof RuntimeIdRoute
-  ApiPublicExtInjectConfigRoute: typeof ApiPublicExtInjectConfigRoute
-  ApiPublicExtVersionRoute: typeof ApiPublicExtVersionRoute
-  ApiPublicInstagramGenerateRoute: typeof ApiPublicInstagramGenerateRoute
-  ApiPublicInstagramMediaRoute: typeof ApiPublicInstagramMediaRoute
-  ApiPublicInstagramOauthCallbackRoute: typeof ApiPublicInstagramOauthCallbackRoute
-  ApiPublicInstagramOauthStartRoute: typeof ApiPublicInstagramOauthStartRoute
-  ApiPublicInstagramPublishRoute: typeof ApiPublicInstagramPublishRoute
-  ApiPublicInstagramStatusRoute: typeof ApiPublicInstagramStatusRoute
-  ApiPublicInstagramWebhookRoute: typeof ApiPublicInstagramWebhookRoute
-  ApiPublicLicenseActivationRoute: typeof ApiPublicLicenseActivationRoute
-  ApiPublicLicenseDeactivateRoute: typeof ApiPublicLicenseDeactivateRoute
-  ApiPublicLicenseHeartbeatRoute: typeof ApiPublicLicenseHeartbeatRoute
-  ApiPublicMrAiChatRoute: typeof ApiPublicMrAiChatRoute
-  ApiPublicOrbeChatRoute: typeof ApiPublicOrbeChatRoute
-  ApiPublicOrbeTtsRoute: typeof ApiPublicOrbeTtsRoute
-  ApiPublicSecurityLogsRoute: typeof ApiPublicSecurityLogsRoute
-  ApiPublicSecurityValidateLicenseRoute: typeof ApiPublicSecurityValidateLicenseRoute
-  ApiPublicSecurityVersionRoute: typeof ApiPublicSecurityVersionRoute
-  ApiPublicValidateLicenseRoute: typeof ApiPublicValidateLicenseRoute
-  ApiPublicVideosKeyframesRoute: typeof ApiPublicVideosKeyframesRoute
-  ApiPublicVideosTranscribeRoute: typeof ApiPublicVideosTranscribeRoute
-  ApiPublicExtFunctionsV1ValidateChildLicenseRoute: typeof ApiPublicExtFunctionsV1ValidateChildLicenseRoute
-  ApiPublicExtFunctionsV1ValidateLicenseV2Route: typeof ApiPublicExtFunctionsV1ValidateLicenseV2Route
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/videos': {
-      id: '/videos'
-      path: '/videos'
-      fullPath: '/videos'
-      preLoaderRoute: typeof VideosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/versions': {
       id: '/versions'
       path: '/versions'
@@ -822,20 +408,6 @@ declare module '@tanstack/react-router' {
       path: '/tools'
       fullPath: '/tools'
       preLoaderRoute: typeof ToolsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/terms-of-service': {
-      id: '/terms-of-service'
-      path: '/terms-of-service'
-      fullPath: '/terms-of-service'
-      preLoaderRoute: typeof TermsOfServiceRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/support': {
-      id: '/support'
-      path: '/support'
-      fullPath: '/support'
-      preLoaderRoute: typeof SupportRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/settings': {
@@ -873,13 +445,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/privacy-policy': {
-      id: '/privacy-policy'
-      path: '/privacy-policy'
-      fullPath: '/privacy-policy'
-      preLoaderRoute: typeof PrivacyPolicyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/logs': {
       id: '/logs'
       path: '/logs'
@@ -892,13 +457,6 @@ declare module '@tanstack/react-router' {
       path: '/licenses'
       fullPath: '/licenses'
       preLoaderRoute: typeof LicensesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/instagram-preview': {
-      id: '/instagram-preview'
-      path: '/instagram-preview'
-      fullPath: '/instagram-preview'
-      preLoaderRoute: typeof InstagramPreviewRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/extensions': {
@@ -927,13 +485,6 @@ declare module '@tanstack/react-router' {
       path: '/devices'
       fullPath: '/devices'
       preLoaderRoute: typeof DevicesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/data-deletion': {
-      id: '/data-deletion'
-      path: '/data-deletion'
-      fullPath: '/data-deletion'
-      preLoaderRoute: typeof DataDeletionRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/customers': {
@@ -1006,13 +557,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AnimationsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin-secure': {
-      id: '/admin-secure'
-      path: '/admin-secure'
-      fullPath: '/admin-secure'
-      preLoaderRoute: typeof AdminSecureRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/activations': {
       id: '/activations'
       path: '/activations'
@@ -1048,174 +592,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LiveIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/videos-transcribe': {
-      id: '/api/public/videos-transcribe'
-      path: '/api/public/videos-transcribe'
-      fullPath: '/api/public/videos-transcribe'
-      preLoaderRoute: typeof ApiPublicVideosTranscribeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/videos-keyframes': {
-      id: '/api/public/videos-keyframes'
-      path: '/api/public/videos-keyframes'
-      fullPath: '/api/public/videos-keyframes'
-      preLoaderRoute: typeof ApiPublicVideosKeyframesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/validate-license': {
-      id: '/api/public/validate-license'
-      path: '/api/public/validate-license'
-      fullPath: '/api/public/validate-license'
-      preLoaderRoute: typeof ApiPublicValidateLicenseRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/security-version': {
-      id: '/api/public/security-version'
-      path: '/api/public/security-version'
-      fullPath: '/api/public/security-version'
-      preLoaderRoute: typeof ApiPublicSecurityVersionRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/security-validate-license': {
-      id: '/api/public/security-validate-license'
-      path: '/api/public/security-validate-license'
-      fullPath: '/api/public/security-validate-license'
-      preLoaderRoute: typeof ApiPublicSecurityValidateLicenseRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/security-logs': {
-      id: '/api/public/security-logs'
-      path: '/api/public/security-logs'
-      fullPath: '/api/public/security-logs'
-      preLoaderRoute: typeof ApiPublicSecurityLogsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/orbe-tts': {
-      id: '/api/public/orbe-tts'
-      path: '/api/public/orbe-tts'
-      fullPath: '/api/public/orbe-tts'
-      preLoaderRoute: typeof ApiPublicOrbeTtsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/orbe-chat': {
-      id: '/api/public/orbe-chat'
-      path: '/api/public/orbe-chat'
-      fullPath: '/api/public/orbe-chat'
-      preLoaderRoute: typeof ApiPublicOrbeChatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/mr-ai-chat': {
-      id: '/api/public/mr-ai-chat'
-      path: '/api/public/mr-ai-chat'
-      fullPath: '/api/public/mr-ai-chat'
-      preLoaderRoute: typeof ApiPublicMrAiChatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/license-heartbeat': {
-      id: '/api/public/license-heartbeat'
-      path: '/api/public/license-heartbeat'
-      fullPath: '/api/public/license-heartbeat'
-      preLoaderRoute: typeof ApiPublicLicenseHeartbeatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/license-deactivate': {
-      id: '/api/public/license-deactivate'
-      path: '/api/public/license-deactivate'
-      fullPath: '/api/public/license-deactivate'
-      preLoaderRoute: typeof ApiPublicLicenseDeactivateRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/license-activation': {
-      id: '/api/public/license-activation'
-      path: '/api/public/license-activation'
-      fullPath: '/api/public/license-activation'
-      preLoaderRoute: typeof ApiPublicLicenseActivationRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/instagram-webhook': {
-      id: '/api/public/instagram-webhook'
-      path: '/api/public/instagram-webhook'
-      fullPath: '/api/public/instagram-webhook'
-      preLoaderRoute: typeof ApiPublicInstagramWebhookRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/instagram-status': {
-      id: '/api/public/instagram-status'
-      path: '/api/public/instagram-status'
-      fullPath: '/api/public/instagram-status'
-      preLoaderRoute: typeof ApiPublicInstagramStatusRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/instagram-publish': {
-      id: '/api/public/instagram-publish'
-      path: '/api/public/instagram-publish'
-      fullPath: '/api/public/instagram-publish'
-      preLoaderRoute: typeof ApiPublicInstagramPublishRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/instagram-oauth-start': {
-      id: '/api/public/instagram-oauth-start'
-      path: '/api/public/instagram-oauth-start'
-      fullPath: '/api/public/instagram-oauth-start'
-      preLoaderRoute: typeof ApiPublicInstagramOauthStartRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/instagram-oauth-callback': {
-      id: '/api/public/instagram-oauth-callback'
-      path: '/api/public/instagram-oauth-callback'
-      fullPath: '/api/public/instagram-oauth-callback'
-      preLoaderRoute: typeof ApiPublicInstagramOauthCallbackRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/instagram-media': {
-      id: '/api/public/instagram-media'
-      path: '/api/public/instagram-media'
-      fullPath: '/api/public/instagram-media'
-      preLoaderRoute: typeof ApiPublicInstagramMediaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/instagram-generate': {
-      id: '/api/public/instagram-generate'
-      path: '/api/public/instagram-generate'
-      fullPath: '/api/public/instagram-generate'
-      preLoaderRoute: typeof ApiPublicInstagramGenerateRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/ext-version': {
-      id: '/api/public/ext-version'
-      path: '/api/public/ext-version'
-      fullPath: '/api/public/ext-version'
-      preLoaderRoute: typeof ApiPublicExtVersionRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/ext-inject-config': {
-      id: '/api/public/ext-inject-config'
-      path: '/api/public/ext-inject-config'
-      fullPath: '/api/public/ext-inject-config'
-      preLoaderRoute: typeof ApiPublicExtInjectConfigRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/ext/functions/v1/validate-license-v2': {
-      id: '/api/public/ext/functions/v1/validate-license-v2'
-      path: '/api/public/ext/functions/v1/validate-license-v2'
-      fullPath: '/api/public/ext/functions/v1/validate-license-v2'
-      preLoaderRoute: typeof ApiPublicExtFunctionsV1ValidateLicenseV2RouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/ext/functions/v1/validate-child-license': {
-      id: '/api/public/ext/functions/v1/validate-child-license'
-      path: '/api/public/ext/functions/v1/validate-child-license'
-      fullPath: '/api/public/ext/functions/v1/validate-child-license'
-      preLoaderRoute: typeof ApiPublicExtFunctionsV1ValidateChildLicenseRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ActivationsRoute: ActivationsRoute,
-  AdminSecureRoute: AdminSecureRoute,
   AnimationsRoute: AnimationsRoute,
   ApiDocsRoute: ApiDocsRoute,
   AssetsRoute: AssetsRoute,
@@ -1226,53 +608,22 @@ const rootRouteChildren: RootRouteChildren = {
   CompatibilityRoute: CompatibilityRoute,
   ComponentsRoute: ComponentsRoute,
   CustomersRoute: CustomersRoute,
-  DataDeletionRoute: DataDeletionRoute,
   DevicesRoute: DevicesRoute,
   DownloadsRoute: DownloadsRoute,
   EditorRoute: EditorRoute,
   ExtensionsRoute: ExtensionsRoute,
-  InstagramPreviewRoute: InstagramPreviewRoute,
   LicensesRoute: LicensesRoute,
   LogsRoute: LogsRoute,
-  PrivacyPolicyRoute: PrivacyPolicyRoute,
   ProductsRoute: ProductsRoute,
   ProfileRoute: ProfileRoute,
   PromptsRoute: PromptsRoute,
   SecurityRoute: SecurityRoute,
   SettingsRoute: SettingsRoute,
-  SupportRoute: SupportRoute,
-  TermsOfServiceRoute: TermsOfServiceRoute,
   ToolsRoute: ToolsRoute,
   VersionsRoute: VersionsRoute,
-  VideosRoute: VideosRoute,
   LiveIdRoute: LiveIdRoute,
   PreviewIdRoute: PreviewIdRoute,
   RuntimeIdRoute: RuntimeIdRoute,
-  ApiPublicExtInjectConfigRoute: ApiPublicExtInjectConfigRoute,
-  ApiPublicExtVersionRoute: ApiPublicExtVersionRoute,
-  ApiPublicInstagramGenerateRoute: ApiPublicInstagramGenerateRoute,
-  ApiPublicInstagramMediaRoute: ApiPublicInstagramMediaRoute,
-  ApiPublicInstagramOauthCallbackRoute: ApiPublicInstagramOauthCallbackRoute,
-  ApiPublicInstagramOauthStartRoute: ApiPublicInstagramOauthStartRoute,
-  ApiPublicInstagramPublishRoute: ApiPublicInstagramPublishRoute,
-  ApiPublicInstagramStatusRoute: ApiPublicInstagramStatusRoute,
-  ApiPublicInstagramWebhookRoute: ApiPublicInstagramWebhookRoute,
-  ApiPublicLicenseActivationRoute: ApiPublicLicenseActivationRoute,
-  ApiPublicLicenseDeactivateRoute: ApiPublicLicenseDeactivateRoute,
-  ApiPublicLicenseHeartbeatRoute: ApiPublicLicenseHeartbeatRoute,
-  ApiPublicMrAiChatRoute: ApiPublicMrAiChatRoute,
-  ApiPublicOrbeChatRoute: ApiPublicOrbeChatRoute,
-  ApiPublicOrbeTtsRoute: ApiPublicOrbeTtsRoute,
-  ApiPublicSecurityLogsRoute: ApiPublicSecurityLogsRoute,
-  ApiPublicSecurityValidateLicenseRoute: ApiPublicSecurityValidateLicenseRoute,
-  ApiPublicSecurityVersionRoute: ApiPublicSecurityVersionRoute,
-  ApiPublicValidateLicenseRoute: ApiPublicValidateLicenseRoute,
-  ApiPublicVideosKeyframesRoute: ApiPublicVideosKeyframesRoute,
-  ApiPublicVideosTranscribeRoute: ApiPublicVideosTranscribeRoute,
-  ApiPublicExtFunctionsV1ValidateChildLicenseRoute:
-    ApiPublicExtFunctionsV1ValidateChildLicenseRoute,
-  ApiPublicExtFunctionsV1ValidateLicenseV2Route:
-    ApiPublicExtFunctionsV1ValidateLicenseV2Route,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

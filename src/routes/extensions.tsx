@@ -7,12 +7,10 @@ import {
   Copy,
   Download,
   Eye,
-  FileArchive,
   FolderOpen,
   GitBranch,
   Hammer,
   ImageIcon,
-  MessageCircle,
   Pencil,
   Plus,
   Puzzle,
@@ -20,12 +18,6 @@ import {
   Trash2,
   Upload,
 } from "lucide-react";
-
-
-const SUPPORT_WHATSAPP_URL =
-  "https://wa.me/5511962579428?text=" +
-  encodeURIComponent("Olá! Preciso de suporte com a extensão MR Sem Limites.");
-const openSupport = () => window.open(SUPPORT_WHATSAPP_URL, "_blank", "noopener");
 import { ImportExtensionDialog } from "@/factory/importer-dialog";
 
 import { toast } from "sonner";
@@ -69,16 +61,6 @@ import {
 } from "@/factory";
 
 export const Route = createFileRoute("/extensions")({
-  head: () => ({
-    meta: [
-      { title: "Extensões MR Sem Limites" },
-      { name: "description", content: "Downloads e suporte das extensões MR Sem Limites, incluindo a EXT5 Instagram." },
-      { property: "og:title", content: "Extensões MR Sem Limites" },
-      { property: "og:description", content: "Baixe as versões atualizadas das extensões MR Sem Limites." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-    ],
-  }),
   component: ExtensionsPage,
 });
 
@@ -87,7 +69,6 @@ const glow: Record<NeonTone, string> = {
   violet: "var(--neon-violet)",
   magenta: "var(--neon-magenta)",
   lime: "var(--neon-lime)",
-  amber: "#f59e0b",
 };
 
 const statusMeta: Record<ExtensionStatus, { label: string; dot: string; color: string }> = {
@@ -98,20 +79,6 @@ const statusMeta: Record<ExtensionStatus, { label: string; dot: string; color: s
 };
 
 const EXT1_ZIP_URL = "/MR%20Sem%20Limites%20EXT1.zip";
-const EXT2_ZIP_URL = "/__l5e/assets-v1/ce8b8538-9670-4dc9-80ef-8143186ab254/MR Sem Limites EXT2.zip";
-const EXT3_ZIP_URL = "/__l5e/assets-v1/e5691ba7-8515-4004-bb77-b0df44b06628/MR-Sem-Limites-EXT3-v3.2.6.zip";
-const EXT4_ZIP_URL = "/__l5e/assets-v1/a9e2a317-8481-456e-9dc6-5df018c0cc59/MR Sem Limite Manus.zip";
-const EXT5_ZIP_URL = "/__l5e/assets-v1/0fa6bab6-004b-4a23-9b5a-3f1799e55597/MR-Sem-Limites-EXT5-v5.4.23.zip";
-import ext6Asset from "@/assets/ext6-v6.1.0.zip.asset.json";
-const EXT6_ZIP_URL = ext6Asset.url;
-import ext7Asset from "@/assets/ext7-v7.3.1.zip.asset.json";
-const EXT7_ZIP_URL = ext7Asset.url;
-import ext8Asset from "@/assets/ext8-v8.0.2.zip.asset.json";
-const EXT8_ZIP_URL = ext8Asset.url;
-import ext9Asset from "@/assets/ext9-mrturbo-modificada.zip.asset.json";
-const EXT9_ZIP_URL = ext9Asset.url;
-const EXT15_ZIP_URL = "/ext10-v1.0.2.zip";
-const EXT10_ZIP_URL = "/ext10-v1.0.2.zip";
 
 type Filter = "all" | ExtensionStatus;
 type Sort = "name" | "version" | "updated" | "status";
@@ -128,10 +95,52 @@ function ExtensionsPage() {
   const extensions = useFactoryExtensions();
   const ext1 = extensions.find((e) => e.code === "EXT1");
   const ext1Zip = ext1?.packagedZip ?? EXT1_ZIP_URL;
+  const [filter, setFilter] = useState<Filter>("all");
+  const [query, setQuery] = useState("");
+  const [sort, setSort] = useState<Sort>("updated");
   const [wizardOpen, setWizardOpen] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
   const [editing, setEditing] = useState<ExtensionRecord | null>(null);
 
+
+  const filtered = useMemo(() => {
+    let list = extensions.slice();
+    if (filter !== "all") list = list.filter((e) => e.status === filter);
+    if (query.trim()) {
+      const q = query.toLowerCase();
+      list = list.filter(
+        (e) =>
+          e.name.toLowerCase().includes(q) ||
+          e.code.toLowerCase().includes(q) ||
+          e.slug.toLowerCase().includes(q),
+      );
+    }
+    list.sort((a, b) => {
+      switch (sort) {
+        case "name":
+          return a.name.localeCompare(b.name);
+        case "version":
+          return b.version.localeCompare(a.version);
+        case "status":
+          return a.status.localeCompare(b.status);
+        default:
+          return b.updatedAt.localeCompare(a.updatedAt);
+      }
+    });
+    return list;
+  }, [extensions, filter, query, sort]);
+
+  const counts = useMemo(() => {
+    const c: Record<Filter, number> = {
+      all: extensions.length,
+      production: 0,
+      development: 0,
+      testing: 0,
+      archived: 0,
+    };
+    for (const e of extensions) c[e.status]++;
+    return c;
+  }, [extensions]);
 
   const downloadExt1 = () => {
     downloadZip(ext1Zip, "MR Sem Limites EXT1.zip");
@@ -163,85 +172,83 @@ function ExtensionsPage() {
       }
 
     >
-      <div className="space-y-4">
-        {extensions.map((ext) => {
-          const status = statusMeta[ext.status];
-          const downloadUrl = ext.packagedZip || (
-            ext.code === "EXT1" ? EXT1_ZIP_URL :
-            ext.code === "EXT2" ? EXT2_ZIP_URL :
-            ext.code === "EXT3" ? EXT3_ZIP_URL :
-            ext.id === "ext-01" ? EXT4_ZIP_URL : 
-            ext.code === "EXT5" ? EXT5_ZIP_URL :
-            ext.code === "EXT6" ? EXT6_ZIP_URL :
-            ext.code === "EXT7" ? EXT7_ZIP_URL :
-            ext.code === "EXT8" ? EXT8_ZIP_URL :
-            ext.code === "EXT9" ? EXT9_ZIP_URL :
-            ext.code === "EXT10" ? EXT10_ZIP_URL :
-            ext.code === "EXT15" ? EXT15_ZIP_URL :
-            `/api/build/${ext.id}/latest`
-          );
-
-          return (
-            <div 
-              key={ext.id} 
-              className="flex flex-col gap-4 rounded-xl border border-border/40 bg-background/20 p-5 transition-all hover:bg-background/30 md:flex-row md:items-center"
-              style={{ borderLeft: `4px solid ${glow[ext.tone]}` }}
-            >
-              <div className="flex flex-1 flex-col gap-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <h3 className="text-sm font-bold uppercase tracking-tight text-foreground/90">
-                    {ext.name} — <span className="text-muted-foreground">{ext.code === "EXT1" ? "Download" : ext.code}</span>
-                  </h3>
-                  <Badge variant="outline" className="h-5 border-border/60 text-[10px] uppercase tracking-widest">
-                    {status.label}
-                  </Badge>
-                </div>
-                <p className="line-clamp-2 text-xs text-muted-foreground leading-relaxed">
-                  {ext.description}
-                </p>
-              </div>
-
-              <div className="flex flex-wrap items-center gap-2 shrink-0">
-                <Button
-                  size="sm"
-                  className="h-9 gap-2 px-4 font-bold transition-all"
-                  style={{ 
-                    background: ext.tone === 'amber' ? 'var(--neon-amber, #f59e0b)' : glow[ext.tone],
-                    color: '#000',
-                    boxShadow: `0 0 15px -5px ${glow[ext.tone]}`
-                  }}
-                  onClick={() => downloadZip(downloadUrl!, `${ext.name}.zip`)}
-                >
-                  <Download className="h-4 w-4" /> {ext.code} {ext.version} Download
-                </Button>
-                
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="h-9 gap-2 border-destructive/30 bg-destructive/5 text-destructive hover:bg-destructive/10"
-                  onClick={() => {
-                    if (confirm(`Excluir permanentemente "${ext.name}"?`)) {
-                      if (deleteCustomExtension(ext.id)) {
-                        toast.success("Extensão excluída.");
-                      }
-                    }
-                  }}
-                >
-                  <Trash2 className="h-4 w-4" /> Excluir
-                </Button>
-
-                <div className="ml-2">
-                  <input 
-                    type="checkbox" 
-                    className="h-4 w-4 rounded border-border/60 bg-background/40 accent-amber-500"
-                    title="Selecionar"
-                  />
-                </div>
-              </div>
+      <Card className="glass mb-4 border-primary/40">
+          <CardContent className="flex flex-col gap-3 p-4 md:flex-row md:items-center md:justify-between">
+            <div className="space-y-1">
+              <p className="text-sm font-semibold">EXT1 Download</p>
+              <p className="text-xs text-muted-foreground">
+                Baixe o ZIP, descompacte e no Chrome use “Carregar sem compactação” na pasta interna “MR Sem Limites EXT1”, onde está o manifest.json.
+              </p>
             </div>
-          );
-        })}
+            <Button className="gap-1.5 md:w-auto" onClick={downloadExt1}>
+              <Download className="h-4 w-4" /> EXT1 Download
+            </Button>
+          </CardContent>
+        </Card>
+
+      <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex flex-wrap gap-1.5">
+          {(["all", "production", "development", "testing", "archived"] as Filter[]).map((f) => (
+            <Button
+              key={f}
+              size="sm"
+              variant={filter === f ? "default" : "outline"}
+              onClick={() => setFilter(f)}
+              className="h-8 gap-1.5 text-xs"
+            >
+              {f === "all" ? "Todas" : statusMeta[f].label}
+              <span className="rounded bg-background/40 px-1.5 text-[10px] text-muted-foreground">
+                {counts[f]}
+              </span>
+            </Button>
+          ))}
+        </div>
+
+        <div className="flex gap-2">
+          <div className="relative w-full min-w-[240px]">
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Buscar por nome, código ou slug..."
+              className="h-9 border-border/60 bg-secondary/40 pl-9 text-sm"
+            />
+          </div>
+          <Select value={sort} onValueChange={(v) => setSort(v as Sort)}>
+            <SelectTrigger className="h-9 w-[180px] border-border/60 bg-secondary/40 text-sm">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="updated">Última atualização</SelectItem>
+              <SelectItem value="name">Nome</SelectItem>
+              <SelectItem value="version">Versão</SelectItem>
+              <SelectItem value="status">Status</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
+
+      {filtered.length === 0 ? (
+        <Card className="glass border-border/60">
+          <CardContent className="flex flex-col items-center justify-center gap-3 py-16 text-center text-sm text-muted-foreground">
+            <Puzzle className="h-8 w-8 text-primary" />
+            <p>Nenhuma extensão corresponde aos filtros.</p>
+            <Button variant="outline" size="sm" onClick={() => setWizardOpen(true)}>
+              <Plus className="mr-1.5 h-4 w-4" /> Criar nova extensão
+            </Button>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {filtered.map((e) => (
+            <ExtensionCard
+              key={e.id}
+              ext={e}
+              onEdit={() => setEditing(e)}
+            />
+          ))}
+        </div>
+      )}
 
       <NewExtensionWizard open={wizardOpen} onOpenChange={setWizardOpen} />
       <ImportExtensionDialog open={importOpen} onOpenChange={setImportOpen} />
@@ -257,22 +264,6 @@ function ExtensionsPage() {
 }
 
 function downloadZip(url: string, filename: string) {
-  if (!url) {
-    toast.error("URL de download não disponível para esta extensão.");
-    return;
-  }
-  
-  // Para URLs diretas (que não precisam de fetch/blob, como assets externos)
-  if (url.startsWith('http') && !url.includes(window.location.host) && !url.includes('/api/')) {
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = filename;
-    a.target = "_blank";
-    a.click();
-    toast.success(`Download de ${filename} iniciado.`);
-    return;
-  }
-
   fetch(url)
     .then((res) => {
       if (!res.ok) throw new Error(`Falha no download: ${res.status}`);
@@ -284,18 +275,9 @@ function downloadZip(url: string, filename: string) {
       a.download = filename;
       a.click();
       URL.revokeObjectURL(a.href);
-      toast.success(`Download de ${filename} iniciado.`);
+      toast.success("Download da EXT1 iniciado.");
     })
-    .catch((err) => {
-      console.error("Erro no download:", err);
-      // Fallback: tentar abrir a URL diretamente se o fetch falhar (CSP ou CORS)
-      try {
-        window.open(url, "_blank");
-        toast.success(`Tentando download direto de ${filename}...`);
-      } catch (e) {
-        toast.error(err instanceof Error ? err.message : "Falha no download.");
-      }
-    });
+    .catch((err) => toast.error(err instanceof Error ? err.message : "Falha no download."));
 }
 
 function ExtensionCard({ ext, onEdit }: { ext: ExtensionRecord; onEdit: () => void }) {
@@ -328,6 +310,10 @@ function ExtensionCard({ ext, onEdit }: { ext: ExtensionRecord; onEdit: () => vo
   };
 
   const handleDelete = () => {
+    if (isSeed) {
+      toast.error("A extensão seed não pode ser excluída.");
+      return;
+    }
     if (!confirm(`Excluir permanentemente "${ext.name}"?`)) return;
     if (deleteCustomExtension(ext.id)) toast.success("Extensão excluída.");
   };
@@ -337,13 +323,6 @@ function ExtensionCard({ ext, onEdit }: { ext: ExtensionRecord; onEdit: () => vo
       className="glass relative overflow-hidden border-border/60"
       style={{ boxShadow: `0 0 40px -28px ${glow[ext.tone]}` }}
     >
-        <div className="absolute top-3 right-3 z-10 flex gap-2">
-          <input 
-            type="checkbox" 
-            className="h-4 w-4 rounded border-border/60 bg-background/40 accent-amber-500 transition hover:border-amber-500/60"
-            title="Selecionar extensão"
-          />
-        </div>
       {banner && (
         <div
           className="h-20 w-full bg-cover bg-center opacity-70"
@@ -351,7 +330,6 @@ function ExtensionCard({ ext, onEdit }: { ext: ExtensionRecord; onEdit: () => vo
         />
       )}
       <CardContent className="relative space-y-4 p-5">
-
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-3">
             <div
@@ -424,16 +402,12 @@ function ExtensionCard({ ext, onEdit }: { ext: ExtensionRecord; onEdit: () => vo
             label={ext.status === "archived" ? "Restaurar" : "Arquivar"}
             onClick={handleArchive}
           />
-          <ActionBtn 
-            icon={Download} 
-            label="Download" 
-            onClick={() => downloadZip(ext.packagedZip || `/api/build/${ext.id}/latest`, `${ext.name}.zip`)} 
-            highlighted
-          />
+          {ext.packagedZip && (
+            <ActionBtn icon={Download} label="ZIP" onClick={() => downloadZip(ext.packagedZip!, `${ext.code}.zip`)} />
+          )}
           {!isSeed && (
             <ActionBtn icon={Trash2} label="Excluir" onClick={handleDelete} destructive />
           )}
-
         </div>
       </CardContent>
     </Card>
@@ -456,17 +430,14 @@ function ActionBtn({
   asChild,
   children,
   destructive,
-  highlighted,
 }: {
-  icon: any;
+  icon: typeof Pencil;
   label: string;
   onClick?: () => void;
   asChild?: boolean;
   children?: React.ReactNode;
   destructive?: boolean;
-  highlighted?: boolean;
 }) {
-
   return (
     <Button
       asChild={asChild}
@@ -475,10 +446,7 @@ function ActionBtn({
       size="sm"
       className={`h-8 gap-1 text-[11px] ${
         destructive ? "border-destructive/40 text-destructive hover:bg-destructive/10" : ""
-      } ${
-        highlighted ? "border-amber-500/50 bg-amber-500/10 text-amber-500 hover:bg-amber-500/20 shadow-[0_0_10px_-5px_#f5dc8c]" : ""
       }`}
-
       title={label}
     >
       {asChild ? (
@@ -501,7 +469,6 @@ const TONES: { value: NeonTone; label: string; color: string }[] = [
   { value: "violet", label: "Violeta", color: "var(--neon-violet)" },
   { value: "magenta", label: "Magenta", color: "var(--neon-magenta)" },
   { value: "lime", label: "Lima", color: "var(--neon-lime)" },
-  { value: "amber", label: "Ouro", color: "#f59e0b" },
 ];
 
 const WIZARD_STEPS = ["Nome", "Código", "Logo", "Cor", "Descrição", "Estrutura"] as const;

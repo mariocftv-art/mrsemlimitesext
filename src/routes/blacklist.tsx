@@ -23,6 +23,7 @@ import {
 import { useStore, blacklistActions } from "@/mock/store";
 import type { BlacklistEntry, BlacklistType } from "@/mock/types";
 import { useTable, formatDate } from "@/lib/table-utils";
+import { getSessionEmail } from "@/mock/admin";
 
 export const Route = createFileRoute("/blacklist")({ component: BlacklistPage });
 
@@ -187,7 +188,7 @@ function BlacklistForm({
             <Textarea rows={3} value={reason} onChange={(e) => setReason(e.target.value)} />
           </div>
           <p className="text-xs text-muted-foreground">
-            Responsável: <span className="font-medium">MR Sem Limites</span>
+            Responsável: <span className="font-medium">{getSessionEmail() || "sistema"}</span>
           </p>
         </div>
         <DialogFooter>

@@ -56,7 +56,6 @@ const glow: Record<NeonTone, string> = {
   violet: "var(--neon-violet)",
   magenta: "var(--neon-magenta)",
   lime: "var(--neon-lime)",
-  amber: "#f59e0b",
 };
 
 const statusMeta = {

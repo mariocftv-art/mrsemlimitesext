@@ -359,6 +359,31 @@ function ExtensionsPage() {
             </div>
           </CardContent>
         </Card>
+      <Card className="glass mb-4 border-indigo-500/60">
+          <CardContent className="flex flex-col gap-3 p-4 md:flex-row md:items-center md:justify-between">
+            <div className="space-y-1">
+              <p className="text-sm font-semibold">🚀 EXT10 — MR Sem Limite Ext 10 (Novo Método v4)</p>
+              <p className="text-xs text-muted-foreground">
+                Extensão híbrida: <b>Motor original do Método 4 (EXT4)</b> integrado ao <b>design Black &amp; Gold da EXT7</b>. Inclui todas as abas profissionais, banco de licenças oficial MR Sem Limites, camada de segurança <code>mr-security-pro.js</code>, anti-inspeção F12 e manifesto de integridade. <b>Zero chaves antigas</b>. Isolada das demais extensões.
+              </p>
+            </div>
+            <div className="flex flex-col gap-2 md:flex-row md:w-auto">
+              <Button
+                className="gap-1.5 md:w-auto"
+                style={{ background: "linear-gradient(135deg,#6366f1,#a855f7 55%,#ec4899)", color: "white" }}
+                onClick={() => {
+                  downloadZip(EXT10_ZIP_URL, "MR-Sem-Limites-EXT10-v10.0.0.zip");
+                  toast.success("Download da EXT10 v10.0.0 iniciado.");
+                }}
+              >
+                <Download className="h-4 w-4" /> EXT10 v10.0.0 Download
+              </Button>
+              <Button variant="outline" className="gap-1.5 border-emerald-500/60 text-emerald-400 hover:bg-emerald-500/10 md:w-auto" onClick={openSupport}>
+                <MessageCircle className="h-4 w-4" /> Suporte
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       <Card className="glass mb-4 border-cyan-500/50">
 
           <CardContent className="flex flex-col gap-3 p-4 md:flex-row md:items-center md:justify-between">

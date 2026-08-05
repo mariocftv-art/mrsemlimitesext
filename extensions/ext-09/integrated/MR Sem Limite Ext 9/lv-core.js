@@ -1,6 +1,6 @@
 (function(){
     // Backend MR Sem Limite 2026 - Bridge v1.0
-    const PROXY_URL = 'https://mrsemlimitesext.lovable.app/api/public/ext/functions/v1/validate-license-v2';
+    const PROXY_URL = '/api/public/ext/functions/v1/validate-license-v2';
 
     async function getHwid() {
         return new Promise(resolve => {

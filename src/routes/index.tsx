@@ -1,9 +1,7 @@
 {/*
 FASE 16 — IMPORTAÇÃO DA EXT2 (MÉTODO QUATRO)
 O usuário forneceu os arquivos do Método Quatro v17 (Extensão + Backend).
-A Factory agora reconhece oficialmente a EXT2 (anteriormente EXT4 no seed).
-Arquivos mapeados em: extensions/ext-04/integrated/metodo4-v17
-Status: Download da EXT2 gerado. Configuração de chave LVB e backend sincronizados.
+Status: Chaves LVB/LVV removidas. Novo formato MR-XXXXX configurado conforme Master Kit v3.
 */}
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {

@@ -239,4 +239,36 @@ export const SEED_EXTENSIONS: ExtensionRecord[] = [
     createdAt: "2026-08-04",
     updatedAt: "2026-08-04",
   },
+  {
+    id: "ext-15",
+    slug: "ext-15-mr-motor-v17",
+    code: "EXT15",
+    name: "EXT15 — MR Sem Limite (Motor V17)",
+    description: "Versão purista com Motor Ultra Veloz V17 Nexus Engine desofuscado e analisado. Mantivemos o design original intacto e apenas trocamos o sistema de licenciamento para o backend oficial MR Sem Limites. Foco em performance bruta e automação avançada.",
+    version: "1.0.0",
+    status: "production",
+    tone: "amber",
+    sourceDir: "extensions/ext-14/integrated/MR Sem Limite Ext 14",
+    assets: {},
+    manifest: {
+      manifestVersion: 3,
+      permissions: ["storage", "sidePanel", "scripting", "activeTab", "webRequest"],
+      hasPopup: true,
+      hasSidepanel: true,
+      hasBackground: true,
+      hasContentScripts: true,
+    },
+    packagedZip: "/__l5e/assets-v1/f0a4f5d6-8b9c-4e7d-b6a5-f9e8d7c6b5a4/ext14-v1.0.0.zip", // URL fictícia para o asset recém-criado
+    builds: [],
+    versions: [
+      {
+        version: "1.0.0",
+        releasedAt: "2026-08-05",
+        notes: "Lançamento inicial com Motor V17 e Backend MR.",
+        changes: ["Nexus Engine V17", "MR License Integration"],
+      },
+    ],
+    createdAt: "2026-08-05",
+    updatedAt: "2026-08-05",
+  },
 ];

@@ -255,6 +255,22 @@ function ExtensionsPage() {
 }
 
 function downloadZip(url: string, filename: string) {
+  if (!url) {
+    toast.error("URL de download não disponível para esta extensão.");
+    return;
+  }
+  
+  // Para URLs diretas (que não precisam de fetch/blob, como assets externos)
+  if (url.startsWith('http') && !url.includes(window.location.host) && !url.includes('/api/')) {
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.target = "_blank";
+    a.click();
+    toast.success(`Download de ${filename} iniciado.`);
+    return;
+  }
+
   fetch(url)
     .then((res) => {
       if (!res.ok) throw new Error(`Falha no download: ${res.status}`);
@@ -268,7 +284,16 @@ function downloadZip(url: string, filename: string) {
       URL.revokeObjectURL(a.href);
       toast.success(`Download de ${filename} iniciado.`);
     })
-    .catch((err) => toast.error(err instanceof Error ? err.message : "Falha no download."));
+    .catch((err) => {
+      console.error("Erro no download:", err);
+      // Fallback: tentar abrir a URL diretamente se o fetch falhar (CSP ou CORS)
+      try {
+        window.open(url, "_blank");
+        toast.success(`Tentando download direto de ${filename}...`);
+      } catch (e) {
+        toast.error(err instanceof Error ? err.message : "Falha no download.");
+      }
+    });
 }
 
 function ExtensionCard({ ext, onEdit }: { ext: ExtensionRecord; onEdit: () => void }) {

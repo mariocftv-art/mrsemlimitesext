@@ -68,7 +68,7 @@ const initialSim = (ext: ExtensionRecord): SimState => ({
     },
   ],
   chromeStorage: {
-    "license.key": "MR-XXXXX-XXXXX-XXXXX",
+    "license.key": "PZT68-8P5UV-7AKER-C7HY5",
     "user.plan": "premium",
     "settings.theme": "dark",
   },
@@ -91,7 +91,7 @@ const licenseMeta: Record<LicenseState, { label: string; dot: string; tone: stri
   trial: { label: "Trial", dot: "🟡", tone: "text-amber-300 border-amber-500/40 bg-amber-500/10", message: "Período de teste ativo — 7 dias restantes." },
   expired: { label: "Expirada", dot: "🔴", tone: "text-rose-300 border-rose-500/40 bg-rose-500/10", message: "Renove sua licença para continuar." },
   blocked: { label: "Bloqueada", dot: "⚫", tone: "text-zinc-300 border-zinc-500/40 bg-zinc-500/10", message: "Licença bloqueada pelo administrador." },
-  pending: { label: "Aguardando Ativação", dot: "🔵", tone: "text-sky-300 border-sky-500/40 bg-sky-500/10", message: "Insira sua chave MR-XXXXX para ativar." },
+  pending: { label: "Aguardando Ativação", dot: "🔵", tone: "text-sky-300 border-sky-500/40 bg-sky-500/10", message: "Insira sua chave para ativar." },
 };
 
 const chatMeta: Record<ChatState, { label: string; icon: React.ComponentType<{ className?: string }>; tone: string }> = {
@@ -334,7 +334,7 @@ function SimulatedStage({ ext, sim }: { ext: ExtensionRecord; sim: SimState }) {
             )}
             {sim.license === "pending" && (
               <div className="rounded-md border border-sky-500/40 bg-sky-500/10 p-2 text-sky-200">
-                🔵 Insira sua chave de ativação.
+                🔵 Insira sua chave de acesso para começar.
               </div>
             )}
             {sim.license === "trial" && (

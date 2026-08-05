@@ -41,10 +41,10 @@ export const DEFAULT_BACKEND_CONFIG: BackendConfig = {
   testMode: false,
   API_BASE_URL: "https://mrsemlimites.lovable.app/api/public/ext",
   PUBLIC_API_URL: "https://mrsemlimites.lovable.app/api/public",
-  EXTENSION_ID: "mr-sem-limites",
-  CLIENT_VERSION: "2.2.7",
-  PRODUCT_SLUG: "mr-sem-limites",
-  API_KEY: "mrlov",
+  EXTENSION_ID: "metodo-quatro",
+  CLIENT_VERSION: "17.0.0",
+  PRODUCT_SLUG: "metodo-quatro",
+  API_KEY: "metodo4",
 };
 
 const STORAGE_KEY = "mr-factory:backend-config";

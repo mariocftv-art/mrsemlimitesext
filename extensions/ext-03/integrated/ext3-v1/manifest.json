@@ -35,6 +35,8 @@
         "https://lovable.dev/*"
       ],
       "js": [
+        "castle-capture.js",
+        "pageHook.js",
         "content/inject.js"
       ],
       "run_at": "document_start",

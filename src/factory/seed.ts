@@ -251,9 +251,8 @@ export const SEED_EXTENSIONS: ExtensionRecord[] = [
     sourceDir: "extensions/ext-10/integrated/MR Sem Limite Ext 10",
     assets: {},
     manifest: {
-      manifest_version: 3,
+      manifestVersion: 3,
       permissions: ["storage", "sidePanel", "scripting", "activeTab", "webRequest", "alarms"],
-      host_permissions: ["*://*.lovable.app/*", "*://*.mrsemlimites.com.br/*"],
       hasPopup: true,
       hasSidepanel: true,
       hasBackground: true,

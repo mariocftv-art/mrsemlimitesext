@@ -643,14 +643,17 @@ function ActionBtn({
   asChild,
   children,
   destructive,
+  highlighted,
 }: {
-  icon: typeof Pencil;
+  icon: any;
   label: string;
   onClick?: () => void;
   asChild?: boolean;
   children?: React.ReactNode;
   destructive?: boolean;
+  highlighted?: boolean;
 }) {
+
   return (
     <Button
       asChild={asChild}

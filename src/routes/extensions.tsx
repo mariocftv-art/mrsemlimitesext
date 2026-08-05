@@ -436,16 +436,15 @@ function ExtensionsPage() {
             </div>
           </CardContent>
         </Card>
-
-
-
-
-
-
-
-
-
-
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        {extensions.map((ext) => (
+          <ExtensionCard
+            key={ext.id}
+            ext={ext}
+            onEdit={() => setEditing(ext)}
+          />
+        ))}
+      </div>
 
       <NewExtensionWizard open={wizardOpen} onOpenChange={setWizardOpen} />
       <ImportExtensionDialog open={importOpen} onOpenChange={setImportOpen} />
@@ -520,6 +519,13 @@ function ExtensionCard({ ext, onEdit }: { ext: ExtensionRecord; onEdit: () => vo
       className="glass relative overflow-hidden border-border/60"
       style={{ boxShadow: `0 0 40px -28px ${glow[ext.tone]}` }}
     >
+      <div className="absolute top-3 right-3 z-10">
+        <input 
+          type="checkbox" 
+          className="h-4 w-4 rounded border-border/60 bg-background/40 accent-primary transition hover:border-primary/60"
+          title="Selecionar extensão"
+        />
+      </div>
       {banner && (
         <div
           className="h-20 w-full bg-cover bg-center opacity-70"
@@ -527,6 +533,7 @@ function ExtensionCard({ ext, onEdit }: { ext: ExtensionRecord; onEdit: () => vo
         />
       )}
       <CardContent className="relative space-y-4 p-5">
+
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-3">
             <div

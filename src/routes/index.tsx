@@ -1,7 +1,7 @@
 {/*
 FASE 16 — IMPORTAÇÃO DA EXT2 (MÉTODO QUATRO)
 O usuário forneceu os arquivos do Método Quatro v17 (Extensão + Backend).
-Status: Extensão 2.1 ativada (PZT68-XXXXX). LVB removido.
+Status: Extensão 2.2 ativada (PZT68-XXXXX). LVB removido.
 
 */}
 import { createFileRoute, Link } from "@tanstack/react-router";

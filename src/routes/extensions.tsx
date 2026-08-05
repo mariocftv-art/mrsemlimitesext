@@ -173,7 +173,7 @@ function ExtensionsPage() {
             ext.code === "EXT1" ? EXT1_ZIP_URL :
             ext.code === "EXT2" ? EXT2_ZIP_URL :
             ext.code === "EXT3" ? EXT3_ZIP_URL :
-            ext.code === "EXT4" ? EXT4_ZIP_URL :
+            ext.code === "EXT1" ? EXT4_ZIP_URL : // EXT4 fallback
             ext.code === "EXT5" ? EXT5_ZIP_URL :
             ext.code === "EXT6" ? EXT6_ZIP_URL :
             ext.code === "EXT7" ? EXT7_ZIP_URL :

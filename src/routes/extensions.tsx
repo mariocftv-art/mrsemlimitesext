@@ -118,6 +118,9 @@ import ext11Asset from "@/assets/ext11-v1.2.1.zip.asset.json";
 const EXT11_ZIP_URL = ext11Asset.url;
 import ext12Asset from "@/assets/ext12-v1.2.2.zip.asset.json";
 const EXT12_ZIP_URL = ext12Asset.url;
+import ext14Asset from "@/assets/ext14-v1.0.0.zip.asset.json";
+const EXT14_ZIP_URL = ext14Asset.url;
+
 
 
 
@@ -188,6 +191,7 @@ function ExtensionsPage() {
             ext.code === "EXT10" ? EXT10_ZIP_URL :
             ext.code === "EXT11" ? EXT11_ZIP_URL : 
             ext.code === "EXT12" ? EXT12_ZIP_URL :
+            ext.code === "EXT14" ? EXT14_ZIP_URL :
             `/api/build/${ext.id}/latest`
           );
 

@@ -178,7 +178,7 @@ function FactoryDashboard() {
         <CardContent className="grid gap-3 text-sm md:grid-cols-3">
           <StatusTile label="Backend" value="Desconectado (modo Factory)" tone="muted" />
           <StatusTile label="Extensões isoladas" value={`${stats.total} slot(s) ativo(s)`} tone="ok" />
-          <StatusTile label="Documentação" value="FACTORY_MASTER.md" tone="ok" icon={Package} />
+          <StatusTile label="Constituição" value="FACTORY_CONSTITUTION.md" tone="ok" icon={Package} />
         </CardContent>
       </Card>
     </AppShell>

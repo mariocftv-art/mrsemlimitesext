@@ -166,7 +166,7 @@ export const SEED_EXTENSIONS: ExtensionRecord[] = [
     code: "EXT10",
     name: "🚀 EXT10 — MR Sem Limite Ext 10 (Novo Método v4)",
     description: "Extensão híbrida: Motor original do Método 4 (EXT4) integrado ao design Black & Gold da EXT7. Inclui todas as abas profissionais, banco de licenças oficial MR Sem Limites, camada de segurança mr-security-pro.js, anti-inspeção F12 e manifesto de integridade. Zero chaves antigas. Isolada das demais extensões.",
-    version: "10.0.4",
+    version: "10.0.5",
     status: "production",
     tone: "violet",
     sourceDir: "extensions/ext-10/integrated/MR Sem Limite Metodo 10",
@@ -182,7 +182,7 @@ export const SEED_EXTENSIONS: ExtensionRecord[] = [
     builds: [],
     versions: [
       {
-        version: "10.0.4",
+        version: "10.0.5",
         releasedAt: "2026-08-05",
         notes: "Correção de ponte e visualização.",
         changes: ["Ponte Inativa Fix", "Motor V4 Estável"],

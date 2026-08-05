@@ -32,7 +32,7 @@
  * ╚══════════════════════════════════════════════════════════════════════════════╝
  */
 
-const EXTENSION_VERSION = '5.1.0-NEON-NOIR'; 
+const EXTENSION_VERSION = '10.0.4'; 
 const EXTENSION_API_VERSION = '5.1.0';      
 console.log(`🚀 MR Ext Sem Limites v${EXTENSION_VERSION} (MRSL) iniciando...`);
 
@@ -73,7 +73,7 @@ async function mrEnsureContentScript(tabId) {
 async function mrSendToContent(tabId, message) {
   const alive = await mrEnsureContentScript(tabId);
   if (!alive) {
-    return { ok: false, error: 'Ponte inativa — recarregue a aba do Lovable (F5)' };
+    return { ok: false, error: 'Ponte inativa — recarregue a aba do Lovable (F5). Nada foi enviado, sem consumo.' };
   }
   return new Promise((resolve) => {
     let done = false;

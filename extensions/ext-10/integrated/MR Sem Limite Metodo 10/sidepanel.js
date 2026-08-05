@@ -73,7 +73,7 @@ async function mrEnsureContentScript(tabId) {
 async function mrSendToContent(tabId, message) {
   const alive = await mrEnsureContentScript(tabId);
   if (!alive) {
-    return { ok: false, error: 'Ponte inativa — recarregue a aba do Lovable (F5). Nada foi enviado, sem consumo.' };
+    return { ok: false, error: 'Ponte inativa — recarregue a aba do Lovable (F5)' };
   }
   return new Promise((resolve) => {
     let done = false;

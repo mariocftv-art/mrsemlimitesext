@@ -7,66 +7,27 @@
   <style>
     :root {
       --bg-primary: #0a0a0b;
-      --bg-secondary: #13131f;
       --accent-gold: #c6a35f;
-      --accent-gold-glow: rgba(198, 163, 95, 0.3);
-      --text-primary: #ffffff;
-      --text-secondary: #a1a1aa;
-      --border-color: rgba(198, 163, 95, 0.2);
     }
-    
     body {
       margin: 0;
       padding: 0;
       background-color: var(--bg-primary);
-      color: var(--text-primary);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       height: 100vh;
-      display: flex;
-      flex-direction: column;
       overflow: hidden;
     }
-
-    #sp-body {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      overflow-y: auto;
-      position: relative;
-    }
-
-    /* Garantir que o auth-screen também seja alvo se o JS usar nomes diferentes */
-    #auth-screen {
-      display: none;
-    }
-
-    /* Estilos base para os templates do sidepanel-templates.js */
-    .sp-license-gate {
-      padding: 40px 20px;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-    }
   </style>
-  <!-- CSS original da extensão que contém as classes do dashboard -->
   <link rel="stylesheet" href="sidepanel.css">
 </head>
 <body>
-  <div id="sp-body">
-    <div style="padding: 20px; text-align: center; color: var(--accent-gold);">
-      Carregando MR Sem Limites...
-    </div>
-  </div>
-  
+  <div id="sp-body"></div>
   <div id="auth-screen"></div>
+  <div id="root"></div>
 
-  <!-- Scripts na ordem de dependência -->
   <script src="i18n.js"></script>
   <script src="sidepanel-templates.js"></script>
-  <!-- sidepanel.js é o orquestrador principal -->
+  <!-- O bundle.js parece conter a lógica principal de UI -->
+  <script src="sidepanel.bundle.js"></script>
   <script src="sidepanel.js"></script>
 </body>
 </html>

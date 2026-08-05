@@ -187,6 +187,7 @@ function ExtensionsPage() {
             ext.code === "EXT9" ? EXT9_ZIP_URL :
             ext.code === "EXT10" ? EXT10_ZIP_URL :
             ext.code === "EXT11" ? EXT11_ZIP_URL : 
+            ext.code === "EXT12" ? EXT12_ZIP_URL :
             `/api/build/${ext.id}/latest`
           );
 

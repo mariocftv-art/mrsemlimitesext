@@ -94,7 +94,9 @@ function useFactoryExtensions() {
 function ExtensionsPage() {
   const extensions = useFactoryExtensions();
   const ext1 = extensions.find((e) => e.code === "EXT1");
+  const ext2 = extensions.find((e) => e.code === "EXT2");
   const ext1Zip = ext1?.packagedZip ?? EXT1_ZIP_URL;
+  const ext2Zip = ext2?.packagedZip ?? "/Metodo%20Quatro%20v17.zip";
   const [filter, setFilter] = useState<Filter>("all");
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<Sort>("updated");

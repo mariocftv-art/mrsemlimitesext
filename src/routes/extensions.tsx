@@ -110,6 +110,7 @@ import ext8Asset from "@/assets/ext8-v8.0.2.zip.asset.json";
 const EXT8_ZIP_URL = ext8Asset.url;
 import ext9Asset from "@/assets/ext9-mrturbo-modificada.zip.asset.json";
 const EXT9_ZIP_URL = ext9Asset.url;
+const EXT15_ZIP_URL = "/src/assets/ext14-v1.0.0.zip";
 
 type Filter = "all" | ExtensionStatus;
 type Sort = "name" | "version" | "updated" | "status";

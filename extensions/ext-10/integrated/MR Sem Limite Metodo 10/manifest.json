@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "MR Turbo GT",
-  "version": "7.3.1",
-  "description": "MR Turbo GT (EXT7) — 5 motores unificados (EXT1/2/3/5/6), 50 skills profissionais (WhatsApp, n8n, automações), backend MR Sem Limites, segurança anti-inspeção F12.",
+  "name": "MR Sem Limite Ext 10",
+  "version": "10.0.0",
+  "description": "MR Sem Limite Ext 10 — Novo Método v4 unificado com design Turbo GT, abas profissionais e backend MR Sem Limites.",
   "permissions": [
     "storage",
     "cookies",
@@ -47,6 +47,16 @@
     },
     {
       "matches": ["https://lovable.dev/*"],
+      "js": ["content/manus-bridge.js"],
+      "run_at": "document_start"
+    },
+    {
+      "matches": ["https://lovable.dev/*"],
+      "js": ["content/ai-controller.js"],
+      "run_at": "document_start"
+    },
+    {
+      "matches": ["https://lovable.dev/*"],
       "js": ["content/sound-detector.js"],
       "run_at": "document_idle"
     },
@@ -57,7 +67,7 @@
     }
   ],
   "action": {
-    "default_title": "MR Turbo GT",
+    "default_title": "MR Sem Limite Ext 10",
     "default_icon": {
       "16": "icons/icon16.png",
       "32": "icons/icon32.png",
@@ -98,7 +108,7 @@
   "commands": {
     "toggle-enabled": {
       "suggested_key": { "default": "Ctrl+Shift+L", "mac": "Command+Shift+L" },
-      "description": "MR Turbo GT — Painel completo com 50 Skills e anti-inspeção."
+      "description": "MR Sem Limite Ext 10 — Painel completo com Novo Método."
     }
   },
   "mrsl_namespace": "MRSL"

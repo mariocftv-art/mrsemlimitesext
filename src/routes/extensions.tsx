@@ -168,7 +168,6 @@ function ExtensionsPage() {
           </Button>
         </div>
       }
-
     >
       <div className="grid gap-4 md:grid-cols-2">
         {ext1 && (
@@ -179,8 +178,8 @@ function ExtensionsPage() {
                   <Puzzle className="h-5 w-5 text-primary" />
                 </div>
                 <div>
-                  <p className="text-sm font-bold">{ext1.name}</p>
-                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground">EXTENSÃO UM</p>
+                  <p className="text-sm font-bold">EXTENSÃO UM</p>
+                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{ext1.name}</p>
                 </div>
               </div>
               <Button size="sm" className="gap-1.5" onClick={downloadExt1}>
@@ -198,8 +197,8 @@ function ExtensionsPage() {
                   <Puzzle className="h-5 w-5 text-violet-400" />
                 </div>
                 <div>
-                  <p className="text-sm font-bold">{ext2.name}</p>
-                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground">EXTENSÃO DOIS</p>
+                  <p className="text-sm font-bold">EXTENSÃO DOIS</p>
+                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{ext2.name}</p>
                 </div>
               </div>
               <Button 
@@ -213,6 +212,12 @@ function ExtensionsPage() {
             </CardContent>
           </Card>
         )}
+      </div>
+
+      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {filtered.map((ext) => (
+          <ExtensionCard key={ext.id} ext={ext} onEdit={() => setEditing(ext)} />
+        ))}
       </div>
 
       <NewExtensionWizard open={wizardOpen} onOpenChange={setWizardOpen} />

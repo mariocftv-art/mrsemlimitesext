@@ -173,7 +173,7 @@ function ExtensionsPage() {
             ext.code === "EXT1" ? EXT1_ZIP_URL :
             ext.code === "EXT2" ? EXT2_ZIP_URL :
             ext.code === "EXT3" ? EXT3_ZIP_URL :
-            ext.id === "ext-01" ? EXT4_ZIP_URL : // Use ext-01 id for EXT1/Manus 
+            ext.id === "ext-01" ? EXT4_ZIP_URL : 
             ext.code === "EXT5" ? EXT5_ZIP_URL :
             ext.code === "EXT6" ? EXT6_ZIP_URL :
             ext.code === "EXT7" ? EXT7_ZIP_URL :
@@ -181,7 +181,7 @@ function ExtensionsPage() {
             ext.code === "EXT8" ? EXT8_ZIP_URL :
             ext.code === "EXT9" ? EXT9_ZIP_URL :
             ext.code === "EXT10" ? EXT10_ZIP_URL :
-            ext.code === "EXT11" ? ext.packagedZip : 
+            ext.code === "EXT11" ? EXT11_ZIP_URL : 
             `/api/build/${ext.id}/latest`
           );
 

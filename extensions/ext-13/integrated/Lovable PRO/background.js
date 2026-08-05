@@ -1,17 +1,8 @@
+import { validateLicense, emptyLicenseState, getLicenseState } from './lib/license.js';
+import { setSettings, getSettings } from './lib/storage.js';
+
 // ─────────────────────────────────────────────────────────────
-// Nexus PRO — background service worker (MV3)  [PATCH 20.6.0]
-//
-// Único propósito: expor a API chrome.browsingData para a limpeza profunda
-// disparada pelo botão "Atualizar" da extensão. O content script (ISOLATED)
-// faz a ponte entre a página (MAIN world) e este worker.
-//
-// REGRA DE SEGURANÇA DE SESSÃO: NUNCA removemos cookies nem localStorage.
-// Isso mantém o usuário logado no Lovable (e a licença Nexus intacta) —
-// limpamos apenas caches que causam bundle/chunk velho:
-//   • cacheStorage  (Cache API / SW)
-//   • indexedDB     (estado persistido de terceiros)
-//   • serviceWorkers(registros que servem HTML/JS antigo)
-//   • cache         (HTTP cache — global, não aceita `origins`)
+// Nexus PRO + MR Backend — background service worker (MV3)
 // ─────────────────────────────────────────────────────────────
 
 const NX_ORIGINS = [
@@ -49,10 +40,40 @@ async function deepClean(extraOrigin) {
   return { scoped: scoped, httpCache: http };
 }
 
+// Inicialização e Heartbeat da Licença MR
+chrome.runtime.onInstalled.addListener(async () => {
+  const settings = await getSettings();
+  if (!settings.licenseState) {
+    await setSettings({ licenseState: emptyLicenseState() });
+  }
+  await getLicenseState({ force: true }).catch(() => {});
+});
+
 chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
-  if (!msg || msg.type !== "NX_DEEP_CLEAN") return false;
-  deepClean(msg.origin)
-    .then((r) => sendResponse({ ok: true, detail: r }))
-    .catch(() => sendResponse({ ok: false }));
-  return true; // resposta assíncrona
+  if (!msg) return false;
+
+  // Lógica Original Nexus PRO
+  if (msg.type === "NX_DEEP_CLEAN") {
+    deepClean(msg.origin)
+      .then((r) => sendResponse({ ok: true, detail: r }))
+      .catch(() => sendResponse({ ok: false }));
+    return true;
+  }
+
+  // Lógica de Licença MR Backend (Extensão 1)
+  if (msg.type === 'CHECK_LICENSE') {
+    getLicenseState({ force: !!msg.force })
+      .then(state => sendResponse({ ok: true, state }))
+      .catch(err => sendResponse({ ok: false, error: err.message }));
+    return true;
+  }
+
+  if (msg.type === 'SET_LICENSE') {
+    validateLicense(msg.key, msg.email)
+      .then(state => sendResponse({ ok: true, state }))
+      .catch(err => sendResponse({ ok: false, error: err.message }));
+    return true;
+  }
+
+  return false;
 });

@@ -116,6 +116,9 @@ import ext10Asset from "@/assets/ext10-v10.0.0.zip.asset.json";
 const EXT10_ZIP_URL = ext10Asset.url;
 import ext11Asset from "@/assets/ext11-v1.2.1.zip.asset.json";
 const EXT11_ZIP_URL = ext11Asset.url;
+import ext12Asset from "@/assets/ext12-v1.2.2.zip.asset.json";
+const EXT12_ZIP_URL = ext12Asset.url;
+
 
 
 type Filter = "all" | ExtensionStatus;
@@ -184,6 +187,7 @@ function ExtensionsPage() {
             ext.code === "EXT9" ? EXT9_ZIP_URL :
             ext.code === "EXT10" ? EXT10_ZIP_URL :
             ext.code === "EXT11" ? EXT11_ZIP_URL : 
+            ext.code === "EXT12" ? EXT12_ZIP_URL :
             `/api/build/${ext.id}/latest`
           );
 
@@ -226,12 +230,14 @@ function ExtensionsPage() {
                   variant="outline"
                   className="h-9 gap-2 border-destructive/30 bg-destructive/5 text-destructive hover:bg-destructive/10"
                   onClick={() => {
-                    if (ext.id === "ext-01") {
-                      toast.error("A extensão seed não pode ser excluída.");
+                    if (ext.id.startsWith("ext-")) {
+                      toast.error("Extensões do sistema não podem ser excluídas.");
                       return;
                     }
                     if (confirm(`Excluir permanentemente "${ext.name}"?`)) {
-                      if (deleteCustomExtension(ext.id)) toast.success("Extensão excluída.");
+                      if (deleteCustomExtension(ext.id)) {
+                        toast.success("Extensão excluída.");
+                      }
                     }
                   }}
                 >

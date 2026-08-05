@@ -307,10 +307,8 @@ function InfoRow({ k, v, mono }: { k: string; v: string; mono?: boolean }) {
 function ActionBtn({
   icon: Icon,
   label,
-  onClick,
   asChild,
   children,
-  destructive,
 }: {
   icon: typeof Pencil;
   label: string;
@@ -322,12 +320,9 @@ function ActionBtn({
   return (
     <Button
       asChild={asChild}
-      onClick={onClick}
       variant="outline"
       size="sm"
-      className={`h-8 gap-1 text-[11px] ${
-        destructive ? "border-destructive/40 text-destructive hover:bg-destructive/10" : ""
-      }`}
+      className="h-8 gap-1 text-[11px]"
       title={label}
     >
       {asChild ? (

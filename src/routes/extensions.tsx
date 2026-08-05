@@ -81,8 +81,6 @@ const statusMeta: Record<ExtensionStatus, { label: string; dot: string; color: s
   archived: { label: "Arquivada", dot: "⚪", color: "#94a3b8" },
 };
 
-const EXT1_ZIP_URL = "/MR Sem Limites EXT1.zip";
-
 type Filter = "all" | ExtensionStatus;
 type Sort = "name" | "version" | "updated" | "status";
 
@@ -98,10 +96,7 @@ function ExtensionsPage() {
   const extensions = useFactoryExtensions();
   const ext1 = extensions.find((e) => e.code === "EXT1");
   const ext2 = extensions.find((e) => e.code === "EXT2");
-  const ext1Zip = ext1?.packagedZip ?? ext1ZipAsset.url;
-  const ext2Zip = ext2?.packagedZip ?? ext2ZipAsset.url;
   const ext3 = extensions.find((e) => e.code === "EXT3");
-  const ext3Zip = ext3?.packagedZip || ext3ZipAsset.url;
   const [filter, setFilter] = useState<Filter>("all");
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<Sort>("updated");
@@ -150,15 +145,15 @@ function ExtensionsPage() {
   }, [extensions]);
 
   const downloadExt1 = () => {
-    downloadZip(ext1Zip, "MR Sem Limites EXT1.zip");
+    downloadZip(ext1ZipAsset.url, "MR Sem Limites EXT1.zip");
   };
 
   const downloadExt2 = () => {
-    downloadZip(ext2Zip, "Metodo Quatro EXT2.zip");
+    downloadZip(ext2ZipAsset.url, "Metodo Quatro EXT2.zip");
   };
 
   const downloadExt3 = () => {
-    downloadZip(ext3Zip, "MR Sem Limites EXT3.zip");
+    downloadZip(ext3ZipAsset.url, "MR Sem Limites EXT3.zip");
   };
 
   return (

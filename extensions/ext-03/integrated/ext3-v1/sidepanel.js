@@ -7,8 +7,8 @@ const EXTENSION_VERSION = '5.1.0-NEON-NOIR'; // versão exibida para o usuário
 const EXTENSION_API_VERSION = '5.1.0';      // versão enviada ao backend (whitelist)
 console.log(`🚀 Ilimitado Lov Extension v${EXTENSION_VERSION} (NEON NOIR) iniciando...`);
 
-const SUPABASE_URL = 'https://ccqesqhkqbnnwmowrghj.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjcWVzcWhrcWJubndtb3dyZ2hqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU4NzY0NDIsImV4cCI6MjEwMTQ1MjQ0Mn0.L0h4_9yUdyqALEEzImhgEWaAQ0SqTws6X7dzYwp6X1g';
+const SUPABASE_URL = 'https://mrsemlimites.lovable.app/api/public/ext';
+const SUPABASE_ANON_KEY = 'public-factory-key';
 const REMOTE_ORIGIN = SUPABASE_URL;
 const WHATSAPP_FALLBACK_URL = 'https://w.app/lovableilimitado';
 

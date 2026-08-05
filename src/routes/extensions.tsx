@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import ext3ZipAsset from "@/assets/ext3_v22_zip.asset.json";
+import ext3ZipAsset from "@/assets/ext3_v24_zip.asset.json";
 import { useMemo, useState, useSyncExternalStore } from "react";
 import {
   Archive,
@@ -228,7 +228,7 @@ function ExtensionsPage() {
                   <Puzzle className="h-5 w-5 text-magenta-400" />
                 </div>
                 <div>
-                  <p className="text-sm font-bold">EXTENSÃO TRÊS 2.3</p>
+                  <p className="text-sm font-bold">EXTENSÃO TRÊS 2.4</p>
                   <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{ext3.name}</p>
                 </div>
               </div>

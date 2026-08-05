@@ -166,34 +166,63 @@ function ExtensionsPage() {
       }
 
     >
-      <div className="mb-6 grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-6">
+      <div className="mb-8 grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
         {extensions.map((ext) => (
           <div
-            key={`btn-${ext.id}`}
-            className="group relative flex flex-col items-center gap-2 rounded-xl border border-border/60 bg-background/40 p-3 text-center transition hover:border-amber-500/50 hover:bg-background/60"
+            key={`grid-btn-${ext.id}`}
+            className="group relative flex flex-col items-center gap-3 rounded-2xl border border-border/60 bg-background/40 p-4 text-center transition-all duration-300 hover:border-amber-500/50 hover:bg-background/60 hover:shadow-[0_0_30px_-10px_rgba(245,158,11,0.3)]"
           >
-            <div className="absolute top-2 right-2">
+            <div className="absolute top-3 right-3 z-10">
               <input 
                 type="checkbox" 
-                className="h-3 w-3 rounded border-border/60 bg-background/40 accent-amber-500"
+                className="h-4 w-4 rounded border-border/60 bg-background/40 accent-amber-500 transition-transform hover:scale-110"
+                title="Selecionar"
               />
             </div>
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-border/60 bg-background/40">
-              <Puzzle className="h-5 w-5 text-amber-500" />
+            
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-border/60 bg-background/60 shadow-inner group-hover:border-amber-500/30">
+              <Puzzle className="h-6 w-6 text-amber-500 transition-transform group-hover:scale-110" />
             </div>
-            <div className="min-w-0 w-full">
-              <p className="truncate text-[11px] font-bold uppercase tracking-tight">{ext.code}</p>
-              <p className="truncate text-[9px] text-muted-foreground">{ext.name}</p>
+
+            <div className="min-w-0 w-full space-y-1">
+              <p className="truncate text-xs font-black uppercase tracking-tighter text-amber-500/90">{ext.code}</p>
+              <p className="truncate text-[10px] font-medium text-muted-foreground">{ext.name}</p>
             </div>
-            <Button
-              size="sm"
-              variant="outline"
-              className="h-7 w-full border-amber-500/30 bg-amber-500/10 text-[10px] text-amber-500 hover:bg-amber-500 hover:text-white"
-              onClick={() => downloadZip(ext.packagedZip || `/api/build/${ext.id}/latest`, `${ext.name}.zip`)}
-            >
-              <Download className="mr-1 h-3 w-3" /> ZIP
-            </Button>
+
+            <div className="flex w-full gap-2 pt-1">
+              <Button
+                size="sm"
+                variant="outline"
+                className="h-8 flex-1 border-amber-500/30 bg-amber-500/5 text-[10px] font-bold text-amber-500 hover:bg-amber-500 hover:text-white"
+                onClick={() => downloadZip(ext.packagedZip || `/api/build/${ext.id}/latest`, `${ext.name}.zip`)}
+              >
+                <Download className="mr-1 h-3.5 w-3.5" /> DOWNLOAD
+              </Button>
+              <Button
+                size="sm"
+                variant="ghost"
+                className="h-8 w-8 p-0 text-muted-foreground hover:bg-red-500/10 hover:text-red-500"
+                onClick={() => {
+                  if (confirm(`Excluir ${ext.name}?`)) {
+                    // Logic to delete would go here, using existing helpers if possible
+                    toast.error("Ação protegida (Fábrica)");
+                  }
+                }}
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
+        ))}
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        {extensions.map((ext) => (
+          <ExtensionCard
+            key={ext.id}
+            ext={ext}
+            onEdit={() => setEditing(ext)}
+          />
         ))}
       </div>
 

@@ -85,6 +85,7 @@ const glow: Record<NeonTone, string> = {
   violet: "var(--neon-violet)",
   magenta: "var(--neon-magenta)",
   lime: "var(--neon-lime)",
+  amber: "#f59e0b",
 };
 
 const statusMeta: Record<ExtensionStatus, { label: string; dot: string; color: string }> = {
@@ -665,6 +666,7 @@ const TONES: { value: NeonTone; label: string; color: string }[] = [
   { value: "violet", label: "Violeta", color: "var(--neon-violet)" },
   { value: "magenta", label: "Magenta", color: "var(--neon-magenta)" },
   { value: "lime", label: "Lima", color: "var(--neon-lime)" },
+  { value: "amber", label: "Ouro", color: "#f59e0b" },
 ];
 
 const WIZARD_STEPS = ["Nome", "Código", "Logo", "Cor", "Descrição", "Estrutura"] as const;

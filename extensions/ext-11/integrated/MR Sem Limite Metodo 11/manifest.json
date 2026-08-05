@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "🚀 EXT11 — MR Sem Limite Ext 11 (Novo Método v4)",
   "version": "1.2.0",
-  "description": "MR Turbo GT (EXT7) — 5 motores unificados (EXT1/2/3/5/6), 50 skills profissionais (WhatsApp, n8n, automações), backend MR Sem Limites, segurança anti-inspeção F12.",
+  "description": "A unificação suprema: Motor original do Método 4 (EXT4) com o design Black & Gold Cockpit da EXT7. Versão 1.2.0. Inclui todas as abas profissionais, banco de licenças oficial MR Sem Limites, camada de segurança mr-security-pro.js, anti-inspeção F12 e manifesto de integridade.",
   "permissions": [
     "storage",
     "cookies",
@@ -34,19 +34,25 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://lovable.dev/*"],
-      "js": ["content/inject.js"],
+      "matches": ["https://lovable.dev/*", "https://*.lovable.dev/*"],
+      "js": [
+        "content/castle-capture.js",
+        "content/pageHook.js",
+        "content/hwFingerprint.js",
+        "content/lv-core.js",
+        "content/upload-manager.js"
+      ],
       "run_at": "document_start",
       "world": "MAIN"
     },
     {
-      "matches": ["https://lovable.dev/*"],
+      "matches": ["https://lovable.dev/*", "https://*.lovable.dev/*"],
       "js": ["content/content.js"],
       "css": ["content/content.css"],
       "run_at": "document_start"
     },
     {
-      "matches": ["https://lovable.dev/*"],
+      "matches": ["https://lovable.dev/*", "https://*.lovable.dev/*"],
       "js": ["content/sound-detector.js"],
       "run_at": "document_idle"
     },
@@ -57,7 +63,7 @@
     }
   ],
   "action": {
-    "default_title": "MR Turbo GT",
+    "default_title": "MR Sem Limite Ext 11",
     "default_icon": {
       "16": "icons/icon16.png",
       "32": "icons/icon32.png",
@@ -98,7 +104,7 @@
   "commands": {
     "toggle-enabled": {
       "suggested_key": { "default": "Ctrl+Shift+L", "mac": "Command+Shift+L" },
-      "description": "MR Turbo GT — Painel completo com 50 Skills e anti-inspeção."
+      "description": "MR Sem Limite Ext 11 — Painel completo v1.2.0 com motor M4."
     }
   },
   "mrsl_namespace": "MRSL"

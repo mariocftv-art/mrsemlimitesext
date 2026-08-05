@@ -1,6 +1,13 @@
-# MR Turbo GT (EXT7) — v7.1.0
+# MR Turbo GT (EXT7) — v7.3.1
 
 Extensão premium unificando o melhor das EXT1/2/3/5/6 (sem a Orbe).
+
+## v7.3.1
+- Motor de bypass remodelado: padrão auto_heal substitui fix_error.
+- Remoção completa de rastro: sem source=ext-input, sem dispatch_mode=security_fix.
+- Castle token injetado automaticamente em todos os envios.
+- Session headers (session_id, git_sha) sincronizados com request nativo.
+- Campos de sessão preenchidos para parecer tráfego 100% nativo.
 
 ## v7.1.0
 - Cockpit Sliding Dock arrastável, nasce perto da seta de envio do Ask Lovable.

@@ -73,7 +73,7 @@ async function mrEnsureContentScript(tabId) {
 async function mrSendToContent(tabId, message) {
   const alive = await mrEnsureContentScript(tabId);
   if (!alive) {
-    return { ok: false, error: 'Ponte inativa — recarregue a aba do Lovable (F5)' };
+    return { ok: false, error: 'Ponte inativa — recarregue a aba do Lovable (F5). Nada foi enviado, sem consumo.' };
   }
   return new Promise((resolve) => {
     let done = false;
@@ -1331,7 +1331,7 @@ function initDirectChat() {
     sendBtn && (sendBtn.disabled = true);
     updateStatus('📤 Enviando...');
 
-    // Auto-ativa o motor Ext 11 ao enviar qualquer mensagem
+    // Auto-ativa o motor Turbo GT ao enviar qualquer mensagem
     try {
       const pw = document.getElementById('mrPowerToggle');
       const pwLbl = document.getElementById('mrPowerLabel');

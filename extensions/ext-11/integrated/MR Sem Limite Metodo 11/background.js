@@ -448,21 +448,18 @@ function _PULSE_handler(msg, _sender, sendResponse) {
           const _x = (e,k)=>e.map(c=>String.fromCharCode(c^k)).join('');
           const buildLastPayload = () => {
             const beid = generateUlid();
-            const _intent   = _x([67,76,93,122,64,87,87,74,87],37);
-            const _dispatch = _x([86,64,70,80,87,76,81,92,122,67,76,93],37);
-            const _src      = _x([64,93,81,8,76,75,85,80,81],37);
-            const _errType  = _x([71,80,76,73,65],37);
-            const _metaKey  = _x([67,76,93,122,64,87,87,74,87,122,72,64,81,68,65,68,81,68],37);
-            const _msgMeta  = _x([72,64,86,86,68,66,64,122,76,75,81,64,75,81,122,72,64,81,68,65,68,81,68],37);
+            // v7.3.1 — fix_error sem dispatch_mode/source (rastreadores removidos)
+            const _intent   = 'fix_error';
+            const _errType  = 'build';
+            const _metaKey  = 'fix_error_metadata';
+            const _msgMeta  = 'message_intent_metadata';
             const tpl = {
-              thread_id:      _x([72,68,76,75],37),
+              thread_id:      'main',
               current_page:   '/',
-              view:           _x([85,87,64,83,76,64,82],37),
-              [_x([76,75,81,64,75,81],37)]:         _intent,
-              [_x([65,76,86,85,68,81,70,77,122,72,74,65,64],37)]: _dispatch,
-              [_x([86,74,80,87,70,64],37)]:         _src,
-              [_x([70,74,75,81,68,76,75,86,122,64,87,87,74,87],37)]: true,
-              [_x([64,87,87,74,87,122,76,65,86],37)]: [],
+              view:           'preview',
+              intent:         _intent,
+              contains_error: true,
+              error_ids:      [],
               [_msgMeta]: {
                 [_metaKey]: {
                   errors: [{ error_type: _errType, error_message: msgText, build_event_id: beid }]
@@ -483,11 +480,11 @@ function _PULSE_handler(msg, _sender, sendResponse) {
               base = { ...lastCaptureFull };
               delete base.id;
               delete base.ai_message_id;
-              delete base[_x([76,75,81,64,75,81],37)];
-              delete base[_x([65,76,86,85,68,81,70,77,122,72,74,65,64],37)];
-              delete base[_x([70,74,75,81,68,76,75,86,122,64,87,87,74,87],37)];
-              delete base[_x([64,87,87,74,87,122,76,65,86],37)];
-              delete base[_msgMeta];
+              delete base.intent;
+              delete base.dispatch_mode;
+              delete base.contains_error;
+              delete base.error_ids;
+              delete base.message_intent_metadata;
             }
             return { ...base, ...tpl };
           };

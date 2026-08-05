@@ -238,17 +238,10 @@ function downloadZip(url: string, filename: string) {
   toast.success("Download iniciado.");
 }
 
-  return null;
-}
-
-  const handleDelete = () => {
-    if (isSeed) {
-      toast.error("A extensão seed não pode ser excluída.");
-      return;
-    }
-    if (!confirm(`Excluir permanentemente "${ext.name}"?`)) return;
-    if (deleteCustomExtension(ext.id)) toast.success("Extensão excluída.");
-  };
+function ExtensionCard({ ext }: { ext: ExtensionRecord; onEdit: () => void }) {
+  const scan = useMemo(() => scanExtension(ext.sourceDir), [ext.sourceDir]);
+  const logo = ext.assets.logo ?? scan.assets.logo ?? scan.assets.icon128 ?? scan.assets.icon48;
+  const banner = ext.assets.banner ?? scan.assets.banner ?? scan.assets.chatBg;
 
   return (
     <Card
@@ -281,23 +274,6 @@ function downloadZip(url: string, filename: string) {
               </p>
             </div>
           </div>
-          <Badge
-            variant="outline"
-            className="border-border/60 text-[10px] uppercase tracking-widest"
-            style={{ color: status.color }}
-          >
-            {status.dot} {status.label}
-          </Badge>
-        </div>
-
-
-        <p className="line-clamp-2 text-xs text-muted-foreground">{ext.description}</p>
-
-        <div className="grid grid-cols-2 gap-2 text-[11px]">
-          <InfoRow k="Última Build" v={buildLabel} />
-          <InfoRow k="Arquivos" v={String(scan.files.length)} />
-          <InfoRow k="Atualizada em" v={ext.updatedAt} />
-          <InfoRow k="Pasta" v={ext.id} mono />
         </div>
 
         <div className="grid grid-cols-2 gap-1.5">

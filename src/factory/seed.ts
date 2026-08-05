@@ -290,7 +290,7 @@ export const SEED_EXTENSIONS: ExtensionRecord[] = [
       hasBackground: true,
       hasContentScripts: true,
     },
-    packagedZip: "/__l5e/assets-v1/a0076198-6821-4e66-887c-75117954d97d/ext14-v1.0.0.zip",
+    packagedZip: "/ext10-v1.0.1.zip",
     builds: [],
     versions: [
       {

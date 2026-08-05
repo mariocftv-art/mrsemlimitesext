@@ -114,6 +114,7 @@ import ext9Asset from "@/assets/ext9-mrturbo-modificada.zip.asset.json";
 const EXT9_ZIP_URL = ext9Asset.url;
 import ext10Asset from "@/assets/ext10-v10.0.0.zip.asset.json";
 const EXT10_ZIP_URL = ext10Asset.url;
+const EXT11_ZIP_URL = ext7Asset.url; // Fallback para asset da EXT7 até o zip final da 11 estar no manifest
 
 
 type Filter = "all" | ExtensionStatus;
@@ -173,7 +174,7 @@ function ExtensionsPage() {
             ext.code === "EXT1" ? EXT1_ZIP_URL :
             ext.code === "EXT2" ? EXT2_ZIP_URL :
             ext.code === "EXT3" ? EXT3_ZIP_URL :
-            ext.id === "ext-01" ? EXT4_ZIP_URL : // Use ext-01 id for EXT1/Manus 
+            ext.id === "ext-01" ? EXT4_ZIP_URL : 
             ext.code === "EXT5" ? EXT5_ZIP_URL :
             ext.code === "EXT6" ? EXT6_ZIP_URL :
             ext.code === "EXT7" ? EXT7_ZIP_URL :
@@ -181,7 +182,7 @@ function ExtensionsPage() {
             ext.code === "EXT8" ? EXT8_ZIP_URL :
             ext.code === "EXT9" ? EXT9_ZIP_URL :
             ext.code === "EXT10" ? EXT10_ZIP_URL :
-            ext.code === "EXT11" ? ext.packagedZip : 
+            ext.code === "EXT11" ? EXT11_ZIP_URL : 
             `/api/build/${ext.id}/latest`
           );
 

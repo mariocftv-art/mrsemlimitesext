@@ -258,7 +258,7 @@ export const SEED_EXTENSIONS: ExtensionRecord[] = [
       hasBackground: true,
       hasContentScripts: true,
     },
-    packagedZip: "/__l5e/assets-v1/f0a4f5d6-8b9c-4e7d-b6a5-f9e8d7c6b5a4/ext14-v1.0.0.zip", // URL fictícia para o asset recém-criado
+    packagedZip: "/__l5e/assets-v1/a0076198-6821-4e66-887c-75117954d97d/ext14-v1.0.0.zip",
     builds: [],
     versions: [
       {

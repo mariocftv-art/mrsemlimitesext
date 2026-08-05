@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import ext3ZipAsset from "@/assets/ext3_zip.asset.json";
 import { useMemo, useState, useSyncExternalStore } from "react";
 import {
   Archive,
@@ -96,7 +97,9 @@ function ExtensionsPage() {
   const ext1 = extensions.find((e) => e.code === "EXT1");
   const ext2 = extensions.find((e) => e.code === "EXT2");
   const ext1Zip = ext1?.packagedZip ?? EXT1_ZIP_URL;
-  const ext2Zip = ext2?.packagedZip ?? "/Metodo Quatro v17.zip";
+  const ext2Zip = ext2?.packagedZip ?? "/Metodo Quatro v2.2.zip";
+  const ext3 = extensions.find((e) => e.code === "EXT3");
+  const ext3Zip = ext3?.packagedZip || ext3ZipAsset.url;
   const [filter, setFilter] = useState<Filter>("all");
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<Sort>("updated");
@@ -152,6 +155,10 @@ function ExtensionsPage() {
     downloadZip(ext2Zip, "Metodo Quatro EXT2.zip");
   };
 
+  const downloadExt3 = () => {
+    downloadZip(ext3Zip, "MR Sem Limites EXT3.zip");
+  };
+
   return (
     <AppShell
       title="Minhas Extensões"
@@ -169,7 +176,7 @@ function ExtensionsPage() {
         </div>
       }
     >
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {ext1 && (
           <Card className="glass border-primary/40">
             <CardContent className="flex items-center justify-between p-4">
@@ -206,6 +213,54 @@ function ExtensionsPage() {
                 className="gap-1.5" 
                 onClick={downloadExt2}
                 style={{ background: "var(--neon-violet)", color: "#fff" }}
+              >
+                <Download className="h-4 w-4" /> Download
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+
+        {ext3 && (
+          <Card className="glass border-magenta-500/40">
+            <CardContent className="flex items-center justify-between p-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-border/60 bg-background/40">
+                  <Puzzle className="h-5 w-5 text-magenta-400" />
+                </div>
+                <div>
+                  <p className="text-sm font-bold">EXTENSÃO TRÊS</p>
+                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{ext3.name}</p>
+                </div>
+              </div>
+              <Button 
+                size="sm" 
+                className="gap-1.5" 
+                onClick={downloadExt3}
+                style={{ background: "var(--neon-magenta)", color: "#fff" }}
+              >
+                <Download className="h-4 w-4" /> Download
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+
+        {ext3 && (
+          <Card className="glass border-magenta-500/40">
+            <CardContent className="flex items-center justify-between p-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-border/60 bg-background/40">
+                  <Puzzle className="h-5 w-5 text-magenta-400" />
+                </div>
+                <div>
+                  <p className="text-sm font-bold">EXTENSÃO TRÊS</p>
+                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{ext3.name}</p>
+                </div>
+              </div>
+              <Button 
+                size="sm" 
+                className="gap-1.5" 
+                onClick={downloadExt3}
+                style={{ background: "var(--neon-magenta)", color: "#fff" }}
               >
                 <Download className="h-4 w-4" /> Download
               </Button>

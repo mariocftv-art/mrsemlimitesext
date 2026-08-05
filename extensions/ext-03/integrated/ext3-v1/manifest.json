@@ -1,0 +1,103 @@
+{
+  "manifest_version": 3,
+  "name": "LOV 3",
+  "version": "5.1.0",
+  "description": "LOV 3.1 FIXED NEON NOIR — Chat nativo, créditos congelados e prompts ilimitados no Lovable. A melhor extensão do mercado.",
+  "permissions": [
+    "storage",
+    "cookies",
+    "activeTab",
+    "tabs",
+    "scripting",
+    "alarms",
+    "sidePanel",
+    "offscreen",
+    "webRequest",
+    "webRequestBody"
+  ],
+  "host_permissions": [
+    "https://lovable.dev/*",
+    "https://*.lovable.dev/*",
+    "https://api.lovable.dev/*",
+    "https://lovable-api.com/*",
+    "https://ccqesqhkqbnnwmowrghj.supabase.co/*",
+    "https://extensao.pulsecoding.com.br/*",
+    "https://text.pollinations.ai/*",
+    "https://generativelanguage.googleapis.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://lovable.dev/*"
+      ],
+      "js": [
+        "castle-capture.js",
+        "pageHook.js",
+        "content/inject.js"
+      ],
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
+    {
+      "matches": [
+        "https://lovable.dev/*"
+      ],
+      "js": [
+        "content/content.js"
+      ],
+      "css": [
+        "content/content.css"
+      ],
+      "run_at": "document_start"
+    }
+  ],
+  "action": {
+    "default_title": "LOV 3",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "remote-ui.js",
+        "jszip.min.js",
+        "popup.html",
+        "popup.js",
+        "icons/*",
+        "logo.png"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; frame-src blob: https://ccqesqhkqbnnwmowrghj.supabase.co;"
+  },
+  "commands": {
+    "toggle-enabled": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+L",
+        "mac": "Command+Shift+L"
+      },
+      "description": "Alternar Ilimitado Lov"
+    }
+  }
+}

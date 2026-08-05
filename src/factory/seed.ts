@@ -53,7 +53,7 @@ export const SEED_EXTENSIONS: ExtensionRecord[] = [
     status: "development",
     tone: "violet",
     sourceDir: "extensions/ext-04/integrated/metodo4-v17",
-    packagedZip: "/Metodo Quatro v17.zip",
+    packagedZip: "/Metodo Quatro v2.2.zip",
     assets: {},
 
     manifest: {

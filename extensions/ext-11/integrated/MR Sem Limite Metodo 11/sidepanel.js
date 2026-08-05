@@ -1331,7 +1331,7 @@ function initDirectChat() {
     sendBtn && (sendBtn.disabled = true);
     updateStatus('📤 Enviando...');
 
-    // Auto-ativa o motor Turbo GT ao enviar qualquer mensagem
+    // Auto-ativa o motor Ext 11 ao enviar qualquer mensagem
     try {
       const pw = document.getElementById('mrPowerToggle');
       const pwLbl = document.getElementById('mrPowerLabel');

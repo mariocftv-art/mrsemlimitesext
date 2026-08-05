@@ -849,8 +849,8 @@ function setupBridge(iframe) {
 function showLicenseScreen() {
   const ls = document.getElementById('licenseScreen');
   const mainApp = document.getElementById('mainApp');
-  if (ls) ls.style.display = 'none';
-  if (mainApp) { mainApp.style.display = 'none'; }
+  if (ls) ls.style.display = 'block';
+  if (mainApp) mainApp.style.display = 'none';
 }
 
 async function fetchRemoteUiHtml() {

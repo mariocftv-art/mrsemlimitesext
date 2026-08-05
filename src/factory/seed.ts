@@ -311,7 +311,7 @@ export const SEED_EXTENSIONS: ExtensionRecord[] = [
     status: "production",
     tone: "amber",
     sourceDir: "extensions/ext-11/integrated/MR Sem Limite Metodo 11",
-    packagedZip: "/__l5e/assets-v1/586f8881-3a23-4ce6-b229-cd673d08b7d1/ext11-v1.2.0.zip",
+    packagedZip: "/__l5e/assets-v1/3fe487c5-04d4-4dfa-b4f4-503594603999/ext11-v1.2.1.zip",
     assets: {},
     manifest: {
       manifestVersion: 3,

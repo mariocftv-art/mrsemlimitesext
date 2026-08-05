@@ -12,7 +12,7 @@ export const SEED_EXTENSIONS: ExtensionRecord[] = [
     name: "MR Sem Limites",
     description:
       "Extensão premium com sidepanel, sons, prompts e integração completa.",
-    version: "2.1.0",
+    version: "1.2.2",
     status: "production",
     tone: "cyan",
     sourceDir: "extensions/ext-01/integrated/MR Sem Limites Reformulada 2.1",

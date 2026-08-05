@@ -1,7 +1,7 @@
 {/*
-FASE 17 — AJUSTE DE LICENÇA E ATIVAÇÃO EXT3
-Correção do formato de licença (4 blocos) e compatibilidade de endpoint.
-Status: Preparando ambiente para EXT3 e motor Método Quatro unificado.
+FASE 17 — ATIVAÇÃO EXT3 E BACKEND UNIFICADO
+EXT3 adicionada à Factory. Backend configurado para aceitar chaves de 4 blocos (XXXXX-XXXXX-XXXXX-XXXXX).
+Status: Motores sincronizados. Aguardando arquivos da EXT3 para integração final.
 */}
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {

@@ -152,6 +152,10 @@ function ExtensionsPage() {
     downloadZip(ext2Zip, "Metodo Quatro EXT2.zip");
   };
 
+  const downloadExt3 = () => {
+    downloadZip(ext3Zip, "MR Sem Limites EXT3.zip");
+  };
+
   return (
     <AppShell
       title="Minhas Extensões"
@@ -169,7 +173,7 @@ function ExtensionsPage() {
         </div>
       }
     >
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {ext1 && (
           <Card className="glass border-primary/40">
             <CardContent className="flex items-center justify-between p-4">
@@ -206,6 +210,30 @@ function ExtensionsPage() {
                 className="gap-1.5" 
                 onClick={downloadExt2}
                 style={{ background: "var(--neon-violet)", color: "#fff" }}
+              >
+                <Download className="h-4 w-4" /> Download
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+
+        {ext3 && (
+          <Card className="glass border-magenta-500/40">
+            <CardContent className="flex items-center justify-between p-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-border/60 bg-background/40">
+                  <Puzzle className="h-5 w-5 text-magenta-400" />
+                </div>
+                <div>
+                  <p className="text-sm font-bold">EXTENSÃO TRÊS</p>
+                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{ext3.name}</p>
+                </div>
+              </div>
+              <Button 
+                size="sm" 
+                className="gap-1.5" 
+                onClick={downloadExt3}
+                style={{ background: "var(--neon-magenta)", color: "#fff" }}
               >
                 <Download className="h-4 w-4" /> Download
               </Button>

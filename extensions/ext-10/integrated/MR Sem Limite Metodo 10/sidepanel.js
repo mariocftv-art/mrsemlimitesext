@@ -32,7 +32,7 @@
  * ╚══════════════════════════════════════════════════════════════════════════════╝
  */
 
-const EXTENSION_VERSION = '10.0.4'; 
+const EXTENSION_VERSION = '10.0.5'; 
 const EXTENSION_API_VERSION = '5.1.0';      
 console.log(`🚀 MR Ext Sem Limites v${EXTENSION_VERSION} (MRSL) iniciando...`);
 
@@ -73,7 +73,18 @@ async function mrEnsureContentScript(tabId) {
 async function mrSendToContent(tabId, message) {
   const alive = await mrEnsureContentScript(tabId);
   if (!alive) {
-    return { ok: false, error: 'Ponte inativa — recarregue a aba do Lovable (F5). Nada foi enviado, sem consumo.' };
+    // Tenta reinjetar o bridge específico também
+    try {
+      await chrome.scripting.executeScript({
+        target: { tabId, allFrames: false },
+        files: ['content/manus-bridge.js', 'content/inject.js'],
+      });
+    } catch(e) {}
+    
+    // Segunda tentativa de ping
+    if (!(await mrPingTab(tabId))) {
+      return { ok: false, error: 'Ponte inativa — recarregue a aba do Lovable (F5). Nada foi enviado, sem consumo.' };
+    }
   }
   return new Promise((resolve) => {
     let done = false;

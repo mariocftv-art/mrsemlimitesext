@@ -104,7 +104,7 @@ export const SEED_EXTENSIONS: ExtensionRecord[] = [
     code: "EXT7",
     name: "EXT7 — MR Turbo GT (Motor V12 Unificado)",
     description: "Junção dos motores das EXT1/2/3/5/6 (sem a Orbe): chassis seguro da EXT3 + carroceria HOLO GRID da EXT6 + motor Instagram + Lovable AI Gateway da EXT5. Trás 50 Skills profissionais (Landing, SaaS, Auth, Stripe, SEO, WhatsApp Cloud API, Broadcast, Orçamento automático, n8n — Atendimento 24/7, Leads Instagram—CRM, Agendador, Relatório de Vendas, ERP—E-commerce, Pipeline de Conteúdo, RAG, Agentes com Tools, Code Review, TTS...). Segurança Anti-Inspeção F12: overlay vermelho de violação, contagem regressiva de 60s e bloqueio automático com aviso ao painel.",
-    version: "7.3.1",
+    version: "7.3.3",
     status: "production",
     tone: "lime",
     sourceDir: "extensions/ext-07/integrated/MR Sem Limites Ext 7",
@@ -120,8 +120,8 @@ export const SEED_EXTENSIONS: ExtensionRecord[] = [
     builds: [],
     versions: [
       {
-        version: "7.3.1",
-        releasedAt: "2026-08-04",
+        version: "7.3.3",
+        releasedAt: "2026-08-05",
         notes: "Correção de ponte e anti-inspeção.",
         changes: ["MR BRIDGE HEALER", "F12 Security"],
       },
@@ -166,7 +166,7 @@ export const SEED_EXTENSIONS: ExtensionRecord[] = [
     code: "EXT10",
     name: "🚀 EXT10 — MR Sem Limite Ext 10 (Novo Método v4)",
     description: "Extensão híbrida: Motor original do Método 4 (EXT4) integrado ao design Black & Gold da EXT7. Inclui todas as abas profissionais, banco de licenças oficial MR Sem Limites, camada de segurança mr-security-pro.js, anti-inspeção F12 e manifesto de integridade. Zero chaves antigas. Isolada das demais extensões.",
-    version: "10.0.4",
+    version: "10.0.5",
     status: "production",
     tone: "violet",
     sourceDir: "extensions/ext-10/integrated/MR Sem Limite Metodo 10",
@@ -182,10 +182,10 @@ export const SEED_EXTENSIONS: ExtensionRecord[] = [
     builds: [],
     versions: [
       {
-        version: "10.0.4",
+        version: "10.0.5",
         releasedAt: "2026-08-05",
-        notes: "Correção de ponte e visualização.",
-        changes: ["Ponte Inativa Fix", "Motor V4 Estável"],
+        notes: "Correção de ponte e sincronização de versão.",
+        changes: ["Ponte Inativa Fix", "Auto-reinjeção Bridge", "Versão v10.0.5"],
       },
     ],
     createdAt: "2026-08-04",

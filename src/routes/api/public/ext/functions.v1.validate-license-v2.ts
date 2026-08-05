@@ -167,7 +167,7 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/validate-lice
             .from("licenca_dispositivos")
             .select("id, device_id")
             .eq("licenca_id", lic.id);
-          const already = (existing ?? []).find((d) => d.device_id === hwid);
+          const already = (existing ?? []).find((d: any) => d.device_id === hwid);
           if (!already) {
             const maxDev = Number(lic.max_dispositivos ?? 1);
             if (maxDev > 0 && (existing?.length ?? 0) >= maxDev) {

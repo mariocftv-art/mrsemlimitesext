@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "MR Sem Limite Ext 10",
-  "version": "10.0.0",
+  "version": "10.0.4",
   "description": "MR Sem Limite Ext 10 — Novo Método v4 unificado com design Turbo GT, abas profissionais e backend MR Sem Limites.",
   "permissions": [
     "storage",

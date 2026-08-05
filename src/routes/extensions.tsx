@@ -197,7 +197,7 @@ function ExtensionsPage() {
                   <Puzzle className="h-5 w-5 text-violet-400" />
                 </div>
                 <div>
-                  <p className="text-sm font-bold">EXTENSÃO DOIS 2.1</p>
+                  <p className="text-sm font-bold">EXTENSÃO DOIS 2.2</p>
                   <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{ext2.name}</p>
                 </div>
               </div>
@@ -281,18 +281,9 @@ function ExtensionCard({ ext }: { ext: ExtensionRecord; onEdit: () => void }) {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-1.5">
-          <ActionBtn icon={Eye} label="Live" asChild>
-            <Link to="/live/$id" params={{ id: ext.id }}>Live</Link>
-          </ActionBtn>
-          <ActionBtn icon={Bug} label="Runtime" asChild>
-            <Link to="/runtime/$id" params={{ id: ext.id }}>Runtime</Link>
-          </ActionBtn>
-          <ActionBtn icon={FolderOpen} label="Projeto" asChild>
-            <Link to="/editor" search={{}}>Projeto</Link>
-          </ActionBtn>
-          <ActionBtn icon={Hammer} label="Build" asChild>
-            <Link to="/build-center">Build</Link>
+        <div className="grid grid-cols-1 gap-1.5">
+          <ActionBtn icon={Download} label="Download" onClick={() => downloadZip(ext.packagedZip || "#", `${ext.name}.zip`)}>
+            Download
           </ActionBtn>
         </div>
       </CardContent>

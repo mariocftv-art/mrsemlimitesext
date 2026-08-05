@@ -245,7 +245,7 @@ export const SEED_EXTENSIONS: ExtensionRecord[] = [
     code: "EXT10",
     name: "EXT10 — MR Sem Limite (V17 Nexus Gold)",
     description: "A fusão suprema: Motor V17 Nexus Engine totalmente desofuscado unido ao design Black & Gold de luxo da EXT6/EXT8. Backend oficial MR Sem Limites integrado, bypass de créditos e performance extrema. Tudo funcionando sem quebras.",
-    version: "1.0.0",
+    version: "1.0.2",
     status: "production",
     tone: "amber",
     sourceDir: "extensions/ext-10/integrated/MR Sem Limite Ext 10",

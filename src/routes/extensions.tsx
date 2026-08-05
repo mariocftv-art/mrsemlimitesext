@@ -166,15 +166,34 @@ function ExtensionsPage() {
       }
 
     >
-{/* Cards removidos conforme solicitado. Apenas a grade inferior será renderizada. */}
-      {/* Cards de suporte removidos conforme solicitado. */}
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+      <div className="mb-6 grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-6">
         {extensions.map((ext) => (
-          <ExtensionCard
-            key={ext.id}
-            ext={ext}
-            onEdit={() => setEditing(ext)}
-          />
+          <div
+            key={`btn-${ext.id}`}
+            className="group relative flex flex-col items-center gap-2 rounded-xl border border-border/60 bg-background/40 p-3 text-center transition hover:border-amber-500/50 hover:bg-background/60"
+          >
+            <div className="absolute top-2 right-2">
+              <input 
+                type="checkbox" 
+                className="h-3 w-3 rounded border-border/60 bg-background/40 accent-amber-500"
+              />
+            </div>
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-border/60 bg-background/40">
+              <Puzzle className="h-5 w-5 text-amber-500" />
+            </div>
+            <div className="min-w-0 w-full">
+              <p className="truncate text-[11px] font-bold uppercase tracking-tight">{ext.code}</p>
+              <p className="truncate text-[9px] text-muted-foreground">{ext.name}</p>
+            </div>
+            <Button
+              size="sm"
+              variant="outline"
+              className="h-7 w-full border-amber-500/30 bg-amber-500/10 text-[10px] text-amber-500 hover:bg-amber-500 hover:text-white"
+              onClick={() => downloadZip(ext.packagedZip || `/api/build/${ext.id}/latest`, `${ext.name}.zip`)}
+            >
+              <Download className="mr-1 h-3 w-3" /> ZIP
+            </Button>
+          </div>
         ))}
       </div>
 

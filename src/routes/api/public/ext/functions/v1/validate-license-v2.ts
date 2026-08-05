@@ -25,7 +25,7 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/validate-lice
         
         // O motor V17 Blue espera { valid: boolean, status: string, ... }
         // E campos específicos como session_token ou session_id
-        return jsonResponse({
+        const responseData = {
           ok: lic.valid,
           valid: lic.valid,
           status: lic.valid ? "valid" : "invalid",
@@ -39,7 +39,10 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/validate-lice
           days_remaining: lic.daysRemaining,
           message: lic.valid ? "Licença validada com sucesso" : "Licença inválida ou expirada",
           source: "mr-sem-limites-bridge-v2",
-        });
+        };
+
+        console.log('[Bridge V2] Validation result:', { licenseKey, valid: lic.valid });
+        return jsonResponse(responseData);
       },
     },
   },

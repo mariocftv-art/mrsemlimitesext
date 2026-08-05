@@ -218,7 +218,9 @@ export const SEED_EXTENSIONS: ExtensionRecord[] = [
     status: "production",
     tone: "cyan",
     sourceDir: "extensions/ext-09/integrated/MR Sem Limite Ext 9",
-    assets: {},
+    assets: {
+      zip: "/extensions/ext09-v17-blue.zip"
+    },
     manifest: {
       manifestVersion: 3,
       permissions: ["storage", "activeTab", "scripting", "tabs", "sidePanel", "webRequest"],

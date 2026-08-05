@@ -47,7 +47,7 @@ export const SEED_EXTENSIONS: ExtensionRecord[] = [
     id: "ext-04",
     slug: "metodo-quatro",
     code: "EXT2",
-    name: "Método Quatro",
+    name: "Método Quatro 2.1",
     description: "Extensão Método Quatro (Infinito) v17.0 com motor original e backend integrado.",
     version: "17.0.0",
     status: "development",

@@ -87,7 +87,7 @@ export const SEED_EXTENSIONS: ExtensionRecord[] = [
     status: "production",
     tone: "magenta",
     sourceDir: "extensions/ext-03/integrated/ext3-v1",
-    packagedZip: "/MR_Sem_Limites_EXT3_v22.zip",
+    packagedZip: "/__l5e/assets-v1/878a542f-5ca0-4b9e-abbe-5cc7e9935401/MR_Sem_Limites_EXT3_v22.zip",
     assets: {},
     manifest: {
       manifestVersion: 3,

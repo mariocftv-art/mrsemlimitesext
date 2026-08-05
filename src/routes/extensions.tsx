@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import ext3ZipAsset from "@/assets/ext3_zip.asset.json";
+import ext3ZipAsset from "@/assets/ext3_v22_zip.asset.json";
 import { useMemo, useState, useSyncExternalStore } from "react";
 import {
   Archive,

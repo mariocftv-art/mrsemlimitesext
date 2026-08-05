@@ -172,8 +172,7 @@ function FactoryDashboard() {
             <Activity className="h-4 w-4 text-primary" /> Status da Factory
           </CardTitle>
         </CardHeader>
-        <CardContent className="grid gap-3 text-sm md:grid-cols-3">
-          <StatusTile label="Backend" value="Desconectado (modo Factory)" tone="muted" />
+        <CardContent className="grid gap-3 text-sm md:grid-cols-2">
           <StatusTile label="Extensões isoladas" value={`${stats.total} slot(s) ativo(s)`} tone="ok" />
           <StatusTile label="Documentação" value="FACTORY_MASTER.md" tone="ok" icon={Package} />
         </CardContent>

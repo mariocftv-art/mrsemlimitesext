@@ -1,7 +1,7 @@
 {/*
 FASE 16 — IMPORTAÇÃO DA EXT2 (MÉTODO QUATRO)
 O usuário forneceu os arquivos do Método Quatro v17 (Extensão + Backend).
-Status: Chaves LVB/LVV removidas. Novo formato PZT68-XXXXX configurado conforme Master Kit v3.
+Status: Chaves LVB/LVV removidas. Novo formato PZT68-8P5UV configurado conforme Master Kit v3.
 */}
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {

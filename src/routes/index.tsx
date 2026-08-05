@@ -1,7 +1,7 @@
 {/*
-FASE 16 — INTEGRAÇÃO DO MOTOR MÉTODO QUATRO NA EXT1
-Portabilidade concluída: EXT1 e EXT2 agora compartilham o mesmo motor econômico de créditos.
-Status: Versão 2.2 ativada em ambas. Novos ZIPs gerados.
+FASE 17 — ATIVAÇÃO EXT3 E BACKEND UNIFICADO
+EXT3 adicionada à Factory. Backend configurado para aceitar chaves de 4 blocos (XXXXX-XXXXX-XXXXX-XXXXX).
+Status: Motores sincronizados. Aguardando arquivos da EXT3 para integração final.
 */}
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {

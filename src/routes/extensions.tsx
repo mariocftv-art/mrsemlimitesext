@@ -7,6 +7,7 @@ import {
   Copy,
   Download,
   Eye,
+  FileArchive,
   FolderOpen,
   GitBranch,
   Hammer,
@@ -19,6 +20,7 @@ import {
   Trash2,
   Upload,
 } from "lucide-react";
+
 
 const SUPPORT_WHATSAPP_URL =
   "https://wa.me/5511962579428?text=" +
@@ -606,12 +608,19 @@ function ExtensionCard({ ext, onEdit }: { ext: ExtensionRecord; onEdit: () => vo
             label={ext.status === "archived" ? "Restaurar" : "Arquivar"}
             onClick={handleArchive}
           />
+          <ActionBtn 
+            icon={Download} 
+            label="Download" 
+            onClick={() => downloadZip(ext.packagedZip || `/api/build/${ext.id}/latest`, `${ext.name}.zip`)} 
+            highlighted
+          />
           {ext.packagedZip && (
-            <ActionBtn icon={Download} label="ZIP" onClick={() => downloadZip(ext.packagedZip!, `${ext.code}.zip`)} />
+            <ActionBtn icon={FileArchive} label="ZIP" onClick={() => downloadZip(ext.packagedZip!, `${ext.code}.zip`)} />
           )}
           {!isSeed && (
             <ActionBtn icon={Trash2} label="Excluir" onClick={handleDelete} destructive />
           )}
+
         </div>
       </CardContent>
     </Card>
@@ -634,14 +643,17 @@ function ActionBtn({
   asChild,
   children,
   destructive,
+  highlighted,
 }: {
-  icon: typeof Pencil;
+  icon: any;
   label: string;
   onClick?: () => void;
   asChild?: boolean;
   children?: React.ReactNode;
   destructive?: boolean;
+  highlighted?: boolean;
 }) {
+
   return (
     <Button
       asChild={asChild}
@@ -650,7 +662,10 @@ function ActionBtn({
       size="sm"
       className={`h-8 gap-1 text-[11px] ${
         destructive ? "border-destructive/40 text-destructive hover:bg-destructive/10" : ""
+      } ${
+        highlighted ? "border-amber-500/50 bg-amber-500/10 text-amber-500 hover:bg-amber-500/20 shadow-[0_0_10px_-5px_#f5dc8c]" : ""
       }`}
+
       title={label}
     >
       {asChild ? (

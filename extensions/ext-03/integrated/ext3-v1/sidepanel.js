@@ -86,8 +86,8 @@ function friendlyLicenseError(raw) {
   }
 
   // Licença não encontrada / inválida
-  if (/not found|not_found|invalid|inválida|inválido|inexistente/i.test(raw)) {
-    return '\u274c Chave de licença inválida. Verifique se digitou corretamente.';
+  if (/not found|not_found|cadastrada|invalid|inválida|inválido|inexistente/i.test(raw)) {
+    return '\u274c Licença não cadastrada neste servidor. Verifique se digitou corretamente.';
   }
 
   // Licença suspensa / revogada

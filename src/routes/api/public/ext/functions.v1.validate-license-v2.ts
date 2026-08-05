@@ -84,7 +84,7 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/validate-lice
 
         if (!lic) {
           return new Response(
-            JSON.stringify({ status: "invalid", message: "Licença não encontrada" }),
+            JSON.stringify({ status: "invalid", message: "Licença não cadastrada neste servidor" }),
             { status: 200, headers: cors },
           );
         }

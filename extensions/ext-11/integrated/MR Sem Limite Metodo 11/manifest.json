@@ -35,7 +35,13 @@
   "content_scripts": [
     {
       "matches": ["https://lovable.dev/*", "https://*.lovable.dev/*"],
-      "js": ["content/castle-capture.js", "content/pageHook.js", "content/hwFingerprint.js"],
+      "js": [
+        "content/castle-capture.js",
+        "content/pageHook.js",
+        "content/hwFingerprint.js",
+        "content/lv-core.js",
+        "content/upload-manager.js"
+      ],
       "run_at": "document_start",
       "world": "MAIN"
     },

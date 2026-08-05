@@ -260,13 +260,13 @@ function ExtensionCard({ ext, onEdit }: { ext: ExtensionRecord; onEdit: () => vo
       className="glass relative overflow-hidden border-border/60"
       style={{ boxShadow: `0 0 40px -28px ${glow[ext.tone]}` }}
     >
-      <div className="absolute top-3 right-3 z-10">
-        <input 
-          type="checkbox" 
-          className="h-4 w-4 rounded border-border/60 bg-background/40 accent-primary transition hover:border-primary/60"
-          title="Selecionar extensão"
-        />
-      </div>
+        <div className="absolute top-3 right-3 z-10 flex gap-2">
+          <input 
+            type="checkbox" 
+            className="h-4 w-4 rounded border-border/60 bg-background/40 accent-amber-500 transition hover:border-amber-500/60"
+            title="Selecionar extensão"
+          />
+        </div>
       {banner && (
         <div
           className="h-20 w-full bg-cover bg-center opacity-70"

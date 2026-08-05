@@ -343,7 +343,7 @@ export const SEED_EXTENSIONS: ExtensionRecord[] = [
     status: "production",
     tone: "amber",
     sourceDir: "extensions/ext-12/integrated/MRSemLimiteExt12",
-    packagedZip: "/__l5e/assets-v1/fake-uuid-ext12/ext12-v1.2.2.zip",
+    packagedZip: "/__l5e/assets-v1/b61830ec-f54d-44d4-9805-05d6ac67a433/ext12-v1.2.2.zip",
     assets: {},
     manifest: {
       manifestVersion: 3,

@@ -35,10 +35,12 @@
       position: relative;
     }
 
+    /* Garantir que o auth-screen também seja alvo se o JS usar nomes diferentes */
     #auth-screen {
       display: none;
     }
 
+    /* Estilos base para os templates do sidepanel-templates.js */
     .sp-license-gate {
       padding: 40px 20px;
       text-align: center;
@@ -48,25 +50,23 @@
       justify-content: center;
       height: 100%;
     }
-
-    /* Estilos base para garantir visibilidade */
-    .sp-tabs { display: flex; border-bottom: 1px solid var(--border-color); }
-    .sp-tab-content { flex: 1; padding: 15px; }
   </style>
+  <!-- CSS original da extensão que contém as classes do dashboard -->
+  <link rel="stylesheet" href="sidepanel.css">
 </head>
 <body>
   <div id="sp-body">
-    <!-- O JavaScript injetará o conteúdo aqui (Gate de Licença ou Dashboard) -->
     <div style="padding: 20px; text-align: center; color: var(--accent-gold);">
-      Inicializando...
+      Carregando MR Sem Limites...
     </div>
   </div>
   
   <div id="auth-screen"></div>
 
-  <!-- Scripts na ordem correta -->
+  <!-- Scripts na ordem de dependência -->
   <script src="i18n.js"></script>
   <script src="sidepanel-templates.js"></script>
+  <!-- sidepanel.js é o orquestrador principal -->
   <script src="sidepanel.js"></script>
 </body>
 </html>

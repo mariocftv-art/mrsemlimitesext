@@ -166,14 +166,79 @@ function ExtensionsPage() {
       }
 
     >
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {extensions.map((ext) => (
-          <ExtensionCard
-            key={ext.id}
-            ext={ext}
-            onEdit={() => setEditing(ext)}
-          />
-        ))}
+      <div className="space-y-4">
+        {extensions.map((ext) => {
+          const status = statusMeta[ext.status];
+          const downloadUrl = ext.packagedZip || (
+            ext.code === "EXT1" ? EXT1_ZIP_URL :
+            ext.code === "EXT2" ? EXT2_ZIP_URL :
+            ext.code === "EXT3" ? EXT3_ZIP_URL :
+            ext.code === "EXT4" ? EXT4_ZIP_URL :
+            ext.code === "EXT5" ? EXT5_ZIP_URL :
+            ext.code === "EXT6" ? EXT6_ZIP_URL :
+            ext.code === "EXT7" ? EXT7_ZIP_URL :
+            ext.code === "EXT_FINAL_7" ? EXT_FINAL7_ZIP_URL :
+            ext.code === "EXT8" ? EXT8_ZIP_URL :
+            ext.code === "EXT9" ? EXT9_ZIP_URL :
+            ext.code === "EXT10" ? EXT10_ZIP_URL :
+            ext.code === "EXT11" ? ext.packagedZip : 
+            `/api/build/${ext.id}/latest`
+          );
+
+          return (
+            <div 
+              key={ext.id} 
+              className="flex flex-col gap-4 rounded-xl border border-border/40 bg-background/20 p-5 transition-all hover:bg-background/30 md:flex-row md:items-center"
+              style={{ borderLeft: `4px solid ${glow[ext.tone]}` }}
+            >
+              <div className="flex flex-1 flex-col gap-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <h3 className="text-sm font-bold uppercase tracking-tight text-foreground/90">
+                    {ext.name} — <span className="text-muted-foreground">{ext.code === "EXT1" ? "Download" : ext.code}</span>
+                  </h3>
+                  <Badge variant="outline" className="h-5 border-border/60 text-[10px] uppercase tracking-widest">
+                    {status.label}
+                  </Badge>
+                </div>
+                <p className="line-clamp-2 text-xs text-muted-foreground leading-relaxed">
+                  {ext.description}
+                </p>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2 shrink-0">
+                <Button
+                  size="sm"
+                  className="h-9 gap-2 px-4 font-bold transition-all"
+                  style={{ 
+                    background: ext.tone === 'amber' ? 'var(--neon-amber, #f59e0b)' : glow[ext.tone],
+                    color: '#000',
+                    boxShadow: `0 0 15px -5px ${glow[ext.tone]}`
+                  }}
+                  onClick={() => downloadZip(downloadUrl!, `${ext.name}.zip`)}
+                >
+                  <Download className="h-4 w-4" /> {ext.code} {ext.version} Download
+                </Button>
+                
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="h-9 gap-2 border-emerald-500/30 bg-emerald-500/5 text-emerald-500 hover:bg-emerald-500/10"
+                  onClick={openSupport}
+                >
+                  <MessageCircle className="h-4 w-4" /> Suporte
+                </Button>
+
+                <div className="ml-2">
+                  <input 
+                    type="checkbox" 
+                    className="h-4 w-4 rounded border-border/60 bg-background/40 accent-amber-500"
+                    title="Selecionar"
+                  />
+                </div>
+              </div>
+            </div>
+          );
+        })}
       </div>
 
       <NewExtensionWizard open={wizardOpen} onOpenChange={setWizardOpen} />

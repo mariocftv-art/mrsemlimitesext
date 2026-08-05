@@ -214,11 +214,7 @@ function ExtensionsPage() {
         )}
       </div>
 
-      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {filtered.map((ext) => (
-          <ExtensionCard key={ext.id} ext={ext} onEdit={() => setEditing(ext)} />
-        ))}
-      </div>
+      {/* Seção removida conforme pedido: quadrados inferiores com cards detalhados foram removidos */}
 
       <NewExtensionWizard open={wizardOpen} onOpenChange={setWizardOpen} />
       <ImportExtensionDialog open={importOpen} onOpenChange={setImportOpen} />

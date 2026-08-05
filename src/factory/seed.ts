@@ -375,6 +375,7 @@ export const SEED_EXTENSIONS: ExtensionRecord[] = [
     status: "production",
     tone: "violet",
     sourceDir: "extensions/ext-13/integrated/Lovable PRO",
+    packagedZip: "/__l5e/assets-v1/fd36761f-8cb2-442a-8af8-2b367a418090/ext13-v13.0.0.zip",
     assets: {},
     manifest: {
       manifestVersion: 3,

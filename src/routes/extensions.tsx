@@ -114,6 +114,8 @@ import ext9Asset from "@/assets/ext9-mrturbo-modificada.zip.asset.json";
 const EXT9_ZIP_URL = ext9Asset.url;
 import ext10Asset from "@/assets/ext10-v10.0.0.zip.asset.json";
 const EXT10_ZIP_URL = ext10Asset.url;
+import ext11Asset from "@/assets/ext11-v1.2.0.zip.asset.json";
+const EXT11_ZIP_URL = ext11Asset.url;
 
 
 type Filter = "all" | ExtensionStatus;

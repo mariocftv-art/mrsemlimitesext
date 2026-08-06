@@ -33,19 +33,24 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/validate-lice
         } catch {
           /* noop */
         }
+        
+        console.log("[v2] Request body:", JSON.stringify(body));
+
         const key = String(body?.license_key ?? "").trim();
         const hwid = body?.hwid ? String(body.hwid).trim() : null;
         const deviceInfo = body?.device_info ?? null;
-        // FASE 2 (multi-extensão): leitura opcional de `extension_id`. Reservado para uso futuro.
-        // Sem alterar validação nem retorno. Se ausente, comportamento 100% idêntico.
-        const extension_id = body?.extension_id ? String(body.extension_id).slice(0, 80) : null;
-        void extension_id;
-
+        
         if (!key) {
+          console.log("[v2] Missing license key");
           return new Response(
-            JSON.stringify({ status: "invalid", message: "Licença inválida" }),
+            JSON.stringify({ status: "invalid", message: "Licença inválida (chave ausente)" }),
             { status: 200, headers: cors },
           );
+        }
+
+        // Se for uma chave de fallback/placeholder que o usuário pode estar testando
+        if (key === "YMXVP-2SWVC-BKK46-VYJ6X") {
+           console.log("[v2] Special handling for placeholder key from screenshot");
         }
 
         // Validação de formato flexível: aceita qualquer formato para não bloquear o usuário

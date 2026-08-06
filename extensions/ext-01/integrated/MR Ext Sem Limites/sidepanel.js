@@ -1945,16 +1945,31 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (activateBtn) {
     activateBtn.addEventListener('click', async (e) => {
       e.preventDefault();
-      console.log('[Sidepanel] Ativar botão clicado');
+      console.log('🚀 [MR Sem Limites] Ativar Licença clicado');
+      
       const key = licenseInput?.value?.trim().toUpperCase();
+      console.log('🔑 [MR Sem Limites] Chave digitada:', key);
+      
       if (!key) {
-        if (licenseStatus) { licenseStatus.textContent = 'Digite uma chave de licença'; licenseStatus.style.color = '#ef4444'; }
+        console.warn('⚠️ [MR Sem Limites] Chave vazia');
+        if (licenseStatus) { 
+          licenseStatus.textContent = 'Digite uma chave de licença'; 
+          licenseStatus.style.color = '#ef4444'; 
+        }
         return;
       }
+
       activateBtn.disabled = true;
-      if (licenseStatus) { licenseStatus.textContent = '🔐 Validando licença...'; licenseStatus.style.color = '#f59e0b'; }
+      if (licenseStatus) { 
+        licenseStatus.textContent = '🔐 Validando licença...'; 
+        licenseStatus.style.color = '#f59e0b'; 
+      }
+
       try {
+        console.log('📡 [MR Sem Limites] Chamando validateLicense...');
         const result = await validateLicense(key);
+        console.log('📥 [MR Sem Limites] Resposta da validação:', JSON.stringify(result));
+
         if (result.status === 'valid') {
           licenseKey = key;
           licenseSessionToken = result.session_token;
@@ -1965,20 +1980,47 @@ document.addEventListener('DOMContentLoaded', async () => {
           };
           
           const cur3 = (await chrome.storage.local.get('settings')).settings || {};
-          await chrome.storage.local.set({ licenseKey: key, licenseSessionToken: result.session_token, settings: { ...cur3, licenseState: { status: 'valid' }, licenseKey: key } });
-          if (licenseStatus) { licenseStatus.textContent = '✅ Licença ativada!'; licenseStatus.style.color = '#22c55e'; }
+          await chrome.storage.local.set({ 
+            licenseKey: key, 
+            licenseSessionToken: result.session_token, 
+            settings: { 
+              ...cur3, 
+              licenseState: { status: 'valid' }, 
+              licenseKey: key 
+            } 
+          });
+          
+          console.log('✅ [MR Sem Limites] Licença válida. Redirecionando...');
+          if (licenseStatus) { 
+            licenseStatus.textContent = '✅ Licença ativada!'; 
+            licenseStatus.style.color = '#22c55e'; 
+          }
           showToast('Licença ativada com sucesso!', 'success');
-          setTimeout(() => showMainApp(), 500);
+          
+          // Pequeno delay para o usuário ver o feedback de sucesso
+          setTimeout(() => {
+            console.log('📱 [MR Sem Limites] Mostrando app principal');
+            showMainApp();
+          }, 800);
         } else {
-          console.warn('❌ License activation failed. Raw result:', JSON.stringify(result));
+          console.error('❌ [MR Sem Limites] Licença inválida ou erro:', result.message || result.error);
           const friendlyMsg = friendlyLicenseError(result.message || result.error);
-          if (licenseStatus) { licenseStatus.textContent = friendlyMsg; licenseStatus.style.color = '#ef4444'; }
+          if (licenseStatus) { 
+            licenseStatus.textContent = friendlyMsg; 
+            licenseStatus.style.color = '#ef4444'; 
+          }
           showToast(friendlyMsg, 'error');
         }
       } catch (error) {
-        if (licenseStatus) { licenseStatus.textContent = '❌ Erro ao validar licença'; licenseStatus.style.color = '#ef4444'; }
+        console.error('💥 [MR Sem Limites] Exceção na validação:', error);
+        if (licenseStatus) { 
+          licenseStatus.textContent = '❌ Erro de conexão com o servidor'; 
+          licenseStatus.style.color = '#ef4444'; 
+        }
+        showToast('Erro ao conectar com o servidor', 'error');
       } finally {
         activateBtn.disabled = false;
+        console.log('🏁 [MR Sem Limites] Fluxo de ativação finalizado');
       }
     });
   }

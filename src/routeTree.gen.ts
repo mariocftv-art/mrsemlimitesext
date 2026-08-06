@@ -46,6 +46,7 @@ import { Route as ApiPublicExtFunctionsV1Lov4RouteImport } from './routes/api/pu
 import { Route as ApiPublicExtFunctionsV1InjectConfigRouteImport } from './routes/api/public/ext/functions.v1.inject-config'
 import { Route as ApiPublicExtFunctionsV1GetTemplatesRouteImport } from './routes/api/public/ext/functions.v1.get-templates'
 import { Route as ApiPublicExtFunctionsV1GetSupportInfoRouteImport } from './routes/api/public/ext/functions.v1.get-support-info'
+import { Route as ApiPublicExtFunctionsV1DownloadZipRouteImport } from './routes/api/public/ext/functions.v1.download-zip'
 import { Route as ApiPublicExtStorageV1ObjectSplatRouteImport } from './routes/api/public/ext/storage.v1.object.$'
 
 const VersionsRoute = VersionsRouteImport.update({
@@ -241,6 +242,12 @@ const ApiPublicExtFunctionsV1GetSupportInfoRoute =
     path: '/api/public/ext/functions/v1/get-support-info',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicExtFunctionsV1DownloadZipRoute =
+  ApiPublicExtFunctionsV1DownloadZipRouteImport.update({
+    id: '/api/public/ext/functions/v1/download-zip',
+    path: '/api/public/ext/functions/v1/download-zip',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicExtStorageV1ObjectSplatRoute =
   ApiPublicExtStorageV1ObjectSplatRouteImport.update({
     id: '/api/public/ext/storage/v1/object/$',
@@ -279,6 +286,7 @@ export interface FileRoutesByFullPath {
   '/runtime/$id': typeof RuntimeIdRoute
   '/api/public/ext/send-command': typeof ApiPublicExtSendCommandRoute
   '/api/public/ext/validate-license': typeof ApiPublicExtValidateLicenseRoute
+  '/api/public/ext/functions/v1/download-zip': typeof ApiPublicExtFunctionsV1DownloadZipRoute
   '/api/public/ext/functions/v1/get-support-info': typeof ApiPublicExtFunctionsV1GetSupportInfoRoute
   '/api/public/ext/functions/v1/get-templates': typeof ApiPublicExtFunctionsV1GetTemplatesRoute
   '/api/public/ext/functions/v1/inject-config': typeof ApiPublicExtFunctionsV1InjectConfigRoute
@@ -319,6 +327,7 @@ export interface FileRoutesByTo {
   '/runtime/$id': typeof RuntimeIdRoute
   '/api/public/ext/send-command': typeof ApiPublicExtSendCommandRoute
   '/api/public/ext/validate-license': typeof ApiPublicExtValidateLicenseRoute
+  '/api/public/ext/functions/v1/download-zip': typeof ApiPublicExtFunctionsV1DownloadZipRoute
   '/api/public/ext/functions/v1/get-support-info': typeof ApiPublicExtFunctionsV1GetSupportInfoRoute
   '/api/public/ext/functions/v1/get-templates': typeof ApiPublicExtFunctionsV1GetTemplatesRoute
   '/api/public/ext/functions/v1/inject-config': typeof ApiPublicExtFunctionsV1InjectConfigRoute
@@ -360,6 +369,7 @@ export interface FileRoutesById {
   '/runtime/$id': typeof RuntimeIdRoute
   '/api/public/ext/send-command': typeof ApiPublicExtSendCommandRoute
   '/api/public/ext/validate-license': typeof ApiPublicExtValidateLicenseRoute
+  '/api/public/ext/functions/v1/download-zip': typeof ApiPublicExtFunctionsV1DownloadZipRoute
   '/api/public/ext/functions/v1/get-support-info': typeof ApiPublicExtFunctionsV1GetSupportInfoRoute
   '/api/public/ext/functions/v1/get-templates': typeof ApiPublicExtFunctionsV1GetTemplatesRoute
   '/api/public/ext/functions/v1/inject-config': typeof ApiPublicExtFunctionsV1InjectConfigRoute
@@ -402,6 +412,7 @@ export interface FileRouteTypes {
     | '/runtime/$id'
     | '/api/public/ext/send-command'
     | '/api/public/ext/validate-license'
+    | '/api/public/ext/functions/v1/download-zip'
     | '/api/public/ext/functions/v1/get-support-info'
     | '/api/public/ext/functions/v1/get-templates'
     | '/api/public/ext/functions/v1/inject-config'
@@ -442,6 +453,7 @@ export interface FileRouteTypes {
     | '/runtime/$id'
     | '/api/public/ext/send-command'
     | '/api/public/ext/validate-license'
+    | '/api/public/ext/functions/v1/download-zip'
     | '/api/public/ext/functions/v1/get-support-info'
     | '/api/public/ext/functions/v1/get-templates'
     | '/api/public/ext/functions/v1/inject-config'
@@ -482,6 +494,7 @@ export interface FileRouteTypes {
     | '/runtime/$id'
     | '/api/public/ext/send-command'
     | '/api/public/ext/validate-license'
+    | '/api/public/ext/functions/v1/download-zip'
     | '/api/public/ext/functions/v1/get-support-info'
     | '/api/public/ext/functions/v1/get-templates'
     | '/api/public/ext/functions/v1/inject-config'
@@ -523,6 +536,7 @@ export interface RootRouteChildren {
   RuntimeIdRoute: typeof RuntimeIdRoute
   ApiPublicExtSendCommandRoute: typeof ApiPublicExtSendCommandRoute
   ApiPublicExtValidateLicenseRoute: typeof ApiPublicExtValidateLicenseRoute
+  ApiPublicExtFunctionsV1DownloadZipRoute: typeof ApiPublicExtFunctionsV1DownloadZipRoute
   ApiPublicExtFunctionsV1GetSupportInfoRoute: typeof ApiPublicExtFunctionsV1GetSupportInfoRoute
   ApiPublicExtFunctionsV1GetTemplatesRoute: typeof ApiPublicExtFunctionsV1GetTemplatesRoute
   ApiPublicExtFunctionsV1InjectConfigRoute: typeof ApiPublicExtFunctionsV1InjectConfigRoute
@@ -794,6 +808,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicExtFunctionsV1GetSupportInfoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/ext/functions/v1/download-zip': {
+      id: '/api/public/ext/functions/v1/download-zip'
+      path: '/api/public/ext/functions/v1/download-zip'
+      fullPath: '/api/public/ext/functions/v1/download-zip'
+      preLoaderRoute: typeof ApiPublicExtFunctionsV1DownloadZipRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/ext/storage/v1/object/$': {
       id: '/api/public/ext/storage/v1/object/$'
       path: '/api/public/ext/storage/v1/object/$'
@@ -835,6 +856,8 @@ const rootRouteChildren: RootRouteChildren = {
   RuntimeIdRoute: RuntimeIdRoute,
   ApiPublicExtSendCommandRoute: ApiPublicExtSendCommandRoute,
   ApiPublicExtValidateLicenseRoute: ApiPublicExtValidateLicenseRoute,
+  ApiPublicExtFunctionsV1DownloadZipRoute:
+    ApiPublicExtFunctionsV1DownloadZipRoute,
   ApiPublicExtFunctionsV1GetSupportInfoRoute:
     ApiPublicExtFunctionsV1GetSupportInfoRoute,
   ApiPublicExtFunctionsV1GetTemplatesRoute:

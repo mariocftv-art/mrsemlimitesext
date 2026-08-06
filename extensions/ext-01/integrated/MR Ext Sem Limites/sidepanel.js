@@ -1943,7 +1943,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   if (activateBtn) {
-    activateBtn.addEventListener('click', async () => {
+    activateBtn.addEventListener('click', async (e) => {
+      e.preventDefault();
+      console.log('[Sidepanel] Ativar botão clicado');
       const key = licenseInput?.value?.trim().toUpperCase();
       if (!key) {
         if (licenseStatus) { licenseStatus.textContent = 'Digite uma chave de licença'; licenseStatus.style.color = '#ef4444'; }

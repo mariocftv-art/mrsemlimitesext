@@ -28,13 +28,17 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/lov4")({
         const action = String(body?.action || "").toLowerCase();
 
         // Bypass de créditos: retorna sucesso imediato para interceptações de plano
-        if (action === "transform" || body?.intent === "visual_edit") {
+        // O motor "Método Quatro" deve retornar status ok sem consumir créditos
+        if (action === "transform" || body?.intent === "visual_edit" || action === "oi") {
+          console.log(`[LOV4] Motor Método Quatro ativo: Bypass para ação "${action}"`);
           return new Response(
             JSON.stringify({
               ok: true,
               action: "pass-through",
               body: body.body || null,
-              message: "Motor Método Quatro: Créditos Protegidos."
+              message: "Motor Método Quatro: Créditos Protegidos.",
+              credits_used: 0,
+              status: "active"
             }),
             { status: 200, headers: cors }
           );
@@ -45,7 +49,8 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/lov4")({
             ok: true,
             status: "ready",
             action,
-            message: "Encaminhado via Motor Método Quatro (Economia Ativa)."
+            message: "Encaminhado via Motor Método Quatro (Economia Ativa).",
+            credits_used: 0
           }),
           { status: 200, headers: cors }
         );

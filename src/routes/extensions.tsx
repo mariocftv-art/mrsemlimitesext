@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import ext1ZipAsset from "@/assets/ext1_v28_zip.asset.json";
-import ext2ZipAsset from "@/assets/ext2_v27_zip.asset.json";
-import ext3ZipAsset from "@/assets/ext3_v27_zip.asset.json";
+import ext1ZipAsset from "@/assets/ext1_v29_zip.asset.json";
+import ext2ZipAsset from "@/assets/ext2_v29_zip.asset.json";
+import ext3ZipAsset from "@/assets/ext3_v29_zip.asset.json";
 import { useMemo, useState, useSyncExternalStore } from "react";
 import {
   Archive,
@@ -182,7 +182,7 @@ function ExtensionsPage() {
                   <Puzzle className="h-5 w-5 text-primary" />
                 </div>
                 <div>
-                  <p className="text-sm font-bold">EXTENSÃO UM 2.8</p>
+                  <p className="text-sm font-bold">EXTENSÃO UM 2.9</p>
                   <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{ext1.name}</p>
                 </div>
               </div>
@@ -201,7 +201,7 @@ function ExtensionsPage() {
                   <Puzzle className="h-5 w-5 text-violet-400" />
                 </div>
                 <div>
-                  <p className="text-sm font-bold">EXTENSÃO DOIS 2.8</p>
+                  <p className="text-sm font-bold">EXTENSÃO DOIS 2.9</p>
                   <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{ext2.name}</p>
                 </div>
               </div>
@@ -225,7 +225,7 @@ function ExtensionsPage() {
                   <Puzzle className="h-5 w-5 text-magenta-400" />
                 </div>
                 <div>
-                  <p className="text-sm font-bold">EXTENSÃO TRÊS 2.8</p>
+                  <p className="text-sm font-bold">EXTENSÃO TRÊS 2.9</p>
                   <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{ext3.name}</p>
                 </div>
               </div>

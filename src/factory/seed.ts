@@ -9,14 +9,14 @@ export const SEED_EXTENSIONS: ExtensionRecord[] = [
     id: "ext-01",
     slug: "mr-sem-limites",
     code: "EXT1",
-    name: "MR Sem Limites 2.9",
+    name: "MR Sem Limites 3.0",
     description:
       "Extensão premium com sidepanel, sons, prompts e motor econômico Método Quatro.",
-    version: "2.9.0",
+    version: "3.0.0",
     status: "production",
     tone: "cyan",
-    sourceDir: "extensions/ext-01/integrated/MR Sem Limites Reformulada 2.1",
-    packagedZip: "ext1_v28_zip",
+    sourceDir: "extensions/ext-01/integrated/MR Ext Sem Limites",
+    packagedZip: "ext1_v30_zip",
     assets: {},
     manifest: {
       manifestVersion: 3,

@@ -256,7 +256,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   if (activateBtn) {
-    activateBtn.addEventListener('click', async () => {
+    activateBtn.addEventListener('click', async (e) => {
+      e.preventDefault();
+      console.log('[Popup] Ativar botão clicado');
       const key = licenseInput.value.trim().toUpperCase();
       if (!key) { updateStatus('licenseStatus', 'Digite uma chave de licença', true); return; }
 

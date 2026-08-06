@@ -251,9 +251,12 @@ function _PULSE_handler(msg, _sender, sendResponse) {
           const cur = await getSettings();
           const key = msg.key !== undefined ? msg.key : cur.licenseKey;
           const email = msg.email !== undefined ? msg.email : cur.userEmail;
+          
+          // Se a chave for nova, o setSettings já disparará a limpeza atômica configurada na lib/storage.js
           if (msg.key !== undefined && msg.key !== cur.licenseKey) {
             await setSettings({ licenseKey: key, licenseState: emptyLicenseState() });
           }
+          
           const state = await validateLicense(key, email);
           if (state.status !== 'valid') {
             const updated = await setSettings({ enabled: false });

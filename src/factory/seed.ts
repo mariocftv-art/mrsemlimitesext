@@ -9,14 +9,14 @@ export const SEED_EXTENSIONS: ExtensionRecord[] = [
     id: "ext-01",
     slug: "mr-sem-limites",
     code: "EXT1",
-    name: "MR Sem Limites 2.7",
+    name: "MR Sem Limites 2.8",
     description:
       "Extensão premium com sidepanel, sons, prompts e motor econômico Método Quatro.",
     version: "2.2.0",
     status: "production",
     tone: "cyan",
     sourceDir: "extensions/ext-01/integrated/MR Sem Limites Reformulada 2.1",
-    packagedZip: "ext1_v27_zip",
+    packagedZip: "ext1_v28_zip",
     assets: {},
     manifest: {
       manifestVersion: 3,
@@ -47,13 +47,13 @@ export const SEED_EXTENSIONS: ExtensionRecord[] = [
     id: "ext-04",
     slug: "metodo-quatro",
     code: "EXT2",
-    name: "Método Quatro 2.7",
+    name: "Método Quatro 2.8",
     description: "Extensão Método Quatro (Infinito) v17.0 com motor original e backend integrado.",
     version: "17.1.0",
     status: "development",
     tone: "violet",
     sourceDir: "extensions/ext-04/integrated/metodo4-v17",
-    packagedZip: "ext2_v27_zip",
+    packagedZip: "ext2_v27_zip", // Mantendo v27 para EXT2 por enquanto
     assets: {},
 
     manifest: {
@@ -81,13 +81,13 @@ export const SEED_EXTENSIONS: ExtensionRecord[] = [
     id: "ext-03",
     slug: "ext3-new",
     code: "EXT3",
-    name: "MR Sem Limites v3 2.7",
+    name: "MR Sem Limites v3 2.8",
     description: "Extensão de nova geração (EXT3) com backend sincronizado e suporte a chaves dinâmicas.",
     version: "2.7.0",
     status: "production",
     tone: "magenta",
     sourceDir: "extensions/ext-03/integrated/ext3-v26",
-    packagedZip: "ext3_v27_zip",
+    packagedZip: "ext3_v27_zip", // Mantendo v27 para EXT3 por enquanto
     assets: {},
     manifest: {
       manifestVersion: 3,

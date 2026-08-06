@@ -69,6 +69,18 @@ export async function getSettings() {
 
 export async function setSettings(updates) {
   const current = await getSettings();
+  
+  // Limpeza proativa de chaves antigas se uma nova chave estiver sendo definida
+  if (updates.licenseKey && updates.licenseKey !== current.licenseKey) {
+    console.log('[Storage] Nova chave detectada. Limpando resquícios do sistema antigo...');
+    await chrome.storage.local.remove([
+      'licenseKey', 
+      'sessionToken', 
+      'licenseSessionToken',
+      'licenseState'
+    ]);
+  }
+
   const merged = deepMerge(current, updates);
   await chrome.storage.local.set({ settings: merged });
   return merged;

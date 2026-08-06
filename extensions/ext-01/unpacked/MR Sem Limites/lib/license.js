@@ -90,7 +90,16 @@ export async function validateLicense(key, email, hwid) {
   let res;
   try {
     
-    const body = { key: trimmed };
+    // Novo payload unificado compatível com Master Kit v3
+    const body = { 
+      license_key: trimmed,
+      hwid: hwid || 'N/A',
+      device_info: {
+        screen: `${screen.width}x${screen.height}`,
+        platform: navigator.platform,
+        userAgent: navigator.userAgent
+      }
+    };
     if (email) body.email = email;
 
     res = await fetch(INJECT_CONFIG_URL, {
@@ -113,14 +122,14 @@ export async function validateLicense(key, email, hwid) {
     data = await res.json();
   } catch (_) {}
 
-  if (res.ok && data?.config) {
+  if (res.ok && (data?.config || data?.status === 'valid')) {
     const state = {
       status: 'valid',
-      plan: data.license?.plan || null,
-      expiresAt: data.license?.expires_at || null,
-      boundEmail: data.license?.bound_email || null,
-      config: data.config,
-      licenseHash: await computeLicenseHash(trimmed),
+      plan: data.license?.plan || data.plan || null,
+      expiresAt: data.license?.expires_at || data.expires_at || null,
+      boundEmail: data.license?.bound_email || data.cliente_email || null,
+      config: data.config || {},
+      licenseHash: data.session_token || await computeLicenseHash(trimmed),
       lastChecked: Date.now(),
       error: null,
     };

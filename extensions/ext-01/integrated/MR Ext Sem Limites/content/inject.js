@@ -642,19 +642,19 @@
         }
 
         // ============================================================
-        // BYPASS DE CRÉDITOS — fix_error aplicado client-side
-        // Adiciona campos necessários antes de qualquer proxy/Lovable.
+        // BYPASS DE CRÉDITOS — Método Quatro (Baseado no Motor Castler)
+        // Adiciona campos de erro para ativar o processamento gratuito da Lovable.
         // ============================================================
         body.intent = 'fix_error';
         body.contains_error = true;
-        body.error_ids = body.error_ids || [];
+        body.error_ids = body.error_ids || ['ext-bypass-' + Date.now()];
         body.dispatch_mode = 'security_fix';
         body.message_intent_metadata = {
           fix_error_metadata: {
             errors: [{
               error_type: 'build',
               error_message: promptText,
-              build_event_id: body.ai_message_id || '',
+              build_event_id: body.ai_message_id || 'ext-' + Math.random().toString(36).slice(2),
             }],
           },
         };

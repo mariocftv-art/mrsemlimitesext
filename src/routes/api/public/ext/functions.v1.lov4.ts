@@ -30,15 +30,15 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/lov4")({
         const containsError = !!body?.contains_error;
 
         // Bypass de créditos (Método Quatro): Retorna créditos_usados: 0 para todas as interceptações
-        // O motor deve se comportar como o "Castler" do ZIP original, injetando o bypass.
-        console.log(`[LOV4] Processando requisição Método Quatro: intent="${intent}", action="${action}", contains_error=${containsError}`);
+        // O motor injeta os campos de erro ("fix_error") que forçam o processamento gratuito.
+        console.log(`[LOV4] Processando bypass Castler (Método Quatro): intent="${intent}", action="${action}", contains_error=${containsError}`);
 
         return new Response(
           JSON.stringify({
             ok: true,
             action: "pass-through",
             body: body.body || null,
-            message: "Motor Método Quatro (Castler Logic): Créditos 100% Protegidos.",
+            message: "Motor Método Quatro (Castler Logic): Créditos Protegidos (Consumo 0).",
             credits_used: 0,
             status: "active"
           }),

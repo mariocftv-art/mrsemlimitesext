@@ -267,8 +267,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       try {
         const result = await validateLicense(key);
         if (result.status === 'valid') {
-          sessionToken = result.session_token;
-          await chrome.storage.local.set({ licenseKey: key, sessionToken: result.session_token });
+          sessionToken = result.session_token || result.licenseHash;
+          // Centraliza gravação via settings e garante limpeza atômica do storage
+          await setSettings({ licenseKey: key, licenseState: result });
           updateStatus('licenseStatus', '✓ Licença ativada com sucesso!');
           activateBtn.textContent = 'Ativado!';
           setTimeout(async () => {

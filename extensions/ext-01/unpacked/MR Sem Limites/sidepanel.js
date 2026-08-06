@@ -133,20 +133,19 @@ async function validateLicense(key) {
       console.warn(`⚠️ validateLicense retry ${attempt}/3 após ${DELAYS[attempt]}ms...`);
       await new Promise(r => setTimeout(r, DELAYS[attempt]));
     }
-    try {
-      console.log('🔐 Validando licença:', key.substring(0, 8) + '***', `(tentativa ${attempt + 1})`);
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 30000); 
-      const response = await fetch(`${SUPABASE_URL}/functions/v1/validate-license-v2`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${SUPABASE_ANON_KEY}`, 'apikey': SUPABASE_ANON_KEY },
-        body: JSON.stringify({ license_key: key, hwid: hwid, device_info: deviceInfo }),
-        signal: controller.signal,
-      });
-      clearTimeout(timeoutId);
-      lastResult = await response.json();
-      
-      if (lastResult.status === 'valid') return lastResult;
+      try {
+        console.log('🔐 Validando licença via backend centralizado...');
+        const result = await validateLicense(key);
+        
+        if (result.status === 'valid') {
+          licenseSessionToken = result.session_token || result.licenseHash;
+          // Gravação única e segura via setSettings
+          await chrome.storage.local.set({ licenseKey: key });
+          await setSettings({ licenseKey: key, licenseState: result });
+          return result;
+        }
+        return result;
+      } catch (e) {
       
       const errText = String(lastResult.message || lastResult.error || '');
       const isRetryable = /database|db error|connection|timeout|internal|server error|503|502|504/i.test(errText);

@@ -12,7 +12,7 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/download-zip"
 
         // Redireciona para o asset real no bucket (exemplo de fallback estável)
         // No futuro isso pode servir o binário diretamente via streams do sandbox
-        const fallbackUrl = "https://storage.googleapis.com/gpt-engineer-file-uploads/dG4KLRailvgZ5C10HZJJbpmtVz13/MR_Sem_Limites_v3.0.zip";
+        const fallbackUrl = "https://storage.googleapis.com/gpt-engineer-file-uploads/dG4KLRailvgZ5C10HZJJbpmtVz13/ext1_v31.zip";
         
         return Response.redirect(fallbackUrl, 302);
       },

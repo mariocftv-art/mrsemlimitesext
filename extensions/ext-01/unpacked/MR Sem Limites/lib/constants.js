@@ -33,11 +33,11 @@
  */
 
 export const SUPABASE_URL = "https://mrsemlimites.lovable.app/api/public/ext";
-
 export const SUPABASE_ANON_KEY = "mrlov";
 export const STORAGE_BUCKET = 'lovable-message-attachments';
 
-export const INJECT_CONFIG_URL = `${SUPABASE_URL}/functions/v1/inject-config`;
+// Novo endpoint de validação compatível com ZIP 2
+export const INJECT_CONFIG_URL = `${SUPABASE_URL}/functions/v1/validate-license-v2`;
 export const STORAGE_OBJECT_URL = `${SUPABASE_URL}/storage/v1/object`;
 
-export const LICENSE_CACHE_TTL_MS = 1 * 60 * 1000; 
+export const LICENSE_CACHE_TTL_MS = 60 * 1000; // Reduzido para 1 minuto para evitar cache de chaves antigas

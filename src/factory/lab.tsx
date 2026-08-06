@@ -68,7 +68,7 @@ const initialSim = (ext: ExtensionRecord): SimState => ({
     },
   ],
   chromeStorage: {
-    "license.key": "PZT68-8P5UV-7AKER-C7HY5",
+    "license.key": "PZT68-XXXXX-XXXXX-XXXXX",
     "user.plan": "premium",
     "settings.theme": "dark",
   },

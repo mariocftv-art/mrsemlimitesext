@@ -47,7 +47,8 @@
         "https://*.lovable.dev/*"
       ],
       "js": [
-        "content/content.js"
+        "content/content.js",
+        "content/inject.js"
       ],
       "css": [
         "content/content.css"

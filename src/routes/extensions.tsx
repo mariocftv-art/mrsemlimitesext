@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import ext1ZipAsset from "@/assets/ext1_v31.asset.json";
+import ext1ZipAsset from "@/assets/ext1_v35.asset.json";
 import ext2ZipAsset from "@/assets/ext2_v29_zip.asset.json";
 import ext3ZipAsset from "@/assets/ext3_v29_zip.asset.json";
 import { useMemo, useState, useSyncExternalStore } from "react";
@@ -145,7 +145,7 @@ function ExtensionsPage() {
   }, [extensions]);
 
   const downloadExt1 = () => {
-    downloadZip("/ext1_v35.zip", "MR Sem Limites EXT1.zip");
+    downloadZip(ext1ZipAsset.url, "MR Sem Limites EXT1.zip");
   };
 
   const downloadExt2 = () => {

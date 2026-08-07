@@ -56,7 +56,7 @@ function RealTestPage() {
                        <div className="space-y-1.5 font-mono text-[10px]">
                           <div className="flex justify-between">
                              <span className="text-muted-foreground">Endpoint:</span>
-                             <span className="text-blue-400">/api/public/ext/license-heartbeat</span>
+                              <span className="text-blue-400">/api/public/ext/license-heartbeat</span>
                           </div>
                           <div className="flex justify-between">
                              <span className="text-muted-foreground">Status:</span>

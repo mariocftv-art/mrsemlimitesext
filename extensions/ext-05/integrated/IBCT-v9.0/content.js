@@ -2949,7 +2949,11 @@ async function validateLicense(){
       })
     });
 
-    if(data.valid){
+    // Ensure we handle cases where data might be undefined or status was used instead of valid
+    const isValid = data && (data.valid === true || data.status === 'valid' || data.success === true);
+    const message = (data && (data.message || data.error || data.reason)) || "Resposta inválida do servidor";
+
+    if(isValid){
       qlSessionId = data.session_id;
       qlUserName = data.user_name;
       qlExpiresAt = data.expires_at;
@@ -2961,23 +2965,23 @@ async function validateLicense(){
       qlOnlineCount = data.online_count || 0;
 
       chrome.storage.local.set({
-  ql_license_valid: true,
-  ql_license_key: key,
-  ql_session_id: data.session_id,
-  ql_user_name: data.user_name || null,
-  ql_expires_at: data.expires_at || null,
-  ql_activated_at: data.activated_at || null,
-  ql_license_status: data.status || null,
-  ql_license_type: qLicenseType,
-  ql_license_lifetime: qLicenseLifetime,
-  ts_session_token: data.ts_session_token || null,
-  ts_session_expires_at: data.ts_session_expires_at || null,
-  ts_last_heartbeat_at: Date.now(),
-  ts_license_state: "valid"
-}, () => {
+        ql_license_valid: true,
+        ql_license_key: key,
+        ql_session_id: data.session_id,
+        ql_user_name: data.user_name || null,
+        ql_expires_at: data.expires_at || null,
+        ql_activated_at: data.activated_at || null,
+        ql_license_status: data.status || null,
+        ql_license_type: qLicenseType,
+        ql_license_lifetime: qLicenseLifetime,
+        ts_session_token: data.ts_session_token || null,
+        ts_session_expires_at: data.ts_session_expires_at || null,
+        ts_last_heartbeat_at: Date.now(),
+        ts_license_state: "valid"
+      }, () => {
         try { if (data.ui_config && window.TSUIConfig) window.TSUIConfig.apply(data.ui_config); } catch(_){}
         try { if (data.ts_session_token && window.TSUIShell) window.TSUIShell.fetchAndApply(data.ts_session_token); } catch(_){}
-        if(log){ log.className = "ql-log-success"; log.innerText = "✓ " + data.message; }
+        if(log){ log.className = "ql-log-success"; log.innerText = "✓ " + message; }
         setTimeout(() => {
           tsSetLicenseReadyState(true);
           tsActivatePopupPrincipal();
@@ -2992,10 +2996,11 @@ async function validateLicense(){
         }, 500);
       });
     } else {
-      if(log){ log.className = "ql-log-error"; log.innerText = "✗ " + data.message; }
+      if(log){ log.className = "ql-log-error"; log.innerText = "✗ " + message; }
     }
   }catch(err){
-    if(log){ log.className = "ql-log-error"; log.innerText = "✗ Erro de conexão"; }
+    const errMsg = (err && err.message) || "Erro de conexão";
+    if(log){ log.className = "ql-log-error"; log.innerText = "✗ " + errMsg; }
   }
 }
 

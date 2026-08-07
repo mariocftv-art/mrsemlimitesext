@@ -5,3 +5,6 @@ export * from "./storage";
 export * from "./ext-scanner";
 export * from "./use-scan";
 export { SEED_EXTENSIONS } from "./seed";
+export * from "./engine/importer";
+export * from "./engine/comparator";
+export * from "./engine/fusion";

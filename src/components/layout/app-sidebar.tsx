@@ -7,6 +7,7 @@ import {
   Download,
   GitBranch,
   ImageIcon,
+  MonitorPlay,
   Sparkles,
   Component,
   MessageSquareCode,
@@ -40,6 +41,7 @@ const groups = [
     label: "Fábrica",
     items: [
       { title: "Minhas Extensões", url: "/extensions", icon: Puzzle },
+      { title: "Teste Real", url: "/real-test", icon: MonitorPlay },
       { title: "Compatibilidade", url: "/compatibility", icon: ShieldQuestion },
       { title: "Editor", url: "/editor", icon: Pencil },
       { title: "Build Center", url: "/build-center", icon: Hammer },

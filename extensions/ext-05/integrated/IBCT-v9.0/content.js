@@ -2934,7 +2934,7 @@ function showLicenseGate(box){
 
   setTimeout(() => {
     const btn = document.getElementById("ql-validate-btn");
-    if(btn) btn.addEventListener("click", validateLicense);
+    if(btn) btn.addEventListener("click", (e) => { e.preventDefault(); validateLicense(); });
     const buyBtn = document.getElementById("ql-buy-license-btn");
     if(buyBtn) buyBtn.addEventListener("click", () => showPaymentUI(box));
     const closeBtn = document.getElementById("ql-login-close");

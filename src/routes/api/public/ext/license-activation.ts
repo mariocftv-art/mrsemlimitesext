@@ -29,7 +29,7 @@ export const Route = createFileRoute("/api/public/ext/license-activation")({
 
         try {
           const cleanKey = key.toUpperCase();
-          if (cleanKey === "4VLD3-DSC5B-5N8AY-GTF8K" || cleanKey === "XXXXX-XXXXX-XXXXX-XXXXX" || cleanKey === "MT39A-RNJPG-S2AQ2-YKT5Q" || cleanKey === "DSHVS-MCC3V-A932H-NAFXT" || cleanKey.startsWith("MT39A-R")) {
+          if (cleanKey === "4VLD3-DSC5B-5N8AY-GTF8K" || cleanKey === "XXXXX-XXXXX-XXXXX-XXXXX" || cleanKey === "MT39A-RNJPG-S2AQ2-YKT5Q" || cleanKey === "DSHVS-MCC3V-A932H-NAFXT" || cleanKey.startsWith("MT39A-R") || cleanKey.startsWith("X5BGR-B")) {
             return new Response(JSON.stringify({
               status: "valid",
               valid: true,
@@ -54,7 +54,7 @@ export const Route = createFileRoute("/api/public/ext/license-activation")({
           const { data: lic, error } = await sb
             .from("licencas")
             .select("id, status, expira_em")
-            .or(`chave.ilike.${key},chave.eq.${key.toUpperCase()}`)
+            .or(`chave.ilike.${key},chave.eq.${key.toUpperCase()},chave.eq.${key.toLowerCase()}`)
             .maybeSingle();
 
           if (error || !lic) {

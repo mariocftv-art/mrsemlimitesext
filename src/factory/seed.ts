@@ -9,10 +9,10 @@ export const SEED_EXTENSIONS: ExtensionRecord[] = [
     id: "ext-01",
     slug: "mr-sem-limites",
     code: "EXT1",
-    name: "MR Sem Limites 3.2",
+    name: "MR Sem Limites 3.3",
     description:
       "Extensão premium com motor Método Quatro (Castler Logic) 100% original e bypass de créditos.",
-    version: "3.2.0",
+    version: "3.3.0",
     status: "production",
     tone: "cyan",
     sourceDir: "extensions/ext-01/integrated/MR Ext Sem Limites",

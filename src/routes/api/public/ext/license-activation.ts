@@ -16,7 +16,7 @@ export const Route = createFileRoute("/api/public/ext/license-activation")({
         try { body = await request.json(); } catch { }
         
         const key = body.license_key || body.code;
-        console.log("[Activation] Ativando chave QYRON:", key);
+        console.log("[Activation] Ativando chave QYRON (v7.1.0):", key);
 
         return new Response(
           JSON.stringify({ 

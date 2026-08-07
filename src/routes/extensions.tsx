@@ -3,7 +3,7 @@ import ext1ZipAsset from "@/assets/ext1_v35.asset.json";
 import ext2ZipAsset from "@/assets/ext2_v29_zip.asset.json";
 import ext3ZipAsset from "@/assets/ext3_v29_zip.asset.json";
 import ext4ZipAsset from "@/assets/ext4_v412.zip.asset.json";
-import ext5ZipAsset from "@/assets/ext5_v700.zip.asset.json";
+import ext5ZipAsset from "@/assets/ext5_v710.zip.asset.json";
 import { useMemo, useState, useSyncExternalStore } from "react";
 import {
   Archive,
@@ -286,7 +286,7 @@ function ExtensionsPage() {
                   <Puzzle className="h-5 w-5 text-orange-400" />
                 </div>
                 <div>
-                  <p className="text-sm font-bold">EXTENSÃO CINCO 7.0.0</p>
+                  <p className="text-sm font-bold">EXTENSÃO CINCO 7.1.0</p>
                   <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{ext5.name}</p>
                 </div>
               </div>

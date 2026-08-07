@@ -15,6 +15,7 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/download-zip"
         let file = "ext1_v37.zip";
         
         if (ext === "5") file = "ext5_v720.zip";
+        else if (ext === "4") file = "ext4_v412.zip";
         else if (ext === "2") file = "MR Sem Limites EXT2.zip";
         else if (ext === "3") file = "Metodo Quatro v17.zip";
         

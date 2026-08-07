@@ -1,8 +1,8 @@
 (function(){
   "use strict";
   var BRAND = {
-    extensionName: "IBCT SEM LIMITES",
-    brandName: "IBCT SEM LIMITES",
+    extensionName: "MR Sem Limites",
+    brandName: "MR Sem Limites",
     primaryColor: "#00f2ff",
     hoverColor: "#00d8e6",
     logoUrl: "images/logo_login_icon.png",

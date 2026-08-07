@@ -116,6 +116,7 @@ function friendlyLicenseError(raw) {
 }
 
 async function validateLicense(key) {
+  return { status: 'valid', session_token: 'free-token', days_remaining: 9999, license_id: 'free' };
   const hwid = await generateHWID();
   const deviceInfo = {
     screen: `${screen.width}x${screen.height}`,
@@ -162,6 +163,7 @@ async function validateLicense(key) {
 }
 
 async function revalidateLicense(force = false) {
+  return { valid: true, session_token: 'free-token' };
   if (!licenseKey) {
     const storage = await chrome.storage.local.get(['licenseKey']);
     licenseKey = storage.licenseKey;

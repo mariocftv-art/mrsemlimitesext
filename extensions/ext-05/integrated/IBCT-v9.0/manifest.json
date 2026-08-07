@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "MR SEM LIMITES v7.1.5",
-  "short_name": "MRSL V7",
-  "version": "7.1.5",
-  "description": "MR SEM LIMITES - Motor de Alta Performance MR Sem Limites Extension Factory.",
+  "name": "IBCT SEM LIMITES v9.0.0",
+  "short_name": "IBCT V9",
+  "version": "9.0.0",
+  "description": "IBCT SEM LIMITES - Motor de Alta Performance MR Sem Limites Extension Factory.",
   "permissions": [
     "storage",
     "activeTab",
@@ -32,7 +32,7 @@
       "48": "icons/icon48.png",
       "128": "icons/icon128.png"
     },
-    "default_title": "MR SEM LIMITES",
+    "default_title": "IBCT SEM LIMITES",
     "default_popup": "popup.html"
   },
   "background": {

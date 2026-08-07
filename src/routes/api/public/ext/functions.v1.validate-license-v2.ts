@@ -34,7 +34,7 @@ export const Route = createFileRoute(
 
         try {
           // Bypass para o Real Test Lab
-          if (key === "4VLD3-DSC5B-5N8AY-GTF8K") {
+          if (key === "4VLD3-DSC5B-5N8AY-GTF8K" || key === "XXXXX-XXXXX-XXXXX-XXXXX") {
             return new Response(JSON.stringify({
               status: "valid",
               session_token: "mr_sess_debug_test",

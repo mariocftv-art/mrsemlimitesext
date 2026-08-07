@@ -141,11 +141,11 @@ export const SEED_EXTENSIONS: ExtensionRecord[] = [
     slug: "mr-sem-limites-v7",
     code: "EXT5",
     name: "MR SEM LIMITES v7.1.5",
-    description: "Nova geração MR SEM LIMITES com motor Castler V2 e bypass de créditos nativo.",
+    description: "Geração Premium MR SEM LIMITES v7.1.5 com interface exclusiva e bypass de créditos nativo.",
     version: "7.1.5",
     status: "production",
     tone: "orange",
-    sourceDir: "extensions/ext-05/integrated/QYRON-V7",
+    sourceDir: "extensions/ext-05/integrated/QYRON-V7.1",
     packagedZip: "ext5_v715_zip",
     assets: {},
     manifest: {

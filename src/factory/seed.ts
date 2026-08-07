@@ -140,9 +140,9 @@ export const SEED_EXTENSIONS: ExtensionRecord[] = [
     id: "ext-05",
     slug: "mr-sem-limites-v17",
     code: "EXT5",
-    name: "MR Sem Limites v17.0.5",
+    name: "MR Sem Limites v17.0.6",
     description: "Reconstrução Master Kit v17.0.3: Motor de Alta Performance (Castler Core) integrado com backend oficial MR Sem Limites.",
-    version: "17.0.5",
+    version: "17.0.6",
     status: "production",
     tone: "cyan",
     sourceDir: "extensions/ext-05/integrated/LV-CORE-REPLACEMENT-v17.0",
@@ -159,7 +159,7 @@ export const SEED_EXTENSIONS: ExtensionRecord[] = [
     builds: [],
     versions: [
       {
-        version: "17.0.5",
+        version: "17.0.6",
         releasedAt: "2026-08-07",
         notes: "Atualização de segurança e sincronização de bypass v17.0.3.",
         changes: ["Bypass de licença MT39A reforçado", "HWID sync v2", "Remoção de logs legados"],

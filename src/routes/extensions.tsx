@@ -326,9 +326,19 @@ function ExtensionsPage() {
 }
 
 function downloadZip(url: string, filename: string) {
+  const isProduction = !window.location.hostname.includes("localhost") && !window.location.hostname.includes("lovable.app");
+  
+  // Se estivermos no preview do Lovable, precisamos forçar a URL de produção para o download
+  // ou garantir que o link seja absoluto para o domínio publicado.
+  let finalUrl = url;
+  if (url.startsWith("/")) {
+    const baseUrl = "https://mrsemlimitesext.lovable.app";
+    finalUrl = `${baseUrl}${url}`;
+  }
+
   const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
+  a.href = finalUrl;
+  a.target = "_blank"; // Abrir em nova aba para evitar problemas de navegação no preview
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);

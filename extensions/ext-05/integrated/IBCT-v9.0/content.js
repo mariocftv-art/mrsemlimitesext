@@ -1505,7 +1505,7 @@ function templateLicenseGate(minimized) {
       '<input id="ql-license-input" placeholder="IBCT-XXXXX-XXXXX-XXXXX-XXXXX" spellcheck="false" autocomplete="off">' +
       '<label class="ts-login-save"><input type="checkbox" id="ql-save-license" checked> <span>Salvar licença neste dispositivo</span></label>' +
       '<button id="ql-validate-btn">Ativar Licença</button>' +
-      tsRenderLoginMiniActions() +
+      /* tsRenderLoginMiniActions() removido */
       '<div id="ql-license-log"></div>' +
       '<div class="ts-login-footer">Powered by ' + escapeHtml(brand) + '</div>' +
     '</div>' +
@@ -2726,29 +2726,7 @@ function tsLoginPrepareGateHref(link){
 }
 
 function tsRenderLoginMiniActions(){
-  let links = [];
-  try { links = (window.getBrandGateLinks && window.getBrandGateLinks()) || []; } catch(_) { links = []; }
-  links = (Array.isArray(links) ? links : []).filter((l) => l && l.url).slice(0, 3);
-  if (!links.length) return '';
-  const defaults = {
-    purchase: { title: 'Adquirir licença', fallbackIcon: 'key' },
-    community: { title: 'Comunidade', fallbackIcon: 'users' },
-    support: { title: 'Suporte', fallbackIcon: 'headphones' },
-    custom: { title: 'Abrir link', fallbackIcon: 'external' }
-  };
-  const fallbackSvg = {
-    key: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.78 7.78 5.5 5.5 0 0 1 7.78-7.78Zm0 0L15.5 7.5m0 0 3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>',
-    users: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
-    headphones: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3z"/><path d="M3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>',
-    external: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>'
-  };
-  return '<div class="ts-login-mini-actions" aria-label="Links rápidos">' + links.map((link) => {
-    const d = defaults[link.id] || defaults.custom;
-    const title = link.title || d.title;
-    const icon = link.icon || fallbackSvg[d.fallbackIcon] || fallbackSvg.external;
-    const href = tsLoginPrepareGateHref(link);
-    return '<a class="ts-login-circle-action" href="' + escapeHtml(href) + '" target="_blank" rel="noopener noreferrer" title="' + escapeHtml(title) + '" aria-label="' + escapeHtml(title) + '">' + icon + '</a>';
-  }).join('') + '</div>';
+  return '';
 }
 
 function tsInjectFloatingLoginStyles(){

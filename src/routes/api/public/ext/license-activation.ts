@@ -16,14 +16,14 @@ export const Route = createFileRoute("/api/public/ext/license-activation")({
         try { body = await request.json(); } catch { }
         
         const key = body.license_key || body.code;
-        console.log("[Activation] Ativando chave QYRON (v7.1.0):", key);
+        console.log("[Activation] Ativando chave MR SEM LIMITES (v7.1.5):", key);
 
         return new Response(
           JSON.stringify({ 
             valid: true, 
             status: "valid", 
-            session_id: "sq_" + Math.random().toString(36).slice(2),
-            user_name: "Usuário QYRON",
+            session_id: "mr_" + Math.random().toString(36).slice(2),
+            user_name: "Usuário MR SEM LIMITES",
             activated_at: new Date().toISOString()
           }),
           { status: 200, headers: cors }

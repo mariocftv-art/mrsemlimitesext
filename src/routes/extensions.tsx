@@ -3,7 +3,7 @@ import ext1ZipAsset from "@/assets/ext1_v35.asset.json";
 import ext2ZipAsset from "@/assets/ext2_v29_zip.asset.json";
 import ext3ZipAsset from "@/assets/ext3_v29_zip.asset.json";
 import ext4ZipAsset from "@/assets/ext4_v412.zip.asset.json";
-import ext5ZipAsset from "@/assets/ext5_v710.zip.asset.json";
+import ext5ZipAsset from "@/assets/ext5_v715.zip.asset.json";
 import { useMemo, useState, useSyncExternalStore } from "react";
 import {
   Archive,
@@ -166,7 +166,7 @@ function ExtensionsPage() {
   };
 
   const downloadExt5 = () => {
-    downloadZip(ext5ZipAsset.url, "VOX QYRON EXT5.zip");
+    downloadZip(ext5ZipAsset.url, "MR Sem Limites EXT5.zip");
   };
 
   return (

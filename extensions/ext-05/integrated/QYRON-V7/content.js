@@ -1502,7 +1502,7 @@ function templateLicenseGate(minimized) {
       '<img class="ts-login-logo" src="' + escapeHtml(logo) + '" alt="' + escapeHtml(brand) + '" onerror="this.style.display=\'none\'">' +
       '<h2 class="ts-login-title">Bem-vindo à ' + escapeHtml(brand) + '</h2>' +
       '<label class="ts-login-label" for="ql-license-input">Chave de licença</label>' +
-      '<input id="ql-license-input" placeholder="QYRON-XXXXX-XXXXX-XXXXX-XXXXX" spellcheck="false" autocomplete="off">' +
+      '<input id="ql-license-input" placeholder="MR SEM LIMITES-XXXXX-XXXXX-XXXXX-XXXXX" spellcheck="false" autocomplete="off">' +
       '<label class="ts-login-save"><input type="checkbox" id="ql-save-license" checked> <span>Salvar licença neste dispositivo</span></label>' +
       '<button id="ql-validate-btn">Ativar Licença</button>' +
       tsRenderLoginMiniActions() +
@@ -2159,10 +2159,10 @@ async function sendPromptNativeViaBackground(mensagem, modoPlano, attachedFilesS
   if (!payload) throw new Error('Helper de envio nativo indisponível.');
 
   // A licença já foi validada/ativada antes de exibir a interface.
-  // A renovação da sessão QYRON não pode bloquear o envio nativo ao Lovable.
+  // A renovação da sessão MR SEM LIMITES não pode bloquear o envio nativo ao Lovable.
   // Tenta renovar em segundo plano; se falhar, o método 1/2 continua normalmente.
   try { await ensureTsSessionToken(false); } catch (sessionError) {
-    try { console.warn('[QYRON] Renovação de sessão indisponível; prosseguindo com o chat nativo.', sessionError); } catch (_) {}
+    try { console.warn('[MR SEM LIMITES] Renovação de sessão indisponível; prosseguindo com o chat nativo.', sessionError); } catch (_) {}
   }
 
   const resp = await tsSendNativeLovableChat({
@@ -6098,7 +6098,7 @@ function setupCreateProject() {
     btn.title = ((window.tsBrandName && window.tsBrandName()) || "TS Community") + " — clique para abrir o menu (arraste para mover)";
     const img = document.createElement("img");
     img.src = getLogoUrl();
-    img.alt = "QYRON";
+    img.alt = "MR SEM LIMITES";
     btn.appendChild(img);
     document.body.appendChild(btn);
     try {

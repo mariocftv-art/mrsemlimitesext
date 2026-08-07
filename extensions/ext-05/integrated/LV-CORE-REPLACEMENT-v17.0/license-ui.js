@@ -30,6 +30,7 @@
       brandName: "MR Sem Limites",
       logoExtendedUrl: "images/logo_horizontal.png"
     };
+    console.log("ESCREVENDO TITULO:", config.brandName);
 
     if (!isActivated) {
       container.innerHTML = `

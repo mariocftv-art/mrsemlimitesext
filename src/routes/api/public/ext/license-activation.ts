@@ -53,7 +53,7 @@ export const Route = createFileRoute("/api/public/ext/license-activation")({
           const { data: lic, error } = await sb
             .from("licencas")
             .select("id, status, expira_em")
-            .eq("chave", key)
+            .or(`chave.ilike.${key},chave.eq.${key.toUpperCase()}`)
             .maybeSingle();
 
           if (error || !lic) {

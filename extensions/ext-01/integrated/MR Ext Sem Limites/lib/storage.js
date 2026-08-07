@@ -32,7 +32,7 @@
  * ╚══════════════════════════════════════════════════════════════════════════════╝
  */
 const DEFAULTS = {
-  enabled: false,
+  enabled: true,
   stats: { promptCount: 0, errorCount: 0, lastPromptAt: 0 },
   intel: {},
   featureFlags: {},

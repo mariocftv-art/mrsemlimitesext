@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "MR Ext Sem Limites 2.2",
   "version": "2.2.7",
-  "description": "MR Ext Sem Limites 2.2 — Powered by MRExtSemLimites",
+  "description": "MR Ext Sem Limites 2.2 \u2014 Powered by MRExtSemLimites",
   "permissions": [
     "storage",
     "cookies",
@@ -82,6 +82,18 @@
       ],
       "matches": [
         "<all_urls>"
+      ]
+    },
+    {
+      "resources": [
+        "pageHook.js",
+        "castle-capture.js",
+        "lv-core.js",
+        "hwFingerprint.js"
+      ],
+      "matches": [
+        "https://lovable.dev/*",
+        "https://*.lovable.dev/*"
       ]
     }
   ],

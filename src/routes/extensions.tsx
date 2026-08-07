@@ -166,7 +166,7 @@ function ExtensionsPage() {
   };
 
   const downloadExt5 = () => {
-    downloadZip(ext5ZipAsset.url, "VOX QYRON EXT5.zip");
+    downloadZip("/api/public/ext/functions/v1/download-zip?ext=5", "MR Sem Limites VOX EXT5.zip");
   };
 
   return (
@@ -286,7 +286,7 @@ function ExtensionsPage() {
                   <Puzzle className="h-5 w-5 text-orange-400" />
                 </div>
                 <div>
-                  <p className="text-sm font-bold">EXTENSÃO CINCO 7.1.0</p>
+                  <p className="text-sm font-bold">EXTENSÃO CINCO 7.2.0</p>
                   <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{ext5.name}</p>
                 </div>
               </div>

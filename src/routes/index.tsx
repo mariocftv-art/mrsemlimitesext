@@ -41,6 +41,7 @@ const glow: Record<NeonTone, string> = {
   violet: "var(--neon-violet)",
   magenta: "var(--neon-magenta)",
   lime: "var(--neon-lime)",
+  orange: "#ff7e00",
 };
 
 const statusLabel: Record<string, string> = {

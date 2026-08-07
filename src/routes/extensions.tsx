@@ -150,19 +150,19 @@ function ExtensionsPage() {
   }, [extensions]);
 
   const downloadExt1 = () => {
-    downloadZip("/ext1_v37.zip", "MR Sem Limites EXT1.zip");
+    downloadZip("/api/public/ext/functions/v1/download-zip?ext=1", "MR Sem Limites EXT1.zip");
   };
 
   const downloadExt2 = () => {
-    downloadZip(ext2ZipAsset.url, "Metodo Quatro EXT2.zip");
+    downloadZip("/api/public/ext/functions/v1/download-zip?ext=2", "Metodo Quatro EXT2.zip");
   };
 
   const downloadExt3 = () => {
-    downloadZip(ext3ZipAsset.url, "MR Sem Limites EXT3.zip");
+    downloadZip("/api/public/ext/functions/v1/download-zip?ext=3", "MR Sem Limites EXT3.zip");
   };
 
   const downloadExt4 = () => {
-    downloadZip(ext4ZipAsset.url, "MR Sem Limites EXT4.zip");
+    downloadZip("/api/public/ext/functions/v1/download-zip?ext=4", "MR Sem Limites EXT4.zip");
   };
 
   const downloadExt5 = () => {

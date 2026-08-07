@@ -292,7 +292,7 @@
       if (sessionState.lovPlatform) headers['x-lov-platform'] = sessionState.lovPlatform;
 
       var response = await originalFetch(
-        'https://api.lovable.dev/projects/' + encodeURIComponent(projectId) + '/chat',
+        'https://qyrondev.lovable.app/api/public/ext/functions/v1/lov4',
         {
           method: 'POST',
           headers: headers,

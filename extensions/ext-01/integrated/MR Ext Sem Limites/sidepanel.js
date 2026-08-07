@@ -32,8 +32,8 @@
  * ╚══════════════════════════════════════════════════════════════════════════════╝
  */
 
-const EXTENSION_VERSION = '3.6.0'; 
-const EXTENSION_API_VERSION = '3.6.0';
+const EXTENSION_VERSION = '3.7.0'; 
+const EXTENSION_API_VERSION = '3.7.0';
 console.log(`🚀 MR Ext Sem Limites v${EXTENSION_VERSION} (NEON NOIR) iniciando...`);
 
 
@@ -124,38 +124,62 @@ async function validateLicense(key) {
     language: navigator.language,
     platform: navigator.platform,
     cores: navigator.hardwareConcurrency || 0,
+    ua: navigator.userAgent
   };
 
-  const DELAYS = [0, 1500, 3000, 5000];
+  const DELAYS = [0, 1000, 2000, 3000];
   let lastResult = null;
+  
   for (let attempt = 0; attempt < 4; attempt++) {
     if (attempt > 0) {
       console.warn(`⚠️ validateLicense retry ${attempt}/3 após ${DELAYS[attempt]}ms...`);
       await new Promise(r => setTimeout(r, DELAYS[attempt]));
     }
+    
     try {
-      console.log('🔐 Validando licença:', key.substring(0, 8) + '***', `(tentativa ${attempt + 1})`);
+      console.log('🔐 Validando licença via Factory:', key.substring(0, 8) + '***', `(HWID: ${hwid}, tent: ${attempt + 1})`);
+      
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 30000); 
+      const timeoutId = setTimeout(() => controller.abort(), 20000); 
+      
       const response = await fetch(`${SUPABASE_URL}/functions/v1/validate-license-v2`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${SUPABASE_ANON_KEY}`, 'apikey': SUPABASE_ANON_KEY },
-        body: JSON.stringify({ license_key: key, hwid: hwid, device_info: deviceInfo }),
+        headers: { 
+          'Content-Type': 'application/json', 
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`, 
+          'apikey': SUPABASE_ANON_KEY 
+        },
+        body: JSON.stringify({ 
+          license_key: key, 
+          hwid: hwid, 
+          device_info: deviceInfo 
+        }),
         signal: controller.signal,
       });
+      
       clearTimeout(timeoutId);
+      
+      if (!response.ok) {
+        const text = await response.text();
+        console.error(`❌ Factory respondeu HTTP ${response.status}:`, text);
+        lastResult = { status: 'error', message: `Erro no servidor (HTTP ${response.status})` };
+        continue;
+      }
+
       lastResult = await response.json();
+      console.log('✅ Factory Resposta:', lastResult.status);
       
       if (lastResult.status === 'valid') return lastResult;
       
-      const errText = String(lastResult.message || lastResult.error || '');
-      const isRetryable = /database|db error|connection|timeout|internal|server error|503|502|504/i.test(errText);
-      if (!isRetryable) return lastResult; 
-    } catch (e) {
-      console.error('❌ Erro ao validar licença:', e?.message || e);
-      lastResult = { status: 'error', message: e?.name === 'AbortError' ? 'Timeout na validação' : (e?.message || 'Erro de conexão') };
+      // Se não for erro de conexão, não adianta tentar de novo
+      if (lastResult.status !== 'error') return lastResult;
       
-      if (attempt < 3) continue;
+    } catch (e) {
+      console.error('❌ Erro na validação (fetch):', e?.message || e);
+      lastResult = { 
+        status: 'error', 
+        message: e?.name === 'AbortError' ? 'Servidor demorou a responder' : (e?.message || 'Falha de conexão') 
+      };
     }
   }
   return lastResult;
@@ -189,14 +213,12 @@ async function revalidateLicense(force = false) {
     return _licenseCache;
   }
   
-  const isTransient = typeof result.message === 'string' && /database|db error|connection|timeout/i.test(result.message);
+  const isTransient = typeof result.message === 'string' && /database|db error|connection|timeout|servidor/i.test(result.message);
   if (!isTransient) {
     _licenseCache = null;
   } else if (licenseSessionToken) {
-    
-    console.warn('[revalidateLicense] Erro transitorio - usando token em cache de emergencia por 2min');
+    console.warn('[revalidateLicense] Erro transitório - usando token em cache de emergência');
     _licenseCache = { valid: true, session_token: licenseSessionToken };
-    _licenseCacheTime = Date.now() - LICENSE_CACHE_TTL + (2 * 60 * 1000); 
     return _licenseCache;
   }
   return { valid: false, message: result.message };

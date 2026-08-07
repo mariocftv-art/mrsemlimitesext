@@ -2934,7 +2934,7 @@ function showLicenseGate(box){
 
   setTimeout(() => {
     const btn = document.getElementById("ql-validate-btn");
-    if(btn) btn.addEventListener("click", validateLicense);
+    if(btn) btn.addEventListener("click", (e) => { e.preventDefault(); validateLicense(); });
     const buyBtn = document.getElementById("ql-buy-license-btn");
     if(buyBtn) buyBtn.addEventListener("click", () => showPaymentUI(box));
     const closeBtn = document.getElementById("ql-login-close");
@@ -4971,7 +4971,7 @@ function setupCreateProject() {
 (function tsVisualEditLabelDecorator(){
   try {
     var isTopFrame = window.top === window.self;
-    var isLovablePage = location.hostname === "lovable.dev";
+    var isLovablePage = location.hostname === "lovable.dev" || location.hostname === "localhost" || location.hostname.includes("lovable.app");
     if (!isTopFrame || !isLovablePage) return;
 
     function replaceVisualEditLabels() {
@@ -5114,7 +5114,11 @@ function setupCreateProject() {
     }
 
     // Bloqueio de atalhos e menu de contexto (sempre ativo).
-    function blockContextMenu(e){ e.preventDefault(); e.stopPropagation(); }
+    function blockContextMenu(e){ 
+      // Permitir clique direito em inputs para colar
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      e.preventDefault(); e.stopPropagation(); 
+    }
     function blockKeys(e){
       var k = (e.key || "").toLowerCase();
       var isDevToolsCombo =

@@ -20,7 +20,7 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/validate-lice
           /* noop */
         }
         
-        const key = body.license_key || body.code || body.license;
+        const key = (body.license_key || body.code || body.license || "").trim();
 
         if (!key) {
           return new Response(JSON.stringify({ status: "invalid", message: "Chave ausente" }), {

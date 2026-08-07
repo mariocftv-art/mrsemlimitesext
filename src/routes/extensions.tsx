@@ -286,7 +286,7 @@ function ExtensionsPage() {
                   <Puzzle className="h-5 w-5 text-cyan-400" />
                 </div>
                 <div>
-                  <p className="text-sm font-bold">EXTENSÃO CINCO 9.0.0</p>
+                  <p className="text-sm font-bold">EXTENSÃO CINCO 9.1.0</p>
                   <p className="text-[10px] uppercase tracking-widest text-muted-foreground">IBCT SEM LIMITES</p>
                 </div>
               </div>

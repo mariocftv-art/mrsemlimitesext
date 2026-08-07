@@ -47,11 +47,11 @@
         "https://*.lovable.dev/*"
       ],
       "js": [
-        "content/content.js",
-        "content/inject.js"
+        "content.js",
+        "inject.js"
       ],
       "css": [
-        "content/content.css"
+        "content.css"
       ],
       "run_at": "document_start"
     }

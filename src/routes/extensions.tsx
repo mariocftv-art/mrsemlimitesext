@@ -166,7 +166,7 @@ function ExtensionsPage() {
   };
 
   const downloadExt5 = () => {
-    downloadZip(ext5ZipAsset.url, "VOX QYRON EXT5.zip");
+    downloadZip(ext5ZipAsset.url, "MR Sem Limites EXT5.zip");
   };
 
   return (

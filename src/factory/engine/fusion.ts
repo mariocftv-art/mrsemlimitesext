@@ -1,4 +1,5 @@
-import { listExtensions, type ExtensionRecord } from "../registry";
+import { listExtensions } from "../registry";
+import { type ExtensionRecord } from "../types";
 import { scanExtension, type ScanResult } from "../ext-scanner";
 
 export interface FusionTarget {

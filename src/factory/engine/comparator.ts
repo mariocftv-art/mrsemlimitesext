@@ -1,7 +1,7 @@
 // Centro de Compatibilidade — compara metadados/estrutura contra o padrão da Factory.
 // Somente análise. Não altera nenhum arquivo.
 
-import type { ExtensionRecord } from "./types";
+import type { ExtensionRecord } from "../types";
 import type { ImportReport } from "./importer";
 
 export type CompatStatus = "ok" | "warn" | "bad";
@@ -162,7 +162,7 @@ export function compareRecord(ext: ExtensionRecord): CompatReport {
     suggestion: missingMin.length === 0 ? undefined : `Adicionar: ${missingMin.join(", ")}`,
   });
 
-  const discouraged = perms.filter((p) => (FACTORY_STANDARD.discouragedPermissions as readonly string[]).includes(p));
+  const discouraged = perms.filter((p: string) => (FACTORY_STANDARD.discouragedPermissions as readonly string[]).includes(p));
   if (discouraged.length > 0) {
     checks.push({
       key: "discouraged-permissions",
@@ -176,7 +176,7 @@ export function compareRecord(ext: ExtensionRecord): CompatReport {
   }
 
   const hosts = m.hostPermissions ?? [];
-  const broad = hosts.some((h) => (FACTORY_STANDARD.broadHosts as readonly string[]).includes(h));
+  const broad = hosts.some((h: string) => (FACTORY_STANDARD.broadHosts as readonly string[]).includes(h));
   if (hosts.length > 0) {
     checks.push({
       key: "host-permissions",

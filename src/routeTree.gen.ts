@@ -13,6 +13,7 @@ import { Route as VersionsRouteImport } from './routes/versions'
 import { Route as ToolsRouteImport } from './routes/tools'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SecurityRouteImport } from './routes/security'
+import { Route as RealTestRouteImport } from './routes/real-test'
 import { Route as PromptsRouteImport } from './routes/prompts'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ProductsRouteImport } from './routes/products'
@@ -67,6 +68,11 @@ const SettingsRoute = SettingsRouteImport.update({
 const SecurityRoute = SecurityRouteImport.update({
   id: '/security',
   path: '/security',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RealTestRoute = RealTestRouteImport.update({
+  id: '/real-test',
+  path: '/real-test',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PromptsRoute = PromptsRouteImport.update({
@@ -277,6 +283,7 @@ export interface FileRoutesByFullPath {
   '/products': typeof ProductsRoute
   '/profile': typeof ProfileRoute
   '/prompts': typeof PromptsRoute
+  '/real-test': typeof RealTestRoute
   '/security': typeof SecurityRoute
   '/settings': typeof SettingsRoute
   '/tools': typeof ToolsRoute
@@ -318,6 +325,7 @@ export interface FileRoutesByTo {
   '/products': typeof ProductsRoute
   '/profile': typeof ProfileRoute
   '/prompts': typeof PromptsRoute
+  '/real-test': typeof RealTestRoute
   '/security': typeof SecurityRoute
   '/settings': typeof SettingsRoute
   '/tools': typeof ToolsRoute
@@ -360,6 +368,7 @@ export interface FileRoutesById {
   '/products': typeof ProductsRoute
   '/profile': typeof ProfileRoute
   '/prompts': typeof PromptsRoute
+  '/real-test': typeof RealTestRoute
   '/security': typeof SecurityRoute
   '/settings': typeof SettingsRoute
   '/tools': typeof ToolsRoute
@@ -403,6 +412,7 @@ export interface FileRouteTypes {
     | '/products'
     | '/profile'
     | '/prompts'
+    | '/real-test'
     | '/security'
     | '/settings'
     | '/tools'
@@ -444,6 +454,7 @@ export interface FileRouteTypes {
     | '/products'
     | '/profile'
     | '/prompts'
+    | '/real-test'
     | '/security'
     | '/settings'
     | '/tools'
@@ -485,6 +496,7 @@ export interface FileRouteTypes {
     | '/products'
     | '/profile'
     | '/prompts'
+    | '/real-test'
     | '/security'
     | '/settings'
     | '/tools'
@@ -527,6 +539,7 @@ export interface RootRouteChildren {
   ProductsRoute: typeof ProductsRoute
   ProfileRoute: typeof ProfileRoute
   PromptsRoute: typeof PromptsRoute
+  RealTestRoute: typeof RealTestRoute
   SecurityRoute: typeof SecurityRoute
   SettingsRoute: typeof SettingsRoute
   ToolsRoute: typeof ToolsRoute
@@ -575,6 +588,13 @@ declare module '@tanstack/react-router' {
       path: '/security'
       fullPath: '/security'
       preLoaderRoute: typeof SecurityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/real-test': {
+      id: '/real-test'
+      path: '/real-test'
+      fullPath: '/real-test'
+      preLoaderRoute: typeof RealTestRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/prompts': {
@@ -847,6 +867,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProductsRoute: ProductsRoute,
   ProfileRoute: ProfileRoute,
   PromptsRoute: PromptsRoute,
+  RealTestRoute: RealTestRoute,
   SecurityRoute: SecurityRoute,
   SettingsRoute: SettingsRoute,
   ToolsRoute: ToolsRoute,
@@ -876,3 +897,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

@@ -38,8 +38,8 @@ import {
   type CompatCheck,
   type CompatReport,
   type CompatStatus,
-} from "@/factory/compat";
-import { analyzeFolder, analyzeZip, type ImportReport } from "@/factory/importer";
+} from "@/factory/engine/comparator";
+import { analyzeFolder, analyzeZip, type ImportReport } from "@/factory/engine/importer";
 import { getAllExtensions, subscribe, type ExtensionRecord } from "@/factory";
 
 export const Route = createFileRoute("/compatibility")({
@@ -279,7 +279,7 @@ function ReportSurface({
 }
 
 function OverviewTab({ report }: { report: CompatReport }) {
-  const grouped = report.checks.reduce<Record<string, CompatCheck[]>>((acc, c) => {
+  const grouped = report.checks.reduce<Record<string, CompatCheck[]>>((acc: any, c: any) => {
     (acc[c.category] ||= []).push(c);
     return acc;
   }, {});

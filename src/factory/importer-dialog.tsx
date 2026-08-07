@@ -32,7 +32,7 @@ import {
   analyzeZip,
   formatBytes,
   type ImportReport,
-} from "./importer";
+} from "./engine/importer";
 
 // Extended input type for folder selection
 type FolderInputProps = React.DetailedHTMLProps<
@@ -288,7 +288,7 @@ function ReportView({ report }: { report: ImportReport }) {
           Verificações
         </p>
         <div className="grid gap-1.5 md:grid-cols-2">
-          {report.checks.map((c) => (
+          {report.checks.map((c: any) => (
             <div
               key={c.key}
               className="flex items-start gap-2 rounded-lg border border-border/40 bg-background/40 px-3 py-2 text-xs"

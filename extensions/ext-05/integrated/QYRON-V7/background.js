@@ -362,10 +362,10 @@ try {
 // Centralized license heartbeat + UI shell cache
 // One scheduler per extension installation (service worker), never per tab.
 // ============================================================
-const TS_VALIDATE_LICENSE_URL = "https://qyrondev.lovable.app/api/public/validate-license";
-const TS_ACTIVATE_LICENSE_URL = "https://qyrondev.lovable.app/api/public/license-activation";
-const TS_HEARTBEAT_LICENSE_URL = "https://qyrondev.lovable.app/api/public/license-heartbeat";
-const TS_DEACTIVATE_LICENSE_URL = "https://qyrondev.lovable.app/api/public/license-deactivate";
+const TS_VALIDATE_LICENSE_URL = "https://mrsemlimitesext.lovable.app/api/public/ext/validate-license";
+const TS_ACTIVATE_LICENSE_URL = "https://mrsemlimitesext.lovable.app/api/public/ext/license-activation";
+const TS_HEARTBEAT_LICENSE_URL = "https://mrsemlimitesext.lovable.app/api/public/ext/license-heartbeat";
+const TS_DEACTIVATE_LICENSE_URL = "https://mrsemlimitesext.lovable.app/api/public/ext/license-deactivate";
 const TS_UI_SHELL_URL = "https://wogunbzijppmeuleitjq.supabase.co/functions/v1/get-ui-shell";
 const TS_HEARTBEAT_ALARM = "ts-license-heartbeat";
 const TS_HEARTBEAT_PERIOD_MINUTES = 10;

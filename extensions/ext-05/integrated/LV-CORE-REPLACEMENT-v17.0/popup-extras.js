@@ -76,7 +76,7 @@
     if (!k) return 'Não disponível';
     var s = String(k).trim();
     if (s.length <= 8) return s.slice(0,2) + '****';
-    return s.slice(0,3) + '-XXXX-XXXX-' + s.slice(-4);
+    return s.slice(0,5) + '-XXXXX-XXXXX-' + s.slice(-5);
   }
 
   function parseTs(v){

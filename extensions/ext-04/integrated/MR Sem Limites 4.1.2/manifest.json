@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "MR Sem Limites Ext 5 — Instagram",
-  "version": "5.0.2",
-  "description": "MR Sem Limites Ext 5 — Todas as funcionalidades da EXT3 + Instagram (publicar Post/Reel/Carrossel via API Graph).",
+  "name": "MR Sem Limites Ext 4",
+  "version": "4.1.2",
+  "description": "Motor Turbinado: Build v5.0.2 + Castler (Método Quatro) Integrado.",
   "permissions": [
     "storage",
     "cookies",
@@ -34,39 +34,25 @@
   },
   "content_scripts": [
     {
-      "matches": [
-        "https://lovable.dev/*"
-      ],
-      "js": [
-        "content/inject.js"
-      ],
+      "matches": ["https://lovable.dev/*"],
+      "js": ["content/inject.js"],
       "run_at": "document_start",
       "world": "MAIN"
     },
     {
-      "matches": [
-        "https://lovable.dev/*"
-      ],
-      "js": [
-        "content/content.js"
-      ],
-      "css": [
-        "content/content.css"
-      ],
+      "matches": ["https://lovable.dev/*"],
+      "js": ["content/content.js"],
+      "css": ["content/content.css"],
       "run_at": "document_start"
     },
     {
-      "matches": [
-        "https://lovable.dev/*"
-      ],
-      "js": [
-        "content/sound-detector.js"
-      ],
+      "matches": ["https://lovable.dev/*"],
+      "js": ["content/sound-detector.js"],
       "run_at": "document_idle"
     }
   ],
   "action": {
-    "default_title": "MR Sem Limites Ext 3",
+    "default_title": "MR Sem Limites 4",
     "default_icon": {
       "16": "icons/icon16.png",
       "32": "icons/icon32.png",
@@ -90,6 +76,10 @@
   "web_accessible_resources": [
     {
       "resources": [
+        "pageHook.js",
+        "castle-capture.js",
+        "lv-core.js",
+        "hwFingerprint.js",
         "assets/sounds/alert.mp3",
         "assets/sounds/coin.mp3",
         "banner.png",
@@ -100,22 +90,7 @@
         "popup.js",
         "remote-ui.js"
       ],
-      "matches": [
-        "<all_urls>"
-      ]
+      "matches": ["<all_urls>"]
     }
-  ],
-  "content_security_policy": {
-    "extension_pages": "script-src 'self'; frame-src blob: https://mrsemlimites.lovable.app https://mrsemlimitesext.lovable.app;"
-  },
-  "commands": {
-    "toggle-enabled": {
-      "suggested_key": {
-        "default": "Ctrl+Shift+L",
-        "mac": "Command+Shift+L"
-      },
-      "description": "MR Sem Limites Reformulada 2.1 — Central premium de produtividade, animações, componentes, prompts e ferramentas."
-    }
-  },
-  "mrsl_namespace": "MRSL"
+  ]
 }

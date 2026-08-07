@@ -1,3 +1,10 @@
+(function() {
+    const script = document.createElement('script');
+    script.src = chrome.runtime.getURL('pageHook.js');
+    (document.head || document.documentElement).appendChild(script);
+    script.onload = () => script.remove();
+})();
+
 /**
  * ╔══════════════════════════════════════════════════════════════════════════════╗
  * ║  ⛔  PROPRIETARY SOFTWARE — ALL RIGHTS RESERVED — MR Sem Limites 2026 Brasil  ⛔    ║

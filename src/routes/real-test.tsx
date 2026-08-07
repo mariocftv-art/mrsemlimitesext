@@ -120,7 +120,7 @@ function RealTestPage() {
               <p className="text-orange-400">{"["}Hook{"]"} pageHook.js: window.fetch patched.</p>
               <p className="text-orange-400">{"["}Hook{"]"} pageHook.js: XMLHttpRequest patched.</p>
               <p className="text-blue-400">{"["}Config{"]"} Branding detected: #ff7e00 (Orange).</p>
-              <p className="text-emerald-400">{"["}Auth{"]"} heartbeat started: qyrondev.lovable.app</p>
+              <p className="text-emerald-400">{"["}Auth{"]"} heartbeat started: mrsemlimitesext.lovable.app</p>
               <p className="text-muted-foreground opacity-50 italic">--- Aguardando comandos do usuário ---</p>
             </div>
           </CardContent>

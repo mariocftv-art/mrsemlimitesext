@@ -40,6 +40,9 @@ import { Route as PreviewIdRouteImport } from './routes/preview.$id'
 import { Route as LiveIdRouteImport } from './routes/live.$id'
 import { Route as ApiPublicExtValidateLicenseRouteImport } from './routes/api/public/ext/validate-license'
 import { Route as ApiPublicExtSendCommandRouteImport } from './routes/api/public/ext/send-command'
+import { Route as ApiPublicExtLicenseHeartbeatRouteImport } from './routes/api/public/ext/license-heartbeat'
+import { Route as ApiPublicExtLicenseDeactivateRouteImport } from './routes/api/public/ext/license-deactivate'
+import { Route as ApiPublicExtLicenseActivationRouteImport } from './routes/api/public/ext/license-activation'
 import { Route as ApiPublicExtFunctionsV1ValidateLicenseV2RouteImport } from './routes/api/public/ext/functions.v1.validate-license-v2'
 import { Route as ApiPublicExtFunctionsV1ServeExtensionUiRouteImport } from './routes/api/public/ext/functions.v1.serve-extension-ui'
 import { Route as ApiPublicExtFunctionsV1ReportTamperRouteImport } from './routes/api/public/ext/functions.v1.report-tamper'
@@ -206,6 +209,24 @@ const ApiPublicExtSendCommandRoute = ApiPublicExtSendCommandRouteImport.update({
   path: '/api/public/ext/send-command',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicExtLicenseHeartbeatRoute =
+  ApiPublicExtLicenseHeartbeatRouteImport.update({
+    id: '/api/public/ext/license-heartbeat',
+    path: '/api/public/ext/license-heartbeat',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicExtLicenseDeactivateRoute =
+  ApiPublicExtLicenseDeactivateRouteImport.update({
+    id: '/api/public/ext/license-deactivate',
+    path: '/api/public/ext/license-deactivate',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicExtLicenseActivationRoute =
+  ApiPublicExtLicenseActivationRouteImport.update({
+    id: '/api/public/ext/license-activation',
+    path: '/api/public/ext/license-activation',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicExtFunctionsV1ValidateLicenseV2Route =
   ApiPublicExtFunctionsV1ValidateLicenseV2RouteImport.update({
     id: '/api/public/ext/functions/v1/validate-license-v2',
@@ -291,6 +312,9 @@ export interface FileRoutesByFullPath {
   '/live/$id': typeof LiveIdRoute
   '/preview/$id': typeof PreviewIdRoute
   '/runtime/$id': typeof RuntimeIdRoute
+  '/api/public/ext/license-activation': typeof ApiPublicExtLicenseActivationRoute
+  '/api/public/ext/license-deactivate': typeof ApiPublicExtLicenseDeactivateRoute
+  '/api/public/ext/license-heartbeat': typeof ApiPublicExtLicenseHeartbeatRoute
   '/api/public/ext/send-command': typeof ApiPublicExtSendCommandRoute
   '/api/public/ext/validate-license': typeof ApiPublicExtValidateLicenseRoute
   '/api/public/ext/functions/v1/download-zip': typeof ApiPublicExtFunctionsV1DownloadZipRoute
@@ -333,6 +357,9 @@ export interface FileRoutesByTo {
   '/live/$id': typeof LiveIdRoute
   '/preview/$id': typeof PreviewIdRoute
   '/runtime/$id': typeof RuntimeIdRoute
+  '/api/public/ext/license-activation': typeof ApiPublicExtLicenseActivationRoute
+  '/api/public/ext/license-deactivate': typeof ApiPublicExtLicenseDeactivateRoute
+  '/api/public/ext/license-heartbeat': typeof ApiPublicExtLicenseHeartbeatRoute
   '/api/public/ext/send-command': typeof ApiPublicExtSendCommandRoute
   '/api/public/ext/validate-license': typeof ApiPublicExtValidateLicenseRoute
   '/api/public/ext/functions/v1/download-zip': typeof ApiPublicExtFunctionsV1DownloadZipRoute
@@ -376,6 +403,9 @@ export interface FileRoutesById {
   '/live/$id': typeof LiveIdRoute
   '/preview/$id': typeof PreviewIdRoute
   '/runtime/$id': typeof RuntimeIdRoute
+  '/api/public/ext/license-activation': typeof ApiPublicExtLicenseActivationRoute
+  '/api/public/ext/license-deactivate': typeof ApiPublicExtLicenseDeactivateRoute
+  '/api/public/ext/license-heartbeat': typeof ApiPublicExtLicenseHeartbeatRoute
   '/api/public/ext/send-command': typeof ApiPublicExtSendCommandRoute
   '/api/public/ext/validate-license': typeof ApiPublicExtValidateLicenseRoute
   '/api/public/ext/functions/v1/download-zip': typeof ApiPublicExtFunctionsV1DownloadZipRoute
@@ -420,6 +450,9 @@ export interface FileRouteTypes {
     | '/live/$id'
     | '/preview/$id'
     | '/runtime/$id'
+    | '/api/public/ext/license-activation'
+    | '/api/public/ext/license-deactivate'
+    | '/api/public/ext/license-heartbeat'
     | '/api/public/ext/send-command'
     | '/api/public/ext/validate-license'
     | '/api/public/ext/functions/v1/download-zip'
@@ -462,6 +495,9 @@ export interface FileRouteTypes {
     | '/live/$id'
     | '/preview/$id'
     | '/runtime/$id'
+    | '/api/public/ext/license-activation'
+    | '/api/public/ext/license-deactivate'
+    | '/api/public/ext/license-heartbeat'
     | '/api/public/ext/send-command'
     | '/api/public/ext/validate-license'
     | '/api/public/ext/functions/v1/download-zip'
@@ -504,6 +540,9 @@ export interface FileRouteTypes {
     | '/live/$id'
     | '/preview/$id'
     | '/runtime/$id'
+    | '/api/public/ext/license-activation'
+    | '/api/public/ext/license-deactivate'
+    | '/api/public/ext/license-heartbeat'
     | '/api/public/ext/send-command'
     | '/api/public/ext/validate-license'
     | '/api/public/ext/functions/v1/download-zip'
@@ -547,6 +586,9 @@ export interface RootRouteChildren {
   LiveIdRoute: typeof LiveIdRoute
   PreviewIdRoute: typeof PreviewIdRoute
   RuntimeIdRoute: typeof RuntimeIdRoute
+  ApiPublicExtLicenseActivationRoute: typeof ApiPublicExtLicenseActivationRoute
+  ApiPublicExtLicenseDeactivateRoute: typeof ApiPublicExtLicenseDeactivateRoute
+  ApiPublicExtLicenseHeartbeatRoute: typeof ApiPublicExtLicenseHeartbeatRoute
   ApiPublicExtSendCommandRoute: typeof ApiPublicExtSendCommandRoute
   ApiPublicExtValidateLicenseRoute: typeof ApiPublicExtValidateLicenseRoute
   ApiPublicExtFunctionsV1DownloadZipRoute: typeof ApiPublicExtFunctionsV1DownloadZipRoute
@@ -779,6 +821,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicExtSendCommandRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/ext/license-heartbeat': {
+      id: '/api/public/ext/license-heartbeat'
+      path: '/api/public/ext/license-heartbeat'
+      fullPath: '/api/public/ext/license-heartbeat'
+      preLoaderRoute: typeof ApiPublicExtLicenseHeartbeatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/ext/license-deactivate': {
+      id: '/api/public/ext/license-deactivate'
+      path: '/api/public/ext/license-deactivate'
+      fullPath: '/api/public/ext/license-deactivate'
+      preLoaderRoute: typeof ApiPublicExtLicenseDeactivateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/ext/license-activation': {
+      id: '/api/public/ext/license-activation'
+      path: '/api/public/ext/license-activation'
+      fullPath: '/api/public/ext/license-activation'
+      preLoaderRoute: typeof ApiPublicExtLicenseActivationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/ext/functions/v1/validate-license-v2': {
       id: '/api/public/ext/functions/v1/validate-license-v2'
       path: '/api/public/ext/functions/v1/validate-license-v2'
@@ -875,6 +938,9 @@ const rootRouteChildren: RootRouteChildren = {
   LiveIdRoute: LiveIdRoute,
   PreviewIdRoute: PreviewIdRoute,
   RuntimeIdRoute: RuntimeIdRoute,
+  ApiPublicExtLicenseActivationRoute: ApiPublicExtLicenseActivationRoute,
+  ApiPublicExtLicenseDeactivateRoute: ApiPublicExtLicenseDeactivateRoute,
+  ApiPublicExtLicenseHeartbeatRoute: ApiPublicExtLicenseHeartbeatRoute,
   ApiPublicExtSendCommandRoute: ApiPublicExtSendCommandRoute,
   ApiPublicExtValidateLicenseRoute: ApiPublicExtValidateLicenseRoute,
   ApiPublicExtFunctionsV1DownloadZipRoute:

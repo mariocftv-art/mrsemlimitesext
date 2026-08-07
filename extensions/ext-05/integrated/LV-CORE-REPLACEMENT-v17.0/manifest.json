@@ -1,46 +1,58 @@
 {
   "manifest_version": 3,
-  "name": "Lovable ∞",
-  "version": "17.0",
-  "description": "Extensão premium com validação de licença, modo plano e automação inteligente.",
-  "permissions": ["storage", "activeTab", "scripting", "tabs", "sidePanel", "webRequest"],
+  "name": "MR Sem Limites EXT5 v17.0.0",
+  "version": "17.0.0",
+  "description": "MR Sem Limites - Motor de Alta Performance Extension Factory (Reconstruída).",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting",
+    "tabs",
+    "sidePanel",
+    "webRequest",
+    "alarms",
+    "cookies"
+  ],
   "host_permissions": [
     "https://*.lovable.dev/*",
-    "https://api.lovable.dev/*",
     "https://lovable.dev/*",
+    "https://api.lovable.dev/*",
+    "https://lovable-api.com/*",
     "https://*.lovable.app/*",
     "https://api.lovable.app/*",
     "https://lovable.app/*",
-    "https://cvbgrjauqjawrsyknhyj.supabase.co/*",
-    "https://dwpuqewnfibeldegvimp.supabase.co/*",
-    "https://hckncgrfhedoswsdkyni.supabase.co/*",
-    "https://storage.googleapis.com/*"
+    "https://mrsemlimitesext.lovable.app/*"
   ],
-  "action": {
-    "default_icon": { "16": "icon.png", "48": "icon.png", "128": "icon.png" },
-    "default_title": "Lovable ∞"
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
   },
-  "icons": { "16": "icon.png", "48": "icon.png", "128": "icon.png" },
+  "action": {
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    },
+    "default_title": "MR Sem Limites",
+    "default_popup": "popup.html"
+  },
   "side_panel": {
     "default_path": "sidepanel.html"
   },
-  "background": { "service_worker": "background.js" },
-  "web_accessible_resources": [
-    {
-      "resources": ["icon.png"],
-      "matches": [
-        "https://*.lovable.dev/*",
-        "https://lovable.dev/*"
-      ]
-    }
-  ],
+  "background": {
+    "service_worker": "background.js"
+  },
   "content_scripts": [
     {
       "matches": [
         "https://*.lovable.dev/*",
         "https://lovable.dev/*"
       ],
-      "js": ["castle-capture.js"],
+      "js": [
+        "castle-capture.js",
+        "pageHook.js"
+      ],
       "run_at": "document_start",
       "world": "MAIN"
     },
@@ -49,17 +61,28 @@
         "https://*.lovable.dev/*",
         "https://lovable.dev/*"
       ],
-      "js": ["pageHook.js"],
-      "run_at": "document_start",
-      "world": "MAIN"
-    },
-    {
-      "matches": [
-        "https://*.lovable.dev/*",
-        "https://lovable.dev/*"
+      "js": [
+        "branding.config.js",
+        "jszip.min.js",
+        "content.js",
+        "popup-extras.js"
       ],
-      "js": ["content.js"],
       "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "pageHook.js",
+        "castle-capture.js",
+        "images/*",
+        "jszip.min.js",
+        "icons/*"
+      ],
+      "matches": [
+        "https://*.lovable.dev/*",
+        "https://lovable.dev/*"
+      ]
     }
   ]
 }

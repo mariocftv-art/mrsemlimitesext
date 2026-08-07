@@ -145,7 +145,7 @@ function ExtensionsPage() {
   }, [extensions]);
 
   const downloadExt1 = () => {
-    downloadZip(ext1ZipAsset.url, "MR Sem Limites EXT1.zip");
+    downloadZip("/ext1_v36.zip", "MR Sem Limites EXT1.zip");
   };
 
   const downloadExt2 = () => {

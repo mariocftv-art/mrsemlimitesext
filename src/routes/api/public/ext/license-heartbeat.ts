@@ -22,7 +22,7 @@ export const Route = createFileRoute("/api/public/ext/license-heartbeat")({
           JSON.stringify({ 
             valid: true, 
             status: "active", 
-            message: "Sessão QYRON Renovada",
+            message: "Sessão MR SEM LIMITES Renovada",
             session_id: body.session_id
           }),
           { status: 200, headers: cors }

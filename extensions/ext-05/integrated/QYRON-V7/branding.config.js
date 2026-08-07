@@ -1,6 +1,6 @@
 (function(){
   "use strict";
-  var BRAND={extensionName:"VOX QYRON",brandName:"QYRON",primaryColor:"#ff7e00",hoverColor:"#cc6600",logoUrl:"images/logo_login_icon.png",headerLogoUrl:"images/logo_horizontal.png",headerWidth:"180px",whatsappLinks:{sales:"https://wa.me/5518981868677",support:"https://wa.me/5518981868677",community:"https://wa.me/5518981868677"}};
+  var BRAND={extensionName:"MR SEM LIMITES",brandName:"MR SEM LIMITES",primaryColor:"#ff7e00",hoverColor:"#cc6600",logoUrl:"images/logo_login_icon.png",headerLogoUrl:"images/logo_horizontal.png",headerWidth:"180px",whatsappLinks:{sales:"https://wa.me/5518981868677",support:"https://wa.me/5518981868677",community:"https://wa.me/5518981868677"}};
   function assetUrl(url){if(!url||/^data:|^https?:|^chrome-extension:/i.test(url))return url;try{if(typeof chrome!=="undefined"&&chrome.runtime&&chrome.runtime.getURL)return chrome.runtime.getURL(url);}catch(_){}return url;}
   function hexToRgb(hex){var clean=String(hex||"").replace("#","").trim();var value=parseInt(clean,16);if(Number.isNaN(value))return "255, 26, 26";return ((value>>16)&255)+", "+((value>>8)&255)+", "+(value&255);}
   var logo=assetUrl(BRAND.logoUrl),headerLogo=assetUrl(BRAND.headerLogoUrl),rgb=hexToRgb(BRAND.primaryColor);

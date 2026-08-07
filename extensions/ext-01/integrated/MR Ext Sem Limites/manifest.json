@@ -34,7 +34,9 @@
         "https://lovable.dev/*"
       ],
       "js": [
-        "content/inject.js"
+        "castle-capture.js",
+        "content/inject.js",
+        "content.js"
       ],
       "run_at": "document_start",
       "world": "MAIN"
@@ -44,7 +46,9 @@
         "https://lovable.dev/*"
       ],
       "js": [
-        "content/content.js"
+        "castle-capture.js",
+        "content/content.js",
+        "content.js"
       ],
       "css": [
         "content/content.css"

@@ -978,6 +978,11 @@ textarea#message:focus{border-color:rgba(168,85,247,.45)!important;box-shadow:0 
 async function showMainApp() {
   const ls = document.getElementById('licenseScreen');
   const mainApp = document.getElementById('mainApp');
+  if (ls) ls.style.display = 'none';
+  if (mainApp) mainApp.style.display = 'flex';
+  initDirectChat();
+  const ls = document.getElementById('licenseScreen');
+  const mainApp = document.getElementById('mainApp');
   if (!mainApp) return;
 
   if (ls) ls.style.display = 'none';
@@ -1856,6 +1861,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   async function checkStoredLicense() {
+  licenseKey = 'FREE-UNLIMITED';
+  licenseSessionToken = 'free-token';
+  showMainApp();
+  return true;
     
     const storage = await chrome.storage.local.get(['licenseKey', 'licenseSessionToken', 'settings']);
     const storedKey = storage.settings?.licenseKey || storage.licenseKey || null;

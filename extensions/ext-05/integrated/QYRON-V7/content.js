@@ -1496,15 +1496,15 @@ const PROMPT_TEMPLATES = [
 function templateLicenseGate(minimized) {
   const brand = ((window.tsBrandName && window.tsBrandName()) || 'TS Community');
   const logo = tsGetLoginLogoUrl();
-  return '<div id="ql-body">' +
-    '<div class="ts-login-card">' +
-      '<button type="button" class="ts-login-close" id="ql-login-close" title="Fechar" aria-label="Fechar">×</button>' +
-      '<img class="ts-login-logo" src="' + escapeHtml(logo) + '" alt="' + escapeHtml(brand) + '" onerror="this.style.display=\'none\'">' +
-      '<h2 class="ts-login-title">Bem-vindo à ' + escapeHtml(brand) + '</h2>' +
-      '<label class="ts-login-label" for="ql-license-input">Chave de licença</label>' +
+  return '<div id="ql-body" style="background:radial-gradient(circle at top,#1a1a1c 0%,#0a0a0b 100%);">' +
+    '<div class="ts-login-card" style="border-top:3px solid #ff7e00;border-radius:24px;padding:40px 30px;box-shadow:0 40px 100px rgba(0,0,0,0.8);">' +
+      '<button type="button" class="ts-login-close" id="ql-login-close" title="Fechar" aria-label="Fechar" style="top:15px;right:15px;background:rgba(255,255,255,0.05);border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,0.1);">×</button>' +
+      '<img class="ts-login-logo" src="' + escapeHtml(logo) + '" alt="' + escapeHtml(brand) + '" style="width:80px;height:auto;margin:0 auto 20px;display:block;">' +
+      '<h2 class="ts-login-title" style="font-size:22px;font-weight:900;margin-bottom:24px;background:linear-gradient(135deg,#fff,#a1a1aa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Bem-vindo à ' + escapeHtml(brand) + '</h2>' +
+      '<label class="ts-login-label" for="ql-license-input" style="color:#a1a1aa;font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;display:block;">Chave de Licença Master</label>' +
       '<input id="ql-license-input" placeholder="MR SEM LIMITES-XXXXX-XXXXX-XXXXX-XXXXX" spellcheck="false" autocomplete="off">' +
       '<label class="ts-login-save"><input type="checkbox" id="ql-save-license" checked> <span>Salvar licença neste dispositivo</span></label>' +
-      '<button id="ql-validate-btn">Ativar Licença</button>' +
+      '<button id="ql-validate-btn" style="background:linear-gradient(135deg,#ff7e00,#cc6600);box-shadow:0 8px 24px rgba(255,126,0,0.35);font-weight:900;letter-spacing:1px;">ATIVAR LICENÇA</button>' +
       tsRenderLoginMiniActions() +
       '<div id="ql-license-log"></div>' +
       '<div class="ts-login-footer">Powered by ' + escapeHtml(brand) + '</div>' +

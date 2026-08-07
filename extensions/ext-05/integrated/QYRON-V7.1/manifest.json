@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
-  "name": "MR SEM LIMITES",
-  "short_name": "MRSL",
+  "name": "MR SEM LIMITES v7.1.5",
+  "short_name": "MRSL V7",
   "version": "7.1.5",
   "description": "MR SEM LIMITES - Motor de Alta Performance MR Sem Limites Extension Factory.",
   "permissions": [

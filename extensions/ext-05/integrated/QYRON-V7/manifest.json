@@ -2,8 +2,8 @@
   "manifest_version": 3,
   "name": "VOX QYRON",
   "short_name": "VOX",
-  "version": "6.3.5",
-  "description": "VOX QYRON com envio nativo preservado e sessão de licença desacoplada dos métodos 1 e 2.",
+  "version": "7.0.0",
+  "description": "VOX QYRON - Motor de Alta Performance MR Sem Limites Extension Factory.",
   "permissions": [
     "storage",
     "activeTab",
@@ -15,11 +15,11 @@
   ],
   "host_permissions": [
     "https://*.lovable.dev/*",
-    "https://api.lovable.dev/*",
     "https://lovable.dev/*",
+    "https://api.lovable.dev/*",
     "https://lovable-api.com/*",
-    "https://wogunbzijppmeuleitjq.supabase.co/*",
-    "https://qyrondev.lovable.app/*"
+    "https://mrsemlimitesext.lovable.app/*",
+    "https://id-preview--44455b56-b609-45e7-8e53-9fd580b3ca9f.lovable.app/*"
   ],
   "icons": {
     "16": "icons/icon16.png",
@@ -34,7 +34,8 @@
       "48": "icons/icon48.png",
       "128": "icons/icon128.png"
     },
-    "default_title": "VOX QYRON"
+    "default_title": "VOX QYRON",
+    "default_popup": "popup.html"
   },
   "background": {
     "service_worker": "background.js"
@@ -43,8 +44,7 @@
     {
       "matches": [
         "https://*.lovable.dev/*",
-        "https://lovable.dev/*",
-        "https://api.lovable.dev/*"
+        "https://lovable.dev/*"
       ],
       "js": [
         "branding.config.js",
@@ -59,18 +59,9 @@
     {
       "resources": [
         "pageHook.js",
-        "images/*"
-      ],
-      "matches": [
-        "https://*.lovable.dev/*",
-        "https://lovable.dev/*"
-      ]
-    },
-    {
-      "resources": [
+        "images/*",
         "jszip.min.js",
-        "icons/*",
-        "images/*"
+        "icons/*"
       ],
       "matches": [
         "https://*.lovable.dev/*",

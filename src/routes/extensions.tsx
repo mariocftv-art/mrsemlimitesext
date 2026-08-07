@@ -326,23 +326,27 @@ function ExtensionsPage() {
 }
 
 function downloadZip(url: string, filename: string) {
-  const isProduction = !window.location.hostname.includes("localhost") && !window.location.hostname.includes("lovable.app");
-  
-  // Se estivermos no preview do Lovable, precisamos forçar a URL de produção para o download
-  // ou garantir que o link seja absoluto para o domínio publicado.
+  // Se for um link relativo, garante que aponta para o domínio de produção no preview
   let finalUrl = url;
   if (url.startsWith("/")) {
     const baseUrl = "https://mrsemlimitesext.lovable.app";
     finalUrl = `${baseUrl}${url}`;
   }
 
+  // Em vez de abrir nova aba (que pode ser bloqueada ou falhar no download automático),
+  // usamos um link invisível com o atributo download e disparamos o clique.
   const a = document.createElement("a");
   a.href = finalUrl;
-  a.target = "_blank"; // Abrir em nova aba para evitar problemas de navegação no preview
+  // O atributo download só funciona para a mesma origem, mas ajuda em produção.
+  a.setAttribute("download", filename);
+  
+  // Tentar forçar o download sem abrir nova aba se possível, 
+  // mas navegadores modernos podem ignorar 'download' em cross-origin.
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
-  toast.success("Download iniciado.");
+  
+  toast.success("Iniciando download...");
 }
 
 function ExtensionCard({ ext }: { ext: ExtensionRecord; onEdit: () => void }) {

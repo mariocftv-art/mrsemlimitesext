@@ -296,7 +296,7 @@ function OverviewTab({ report }: { report: CompatReport }) {
         <Card key={cat} className="border-border/60">
           <CardContent className="space-y-2 p-4">
             <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{catLabels[cat] ?? cat}</p>
-            {items.map((c) => (
+            {items.map((c: any) => (
               <CheckRow key={c.key} c={c} />
             ))}
           </CardContent>
@@ -354,7 +354,7 @@ function DiffsTab({ report }: { report: CompatReport }) {
           </tr>
         </thead>
         <tbody>
-          {report.checks.map((c) => (
+          {report.checks.map((c: any) => (
             <tr key={c.key} className="border-t border-border/40">
               <td className="px-3 py-2 font-medium">{c.label}</td>
               <td className="px-3 py-2 font-mono text-emerald-200/80">{c.factory}</td>
@@ -385,7 +385,7 @@ function SuggestionsTab({ report }: { report: CompatReport }) {
   }
   return (
     <div className="space-y-2">
-      {report.suggestions.map((s, i) => (
+      {report.suggestions.map((s: any, i: number) => (
         <div
           key={i}
           className="flex items-start gap-2 rounded-lg border border-amber-500/30 bg-amber-500/5 px-4 py-3 text-sm"
@@ -406,7 +406,7 @@ function PreparationTab({ report }: { report: CompatReport }) {
         <b> Nenhum arquivo é alterado agora.</b>
       </p>
       <ol className="space-y-2">
-        {report.preparation.map((p, i) => (
+        {report.preparation.map((p: any, i: number) => (
           <li
             key={i}
             className="flex items-start gap-3 rounded-lg border border-border/60 bg-background/40 px-4 py-3 text-sm"

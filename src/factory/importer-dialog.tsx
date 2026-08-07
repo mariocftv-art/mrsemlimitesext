@@ -309,10 +309,10 @@ function ReportView({ report }: { report: ImportReport }) {
         <div className="rounded-lg border border-border/60 bg-background/40 p-3 text-xs">
           <p className="mb-1 font-semibold">Permissões</p>
           <div className="flex flex-wrap gap-1">
-            {report.manifest?.permissions?.map((p) => (
+            {report.manifest?.permissions?.map((p: any) => (
               <Badge key={p} variant="outline" className="text-[10px]">{p}</Badge>
             ))}
-            {report.manifest?.host_permissions?.map((p) => (
+            {report.manifest?.host_permissions?.map((p: any) => (
               <Badge key={p} variant="outline" className="border-amber-500/40 text-amber-300 text-[10px]">{p}</Badge>
             ))}
           </div>
@@ -323,12 +323,12 @@ function ReportView({ report }: { report: ImportReport }) {
 
       <div>
         <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-          Arquivos ({report.files.filter((f) => !f.isDir).length})
+          Arquivos ({report.files.filter((f: any) => !f.isDir).length})
         </p>
         <ScrollArea className="h-[180px] rounded-lg border border-border/60 bg-background/60">
           <table className="w-full text-[11px]">
             <tbody>
-              {report.files.filter((f) => !f.isDir).map((f) => (
+              {report.files.filter((f: any) => !f.isDir).map((f: any) => (
                 <tr key={f.path} className="border-t border-border/30">
                   <td className="px-3 py-1 font-mono">{f.path}</td>
                   <td className="px-3 py-1 text-right font-mono text-muted-foreground">

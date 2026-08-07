@@ -157,20 +157,30 @@
   }
 
   async function getHwid() {
-    // Tenta usar a função global do hwFingerprint.js se disponível
     if (window.getHwid) return await window.getHwid();
-    // Fallback simples se não houver
     return 'HWID-' + navigator.userAgent.replace(/[^a-zA-Z0-9]/g, '').slice(0, 16);
   }
 
   // Inicialização
   document.addEventListener('DOMContentLoaded', async () => {
-    const isOk = await checkLicense();
-    if (!isOk) {
-      renderUI(false);
-    } else {
-      chrome.storage.local.get(null, (all) => renderUI(true, all));
-    }
+    // Atrasar um pouco para garantir que o branding config carregou
+    setTimeout(async () => {
+      const isOk = await checkLicense();
+      if (!isOk) {
+        renderUI(false);
+        // Bloquear o sp-body de ser alterado por outros scripts
+        const observer = new MutationObserver((mutations) => {
+          mutations.forEach((mutation) => {
+            if (mutation.type === 'childList' && !document.getElementById('license-input')) {
+              renderUI(false);
+            }
+          });
+        });
+        observer.observe(document.getElementById('sp-body'), { childList: true });
+      } else {
+        chrome.storage.local.get(null, (all) => renderUI(true, all));
+      }
+    }, 100);
   });
 
 })();

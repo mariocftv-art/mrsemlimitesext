@@ -199,9 +199,16 @@ function ExtensionsPage() {
                   <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{ext1.name}</p>
                 </div>
               </div>
-              <Button size="sm" className="gap-1.5" onClick={downloadExt1}>
-                <Download className="h-4 w-4" /> Download
-              </Button>
+              <div className="flex flex-col gap-2">
+                <Button size="sm" className="w-full gap-1.5" onClick={downloadExt1}>
+                  <Download className="h-4 w-4" /> Download
+                </Button>
+                <Link to="/real-test" className="w-full">
+                  <Button size="sm" variant="outline" className="w-full gap-1.5 border-primary/40 text-primary">
+                    <Bug className="h-4 w-4" /> Real Test
+                  </Button>
+                </Link>
+              </div>
             </CardContent>
           </Card>
         )}
@@ -218,14 +225,21 @@ function ExtensionsPage() {
                   <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{ext2.name}</p>
                 </div>
               </div>
-              <Button 
-                size="sm" 
-                className="gap-1.5" 
-                onClick={downloadExt2}
-                style={{ background: "var(--neon-violet)", color: "#fff" }}
-              >
-                <Download className="h-4 w-4" /> Download
-              </Button>
+              <div className="flex flex-col gap-2">
+                <Button 
+                  size="sm" 
+                  className="w-full gap-1.5" 
+                  onClick={downloadExt2}
+                  style={{ background: "var(--neon-violet)", color: "#fff" }}
+                >
+                  <Download className="h-4 w-4" /> Download
+                </Button>
+                <Link to="/real-test" className="w-full">
+                  <Button size="sm" variant="outline" className="w-full gap-1.5 border-violet-500/40 text-violet-400">
+                    <Bug className="h-4 w-4" /> Real Test
+                  </Button>
+                </Link>
+              </div>
             </CardContent>
           </Card>
         )}
@@ -242,14 +256,21 @@ function ExtensionsPage() {
                   <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{ext3.name}</p>
                 </div>
               </div>
-              <Button 
-                size="sm" 
-                className="gap-1.5" 
-                onClick={downloadExt3}
-                style={{ background: "var(--neon-magenta)", color: "#fff" }}
-              >
-                <Download className="h-4 w-4" /> Download
-              </Button>
+              <div className="flex flex-col gap-2">
+                <Button 
+                  size="sm" 
+                  className="w-full gap-1.5" 
+                  onClick={downloadExt3}
+                  style={{ background: "var(--neon-magenta)", color: "#fff" }}
+                >
+                  <Download className="h-4 w-4" /> Download
+                </Button>
+                <Link to="/real-test" className="w-full">
+                  <Button size="sm" variant="outline" className="w-full gap-1.5 border-magenta-500/40 text-magenta-400">
+                    <Bug className="h-4 w-4" /> Real Test
+                  </Button>
+                </Link>
+              </div>
             </CardContent>
           </Card>
         )}
@@ -266,14 +287,21 @@ function ExtensionsPage() {
                   <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{ext4.name}</p>
                 </div>
               </div>
-              <Button 
-                size="sm" 
-                className="gap-1.5" 
-                onClick={downloadExt4}
-                style={{ background: "var(--neon-lime)", color: "#000" }}
-              >
-                <Download className="h-4 w-4" /> Download
-              </Button>
+              <div className="flex flex-col gap-2">
+                <Button 
+                  size="sm" 
+                  className="w-full gap-1.5" 
+                  onClick={downloadExt4}
+                  style={{ background: "var(--neon-lime)", color: "#000" }}
+                >
+                  <Download className="h-4 w-4" /> Download
+                </Button>
+                <Link to="/real-test" className="w-full">
+                  <Button size="sm" variant="outline" className="w-full gap-1.5 border-lime-500/40 text-lime-400">
+                    <Bug className="h-4 w-4" /> Real Test
+                  </Button>
+                </Link>
+              </div>
             </CardContent>
           </Card>
         )}
@@ -290,17 +318,17 @@ function ExtensionsPage() {
                   <p className="text-[10px] uppercase tracking-widest text-muted-foreground">IBCT SEM LIMITES</p>
                 </div>
               </div>
-              <div className="flex gap-2">
+              <div className="flex flex-col gap-2">
                 <Button 
                   size="sm" 
-                  className="gap-1.5" 
+                  className="w-full gap-1.5" 
                   onClick={downloadExt5}
                   style={{ background: "#00f2ff", color: "#000" }}
                 >
                   <Download className="h-4 w-4" /> Download
                 </Button>
-                <Link to="/real-test">
-                  <Button size="sm" variant="outline" className="gap-1.5 border-cyan-500/40 text-cyan-400">
+                <Link to="/real-test" className="w-full">
+                  <Button size="sm" variant="outline" className="w-full gap-1.5 border-cyan-500/40 text-cyan-400">
                     <Bug className="h-4 w-4" /> Real Test
                   </Button>
                 </Link>

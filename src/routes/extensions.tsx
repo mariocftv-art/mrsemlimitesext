@@ -3,7 +3,7 @@ import ext1ZipAsset from "@/assets/ext1_v35.asset.json";
 import ext2ZipAsset from "@/assets/ext2_v29_zip.asset.json";
 import ext3ZipAsset from "@/assets/ext3_v29_zip.asset.json";
 import ext4ZipAsset from "@/assets/ext4_v412.zip.asset.json";
-import ext5ZipAsset from "@/assets/ext5_v1700.zip.asset.json";
+import ext5ZipAsset from "@/assets/ext5_v1701.zip.asset.json";
 import { useMemo, useState, useSyncExternalStore } from "react";
 import {
   Archive,
@@ -166,7 +166,7 @@ function ExtensionsPage() {
   };
 
   const downloadExt5 = () => {
-    downloadZip(ext5ZipAsset.url, "MR Sem Limites EXT5.zip");
+    downloadZip(ext5ZipAsset.url, "MR Sem Limites EXT5 v17.0.1.zip");
   };
 
   return (
@@ -314,8 +314,8 @@ function ExtensionsPage() {
                   <Puzzle className="h-5 w-5 text-cyan-400" />
                 </div>
                 <div>
-                  <p className="text-sm font-bold">EXTENSÃO CINCO 17.0.0</p>
-                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground">IBCT SEM LIMITES</p>
+                  <p className="text-sm font-bold">EXTENSÃO CINCO 17.0.1</p>
+                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground">MR SEM LIMITES V17</p>
                 </div>
               </div>
               <div className="flex flex-col gap-2">

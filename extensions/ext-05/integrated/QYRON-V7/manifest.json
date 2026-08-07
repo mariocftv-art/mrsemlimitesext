@@ -1,0 +1,81 @@
+{
+  "manifest_version": 3,
+  "name": "VOX QYRON",
+  "short_name": "VOX",
+  "version": "6.3.5",
+  "description": "VOX QYRON com envio nativo preservado e sessão de licença desacoplada dos métodos 1 e 2.",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting",
+    "tabs",
+    "cookies",
+    "webRequest",
+    "alarms"
+  ],
+  "host_permissions": [
+    "https://*.lovable.dev/*",
+    "https://api.lovable.dev/*",
+    "https://lovable.dev/*",
+    "https://lovable-api.com/*",
+    "https://wogunbzijppmeuleitjq.supabase.co/*",
+    "https://qyrondev.lovable.app/*"
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    },
+    "default_title": "VOX QYRON"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.lovable.dev/*",
+        "https://lovable.dev/*",
+        "https://api.lovable.dev/*"
+      ],
+      "js": [
+        "branding.config.js",
+        "jszip.min.js",
+        "content.js",
+        "popup-extras.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "pageHook.js",
+        "images/*"
+      ],
+      "matches": [
+        "https://*.lovable.dev/*",
+        "https://lovable.dev/*"
+      ]
+    },
+    {
+      "resources": [
+        "jszip.min.js",
+        "icons/*",
+        "images/*"
+      ],
+      "matches": [
+        "https://*.lovable.dev/*",
+        "https://lovable.dev/*"
+      ]
+    }
+  ]
+}

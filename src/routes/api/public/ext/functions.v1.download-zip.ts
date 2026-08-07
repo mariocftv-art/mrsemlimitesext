@@ -10,11 +10,15 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/download-zip"
         
         console.log(`[Download] Request for EXT${ext} v${version}`);
 
-        // Redireciona para o asset real no bucket (exemplo de fallback estável)
-        // No futuro isso pode servir o binário diretamente via streams do sandbox
-        const fallbackUrl = "https://storage.googleapis.com/gpt-engineer-file-uploads/dG4KLRailvgZ5C10HZJJbpmtVz13/ext1_v31.zip";
+        // Servir os arquivos locais da pasta public
+        const baseUrl = new URL(request.url).origin;
+        let file = "ext1_v37.zip";
         
-        return Response.redirect(fallbackUrl, 302);
+        if (ext === "5") file = "ext5_v710.zip";
+        else if (ext === "2") file = "MR Sem Limites EXT2.zip";
+        else if (ext === "3") file = "Metodo Quatro v17.zip";
+        
+        return Response.redirect(`${baseUrl}/${file}`, 302);
       },
     },
   },

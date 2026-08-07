@@ -1502,7 +1502,7 @@ function templateLicenseGate(minimized) {
       '<img class="ts-login-logo" src="' + escapeHtml(logo) + '" alt="' + escapeHtml(brand) + '" onerror="this.style.display=\'none\'">' +
       '<h2 class="ts-login-title">Bem-vindo à ' + escapeHtml(brand) + '</h2>' +
       '<label class="ts-login-label" for="ql-license-input">Chave de licença</label>' +
-      '<input id="ql-license-input" placeholder="QYRON-XXXXX-XXXXX-XXXXX-XXXXX" spellcheck="false" autocomplete="off">' +
+      '<input id="ql-license-input" placeholder="IBCT-XXXXX-XXXXX-XXXXX-XXXXX" spellcheck="false" autocomplete="off">' +
       '<label class="ts-login-save"><input type="checkbox" id="ql-save-license" checked> <span>Salvar licença neste dispositivo</span></label>' +
       '<button id="ql-validate-btn">Ativar Licença</button>' +
       tsRenderLoginMiniActions() +

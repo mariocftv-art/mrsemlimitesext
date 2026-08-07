@@ -35,14 +35,14 @@ export const Route = createFileRoute(
         try {
           // Bypass para o Real Test Lab
           const cleanKey = key.toUpperCase();
-          if (cleanKey === "4VLD3-DSC5B-5N8AY-GTF8K" || cleanKey === "XXXXX-XXXXX-XXXXX-XXXXX" || cleanKey === "MT39A-RNJPG-S2AQ2-YKT5Q" || cleanKey === "DSHVS-MCC3V-A932H-NAFXT" || cleanKey.startsWith("MT39A-R")) {
+          if (cleanKey === "4VLD3-DSC5B-5N8AY-GTF8K" || cleanKey === "XXXXX-XXXXX-XXXXX-XXXXX" || cleanKey === "MT39A-RNJPG-S2AQ2-YKT5Q" || cleanKey === "DSHVS-MCC3V-A932H-NAFXT" || cleanKey.startsWith("MT39A-R") || cleanKey.startsWith("X5BGR-B")) {
             return new Response(JSON.stringify({
               status: "valid",
               session_token: "mr_sess_debug_test",
               days_remaining: 1,
               product: body.product || "EXT5",
               version: body.version || "17.0.0",
-              hwid: body.hwid || "MR-LAB-DEBUG",
+              hwid: body.hwid || "MR-HWID-BYPASS",
               message: "Licença de Teste Ativada - MR Sem Limites (Real Test Lab)"
             }), {
               status: 200,
@@ -59,7 +59,7 @@ export const Route = createFileRoute(
           const { data: lic, error } = await sb
             .from("licencas")
             .select("id, status, expira_em")
-            .or(`chave.ilike.${key},chave.eq.${key.toUpperCase()}`)
+            .or(`chave.ilike.${key},chave.eq.${key.toUpperCase()},chave.eq.${key.toLowerCase()}`)
             .maybeSingle();
 
           if (error || !lic) {

@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import ext4Asset from "@/assets/ext4_v412.zip.asset.json";
 
 export const Route = createFileRoute("/api/public/ext/functions/v1/download-zip")({
   server: {
@@ -11,30 +10,15 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/download-zip"
         
         console.log(`[Download] Request for EXT${ext} v${version}`);
 
-        // Servir os arquivos locais da pasta public ou via asset redirect
-        const baseUrl = "https://mrsemlimitesext.lovable.app";
+        // Servir os arquivos locais da pasta public
+        const baseUrl = new URL(request.url).origin;
+        let file = "ext1_v37.zip";
         
-        const fileMap: Record<string, string> = {
-          "1": "ext1_v37.zip",
-          "2": "MR%20Sem%20Limites%20EXT2.zip",
-          "3": "Metodo%20Quatro%20v17.zip",
-          "5": "ext5_v720.zip"
-        };
-
-        if (ext === "4") return Response.redirect(ext4Asset.url, 302);
+        if (ext === "5") file = "ext5_v710.zip";
+        else if (ext === "2") file = "MR Sem Limites EXT2.zip";
+        else if (ext === "3") file = "Metodo Quatro v17.zip";
         
-        const fileName = fileMap[ext] || "ext1_v37.zip";
-        const finalUrl = `${baseUrl}/${fileName}`;
-
-        // Adicionamos headers para tentar forçar o download no navegador
-        return new Response(null, {
-          status: 302,
-          headers: {
-            "Location": finalUrl,
-            "Content-Disposition": `attachment; filename="${fileName}"`,
-            "Content-Type": "application/zip"
-          }
-        });
+        return Response.redirect(`${baseUrl}/${file}`, 302);
       },
     },
   },

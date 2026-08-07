@@ -150,23 +150,23 @@ function ExtensionsPage() {
   }, [extensions]);
 
   const downloadExt1 = () => {
-    downloadZip("/api/public/ext/functions/v1/download-zip?ext=1", "MR Sem Limites EXT1.zip");
+    downloadZip("/ext1_v37.zip", "MR Sem Limites EXT1.zip");
   };
 
   const downloadExt2 = () => {
-    downloadZip("/api/public/ext/functions/v1/download-zip?ext=2", "Metodo Quatro EXT2.zip");
+    downloadZip(ext2ZipAsset.url, "Metodo Quatro EXT2.zip");
   };
 
   const downloadExt3 = () => {
-    downloadZip("/api/public/ext/functions/v1/download-zip?ext=3", "MR Sem Limites EXT3.zip");
+    downloadZip(ext3ZipAsset.url, "MR Sem Limites EXT3.zip");
   };
 
   const downloadExt4 = () => {
-    downloadZip("/api/public/ext/functions/v1/download-zip?ext=4", "MR Sem Limites EXT4.zip");
+    downloadZip(ext4ZipAsset.url, "MR Sem Limites EXT4.zip");
   };
 
   const downloadExt5 = () => {
-    downloadZip("/api/public/ext/functions/v1/download-zip?ext=5", "MR Sem Limites VOX EXT5.zip");
+    downloadZip(ext5ZipAsset.url, "VOX QYRON EXT5.zip");
   };
 
   return (
@@ -286,7 +286,7 @@ function ExtensionsPage() {
                   <Puzzle className="h-5 w-5 text-orange-400" />
                 </div>
                 <div>
-                  <p className="text-sm font-bold">EXTENSÃO CINCO 7.2.0</p>
+                  <p className="text-sm font-bold">EXTENSÃO CINCO 7.1.0</p>
                   <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{ext5.name}</p>
                 </div>
               </div>
@@ -326,27 +326,13 @@ function ExtensionsPage() {
 }
 
 function downloadZip(url: string, filename: string) {
-  // Se for um link relativo, garante que aponta para o domínio de produção no preview
-  let finalUrl = url;
-  if (url.startsWith("/")) {
-    const baseUrl = "https://mrsemlimitesext.lovable.app";
-    finalUrl = `${baseUrl}${url}`;
-  }
-
-  // Em vez de abrir nova aba (que pode ser bloqueada ou falhar no download automático),
-  // usamos um link invisível com o atributo download e disparamos o clique.
   const a = document.createElement("a");
-  a.href = finalUrl;
-  // O atributo download só funciona para a mesma origem, mas ajuda em produção.
-  a.setAttribute("download", filename);
-  
-  // Tentar forçar o download sem abrir nova aba se possível, 
-  // mas navegadores modernos podem ignorar 'download' em cross-origin.
+  a.href = url;
+  a.download = filename;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
-  
-  toast.success("Iniciando download...");
+  toast.success("Download iniciado.");
 }
 
 function ExtensionCard({ ext }: { ext: ExtensionRecord; onEdit: () => void }) {

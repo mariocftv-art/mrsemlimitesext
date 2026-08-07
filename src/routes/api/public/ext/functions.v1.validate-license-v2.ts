@@ -8,7 +8,9 @@ const cors = {
   "content-type": "application/json",
 };
 
-export const Route = createFileRoute("/api/public/ext/functions/v1/validate-license-v2")({
+export const Route = createFileRoute(
+  "/api/public/ext/functions/v1/validate-license-v2"
+)({
   server: {
     handlers: {
       OPTIONS: async () => new Response(null, { status: 204, headers: cors }),
@@ -19,9 +21,9 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/validate-lice
         } catch {
           /* noop */
         }
-        console.log("Validating key:", (body.license_key || body.code || body.license || "").trim());
         
         const key = (body.license_key || body.code || body.license || "").trim();
+        console.log("Validating key:", key);
 
         if (!key) {
           return new Response(JSON.stringify({ status: "invalid", message: "Chave ausente" }), {
@@ -31,6 +33,7 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/validate-lice
         }
 
         try {
+          // Bypass para o Real Test Lab
           if (key === "4VLD3-DSC5B-5N8AY-GTF8K") {
             return new Response(JSON.stringify({
               status: "valid",
@@ -52,17 +55,6 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/validate-lice
             { auth: { persistSession: false, autoRefreshToken: false } }
           );
 
-          if (key === "4VLD3-DSC5B-5N8AY-GTF8K") {
-            return new Response(JSON.stringify({
-              status: "valid",
-              session_token: "mr_sess_debug_test",
-              days_remaining: 365,
-              message: "Licença de Teste Ativada - MR Sem Limites"
-            }), {
-              status: 200,
-              headers: cors,
-            });
-          }
           const { data: lic, error } = await sb
             .from("licencas")
             .select("id, status, expira_em")
@@ -70,31 +62,28 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/validate-lice
             .maybeSingle();
 
           if (error || !lic) {
-            return new Response(JSON.stringify({ status: "invalid", message: "Licença não cadastrada no servidor MR Sem Limites" }), {
+            return new Response(JSON.stringify({ status: "invalid", message: "Licença não encontrada no banco oficial MR" }), {
               status: 200,
               headers: cors,
             });
           }
 
           if (lic.status !== "ativa" && lic.status !== "premium") {
-             return new Response(JSON.stringify({ status: "invalid", message: `Licença com status: ${lic.status}` }), {
+            return new Response(JSON.stringify({ status: "invalid", message: "Licença expirada ou inativa" }), {
               status: 200,
               headers: cors,
             });
           }
 
-          const expDate = lic.expira_em ? new Date(lic.expira_em) : new Date("2026-12-31");
-          const diffTime = Math.abs(expDate.getTime() - new Date().getTime());
-          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+          const expDate = new Date(lic.expira_em);
+          const days = Math.max(0, Math.ceil((expDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24)));
 
-          const response = {
+          return new Response(JSON.stringify({
             status: "valid",
-            session_token: `mr_sess_${Math.random().toString(36).substring(7)}`,
-            days_remaining: diffDays,
-            message: "Licença Master Ativa - MR Sem Limites"
-          };
-
-          return new Response(JSON.stringify(response), {
+            session_token: "mr_" + Math.random().toString(36).slice(2),
+            days_remaining: days,
+            message: "Licença Validada - MR Sem Limites"
+          }), {
             status: 200,
             headers: cors,
           });

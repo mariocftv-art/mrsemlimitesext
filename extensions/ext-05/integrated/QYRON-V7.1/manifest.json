@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "VOX QYRON",
-  "short_name": "VOX",
+  "name": "MR Sem Limites VOX",
+  "short_name": "MR VOX",
   "version": "7.1.0",
-  "description": "VOX QYRON - Motor de Alta Performance MR Sem Limites Extension Factory.",
+  "description": "MR Sem Limites - Motor VOX de Alta Performance.",
   "permissions": [
     "storage",
     "activeTab",

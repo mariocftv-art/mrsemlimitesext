@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/layout/app-shell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { MonitorPlay, Chrome, Globe, Layout } from "lucide-react";
+import { MonitorPlay, Chrome, Globe, Layout, Bug } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export const Route = createFileRoute("/real-test")({ component: RealTestPage });
@@ -22,7 +22,6 @@ function RealTestPage() {
                 MOTOR: CASTLER V2
              </div>
           </div>
-        <div className="flex flex-col gap-4 overflow-hidden">
           <Tabs defaultValue="chrome" className="flex-1 flex flex-col">
             <div className="flex items-center justify-between bg-background/40 border border-border/60 rounded-t-lg px-2">
               <TabsList className="bg-transparent">
@@ -41,7 +40,7 @@ function RealTestPage() {
                     </div>
                  </div>
                  <h3 className="text-lg font-bold text-foreground mb-1">Injetando Motor QYRON V7...</h3>
-                 <p className="text-sm opacity-60">Interceptando tráfego api.lovable.dev -> /lov4</p>
+                 <p className="text-sm opacity-60">Interceptando tráfego api.lovable.dev {"->"} /lov4</p>
                  
                  <div className="mt-8 p-4 w-full max-w-md bg-black/40 border border-border/40 rounded-lg">
                     <div className="flex items-center justify-between text-[10px] uppercase tracking-tighter mb-2">

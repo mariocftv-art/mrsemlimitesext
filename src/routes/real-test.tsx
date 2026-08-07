@@ -17,7 +17,7 @@ function RealTestPage() {
         <div className="flex flex-col gap-4 overflow-hidden relative">
           <div className="absolute top-4 right-4 z-50 flex gap-2">
              <div className="flex items-center gap-2 px-3 py-1.5 bg-orange-500/10 border border-orange-500/40 rounded-full text-[10px] font-bold text-orange-400 animate-pulse">
-                <Bug className="h-3 w-3" /> TESTE REAL: VOX QYRON V7
+                <Bug className="h-3 w-3" /> TESTE REAL: MR SEM LIMITES V7.1.5
              </div>
              <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/40 rounded-full text-[10px] font-bold text-emerald-400">
                 MOTOR: CASTLER V2 (0 CREDIT)
@@ -42,7 +42,7 @@ function RealTestPage() {
                     </div>
                  </div>
                  
-                 <h3 className="text-xl font-bold text-foreground mb-1">QYRON V7: INTERCEPTAÇÃO ATIVA</h3>
+                 <h3 className="text-xl font-bold text-foreground mb-1">MR SEM LIMITES: INTERCEPTAÇÃO ATIVA</h3>
                  <p className="text-sm opacity-60 text-center max-w-md">
                    Simulando tráfego de rede para os novos endpoints de licenciamento e bypass de créditos.
                  </p>
@@ -60,7 +60,7 @@ function RealTestPage() {
                           </div>
                           <div className="flex justify-between">
                              <span className="text-muted-foreground">Status:</span>
-                             <span className="text-emerald-400">valid: true (Renovação QYRON)</span>
+                             <span className="text-emerald-400">valid: true (Renovação MR SEM LIMITES)</span>
                           </div>
                        </div>
                     </div>
@@ -73,7 +73,7 @@ function RealTestPage() {
                        <div className="space-y-2">
                           <div className="flex items-start gap-2 text-[11px] p-2 bg-muted/20 rounded">
                              <span className="text-orange-400 font-bold">USER:</span>
-                             <span>"Como gerar um código QYRON?"</span>
+                             <span>"Olá, MR Sem Limites!"</span>
                           </div>
                           <div className="flex items-start gap-2 text-[11px] p-2 bg-emerald-500/10 rounded border-l-2 border-emerald-500">
                              <ShieldCheck className="h-3 w-3 mt-0.5" />
@@ -116,7 +116,7 @@ function RealTestPage() {
           </CardHeader>
           <CardContent className="flex-1 overflow-auto p-0 border-t border-border/40 bg-background/20 font-mono text-[11px]">
             <div className="p-4 space-y-2">
-              <p className="text-emerald-400">{"["}System{"]"} Engine 2.0: Booting VOX QYRON V7.0.0</p>
+              <p className="text-emerald-400">{"["}System{"]"} Engine 2.0: Booting MR SEM LIMITES V7.1.5</p>
               <p className="text-orange-400">{"["}Hook{"]"} pageHook.js: window.fetch patched.</p>
               <p className="text-orange-400">{"["}Hook{"]"} pageHook.js: XMLHttpRequest patched.</p>
               <p className="text-blue-400">{"["}Config{"]"} Branding detected: #ff7e00 (Orange).</p>

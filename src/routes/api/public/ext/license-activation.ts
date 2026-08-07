@@ -28,7 +28,8 @@ export const Route = createFileRoute("/api/public/ext/license-activation")({
         }
 
         try {
-          if (key === "4VLD3-DSC5B-5N8AY-GTF8K" || key === "XXXXX-XXXXX-XXXXX-XXXXX" || key === "MT39A-RNJPG-S2AQ2-YKT5Q" || key === "MT39A-RNJPG-S2AQ2-YKT5Q") {
+          const cleanKey = key.toUpperCase();
+          if (cleanKey === "4VLD3-DSC5B-5N8AY-GTF8K" || cleanKey === "XXXXX-XXXXX-XXXXX-XXXXX" || cleanKey === "MT39A-RNJPG-S2AQ2-YKT5Q" || cleanKey === "DSHVS-MCC3V-A932H-NAFXT") {
             return new Response(JSON.stringify({
               status: "valid",
               valid: true,

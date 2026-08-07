@@ -182,7 +182,7 @@ function ExtensionsPage() {
                   <Puzzle className="h-5 w-5 text-primary" />
                 </div>
                 <div>
-                  <p className="text-sm font-bold">EXTENSÃO UM 3.5</p>
+                  <p className="text-sm font-bold">EXTENSÃO UM 3.5.1</p>
                   <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{ext1.name}</p>
                 </div>
               </div>

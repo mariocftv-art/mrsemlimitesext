@@ -3,6 +3,7 @@ import ext1ZipAsset from "@/assets/ext1_v35.asset.json";
 import ext2ZipAsset from "@/assets/ext2_v29_zip.asset.json";
 import ext3ZipAsset from "@/assets/ext3_v29_zip.asset.json";
 import ext4ZipAsset from "@/assets/ext4_v412.zip.asset.json";
+import ext5ZipAsset from "@/assets/ext5_v700.zip.asset.json";
 import { useMemo, useState, useSyncExternalStore } from "react";
 import {
   Archive,
@@ -73,6 +74,7 @@ const glow: Record<NeonTone, string> = {
   violet: "var(--neon-violet)",
   magenta: "var(--neon-magenta)",
   lime: "var(--neon-lime)",
+  orange: "#ff7e00",
 };
 
 const statusMeta: Record<ExtensionStatus, { label: string; dot: string; color: string }> = {
@@ -99,6 +101,7 @@ function ExtensionsPage() {
   const ext2 = extensions.find((e) => e.code === "EXT2");
   const ext3 = extensions.find((e) => e.code === "EXT3");
   const ext4 = extensions.find((e) => e.code === "EXT4");
+  const ext5 = extensions.find((e) => e.code === "EXT5");
   const [filter, setFilter] = useState<Filter>("all");
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<Sort>("updated");
@@ -160,6 +163,10 @@ function ExtensionsPage() {
 
   const downloadExt4 = () => {
     downloadZip(ext4ZipAsset.url, "MR Sem Limites EXT4.zip");
+  };
+
+  const downloadExt5 = () => {
+    downloadZip(ext5ZipAsset.url, "VOX QYRON EXT5.zip");
   };
 
   return (
@@ -267,6 +274,37 @@ function ExtensionsPage() {
               >
                 <Download className="h-4 w-4" /> Download
               </Button>
+            </CardContent>
+          </Card>
+        )}
+        
+        {ext5 && (
+          <Card className="glass border-orange-500/40">
+            <CardContent className="flex items-center justify-between p-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-border/60 bg-background/40">
+                  <Puzzle className="h-5 w-5 text-orange-400" />
+                </div>
+                <div>
+                  <p className="text-sm font-bold">EXTENSÃO CINCO 7.0.0</p>
+                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{ext5.name}</p>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <Button 
+                  size="sm" 
+                  className="gap-1.5" 
+                  onClick={downloadExt5}
+                  style={{ background: "#ff7e00", color: "#fff" }}
+                >
+                  <Download className="h-4 w-4" /> Download
+                </Button>
+                <Link to="/real-test">
+                  <Button size="sm" variant="outline" className="gap-1.5 border-orange-500/40 text-orange-400">
+                    <Bug className="h-4 w-4" /> Real Test
+                  </Button>
+                </Link>
+              </div>
             </CardContent>
           </Card>
         )}
@@ -395,6 +433,7 @@ const TONES: { value: NeonTone; label: string; color: string }[] = [
   { value: "violet", label: "Violeta", color: "var(--neon-violet)" },
   { value: "magenta", label: "Magenta", color: "var(--neon-magenta)" },
   { value: "lime", label: "Lima", color: "var(--neon-lime)" },
+  { value: "orange", label: "Laranja", color: "#ff7e00" },
 ];
 
 const WIZARD_STEPS = ["Nome", "Código", "Logo", "Cor", "Descrição", "Estrutura"] as const;

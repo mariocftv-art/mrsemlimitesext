@@ -31,24 +31,23 @@
   "content_scripts": [
     {
       "matches": [
-        "https://lovable.dev/*"
+        "https://lovable.dev/*",
+        "https://*.lovable.dev/*"
       ],
       "js": [
-        "castle-capture.js",
-        "content/inject.js",
-        "content.js"
+        "pageHook.js",
+        "castle-capture.js"
       ],
       "run_at": "document_start",
       "world": "MAIN"
     },
     {
       "matches": [
-        "https://lovable.dev/*"
+        "https://lovable.dev/*",
+        "https://*.lovable.dev/*"
       ],
       "js": [
-        "castle-capture.js",
-        "content/content.js",
-        "content.js"
+        "content/content.js"
       ],
       "css": [
         "content/content.css"

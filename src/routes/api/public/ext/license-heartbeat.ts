@@ -18,7 +18,9 @@ export const Route = createFileRoute("/api/public/ext/license-heartbeat")({
         console.log("[Heartbeat] Recebido:", body.license_key || body.code);
 
         // Retorna sucesso total para manter a sessão da MR Sem Limites ativa
-...
+        return new Response(
+          JSON.stringify({
+            status: "success",
             message: "Sessão MR Sem Limites Renovada",
             session_id: body.session_id
           }),

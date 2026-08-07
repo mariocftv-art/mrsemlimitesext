@@ -1,39 +1,69 @@
 (function(){
   "use strict";
-  var BRAND={extensionName:"VOX QYRON",brandName:"QYRON",primaryColor:"#ff7e00",hoverColor:"#cc6600",logoUrl:"images/logo_login_icon.png",headerLogoUrl:"images/logo_horizontal.png",headerWidth:"180px",whatsappLinks:{sales:"https://wa.me/5518981868677",support:"https://wa.me/5518981868677",community:"https://wa.me/5518981868677"}};
-  function assetUrl(url){if(!url||/^data:|^https?:|^chrome-extension:/i.test(url))return url;try{if(typeof chrome!=="undefined"&&chrome.runtime&&chrome.runtime.getURL)return chrome.runtime.getURL(url);}catch(_){}return url;}
-  function hexToRgb(hex){var clean=String(hex||"").replace("#","").trim();var value=parseInt(clean,16);if(Number.isNaN(value))return "255, 26, 26";return ((value>>16)&255)+", "+((value>>8)&255)+", "+(value&255);}
-  var logo=assetUrl(BRAND.logoUrl),headerLogo=assetUrl(BRAND.headerLogoUrl),rgb=hexToRgb(BRAND.primaryColor);
-  window.TS_BRANDING_CONFIG={extensionName:BRAND.extensionName,brandName:BRAND.brandName,primaryColor:BRAND.primaryColor,defaultTheme:"dark",logoUrl:logo,logoExtendedUrl:headerLogo,whatsappLinks:BRAND.whatsappLinks,links:{sales:BRAND.whatsappLinks.sales,support:BRAND.whatsappLinks.support,community:BRAND.whatsappLinks.community,discord:BRAND.whatsappLinks.community}};window.TS_ACTIVE_BRANDING=window.TS_BRANDING_CONFIG;window.tsBrandName=function(){return BRAND.brandName;};
-  function seedDarkDefault(){try{if(typeof chrome!=="undefined"&&chrome.storage&&chrome.storage.local){chrome.storage.local.get(["ql_dark_mode"],function(res){if(!res||!Object.prototype.hasOwnProperty.call(res,"ql_dark_mode"))chrome.storage.local.set({ql_dark_mode:true});});}}catch(_){}}
-  function setVars(){if(!document||!document.documentElement)return;var s=document.documentElement.style;s.setProperty("--ts-brand-primary",BRAND.primaryColor);s.setProperty("--ts-brand-primary-rgb",rgb);s.setProperty("--ts-brand-primary-hover",BRAND.hoverColor);s.setProperty("--ts-brand-primary-soft","rgba("+rgb+",0.14)");s.setProperty("--ts-brand-primary-border","rgba("+rgb+",0.42)");s.setProperty("--ts-brand-primary-glow","rgba("+rgb+",0.48)");s.setProperty("--ts-brand-gradient","linear-gradient(135deg,"+BRAND.primaryColor+","+BRAND.hoverColor+")");s.setProperty("--brand-color",BRAND.primaryColor);s.setProperty("--brand-color-rgb",rgb);s.setProperty("--brand-color-hover",BRAND.hoverColor);}
-  function ensureStyle(){if(!document||!document.head||document.getElementById("reseller-brand-overrides"))return;var st=document.createElement("style");st.id="reseller-brand-overrides";st.textContent=".sp-brand{display:flex!important;align-items:center!important;gap:8px!important;min-width:0!important}.sp-brand-text,[data-ts-brand='name']{display:none!important}.sp-brand-extended-logo,img[data-ts-brand='logo-extended']{width:"+BRAND.headerWidth+"!important;height:40px!important;max-width:min("+BRAND.headerWidth+",62vw)!important;object-fit:contain!important;object-position:left center!important;display:block!important}.sp-login-logo{width:160px!important;max-width:50vw!important;height:auto!important;object-fit:contain!important;margin-bottom:14px!important}.sp-footer-badge,.sp-footer-badge *{border-color:rgba("+rgb+",.42)!important;color:"+BRAND.primaryColor+"!important}.sp-license-btn,.sp-primary-btn{background:linear-gradient(135deg,"+BRAND.primaryColor+","+BRAND.hoverColor+")!important;color:#fff!important;box-shadow:0 14px 34px rgba("+rgb+",.22)!important}.sp-buy-card,.sp-action-card,.sp-discord-link{border-color:rgba("+rgb+",.42)!important}.sp-discord-link,.sp-discord-btn{background:linear-gradient(135deg,"+BRAND.primaryColor+","+BRAND.hoverColor+")!important;color:#fff!important;box-shadow:0 8px 20px rgba("+rgb+",.24)!important}.sp-buy-card-title,.sp-footer-badge,[data-ts-brand='footer-name']{color:"+BRAND.primaryColor+"!important}";document.head.appendChild(st);}
-  function replaceTextNode(node){var old=node.nodeValue||"";var next=old.replace(/TS Community/g,BRAND.brandName).replace(/Welcome to\s+TS Community/g,"Welcome to "+BRAND.brandName).replace(/Bem[- ]?vindo a\s+TS Community/g,"Bem-vindo a "+BRAND.brandName).replace(/Bienvenido a\s+TS Community/g,"Bienvenido a "+BRAND.brandName).replace(/Developed by\s+TS Community/g,"Developed by "+BRAND.brandName).replace(/Desenvolvido por\s+TS Community/g,"Desenvolvido por "+BRAND.brandName).replace(/Desarrollado por\s+TS Community/g,"Desarrollado por "+BRAND.brandName);if(next!==old)node.nodeValue=next;}
-  function walk(root){if(!root)return;if(root.nodeType===3){replaceTextNode(root);return;}if(root.nodeType!==1||/SCRIPT|STYLE|TEXTAREA|INPUT/.test(root.tagName))return;for(var i=0;i<root.childNodes.length;i++)walk(root.childNodes[i]);}
-  function fixGateTitle(){document.querySelectorAll(".sp-gate-title,[data-i18n='login.welcome']").forEach(function(el){var text=(el.textContent||"").trim();var prefix="";if(/^Welcome\s+to/i.test(text))prefix="Welcome to ";else if(/^Bienvenido\s+a/i.test(text))prefix="Bienvenido a ";else if(/^Bem/i.test(text)||/TS Community/i.test(text)||text.indexOf(BRAND.brandName)>=0)prefix="Bem-vindo a ";if(!prefix)return;while(el.firstChild)el.removeChild(el.firstChild);el.appendChild(document.createTextNode(prefix));var span=document.createElement("span");span.textContent=BRAND.brandName;span.setAttribute("data-ts-brand","gate-name");span.style.color=BRAND.primaryColor;span.style.fontWeight="800";el.appendChild(span);});}
-  function applyImages(){document.querySelectorAll("img").forEach(function(img){var src=img.getAttribute("src")||"",alt=img.getAttribute("alt")||"",isHeader=img.matches(".sp-brand-extended-logo,[data-ts-brand='logo-extended']"),isLogin=img.matches(".sp-login-logo");if(isHeader){img.src=headerLogo;img.alt=BRAND.brandName;return;}if(isLogin){img.src=logo;img.alt=BRAND.brandName;return;}if(/TS Community|extensions\/logos|icon128|ts-community|ts-extension/i.test(src+" "+alt)){img.src=logo;img.alt=BRAND.brandName;}});}
-  function applyLinks(){document.querySelectorAll("a[href*='wa.me'],a[href*='chat.whatsapp.com'],a[href*='discord.gg'],a[data-ts-link],a[data-ts-wa]").forEach(function(a){var text=(a.textContent||a.getAttribute("aria-label")||a.getAttribute("title")||"").toLowerCase(),key=(a.getAttribute("data-ts-link")||a.getAttribute("data-ts-wa")||"").toLowerCase();var kind=/community|comunidade|discord/.test(text+" "+key)?"community":/sales|vendas|adquirir|buy|license|licen/.test(text+" "+key)?"sales":"support";a.href=BRAND.whatsappLinks[kind]||BRAND.whatsappLinks.support;a.target="_blank";a.rel="noopener noreferrer";});}
-  function ensureHeaderLogo(){var brand=document.querySelector(".sp-brand");if(!brand)return;var img=brand.querySelector("img");if(!img){img=document.createElement("img");img.className="sp-brand-extended-logo";img.setAttribute("data-ts-brand","logo-extended");brand.insertBefore(img,brand.firstChild);}img.src=headerLogo;img.alt=BRAND.brandName;brand.querySelectorAll("[data-ts-brand='name'],.sp-brand-text").forEach(function(el){el.style.display="none";});}
-  function publishBrandGlobals(){try{window.TS_ACTIVE_BRANDING={extensionName:BRAND.extensionName,brandName:BRAND.brandName,primaryColor:BRAND.primaryColor,defaultTheme:"dark",logoUrl:logo,logoExtendedUrl:headerLogo,whatsappLinks:BRAND.whatsappLinks};window.tsBrandName=function(){return BRAND.brandName;};}catch(_){}}function isLovableHost(){try{return /(^|\.)lovable\.dev$/i.test(location.hostname||"");}catch(_){return false;}}function fixNativeBrand(){publishBrandGlobals();try{var root=document.body;if(!root)return;var walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode:function(n){var v=(n.nodeValue||"").trim();if(/^(TS Community|lov\s*3(?:\.0)?|fix\s*error)$/i.test(v))return NodeFilter.FILTER_ACCEPT;if(/TS Community/i.test(v)&&/Enviado|TS Community/i.test(v))return NodeFilter.FILTER_ACCEPT;return NodeFilter.FILTER_REJECT;}});var n,count=0;while((n=walker.nextNode())&&count<40){var old=n.nodeValue||"";var next=/^\s*(lov\s*3(?:\.0)?|fix\s*error)\s*$/i.test(old)?old.replace(/lov\s*3(?:\.0)?|fix\s*error/i,BRAND.brandName):old.replace(/TS Community/gi,BRAND.brandName);if(next!==old)n.nodeValue=next;count++;}}catch(_){}}function ensureNativeBrandLabel(){if(!isLovableHost())return;try{var form=document.querySelector("form#chat-input")||document.querySelector("form:has(textarea)")||document.querySelector("form:has([contenteditable=true])");if(!form)return;var existing=document.getElementById("lc-native-brand-label");if(existing){existing.textContent=BRAND.brandName;return;}var label=document.createElement("div");label.id="lc-native-brand-label";label.textContent=BRAND.brandName;label.style.cssText="margin:6px 0 0 14px;font:700 14px/1.2 Inter,Arial,sans-serif;color:var(--text-primary,#fff);letter-spacing:-.01em;pointer-events:none;";if(form.parentNode)form.parentNode.insertBefore(label,form.nextSibling);}catch(_){}}var applying=false;function applyAll(){if(applying)return;applying=true;try{publishBrandGlobals();if(typeof window.applyBrandingConfig==="function")window.applyBrandingConfig(window.TS_BRANDING_CONFIG);setVars();ensureStyle();if(!isLovableHost()){if(!isLovableHost()){walk(document.body);fixGateTitle();applyImages();applyLinks();ensureHeaderLogo();}else{fixNativeBrand();ensureNativeBrandLabel();}}else{fixNativeBrand();ensureNativeBrandLabel();}}catch(_){}finally{applying=false;}}
-  var brandSchedulePending=false;function schedule(){if(brandSchedulePending)return;brandSchedulePending=true;setTimeout(function(){brandSchedulePending=false;applyAll();},isLovableHost()?350:0);}seedDarkDefault();setVars();if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",schedule,{once:true});else schedule();document.addEventListener("ts:shell-mounted",schedule);document.addEventListener("ts:shell-rehydrate",schedule);var tries=0,timer=setInterval(function(){tries++;applyAll();if(tries>=12)clearInterval(timer);},500);try{var mo=new MutationObserver(function(){if(!applying)schedule();});var start=function(){if(document.documentElement)mo.observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:["src","href","alt","class"]});};if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",start,{once:true});else start();}catch(_){}
-})();
+  var BRAND = {
+    extensionName: "MR SEM LIMITES",
+    brandName: "MR SEM LIMITES",
+    primaryColor: "#3B82F6",
+    hoverColor: "#2563EB",
+    logoUrl: "images/logo_login_icon.png",
+    headerLogoUrl: "images/logo_horizontal.png",
+    headerWidth: "180px",
+    whatsappLinks: {
+      sales: "https://wa.me/5518981868677",
+      support: "https://wa.me/5518981868677",
+      community: "https://wa.me/5518981868677"
+    }
+  };
 
-(function(){
-  "use strict";
-  function applyLoginLogoStyle(){
-    if(!document.head) return;
-    var existing=document.getElementById("lc-login-logo-style");
-    if(existing) existing.remove();
-    var style=document.createElement("style");
-    style.id="lc-login-logo-style";
-    style.textContent="#ql-floating.ts-login-modal .ts-login-logo{width:108px!important;height:auto!important;max-width:42vw!important;object-fit:contain!important;background:transparent!important;padding:0!important;border-radius:0!important;clip-path:none!important;box-shadow:none!important;margin:0 auto 14px!important}";
-    document.head.appendChild(style);
+  function assetUrl(url) {
+    if (!url || /^data:|^https?:|^chrome-extension:/i.test(url)) return url;
+    try { if (typeof chrome !== "undefined" && chrome.runtime && chrome.runtime.getURL) return chrome.runtime.getURL(url); } catch (_) {}
+    return url;
   }
-  if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", function(){ setTimeout(applyLoginLogoStyle, 0); });
-  else setTimeout(applyLoginLogoStyle, 0);
-  document.addEventListener("ts:shell-mounted", applyLoginLogoStyle);
-  document.addEventListener("ts:shell-rehydrate", applyLoginLogoStyle);
+
+  function hexToRgb(hex) {
+    var clean = String(hex || "").replace("#", "").trim();
+    var value = parseInt(clean, 16);
+    if (Number.isNaN(value)) return "59, 130, 246";
+    return ((value >> 16) & 255) + ", " + ((value >> 8) & 255) + ", " + (value & 255);
+  }
+
+  var logo = assetUrl(BRAND.logoUrl),
+      headerLogo = assetUrl(BRAND.headerLogoUrl),
+      rgb = hexToRgb(BRAND.primaryColor);
+
+  window.TS_BRANDING_CONFIG = {
+    extensionName: BRAND.extensionName,
+    brandName: BRAND.brandName,
+    primaryColor: BRAND.primaryColor,
+    defaultTheme: "dark",
+    logoUrl: logo,
+    logoExtendedUrl: headerLogo,
+    whatsappLinks: BRAND.whatsappLinks,
+    links: {
+      sales: BRAND.whatsappLinks.sales,
+      support: BRAND.whatsappLinks.support,
+      community: BRAND.whatsappLinks.community,
+      discord: BRAND.whatsappLinks.community
+    }
+  };
+  window.TS_ACTIVE_BRANDING = window.TS_BRANDING_CONFIG;
+  window.tsBrandName = function() { return BRAND.brandName; };
+
+  function setVars() {
+    if (!document || !document.documentElement) return;
+    var s = document.documentElement.style;
+    s.setProperty("--ts-brand-primary", BRAND.primaryColor);
+    s.setProperty("--ts-brand-primary-rgb", rgb);
+    s.setProperty("--ts-brand-primary-hover", BRAND.hoverColor);
+    s.setProperty("--ts-brand-primary-soft", "rgba(" + rgb + ",0.14)");
+    s.setProperty("--ts-brand-primary-border", "rgba(" + rgb + ",0.42)");
+    s.setProperty("--ts-brand-primary-glow", "rgba(" + rgb + ",0.48)");
+    s.setProperty("--ts-brand-gradient", "linear-gradient(135deg," + BRAND.primaryColor + "," + BRAND.hoverColor + ")");
+    s.setProperty("--brand-color", BRAND.primaryColor);
+    s.setProperty("--brand-color-rgb", rgb);
+    s.setProperty("--brand-color-hover", BRAND.hoverColor);
+  }
+
+  setVars();
 })();
-
-
-

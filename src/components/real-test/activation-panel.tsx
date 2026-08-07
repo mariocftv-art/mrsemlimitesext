@@ -17,7 +17,7 @@ export function ActivationPanel({
 }) {
   const [formData, setFormData] = useState({
     email: "teste@mrsemlimites.com",
-    license_key: "4VLD3-DSC5B-5N8AY-GTF8K",
+    license_key: "",
     hwid: "MR-LAB-" + Math.random().toString(36).slice(2, 8).toUpperCase(),
     product: "EXT5",
     version: "17.0.0"
@@ -39,10 +39,10 @@ export function ActivationPanel({
             <div className="relative">
               <Key className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground" />
               <Input 
-                className="h-8 pl-7 text-xs bg-muted/20 border-border/40 font-mono"
+                className="h-9 pl-7 text-xs bg-muted/20 border-primary/40 focus:border-primary font-mono ring-offset-background placeholder:text-muted-foreground/50"
                 value={formData.license_key}
-                placeholder="XXXXX-XXXXX-XXXXX-XXXXX"
-                onChange={e => setFormData(prev => ({ ...prev, license_key: e.target.value }))}
+                placeholder="Insira sua chave (ex: XXXXX-XXXXX-...)"
+                onChange={e => setFormData(prev => ({ ...prev, license_key: e.target.value.toUpperCase() }))}
               />
             </div>
           </div>
@@ -87,19 +87,19 @@ export function ActivationPanel({
         <div className="flex gap-2 pt-2">
           <Button 
             variant="outline" 
-            className="flex-1 h-9 text-xs"
+            className="flex-1 h-10 text-xs font-bold border-primary/30 hover:border-primary/60"
             onClick={() => onValidate(formData)}
-            disabled={isLoading}
+            disabled={isLoading || !formData.license_key}
           >
-            Validar Licença
+            {status === 'validating' ? "Validando..." : "Verificar Chave"}
           </Button>
           <Button 
-            className="flex-1 h-9 text-xs gap-1.5"
+            className="flex-1 h-10 text-xs gap-1.5 font-bold shadow-lg shadow-primary/20"
             style={{ background: 'var(--gradient-neon)', color: 'white' }}
             onClick={() => onRunFull(formData)}
-            disabled={isLoading}
+            disabled={isLoading || !formData.license_key}
           >
-            <Zap className="h-3 w-3 fill-current" /> Testar Fluxo Completo
+            <Zap className="h-3 w-3 fill-current" /> Iniciar Teste Real
           </Button>
         </div>
       </CardContent>

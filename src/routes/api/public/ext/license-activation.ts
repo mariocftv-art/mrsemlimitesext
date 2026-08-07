@@ -34,7 +34,7 @@ export const Route = createFileRoute("/api/public/ext/license-activation")({
               valid: true,
               session_token: "mr_sess_debug_test",
               session_id: "mr_debug_test",
-              days_remaining: 365,
+              days_remaining: 1,
               user_name: "Usuário de Teste MR",
               activated_at: new Date().toISOString(),
               message: "Licença de Teste Ativada - MR Sem Limites"

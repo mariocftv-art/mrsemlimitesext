@@ -165,8 +165,8 @@ export function RealTestLab() {
     <div className="flex flex-col gap-4 h-full overflow-hidden">
       <div className="flex items-center justify-between shrink-0">
         <div className="flex items-center gap-2">
-          <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 gap-1.5 px-3 py-1">
-            <Cpu className="h-3.5 w-3.5" /> MODO EXECUÇÃO REAL ATIVO
+          <Badge variant="outline" className="bg-primary/10 text-primary border-primary/30 gap-1.5 px-3 py-1.5 text-[10px] font-black tracking-widest uppercase">
+            <Cpu className="h-3.5 w-3.5" /> AMBIENTE DE EXECUÇÃO REAL
           </Badge>
           <div className="h-4 w-[1px] bg-border mx-1" />
           <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
@@ -220,8 +220,8 @@ export function RealTestLab() {
                       {status === 'idle' ? 'Valide uma licença real para liberar o ambiente de execução.' : 
                        status === 'validating' ? 'Validando credenciais no backend oficial...' :
                        status === 'starting' ? 'Carregando módulos da extensão (Background, Storage, UI)...' :
-                       status === 'failed' ? 'Falha na inicialização. Verifique os logs para detalhes.' :
-                       'Licença validada. Clique em "Iniciar Extensão" para abrir o laboratório.'}
+                       status === 'failed' ? 'Falha técnica. Verifique se a chave está correta no painel.' :
+                       'Chave validada! Agora clique em "Iniciar Extensão" para simular o uso.'}
                     </p>
                     {status === 'success' && (
                       <Button className="mt-6 gap-2" onClick={startExtension}>
@@ -297,7 +297,7 @@ function ExecutionSummary({ status, licenseData }: { status: ExecutionStatus; li
             </div>
             <div className="flex justify-between items-center text-[11px]">
               <span className="text-muted-foreground">Expira em:</span>
-              <span>{licenseData.days_remaining} dias</span>
+              <span>{licenseData.days_remaining} dia</span>
             </div>
           </div>
         )}

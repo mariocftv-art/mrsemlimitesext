@@ -1,7 +1,19 @@
 {/*
-FASE 17 — EXT3 INTEGRADA COM MOTOR MÉTODO QUATRO
-Nova extensão LOV 3.5 instalada. Backend sincronizado e motor de economia de créditos ativado.
-Status: EXT3 pronta para download. Versão Neon Noir.
+# MR EXTENSION FACTORY 2.0 — SISTEMA OPERACIONAL PARA ENGENHARIA DE EXTENSÕES
+
+## Objetivo
+A MR Extension Factory deve evoluir de um gerador de extensões para uma plataforma completa de engenharia de extensões Chrome.
+
+## Pilares (Módulos de Engenharia)
+1. Import Center (Auditoria): Analisar qualquer ZIP ou pasta.
+2. Fusion Motor (Mixer): Unir funcionalidades de extensões diferentes em uma nova build.
+3. Comparison Motor (Scoring): Pontuar compatibilidade contra o padrão Factory.
+4. Real Testing Center: Simular comportamento real em navegadores (Chrome/Lovable).
+5. Backend Center (Real-time): Diagnóstico de conectividade e logs de APIs oficiais.
+6. Security Motor: Assinatura de pacotes, checksum SHA-256 e integridade.
+7. Build Center: Pipeline de compilação isolado por slot (EXT1, EXT2...).
+
+Ressalva: Desofuscação depende de limitações técnicas e tipos de proteção.
 */}
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
@@ -44,8 +56,8 @@ function FactoryDashboard() {
 
   return (
     <AppShell
-      title="MR Extension Factory"
-      subtitle="Fábrica profissional de extensões Chrome — visão geral"
+      title="MR Extension Factory 2.0"
+      subtitle="Sistema Operacional para Engenharia de Extensões Chrome"
       actions={
         <Button
           size="sm"
@@ -72,7 +84,7 @@ function FactoryDashboard() {
           icon={GitBranch}
           tone="magenta"
         />
-        <KpiCard label="Módulos" value={13} delta="Factory ativa" icon={Boxes} tone="lime" />
+        <KpiCard label="Módulos" value={14} delta="Factory 2.0 Ativa" icon={Boxes} tone="lime" />
       </div>
 
       <div className="mt-6 grid gap-4 lg:grid-cols-3">
@@ -137,16 +149,18 @@ function FactoryDashboard() {
           <CardContent className="space-y-1.5 text-xs">
             {[
               ["Minhas Extensões", "/extensions"],
-              ["Editor", "/editor"],
+              ["Teste Real (Browser)", "/real-test"],
+              ["Compatibilidade (Score)", "/compatibility"],
+              ["Editor Visual", "/editor"],
               ["Build Center", "/build-center"],
               ["Downloads", "/downloads"],
               ["Versões", "/versions"],
-              ["Assets", "/assets"],
+              ["Assets & Icons", "/assets"],
               ["Animações", "/animations"],
               ["Componentes", "/components"],
               ["Prompts Premium", "/prompts"],
               ["Ferramentas", "/tools"],
-              ["Segurança", "/security"],
+              ["Segurança & Checksum", "/security"],
               ["Configurações", "/settings"],
             ].map(([label, url]) => (
               <Link
@@ -170,7 +184,8 @@ function FactoryDashboard() {
         </CardHeader>
         <CardContent className="grid gap-3 text-sm md:grid-cols-2">
           <StatusTile label="Extensões isoladas" value={`${stats.total} slot(s) ativo(s)`} tone="ok" />
-          <StatusTile label="Documentação" value="FACTORY_MASTER.md" tone="ok" icon={Package} />
+          <StatusTile label="Motor" value="Factory Engine 2.0 (Stable)" tone="ok" icon={Sparkles} />
+          <StatusTile label="Arquitetura" value="Isolamento de Slots Ativo" tone="ok" icon={Package} />
         </CardContent>
       </Card>
     </AppShell>

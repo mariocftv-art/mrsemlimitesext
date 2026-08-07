@@ -38,7 +38,7 @@ export const Route = createFileRoute(
             return new Response(JSON.stringify({
               status: "valid",
               session_token: "mr_sess_debug_test",
-              days_remaining: 365,
+              days_remaining: 1,
               product: body.product || "EXT5",
               version: body.version || "17.0.0",
               hwid: body.hwid || "MR-LAB-DEBUG",

@@ -642,22 +642,38 @@
         }
 
         // ============================================================
-        // BYPASS DE CRÉDITOS — Método Quatro (Baseado no Motor Castler)
-        // Adiciona campos de erro para ativar o processamento gratuito da Lovable.
+        // ============================================================
+        // BYPASS DE CRÉDITOS — Motor Castler (V3.3 Restaurado)
+        // Injeta metadados de erro específicos para ativar o processamento gratuito.
         // ============================================================
         body.intent = 'fix_error';
         body.contains_error = true;
-        body.error_ids = body.error_ids || ['ext-bypass-' + Date.now()];
         body.dispatch_mode = 'security_fix';
+        
+        // Ulid gerado para manter consistência com o motor original
+        const buildEventId = body.ai_message_id || 'ext-' + generateUlid();
+        
+        body.error_ids = [buildEventId];
         body.message_intent_metadata = {
           fix_error_metadata: {
             errors: [{
               error_type: 'build',
               error_message: promptText,
-              build_event_id: body.ai_message_id || 'ext-' + Math.random().toString(36).slice(2),
+              build_event_id: buildEventId,
             }],
           },
         };
+
+        // Campos adicionais do motor original para simular ambiente de erro real
+        body.source = 'error_suggestion';
+        body.integration_metadata = { 
+          browser: {},
+          is_ext_managed: true 
+        };
+        body.session_replay = '';
+        body.client_logs = [];
+        body.network_requests = [];
+        body.runtime_errors = [];
 
         // ============================================================
         // TRANSFORM via content.js (ISOLATED world)

@@ -32,8 +32,8 @@
  * ╚══════════════════════════════════════════════════════════════════════════════╝
  */
 
-const EXTENSION_VERSION = '5.1.0-NEON-NOIR'; 
-const EXTENSION_API_VERSION = '5.1.0';      
+const EXTENSION_VERSION = '3.6.0'; 
+const EXTENSION_API_VERSION = '3.6.0';
 console.log(`🚀 MR Ext Sem Limites v${EXTENSION_VERSION} (NEON NOIR) iniciando...`);
 
 
@@ -116,7 +116,6 @@ function friendlyLicenseError(raw) {
 }
 
 async function validateLicense(key) {
-  return { status: 'valid', session_token: 'free-token', days_remaining: 9999, license_id: 'free' };
   const hwid = await generateHWID();
   const deviceInfo = {
     screen: `${screen.width}x${screen.height}`,
@@ -163,7 +162,6 @@ async function validateLicense(key) {
 }
 
 async function revalidateLicense(force = false) {
-  return { valid: true, session_token: 'free-token' };
   if (!licenseKey) {
     const storage = await chrome.storage.local.get(['licenseKey']);
     licenseKey = storage.licenseKey;

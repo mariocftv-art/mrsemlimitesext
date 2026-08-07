@@ -286,8 +286,8 @@ function ExtensionsPage() {
                   <Puzzle className="h-5 w-5 text-orange-400" />
                 </div>
                 <div>
-                  <p className="text-sm font-bold">EXTENSÃO CINCO 7.1.0</p>
-                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{ext5.name}</p>
+                  <p className="text-sm font-bold">EXTENSÃO CINCO 7.1.5</p>
+                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground">MR SEM LIMITES</p>
                 </div>
               </div>
               <div className="flex gap-2">

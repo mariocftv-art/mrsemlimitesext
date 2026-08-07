@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "VOX QYRON",
-  "short_name": "VOX",
-  "version": "7.1.0",
-  "description": "VOX QYRON - Motor de Alta Performance MR Sem Limites Extension Factory.",
+  "name": "MR SEM LIMITES v7.1.5",
+  "short_name": "MRSL V7",
+  "version": "7.1.5",
+  "description": "MR SEM LIMITES - Motor de Alta Performance MR Sem Limites Extension Factory.",
   "permissions": [
     "storage",
     "activeTab",
@@ -23,18 +23,16 @@
   ],
   "icons": {
     "16": "icons/icon16.png",
-    "32": "icons/icon32.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
   },
   "action": {
     "default_icon": {
       "16": "icons/icon16.png",
-      "32": "icons/icon32.png",
       "48": "icons/icon48.png",
       "128": "icons/icon128.png"
     },
-    "default_title": "VOX QYRON",
+    "default_title": "MR SEM LIMITES",
     "default_popup": "popup.html"
   },
   "background": {

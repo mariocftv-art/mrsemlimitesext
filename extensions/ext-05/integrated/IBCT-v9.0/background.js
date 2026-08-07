@@ -450,12 +450,12 @@ async function tsRunLicenseHeartbeat(options) {
 
   tsHeartbeatInFlight = (async () => {
     const auth = await tsReadLocal([
-      "ql_license_valid", "ql_license_key", "ql_session_id", "ql_hw_fingerprint",
+      "ql_license_valid", "ql_license_key", "ql_session_id", "ts_hwid_ibct",
       "ql_user_name", "ql_expires_at", "ql_activated_at", "ql_license_status",
       "ql_license_type", "ql_license_lifetime", "ts_last_heartbeat_at"
     ]);
 
-    if (!auth.ql_license_valid || !auth.ql_license_key || !auth.ql_session_id || !auth.ql_hw_fingerprint) {
+    if (!auth.ql_license_valid || !auth.ql_license_key || !auth.ql_session_id || !auth.ts_hwid_ibct) {
       return { ok: false, skipped: true, reason: "missing_session", data: tsLicenseSnapshot(auth) };
     }
 
@@ -480,8 +480,8 @@ async function tsRunLicenseHeartbeat(options) {
           code: auth.ql_license_key,
           session_id: auth.ql_session_id,
           heartbeat: true,
-          device_id: auth.ql_hw_fingerprint,
-          machine_id: auth.ql_hw_fingerprint,
+          device_id: auth.ts_hwid_ibct,
+          machine_id: auth.ts_hwid_ibct,
           ts_session_token: sessionToken || undefined
         })
       });
@@ -542,7 +542,7 @@ async function tsRunLicenseHeartbeat(options) {
 async function tsGetOrRefreshSessionToken(options) {
   options = options || {};
   const stored = await tsReadLocal([
-    "ts_session_token", "ts_session_expires_at", "ql_license_key", "ql_hw_fingerprint",
+    "ts_session_token", "ts_session_expires_at", "ql_license_key", "ts_hwid_ibct",
     "ql_license_valid", "ql_session_id", "ql_user_name", "ql_expires_at",
     "ql_activated_at", "ql_license_status", "ql_license_type", "ql_license_lifetime"
   ]);
@@ -550,7 +550,7 @@ async function tsGetOrRefreshSessionToken(options) {
   if (!options.force && stored.ts_session_token && (!expMs || expMs - Date.now() > 30 * 1000)) {
     return { ok: true, source: "cache", token: stored.ts_session_token, expires_at: stored.ts_session_expires_at || null };
   }
-  if (!stored.ql_license_key || !stored.ql_hw_fingerprint) {
+  if (!stored.ql_license_key || !stored.ts_hwid_ibct) {
     return { ok: false, reason: "missing_license", token: null };
   }
   if (tsSessionRefreshInFlight) return tsSessionRefreshInFlight;
@@ -562,7 +562,7 @@ async function tsGetOrRefreshSessionToken(options) {
         headers: { "Content-Type": "application/json", "Accept": "application/json" },
         body: JSON.stringify({
           license_key: stored.ql_license_key,
-          device_id: stored.ql_hw_fingerprint
+          device_id: stored.ts_hwid_ibct
         })
       });
       let data = null;
@@ -614,8 +614,8 @@ async function tsGetOrRefreshSessionToken(options) {
 }
 
 async function tsSyncHeartbeatAlarm() {
-  const auth = await tsReadLocal(["ql_license_valid", "ql_license_key", "ql_session_id", "ql_hw_fingerprint"]);
-  const ready = !!(auth.ql_license_valid && auth.ql_license_key && auth.ql_session_id && auth.ql_hw_fingerprint);
+  const auth = await tsReadLocal(["ql_license_valid", "ql_license_key", "ql_session_id", "ts_hwid_ibct"]);
+  const ready = !!(auth.ql_license_valid && auth.ql_license_key && auth.ql_session_id && auth.ts_hwid_ibct);
   if (!ready) {
     await tsClearAlarm(TS_HEARTBEAT_ALARM);
     return false;
@@ -707,7 +707,7 @@ try {
 try {
   chrome.storage.onChanged.addListener((changes, area) => {
     if (area !== "local") return;
-    if (changes.ql_license_valid || changes.ql_license_key || changes.ql_session_id || changes.ql_hw_fingerprint) {
+    if (changes.ql_license_valid || changes.ql_license_key || changes.ql_session_id || changes.ts_hwid_ibct) {
       tsSyncHeartbeatAlarm().then((ready) => {
         if (ready) tsRunLicenseHeartbeat({ source: "storage-change" }).catch(() => {});
       }).catch(() => {});

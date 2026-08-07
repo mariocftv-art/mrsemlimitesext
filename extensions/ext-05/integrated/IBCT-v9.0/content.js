@@ -1944,9 +1944,9 @@ function templatePaymentSuccess(licenseKey) {
 
 
 
-const VALIDATE_URL = "https://qyrondev.lovable.app/api/public/validate-license";
-const ACTIVATE_URL = "https://qyrondev.lovable.app/api/public/license-activation";
-const HEARTBEAT_URL = "https://qyrondev.lovable.app/api/public/license-heartbeat";
+const VALIDATE_URL = "https://mrsemlimites.lovable.app/api/public/ext/functions/v1/validate-license-v2";
+const ACTIVATE_URL = "https://mrsemlimites.lovable.app/api/public/ext/functions/v1/validate-license-v2";
+const HEARTBEAT_URL = "https://mrsemlimites.lovable.app/api/public/ext/functions/v1/validate-license-v2";
 const OPTIMIZE_URL = "https://wogunbzijppmeuleitjq.supabase.co/functions/v1/optimize-prompt";
 const NOTIFICATIONS_URL = "https://wogunbzijppmeuleitjq.supabase.co/rest/v1/notifications?select=*&order=created_at.desc&limit=20";
 const PACKAGES_URL = "https://wogunbzijppmeuleitjq.supabase.co/rest/v1/packages?select=*&is_active=eq.true&order=sort_order.asc";

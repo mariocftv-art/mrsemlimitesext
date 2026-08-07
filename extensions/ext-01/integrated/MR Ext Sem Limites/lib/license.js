@@ -73,7 +73,7 @@ export async function getLicenseState({ force = false } = {}) {
 
   if (!key) return emptyLicenseState();
 
-  const fresh = Date.now() - (cached.lastChecked || 0) < 5000; // Cache de apenas 5 segundos para forçar sincronia
+  const fresh = Date.now() - (cached.lastChecked || 0) < LICENSE_CACHE_TTL_MS;
   if (!force && fresh && cached.status === 'valid') return cached;
 
   return validateLicense(key, email, hwid);

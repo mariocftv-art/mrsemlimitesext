@@ -36,7 +36,10 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/validate-lice
               status: "valid",
               session_token: "mr_sess_debug_test",
               days_remaining: 365,
-              message: "Licença de Teste Ativada - MR Sem Limites"
+              product: body.product || "EXT5",
+              version: body.version || "17.0.0",
+              hwid: body.hwid || "MR-LAB-DEBUG",
+              message: "Licença de Teste Ativada - MR Sem Limites (Real Test Lab)"
             }), {
               status: 200,
               headers: cors,

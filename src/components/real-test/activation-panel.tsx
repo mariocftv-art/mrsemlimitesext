@@ -41,6 +41,7 @@ export function ActivationPanel({
               <Input 
                 className="h-8 pl-7 text-xs bg-muted/20 border-border/40 font-mono"
                 value={formData.license_key}
+                placeholder="XXXXX-XXXXX-XXXXX-XXXXX"
                 onChange={e => setFormData(prev => ({ ...prev, license_key: e.target.value }))}
               />
             </div>

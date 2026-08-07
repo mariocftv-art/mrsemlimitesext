@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "MR Ext Sem Limites 2.2",
-  "version": "2.2.7",
-  "description": "MR Ext Sem Limites 2.2 \u2014 Powered by MRExtSemLimites",
+  "name": "MR Ext Sem Limites 3.5",
+  "version": "3.5.1",
+  "description": "MR Ext Sem Limites v3.5 - Sem chaves, motor Castler original",
   "permissions": [
     "storage",
     "cookies",
@@ -20,9 +20,7 @@
     "https://*.lovable.dev/*",
     "https://api.lovable.dev/*",
     "https://lovable-api.com/*",
-    "https://mrsemlimites.lovable.app/*",
-    "https://text.pollinations.ai/*",
-    "https://generativelanguage.googleapis.com/*"
+    "https://mrsemlimites.lovable.app/*"
   ],
   "background": {
     "service_worker": "background.js",
@@ -82,35 +80,18 @@
         "popup.html",
         "popup.js",
         "icons/*",
-        "logo.png"
-      ],
-      "matches": [
-        "<all_urls>"
-      ]
-    },
-    {
-      "resources": [
+        "logo.png",
         "pageHook.js",
         "castle-capture.js",
         "lv-core.js",
         "hwFingerprint.js"
       ],
       "matches": [
-        "https://lovable.dev/*",
-        "https://*.lovable.dev/*"
+        "<all_urls>"
       ]
     }
   ],
   "content_security_policy": {
     "extension_pages": "script-src 'self'; frame-src blob: https://mrsemlimites.lovable.app;"
-  },
-  "commands": {
-    "toggle-enabled": {
-      "suggested_key": {
-        "default": "Ctrl+Shift+L",
-        "mac": "Command+Shift+L"
-      },
-      "description": "Alternar MR Ext Sem Limites"
-    }
   }
 }

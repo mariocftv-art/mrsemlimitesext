@@ -13,6 +13,7 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/validate-lice
     handlers: {
       OPTIONS: async () => new Response(null, { status: 204, headers: cors }),
       POST: async ({ request }) => {
+        console.log("Validating key:", (body.license_key || body.code || body.license || "").trim());
         let body: any = {};
         try {
           body = await request.json();
@@ -30,8 +31,8 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/validate-lice
         }
 
         const sb = createClient(
-          process.env.SUPABASE_URL!,
-          process.env.SUPABASE_SERVICE_ROLE_KEY!,
+          process.env.SUPABASE_URL || "",
+          process.env.SUPABASE_SERVICE_ROLE_KEY || "",
           { auth: { persistSession: false, autoRefreshToken: false } }
         );
 

@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import ext1ZipAsset from "@/assets/ext1_v35.asset.json";
 import ext2ZipAsset from "@/assets/ext2_v29_zip.asset.json";
 import ext3ZipAsset from "@/assets/ext3_v29_zip.asset.json";
+import ext4ZipAsset from "@/assets/ext4_v412.zip.asset.json";
 import { useMemo, useState, useSyncExternalStore } from "react";
 import {
   Archive,
@@ -97,6 +98,7 @@ function ExtensionsPage() {
   const ext1 = extensions.find((e) => e.code === "EXT1");
   const ext2 = extensions.find((e) => e.code === "EXT2");
   const ext3 = extensions.find((e) => e.code === "EXT3");
+  const ext4 = extensions.find((e) => e.code === "EXT4");
   const [filter, setFilter] = useState<Filter>("all");
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<Sort>("updated");
@@ -154,6 +156,10 @@ function ExtensionsPage() {
 
   const downloadExt3 = () => {
     downloadZip(ext3ZipAsset.url, "MR Sem Limites EXT3.zip");
+  };
+
+  const downloadExt4 = () => {
+    downloadZip(ext4ZipAsset.url, "MR Sem Limites EXT4.zip");
   };
 
   return (
@@ -234,6 +240,30 @@ function ExtensionsPage() {
                 className="gap-1.5" 
                 onClick={downloadExt3}
                 style={{ background: "var(--neon-magenta)", color: "#fff" }}
+              >
+                <Download className="h-4 w-4" /> Download
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+
+        {ext4 && (
+          <Card className="glass border-lime-500/40">
+            <CardContent className="flex items-center justify-between p-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-border/60 bg-background/40">
+                  <Puzzle className="h-5 w-5 text-lime-400" />
+                </div>
+                <div>
+                  <p className="text-sm font-bold">EXTENSÃO QUATRO 4.1.2</p>
+                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{ext4.name}</p>
+                </div>
+              </div>
+              <Button 
+                size="sm" 
+                className="gap-1.5" 
+                onClick={downloadExt4}
+                style={{ background: "var(--neon-lime)", color: "#000" }}
               >
                 <Download className="h-4 w-4" /> Download
               </Button>

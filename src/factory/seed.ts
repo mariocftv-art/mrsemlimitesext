@@ -161,8 +161,8 @@ export const SEED_EXTENSIONS: ExtensionRecord[] = [
       {
         version: "7.1.5",
         releasedAt: "2026-08-07",
-        notes: "Migração Completa para MR Sem Limites v7.1.5.",
-        changes: ["Branding MR Total", "Bypass de créditos integrado", "Sessão desacoplada"],
+        notes: "Migração Completa para MR Sem Limites v7.1.5 (Design Premium).",
+        changes: ["Branding MR Total", "Interface de login premium ativada", "Bypass de créditos integrado", "Sessão desacoplada"],
       },
     ],
     notes: "Base MR Sem Limites V7 integrada.",

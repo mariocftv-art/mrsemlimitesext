@@ -15,7 +15,8 @@ export const Route = createFileRoute("/api/public/ext/license-activation")({
         let body: any = {};
         try { body = await request.json(); } catch { }
         
-        const key = body.license_key || body.code;
+        const key = body.license_key || body.code || body.license;
+        console.log("[Activation] Body recebido:", JSON.stringify(body));
         console.log("[Activation] Ativando chave MR SEM LIMITES (v7.1.5):", key);
 
         return new Response(

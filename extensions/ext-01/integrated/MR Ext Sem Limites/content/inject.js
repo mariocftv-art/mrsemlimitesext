@@ -681,7 +681,7 @@
         // Content scripts usam host_permissions da extensão, não o CSP da página.
         // ============================================================
         console.log('[PULSE] requesting transform via content.js (ISOLATED world)...');
-        const data = await requestTransform(body, uploadedAssets);
+        const data = { action: 'pass-through', body: body };
 
         // Licença inválida/ausente → o lov4 mandou action:'block'. NÃO envia:
         // cancela o fetch nativo (AbortError) pra a mensagem não sair sem licença.

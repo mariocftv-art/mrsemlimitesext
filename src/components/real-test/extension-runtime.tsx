@@ -4,9 +4,12 @@ import { Chrome, Layout, PanelRight, ShieldCheck, Zap, Terminal, Database, Bug, 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
+import { SEED_EXTENSIONS } from "@/factory/seed";
 
 export function ExtensionRuntime({ logs }: { logs: LogEntry[] }) {
   const [activeRuntimeTab, setActiveRuntimeTab] = useState("popup");
+  const ext5 = SEED_EXTENSIONS.find(e => e.code === 'EXT5');
+  const currentVersion = ext5?.version || "17.0.9";
 
   return (
     <div className="flex flex-col h-full bg-background/20 relative">
@@ -49,7 +52,7 @@ export function ExtensionRuntime({ logs }: { logs: LogEntry[] }) {
                    <div className="pt-4 grid grid-cols-2 gap-2 text-[10px]">
                       <div className="p-2 bg-white/5 rounded border border-white/10">
                          <p className="text-muted-foreground mb-1 uppercase text-[8px] font-bold">Motor</p>
-                         <p className="text-emerald-400 font-bold">V17.0.9 Stable</p>
+                         <p className="text-emerald-400 font-bold">V{currentVersion} Stable</p>
                       </div>
                       <div className="p-2 bg-white/5 rounded border border-white/10">
                          <p className="text-muted-foreground mb-1 uppercase text-[8px] font-bold">Bypass</p>
@@ -70,7 +73,7 @@ export function ExtensionRuntime({ logs }: { logs: LogEntry[] }) {
                    </div>
                    <div>
                       <h3 className="text-xs font-bold">Sidepanel Manager</h3>
-                      <p className="text-[10px] text-muted-foreground">v17.0.9 (Production Build)</p>
+                      <p className="text-[10px] text-muted-foreground">v{currentVersion} (Production Build)</p>
                    </div>
                 </div>
                 
@@ -106,7 +109,7 @@ export function ExtensionRuntime({ logs }: { logs: LogEntry[] }) {
           <ScrollArea className="h-full">
             <div className="p-4 font-mono text-[10px] space-y-1 text-emerald-400">
                <p className="text-blue-400 italic">{"//"} Chrome Service Worker Logs (Extension Runtime)</p>
-               <p>[{new Date().toLocaleTimeString()}] SW: Initializing version 17.0.9...</p>
+               <p>[{new Date().toLocaleTimeString()}] SW: Initializing version {currentVersion}...</p>
                <p>[{new Date().toLocaleTimeString()}] SW: Registering alarm 'heartbeat' (300s)</p>
                <p>[{new Date().toLocaleTimeString()}] SW: Connected to backend via WebSockets (Real-time enabled)</p>
                <p>[{new Date().toLocaleTimeString()}] SW: Intercepting request to *.lovable.dev...</p>

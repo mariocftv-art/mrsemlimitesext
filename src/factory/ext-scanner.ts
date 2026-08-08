@@ -7,13 +7,12 @@
 // /extensions/**/* no build. Cada arquivo é servido em runtime pelo
 // symlink public/ext-src -> ../extensions.
 
-// Enumeração de arquivos apenas — SEM passar pelos transformadores do
-// Vite (CSS/JS). Todo binário é servido em runtime pelo symlink
-// public/ext-src -> ../extensions. Isso evita, por exemplo, que
-// lightningcss tente resolver `@import url(https://…)` dentro do CSS
-// da EXT1.
+// Enumeração somente dos arquivos textuais que a Factory realmente inspeciona.
+// Nunca incluir binários neste glob: `?raw` incorpora o conteúdo ao bundle SSR
+// e as imagens/ZIPs das extensões ultrapassam o limite do servidor de preview.
+// Binários continuam disponíveis diretamente em /ext-src quando conhecidos.
 const FILE_KEYS: Record<string, unknown> = import.meta.glob(
-  "/extensions/**/*",
+  "/extensions/**/*.{json,md,txt,html,js,mjs,cjs,ts,tsx,jsx,css,scss,sass,less,yml,yaml,toml,csv,xml}",
   { query: "?raw", import: "default" },
 );
 

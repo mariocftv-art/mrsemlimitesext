@@ -146,7 +146,7 @@ export const SEED_EXTENSIONS: ExtensionRecord[] = [
     status: "production",
     tone: "cyan",
     sourceDir: "extensions/ext-05/integrated/LV-CORE-REPLACEMENT-v17.0",
-    packagedZip: "ext5_v1709_zip",
+    packagedZip: "ext5_v1715_zip",
     assets: {},
     manifest: {
       manifestVersion: 3,

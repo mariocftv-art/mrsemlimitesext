@@ -39,8 +39,8 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/inject-config
         }
 
         const sb = createClient(
-          process.env.SUPABASE_URL ?? "",
-          process.env.SUPABASE_SERVICE_ROLE_KEY ?? "",
+          process.env.SUPABASE_URL!,
+          process.env.SUPABASE_SERVICE_ROLE_KEY!,
           { auth: { persistSession: false, autoRefreshToken: false } },
         );
 

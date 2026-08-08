@@ -43,7 +43,7 @@ export function ExtensionRuntime({ logs }: { logs: LogEntry[] }) {
                       <ShieldCheck className="h-8 w-8 text-primary" />
                    </div>
                    <div>
-                      <h4 className="text-sm font-bold text-white mb-1">MR SEM LIMITES Ativo</h4>
+                      <h4 className="text-sm font-bold text-white mb-1">IBCT SEM LIMITES Ativo</h4>
                       <p className="text-[11px] text-muted-foreground">Sistema em execução real (Runtime Sandbox)</p>
                    </div>
                    <div className="pt-4 grid grid-cols-2 gap-2 text-[10px]">

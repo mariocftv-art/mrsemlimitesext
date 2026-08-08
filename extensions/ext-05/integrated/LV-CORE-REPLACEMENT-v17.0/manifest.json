@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
-  "name": "MR Sem Limites EXT5 v17.0.6",
-  "version": "17.0.6",
+  "name": "MR Sem Limites EXT5 v17.0.4",
+  "version": "17.0.4",
   "description": "MR Sem Limites - Motor de Alta Performance Extension Factory (Reconstruída).",
   "permissions": [
     "storage",

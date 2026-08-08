@@ -169,7 +169,7 @@ function ExtensionsPage() {
   };
 
   const downloadExt5 = () => {
-    downloadZip("/ext5_v1709_zip.zip", "MR Sem Limites EXT5 v17.0.9.zip");
+    downloadZip("/ext5_v1725_zip.zip", "MR Sem Limites EXT5 v17.2.5.zip");
   };
 
   return (
@@ -322,7 +322,7 @@ function ExtensionsPage() {
                   <Puzzle className="h-5 w-5 text-cyan-400" />
                 </div>
                 <div>
-                  <p className="text-sm font-bold">EXTENSÃO CINCO 17.0.9</p>
+                  <p className="text-sm font-bold">EXTENSÃO CINCO 17.2.5</p>
                   <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{ext5.name}</p>
                 </div>
               </div>

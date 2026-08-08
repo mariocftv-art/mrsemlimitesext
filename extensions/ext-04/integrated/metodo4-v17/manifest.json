@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Lovable ∞",
+  "name": "MR Sem Limites",
   "version": "17.0",
   "description": "Extensão premium com validação de licença, modo plano e automação inteligente.",
   "permissions": ["storage", "activeTab", "scripting", "tabs", "sidePanel", "webRequest"],
@@ -18,7 +18,7 @@
   ],
   "action": {
     "default_icon": { "16": "icon.png", "48": "icon.png", "128": "icon.png" },
-    "default_title": "Lovable ∞"
+    "default_title": "MR Sem Limites"
   },
   "icons": { "16": "icon.png", "48": "icon.png", "128": "icon.png" },
   "side_panel": {

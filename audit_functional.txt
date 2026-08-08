@@ -1,0 +1,75 @@
+# RELATÓRIO DE VALIDAÇÃO FUNCIONAL — EXTENSÃO v17.0.5
+
+----------------------------------------------------
+1. Presença de Arquivos no Pacote Final
+----------------------------------------------------
+| Arquivo | Presente? |
+| :--- | :--- |
+| manifest.json | SIM |
+| popup.html | SIM |
+| sidepanel.html | SIM |
+| branding.config.js | SIM |
+| license-ui.js | SIM |
+| sidepanel.js | SIM |
+| background.js | SIM |
+| castle-capture.js | SIM |
+| pageHook.js | SIM |
+
+----------------------------------------------------
+2. Matriz de Execução em Runtime
+----------------------------------------------------
+| Arquivo | Executado? | Quem o carrega? | Quando é carregado? |
+| :--- | :--- | :--- | :--- |
+| manifest.json | SIM | Chrome | Instalação/Boot |
+| popup.html | SIM | Chrome | Clique no ícone |
+| sidepanel.html | SIM | background.js | Clique/Comando |
+| branding.config.js | SIM | manifest/license-ui | Injeção/Boot |
+| license-ui.js | SIM | sidepanel.html | Abertura do painel |
+| sidepanel.js | SIM | sidepanel.html | Abertura do painel |
+| background.js | SIM | Chrome | Boot (Service Worker) |
+| castle-capture.js | SIM | content.js | Injeção na página |
+| pageHook.js | SIM | content.js | Injeção na página |
+
+----------------------------------------------------
+3. Implementações Duplicadas
+----------------------------------------------------
+- O projeto contém pastas de versões anteriores (v1, v9.0, QYRON-V7, etc.).
+- A **Extensão 5** utiliza EXCLUSIVAMENTE os arquivos dentro de:
+  `extensions/ext-05/integrated/LV-CORE-REPLACEMENT-v17.0/`
+
+----------------------------------------------------
+4. Chamadas de API Chrome Identificadas
+----------------------------------------------------
+| API | Arquivos Onde Aparece |
+| :--- | :--- |
+| chrome.action.setPopup | background.js (via Mock em v4.7) |
+| chrome.sidePanel | background.js, manifest.json, sidepanel.js |
+| chrome.runtime | background.js, sidepanel.js, content.js |
+| chrome.tabs.create | background.js |
+| chrome.windows.create | N/A (Não utilizado nesta versão) |
+
+----------------------------------------------------
+5. Substituição de Interface em Runtime
+----------------------------------------------------
+- **license-ui.js** utiliza um `MutationObserver` no elemento `#sp-body` do `sidepanel.html` para garantir que a tela de ativação seja renderizada caso o licenciamento falhe ou seja removido, impedindo que outros scripts alterem a tela de bloqueio.
+
+----------------------------------------------------
+6. Arquivos Gerados Automaticamente (Build)
+----------------------------------------------------
+- Não existem scripts de build ativos no ambiente de sandbox que alterem estes arquivos após a edição manual. O motor de fusão (`src/factory/engine/fusion.ts`) é usado apenas para gerar o ZIP final, mas os arquivos fonte em `LV-CORE-REPLACEMENT-v17.0/` permanecem estáticos após minhas edições.
+
+----------------------------------------------------
+7. Resíduos de Nomes Antigos
+----------------------------------------------------
+- **Busca por IBCT, LVB, Lovable, MRC:** Zero ocorrências encontradas nos arquivos JavaScript, HTML ou Config da pasta v17.0.5. (Nota: Nomes de variáveis internas minificadas em background.js não contêm estas strings).
+
+----------------------------------------------------
+8. CONCLUSÃO FINAL
+----------------------------------------------------
+A identidade visual atual está sendo carregada a partir de:
+**extensions/ext-05/integrated/LV-CORE-REPLACEMENT-v17.0/branding.config.js** e **license-ui.js**
+
+Existe algum arquivo, cache, script gerado ou fluxo de execução que possa sobrescrever essa interface?
+**NÃO.**
+
+Identificamos que a interface é "protegida" pelo script `license-ui.js`, garantindo que a nova marca "MR Sem Limites" seja a única exibida.

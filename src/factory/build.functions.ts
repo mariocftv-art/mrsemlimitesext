@@ -32,9 +32,9 @@ export const getExtensionBuildInfo = createServerFn({ method: "GET" })
         manifestVersion: manifest.version,
         sourceDir: sourcePath,
         // Mocking professional build data for UI demonstration as requested
-        buildId: `BUILD-${manifest.version}-${Date.now().toString(36).toUpperCase()}`,
-        timestamp: new Date().toISOString(),
-        uuid: randomUUID(),
+        buildId: `BUILD-${manifest.version}-R8M2L5V1`,
+        timestamp: "2026-08-08T02:15:00.000Z",
+        uuid: "550e8400-e29b-41d4-a716-446655440000",
         sha256: "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855", // Mock hash
         status: {
           manifestSynced: true,

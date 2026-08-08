@@ -167,6 +167,6 @@ export const SEED_EXTENSIONS: ExtensionRecord[] = [
     ],
     notes: "Nova base v17.0.3 Master Kit — Motor Castler V3.",
     createdAt: "2026-08-07",
-    updatedAt: "2026-08-07",
+    updatedAt: "2026-08-08",
   },
 ];

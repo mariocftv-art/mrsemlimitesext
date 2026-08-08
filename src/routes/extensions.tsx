@@ -4,7 +4,7 @@ import ext2ZipAsset from "@/assets/ext2_v29_zip.asset.json";
 import ext3ZipAsset from "@/assets/ext3_v29_zip.asset.json";
 import ext4ZipAsset from "@/assets/ext4_v412.zip.asset.json";
 import ext5ZipAsset from "@/assets/ext5_v1701.zip.asset.json";
-import { useMemo, useState, useSyncExternalStore } from "react";
+import { useMemo, useState, useSyncExternalStore, useEffect } from "react";
 import {
   Archive,
   ArchiveRestore,
@@ -22,8 +22,11 @@ import {
   Search,
   Trash2,
   Upload,
+  Activity,
 } from "lucide-react";
 import { ImportExtensionDialog } from "@/factory/importer-dialog";
+import { useServerFn } from "@tanstack/react-start";
+import { getExtensionBuildInfo } from "@/factory/build.functions";
 
 import { toast } from "sonner";
 
@@ -183,6 +186,11 @@ function ExtensionsPage() {
           >
             <Plus className="h-4 w-4" /> Nova Extensão
           </Button>
+          <Link to="/build-center">
+            <Button size="sm" variant="outline" className="gap-1.5 border-primary/40 text-primary">
+              <Activity className="h-4 w-4" /> Build Inspector
+            </Button>
+          </Link>
         </div>
       }
     >
@@ -364,6 +372,17 @@ function downloadZip(url: string, filename: string) {
 }
 
 function ExtensionCard({ ext }: { ext: ExtensionRecord; onEdit: () => void }) {
+  const [manifestVersion, setManifestVersion] = useState<string | null>(null);
+  const getBuildInfo = useServerFn(getExtensionBuildInfo);
+
+  useEffect(() => {
+    getBuildInfo({ data: { id: ext.id } }).then(info => {
+      if (info && !("error" in info)) {
+        setManifestVersion(info.manifestVersion);
+      }
+    });
+  }, [ext.id]);
+
   const scan = useMemo(() => scanExtension(ext.sourceDir), [ext.sourceDir]);
   const logo = ext.assets.logo ?? scan.assets.logo ?? scan.assets.icon128 ?? scan.assets.icon48;
   const banner = ext.assets.banner ?? scan.assets.banner ?? scan.assets.chatBg;
@@ -395,8 +414,11 @@ function ExtensionCard({ ext }: { ext: ExtensionRecord; onEdit: () => void }) {
             <div className="min-w-0">
               <p className="truncate text-base font-semibold">{ext.name}</p>
               <p className="text-[11px] uppercase tracking-widest text-muted-foreground">
-                {ext.code} · v{ext.version}
+                {ext.code} · v{manifestVersion || ext.version}
               </p>
+              {manifestVersion && manifestVersion !== ext.version && (
+                <Badge variant="destructive" className="mt-1 h-4 text-[8px] uppercase">Divergência de Versão</Badge>
+              )}
             </div>
           </div>
         </div>

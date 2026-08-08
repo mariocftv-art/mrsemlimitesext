@@ -20,7 +20,7 @@ export function ActivationPanel({
     license_key: "",
     hwid: "HWID-MR-" + Math.random().toString(36).slice(2, 8).toUpperCase(),
     product: "EXT5",
-    version: "17.9.0"
+    version: "17.0.9"
   });
 
   const isLoading = status === 'validating' || status === 'starting';

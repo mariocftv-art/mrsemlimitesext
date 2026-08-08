@@ -18,7 +18,7 @@
     CLIENT: 'ql_ck'
   };
 
-  const API_URL = 'https://mrsemlimitesext.lovable.app/api/public/validate-license-v2';
+  const API_URL = 'https://mrsemlimitesext.lovable.app/api/public/ext/functions/v1/validate-license-v2';
 
   async function checkLicense() {
     return new Promise((resolve) => {

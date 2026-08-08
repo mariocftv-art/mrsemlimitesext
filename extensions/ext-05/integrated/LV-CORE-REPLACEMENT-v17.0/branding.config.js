@@ -3,9 +3,9 @@
   var BRAND = {
     extensionName: "MR Sem Limites",
     brandName: "MR Sem Limites",
-    version: "17.2.9",
-    buildId: "BUILD-17.2.9-Q7Y8R9N1",
-    timestamp: "2026-08-08T08:00:50Z",
+    version: "17.3.0",
+    buildId: "BUILD-17.3.0-Q7Y8R9N1",
+    timestamp: "2026-08-08T08:23:31.542Z",
     uuid: "550e8400-e29b-41d4-a716-446655440001",
     primaryColor: "#00f2ff",
     hoverColor: "#00d8e6",

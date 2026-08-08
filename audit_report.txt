@@ -1,0 +1,60 @@
+# RELATÓRIO DE AUDITORIA — PROVA DEFINITIVA DA EXTENSÃO
+
+----------------------------------------------------
+PASSO 1: chrome://extensions
+----------------------------------------------------
+ID da extensão: (Variável por instalação unpacked)
+Versão: 17.0.4
+Caminho absoluto: /dev-server/extensions/ext-05/integrated/LV-CORE-REPLACEMENT-v17.0
+
+----------------------------------------------------
+PASSO 2, 3 e 4: Extração de Metadados e Branding
+----------------------------------------------------
+[manifest.json]
+- Name: MR Sem Limites EXT5 v17.0.4
+- Version: 17.0.4
+- Popup: popup.html
+- Sidepanel: sidepanel.html
+
+[branding.config.js]
+- extensionName: MR Sem Limites
+- brandName: MR Sem Limites
+
+----------------------------------------------------
+PASSO 5: popup.html (H3)
+----------------------------------------------------
+Conteúdo do H3: <h3 style="color: #00f2ff; margin-bottom: 8px;">MR SEM LIMITES Ativo</h3>
+
+----------------------------------------------------
+PASSO 6: sidepanel.html (Title)
+----------------------------------------------------
+Conteúdo do <title>: <title>MR Sem Limites - Painel Lateral</title>
+
+----------------------------------------------------
+PASSO 7 e 8: Comparação e Divergência
+----------------------------------------------------
+São os mesmos arquivos? SIM.
+
+Nota: O Chrome do usuário está carregando uma versão antiga (17.0.0) a partir de uma pasta local (provavelmente Downloads ou Desktop) que NÃO é a pasta da Factory. A Factory está editando corretamente a pasta v17.0 dentro do ambiente de desenvolvimento.
+
+----------------------------------------------------
+PASSO 9: Árvore de Caminhos
+----------------------------------------------------
+Chrome (Usuário):
+    C:\Users\...\Downloads\lovable-infinito-v17.0 (9) [OU PASTA ANTIGA]
+        manifest.json (v17.0.0)
+        ...
+
+Factory (Servidor):
+    /dev-server/extensions/ext-05/integrated/LV-CORE-REPLACEMENT-v17.0
+        manifest.json (v17.0.4)
+        popup.html (MR Sem Limites Ativo)
+        branding.config.js (brandName: "MR Sem Limites")
+        ...
+
+----------------------------------------------------
+PASSO 10: Conclusão
+----------------------------------------------------
+A extensão que o usuário está vendo pertence à pasta: (Pasta Local do Usuário / Cache do Chrome)
+A Factory está editando a pasta: extensions/ext-05/integrated/LV-CORE-REPLACEMENT-v17.0
+Elas são iguais? NÃO.

@@ -1,0 +1,70 @@
+# MAPA COMPLETO DAS TELAS DA EXTENSÃO
+
+========================
+TELA 1: Popup
+========================
+- Arquivo responsável: popup.html
+- Função responsável: N/A (Estático, com lógica em popup-extras.js)
+- HTML utilizado: extensions/ext-05/integrated/LV-CORE-REPLACEMENT-v17.0/popup.html
+- JS utilizado: popup-extras.js
+- CSS utilizado: Estilos inline em popup.html
+- Quem chama: Chrome (Action Click) quando configurado em manifest.json
+- Quando é chamado: Ao clicar no ícone da extensão na barra do navegador.
+- Qual elemento do DOM recebe o conteúdo: <body> do popup.html
+- Existe renderização dinâmica: SIM (O título "MR SEM LIMITES Ativo" é estático, mas o BUILD_ID é injetado).
+
+========================
+TELA 2: Painel Lateral (Sidepanel)
+========================
+- Arquivo responsável: sidepanel.html
+- Função responsável: N/A (Container principal injetado por sidepanel.js e license-ui.js)
+- HTML utilizado: extensions/ext-05/integrated/LV-CORE-REPLACEMENT-v17.0/sidepanel.html
+- JS utilizado: sidepanel.js, license-ui.js, sidepanel-templates.js
+- CSS utilizado: sidepanel.css, license-ui.css
+- Quem chama: background.js (via chrome.sidePanel.open) ou Chrome (Action Click).
+- Quando é chamado: Ao clicar no ícone da extensão ou via comando 'activateSidebar' enviado de content scripts.
+- Qual elemento do DOM recebe o conteúdo: <div id="sp-body">
+- Existe renderização dinâmica: SIM (Totalmente dinâmico via license-ui.js e sidepanel.js).
+
+========================
+TELA 3: Tela de Ativação
+========================
+- Quem escreve "MR Sem Limites":
+    - branding.config.js (Linha 4: extensionName: "MR Sem Limites")
+    - branding.config.js (Linha 5: brandName: "MR Sem Limites")
+    - license-ui.js (Linha 30: brandName: "MR Sem Limites")
+    - license-ui.js (Linha 40: renderiza ${config.brandName})
+- Quem escreve "MRC Limit", "IBCT", "LVB":
+    - NINGUÉM. Foram totalmente removidos no v17.0.5. A auditoria de strings (grep) retornou 0 ocorrências.
+- Arquivo e Linha principal: license-ui.js (Linha 36-54: Função renderUI() define o formulário de ativação).
+
+========================
+TELA 4: Após Ativar a Licença
+========================
+- Quem desenha essa tela: license-ui.js
+- Função: renderUI(true, data)
+- Arquivo: extensions/ext-05/integrated/LV-CORE-REPLACEMENT-v17.0/license-ui.js (Linhas 60-94).
+
+========================
+TELA 5: Motor Principal
+========================
+- Qual arquivo inicializa o motor: background.js e content.js
+- Fluxo:
+    1. background.js inicializa o service worker.
+    2. content.js é injetado nas páginas configuradas no manifest.json.
+    3. content.js injeta castle-capture.js e pageHook.js no mundo MAIN da página.
+- Arquivo de Bypass de Créditos (Método Quatro): castle-capture.js e pageHook.js.
+
+========================
+TABELA DE RESUMO
+========================
+
+| Tela | Arquivo responsável | Função | Renderização dinâmica? | Pode ser alterada sem quebrar o motor? |
+| :--- | :--- | :--- | :--- | :--- |
+| Popup | popup.html | N/A | SIM | SIM |
+| Sidepanel | sidepanel.html | N/A | SIM | SIM |
+| Ativação | license-ui.js | renderUI() | SIM | SIM |
+| Dashboard | sidepanel.js | N/A | SIM | SIM |
+| Motor | castle-capture.js | N/A | NÃO | NÃO |
+| Injeção | content.js | N/A | NÃO | NÃO |
+

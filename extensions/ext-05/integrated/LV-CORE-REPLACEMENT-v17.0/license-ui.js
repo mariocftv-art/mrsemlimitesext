@@ -106,6 +106,7 @@
     const status = document.getElementById('license-status');
     const key = input.value.trim().toUpperCase();
 
+    console.log("[DEBUG] Início handleActivation - Linha 103");
     if (!key) {
       showStatus('Insira uma chave válida', 'error');
       return;
@@ -115,18 +116,45 @@
     btn.innerText = 'Validando...';
     showStatus('Conectando ao servidor...', '');
 
+    console.log("[DEBUG] Antes do fetch - Linha 118");
+    console.log("[DEBUG] URL:", API_URL);
+    console.log("[DEBUG] Método: POST");
+
     try {
       const hwid = await getHwid();
+      const payload = { license_key: key, hwid: hwid };
+      console.log("[DEBUG] Payload enviado:", JSON.stringify(payload));
+      console.log("[DEBUG] Headers enviados: { 'Content-Type': 'application/json' }");
+
       const response = await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ license_key: key, hwid: hwid })
+        body: JSON.stringify(payload)
       });
 
-      const data = await response.json();
+      console.log("[DEBUG] Após o fetch - Linha 124");
+      console.log("[DEBUG] HTTP Status:", response.status);
+      console.log("[DEBUG] Content-Type resposta:", response.headers.get('content-type'));
+
+      const rawText = await response.text();
+      console.log("[DEBUG] Corpo bruto da resposta:", rawText);
+
+      console.log("[DEBUG] Fazendo response.json() - Linha 126");
+      let data;
+      try {
+        data = JSON.parse(rawText);
+        console.log("[DEBUG] JSON completo:", JSON.stringify(data));
+      } catch (jsonErr) {
+        console.error("[DEBUG] Erro ao interpretar JSON:", jsonErr);
+        throw jsonErr;
+      }
+
+      console.log("[DEBUG] Validando data.status - Linha 128");
+      console.log("[DEBUG] Campos esperados: status, days_remaining (opcional)");
+      console.log("[DEBUG] Campos recebidos:", Object.keys(data).join(', '));
 
       if (data.status === 'valid') {
-        const payload = {
+        const payloadStorage = {
           [STORAGE_KEYS.VALID]: true,
           [STORAGE_KEYS.KEY]: key,
           [STORAGE_KEYS.DAYS]: data.days_remaining || '1',
@@ -135,14 +163,19 @@
           [STORAGE_KEYS.CLIENT]: key
         };
 
-        chrome.storage.local.set(payload, () => {
+        console.log("[DEBUG] Gravando chrome.storage.local - Linha 138");
+        chrome.storage.local.set(payloadStorage, () => {
+          console.log("[DEBUG] Chamando renderUI(true) - Linha 139");
           showStatus('Sucesso! Reiniciando...', 'success');
           setTimeout(() => window.location.reload(), 1500);
         });
       } else {
+        console.log("[DEBUG] Licença inválida retornada pelo servidor");
         showStatus(data.message || 'Chave inválida ou expirada', 'error');
       }
     } catch (err) {
+      console.error("[DEBUG] Exceção capturada (catch):", err);
+      console.error("[DEBUG] Stack trace:", err.stack);
       showStatus('Erro de conexão com o servidor', 'error');
     } finally {
       btn.disabled = false;

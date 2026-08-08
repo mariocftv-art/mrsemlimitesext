@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ExecutionStatus } from "./real-test-lab";
+import { SEED_EXTENSIONS } from "@/factory/seed";
 
 export function ActivationPanel({ 
   onValidate, 
@@ -15,12 +16,14 @@ export function ActivationPanel({
   onRunFull: (data: any) => void;
   status: ExecutionStatus;
 }) {
+  const ext5 = SEED_EXTENSIONS.find(e => e.code === 'EXT5');
+  
   const [formData, setFormData] = useState({
     email: "teste@mrsemlimites.com",
     license_key: "",
     hwid: "HWID-MR-" + Math.random().toString(36).slice(2, 8).toUpperCase(),
     product: "EXT5",
-    version: "17.9.0"
+    version: ext5?.version || "17.0.9"
   });
 
   const isLoading = status === 'validating' || status === 'starting';

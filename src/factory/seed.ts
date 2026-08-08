@@ -162,11 +162,11 @@ export const SEED_EXTENSIONS: ExtensionRecord[] = [
         version: "17.0.9",
         releasedAt: "2026-08-08",
         notes: "Atualização de versão sincronizada (v17.0.9).",
-        changes: ["Bump de versão global", "Sincronização de Build ID", "Integridade do manifesto v17.9.0"],
+        changes: ["Bump de versão global", "Sincronização de Build ID", "Integridade do manifesto v17.0.9"],
       },
     ],
     notes: "Nova base v17.0.3 Master Kit — Motor Castler V3.",
     createdAt: "2026-08-07",
-    updatedAt: "2026-08-08",
+    updatedAt: "2026-08-08 02:45",
   },
 ];

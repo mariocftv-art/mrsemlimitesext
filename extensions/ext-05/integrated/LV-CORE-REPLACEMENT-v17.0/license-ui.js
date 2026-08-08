@@ -1,3 +1,9 @@
+/**
+ * MR Sem Limites - License UI Engine
+ * Version: 17.0.5
+ * Build: BUILD-17.0.5-S6K8L9P2
+ * UUID: 550e8400-e29b-41d4-a716-446655440000
+ */
 (function() {
   "use strict";
 

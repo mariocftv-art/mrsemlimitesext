@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import * as fs from "fs/promises";
 import * as path from "path";
-import { crypto } from "crypto";
+import { randomUUID } from "crypto";
 
 export const getExtensionBuildInfo = createServerFn({ method: "GET" })
   .inputValidator((data) => z.object({ id: z.string() }).parse(data))

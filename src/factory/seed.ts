@@ -152,7 +152,7 @@ export const SEED_EXTENSIONS: ExtensionRecord[] = [
     status: "production",
     tone: "cyan",
     sourceDir: "extensions/ext-05/integrated/mr-sem-limites-v17-5",
-    packagedZip: "ext5_v1757_zip",
+    packagedZip: "ext5_v1758_zip",
     assets: {},
     manifest: {
       manifestVersion: 3,

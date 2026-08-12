@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "MR Sem Limite Ext 2",
-  "version": "4.0.0",
+  "version": "4.0.5",
   "description": "Extensão premium com validação de licença, modo plano e automação inteligente.",
   "permissions": [
     "storage",

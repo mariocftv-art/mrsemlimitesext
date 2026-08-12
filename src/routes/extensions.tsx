@@ -105,6 +105,7 @@ function ExtensionsPage() {
   const ext3 = extensions.find((e) => e.code === "EXT3");
   const ext4 = extensions.find((e) => e.code === "EXT4");
   const ext5 = extensions.find((e) => e.code === "EXT5");
+  const ext6 = extensions.find((e) => e.code === "EXT6");
   const [filter, setFilter] = useState<Filter>("all");
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<Sort>("updated");

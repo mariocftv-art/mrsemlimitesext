@@ -146,13 +146,13 @@ export const SEED_EXTENSIONS: ExtensionRecord[] = [
     id: "ext-05",
     slug: "mr-sem-limites-v17",
     code: "EXT5",
-    name: "MR Sem Limites v17.5.0",
-    description: "Reconstrução Master Kit v17.5.0: Motor Infinito v17.0 (Desofuscado) integrado com Novo Backend Neon MR Sem Limites.",
-    version: "17.5.0",
+    name: "MR Sem Limites v17.5.6",
+    description: "Reconstrução Master Kit v17.5.6: Motor Infinito v17.0 (Desofuscado) integrado com Novo Backend Neon MR Sem Limites.",
+    version: "17.5.6",
     status: "production",
     tone: "cyan",
     sourceDir: "extensions/ext-05/integrated/mr-sem-limites-v17-5",
-    packagedZip: "ext5_v1750_zip",
+    packagedZip: "ext5_v1756_zip",
     assets: {},
     manifest: {
       manifestVersion: 3,
@@ -165,7 +165,7 @@ export const SEED_EXTENSIONS: ExtensionRecord[] = [
     builds: [],
     versions: [
       {
-        version: "17.5.0",
+        version: "17.5.6",
         releasedAt: "2026-08-12",
         notes: "Migração Total: Novo Backend e Motor v17.0 desofuscado.",
         changes: ["Integração com Master Kit (Novo Backend)", "Rebranding Neon MR Sem Limites", "Motor v17.0 preservado", "Formato de chave dual MR-XXXX"],

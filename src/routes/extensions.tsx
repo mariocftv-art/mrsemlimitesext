@@ -157,7 +157,7 @@ function ExtensionsPage() {
   };
 
   const downloadExt2 = () => {
-    downloadZip(ext2ZipAsset.url, "Metodo Quatro EXT2.zip");
+    downloadZip("/ext2_v4_zip.zip", "MR Sem Limite Ext 2 v4.0.zip");
   };
 
   const downloadExt3 = () => {
@@ -229,7 +229,7 @@ function ExtensionsPage() {
                   <Puzzle className="h-5 w-5 text-violet-400" />
                 </div>
                 <div>
-                  <p className="text-sm font-bold">EXTENSÃO DOIS 2.9</p>
+                  <p className="text-sm font-bold">EXTENSÃO DOIS 4.0.0</p>
                   <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{ext2.name}</p>
                 </div>
               </div>

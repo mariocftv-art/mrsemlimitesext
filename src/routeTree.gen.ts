@@ -38,6 +38,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as RuntimeIdRouteImport } from './routes/runtime.$id'
 import { Route as PreviewIdRouteImport } from './routes/preview.$id'
 import { Route as LiveIdRouteImport } from './routes/live.$id'
+import { Route as ApiPublicDownloadExtensaoRouteImport } from './routes/api/public/download-extensao'
 import { Route as ApiPublicExtValidateLicenseRouteImport } from './routes/api/public/ext/validate-license'
 import { Route as ApiPublicExtSendCommandRouteImport } from './routes/api/public/ext/send-command'
 import { Route as ApiPublicExtLicenseHeartbeatRouteImport } from './routes/api/public/ext/license-heartbeat'
@@ -198,6 +199,12 @@ const LiveIdRoute = LiveIdRouteImport.update({
   path: '/live/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicDownloadExtensaoRoute =
+  ApiPublicDownloadExtensaoRouteImport.update({
+    id: '/api/public/download-extensao',
+    path: '/api/public/download-extensao',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicExtValidateLicenseRoute =
   ApiPublicExtValidateLicenseRouteImport.update({
     id: '/api/public/ext/validate-license',
@@ -312,6 +319,7 @@ export interface FileRoutesByFullPath {
   '/live/$id': typeof LiveIdRoute
   '/preview/$id': typeof PreviewIdRoute
   '/runtime/$id': typeof RuntimeIdRoute
+  '/api/public/download-extensao': typeof ApiPublicDownloadExtensaoRoute
   '/api/public/ext/license-activation': typeof ApiPublicExtLicenseActivationRoute
   '/api/public/ext/license-deactivate': typeof ApiPublicExtLicenseDeactivateRoute
   '/api/public/ext/license-heartbeat': typeof ApiPublicExtLicenseHeartbeatRoute
@@ -357,6 +365,7 @@ export interface FileRoutesByTo {
   '/live/$id': typeof LiveIdRoute
   '/preview/$id': typeof PreviewIdRoute
   '/runtime/$id': typeof RuntimeIdRoute
+  '/api/public/download-extensao': typeof ApiPublicDownloadExtensaoRoute
   '/api/public/ext/license-activation': typeof ApiPublicExtLicenseActivationRoute
   '/api/public/ext/license-deactivate': typeof ApiPublicExtLicenseDeactivateRoute
   '/api/public/ext/license-heartbeat': typeof ApiPublicExtLicenseHeartbeatRoute
@@ -403,6 +412,7 @@ export interface FileRoutesById {
   '/live/$id': typeof LiveIdRoute
   '/preview/$id': typeof PreviewIdRoute
   '/runtime/$id': typeof RuntimeIdRoute
+  '/api/public/download-extensao': typeof ApiPublicDownloadExtensaoRoute
   '/api/public/ext/license-activation': typeof ApiPublicExtLicenseActivationRoute
   '/api/public/ext/license-deactivate': typeof ApiPublicExtLicenseDeactivateRoute
   '/api/public/ext/license-heartbeat': typeof ApiPublicExtLicenseHeartbeatRoute
@@ -450,6 +460,7 @@ export interface FileRouteTypes {
     | '/live/$id'
     | '/preview/$id'
     | '/runtime/$id'
+    | '/api/public/download-extensao'
     | '/api/public/ext/license-activation'
     | '/api/public/ext/license-deactivate'
     | '/api/public/ext/license-heartbeat'
@@ -495,6 +506,7 @@ export interface FileRouteTypes {
     | '/live/$id'
     | '/preview/$id'
     | '/runtime/$id'
+    | '/api/public/download-extensao'
     | '/api/public/ext/license-activation'
     | '/api/public/ext/license-deactivate'
     | '/api/public/ext/license-heartbeat'
@@ -540,6 +552,7 @@ export interface FileRouteTypes {
     | '/live/$id'
     | '/preview/$id'
     | '/runtime/$id'
+    | '/api/public/download-extensao'
     | '/api/public/ext/license-activation'
     | '/api/public/ext/license-deactivate'
     | '/api/public/ext/license-heartbeat'
@@ -586,6 +599,7 @@ export interface RootRouteChildren {
   LiveIdRoute: typeof LiveIdRoute
   PreviewIdRoute: typeof PreviewIdRoute
   RuntimeIdRoute: typeof RuntimeIdRoute
+  ApiPublicDownloadExtensaoRoute: typeof ApiPublicDownloadExtensaoRoute
   ApiPublicExtLicenseActivationRoute: typeof ApiPublicExtLicenseActivationRoute
   ApiPublicExtLicenseDeactivateRoute: typeof ApiPublicExtLicenseDeactivateRoute
   ApiPublicExtLicenseHeartbeatRoute: typeof ApiPublicExtLicenseHeartbeatRoute
@@ -807,6 +821,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LiveIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/download-extensao': {
+      id: '/api/public/download-extensao'
+      path: '/api/public/download-extensao'
+      fullPath: '/api/public/download-extensao'
+      preLoaderRoute: typeof ApiPublicDownloadExtensaoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/ext/validate-license': {
       id: '/api/public/ext/validate-license'
       path: '/api/public/ext/validate-license'
@@ -938,6 +959,7 @@ const rootRouteChildren: RootRouteChildren = {
   LiveIdRoute: LiveIdRoute,
   PreviewIdRoute: PreviewIdRoute,
   RuntimeIdRoute: RuntimeIdRoute,
+  ApiPublicDownloadExtensaoRoute: ApiPublicDownloadExtensaoRoute,
   ApiPublicExtLicenseActivationRoute: ApiPublicExtLicenseActivationRoute,
   ApiPublicExtLicenseDeactivateRoute: ApiPublicExtLicenseDeactivateRoute,
   ApiPublicExtLicenseHeartbeatRoute: ApiPublicExtLicenseHeartbeatRoute,

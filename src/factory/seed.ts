@@ -49,7 +49,7 @@ export const SEED_EXTENSIONS: ExtensionRecord[] = [
     code: "EXT2",
     name: "MR Sem Limite Ext 2 v4.0.9",
     description: "Recuperação de Motor: Modo Admin Master Vitalício com injeção nativa forçada e créditos infinitos.",
-    version: "4.0.9",
+    version: "4.1.5",
     status: "production",
     tone: "violet",
     sourceDir: "extensions/ext-02/integrated/mr-sem-limite-ext2-v4",
@@ -67,7 +67,7 @@ export const SEED_EXTENSIONS: ExtensionRecord[] = [
     builds: [],
     versions: [
       {
-        version: "4.0.9",
+        version: "4.1.5",
         releasedAt: "2026-08-12",
         notes: "Migração Técnica: Desacoplamento de backend e ativação do modo Admin Master Vitalício.",
         changes: ["Validação Offline ativada", "Bypass de licença vitalício", "Créditos 999+ fixos", "Heartbeats desativados"],

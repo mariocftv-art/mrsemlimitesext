@@ -122,7 +122,7 @@ _n27c85e==='loc'+'al'&&_nc44ae3['ql_'+'ui_'+'mod'+'e']&&chrome['sid'+'ePa'+'nel'
 );
 }
 );
-function reloadOpenLovableProjectTabs(_n2237a6){
+function reloadOpenMRProjectTabs(_n2237a6){
 chrome['tab'+'s']['que'+'ry']({
 'url':['htt'+'ps:'+'//*'+'.lo'+'vab'+'le.'+'dev'+'/pr'+'oje'+'cts'+'/*','htt'+'ps:'+'//*'+'.lo'+'vab'+'le.'+'app'+'/pr'+'oje'+'cts'+'/*']}
 ,_n3bb19d=>{
@@ -137,7 +137,7 @@ if(_n2237a6)_n2237a6(_n118893);
 chrome['sto'+'rag'+'e']['onC'+'han'+'ged']['add'+'Lis'+'ten'+'er']((_nb36c6f,_n4f8d21)=>{
 if(_n4f8d21!=='loc'+'al')return;
 const _n577005=_nb36c6f['ql_'+'lic'+'ens'+'e_v'+'ali'+'d'];
-_n577005&&_n577005['new'+'Val'+'ue']===!![]&&_n577005['old'+'Val'+'ue']!==!![]&&reloadOpenLovableProjectTabs(_n231265=>{
+_n577005&&_n577005['new'+'Val'+'ue']===!![]&&_n577005['old'+'Val'+'ue']!==!![]&&reloadOpenMRProjectTabs(_n231265=>{
 chrome['sto'+'rag'+'e']['loc'+'al']['set']({
 'ql_pending_first_reload':!_n231265}
 );

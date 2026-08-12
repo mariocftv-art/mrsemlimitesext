@@ -1,15 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
-import currentExtensionAsset from "../../../../public/mr-sem-limites-2.2.6.zip.asset.json";
+import currentExtensionAsset from "../../../assets/ext5_v1750_zip.zip.asset.json";
 
-// Nome do arquivo publicado como asset. Ao subir uma nova versão da extensão,
-// atualize APENAS esta constante e o import acima.
-const FILENAME = "mr-sem-limites-2.2.6.zip";
+/**
+ * Rota de download para a extensão v17.5.0 (MR Sem Limites)
+ * Este endpoint resolve o asset hospedado no CDN do Lovable.
+ */
+const FILENAME = "mr-sem-limites-v17.5.0.zip";
 
 export const Route = createFileRoute("/api/public/download-extensao")({
   server: {
     handlers: {
       GET: async ({ request }) => {
         const url = new URL(request.url);
+        // O assetUrl deve ser resolvido em relação à origem do request para garantir acesso interno/externo
         const assetUrl = new URL(currentExtensionAsset.url, url.origin).toString();
 
         const upstream = await fetch(assetUrl);
@@ -23,6 +26,7 @@ export const Route = createFileRoute("/api/public/download-extensao")({
         const buf = await upstream.arrayBuffer();
         const bytes = new Uint8Array(buf);
 
+        // Verificação básica de assinatura ZIP (PK..)
         const isZip =
           bytes.length > 4 &&
           bytes[0] === 0x50 &&

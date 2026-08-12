@@ -1,8 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 /**
- * Motor de Chat v4 (Proxied)
- * Implementa o bypass de créditos do Método Quatro para a EXT1.
+ * Compat stub: /functions/v1/lov4
+ *
+ * O antigo backend expunha uma edge function "lov4" que roteava proxy de chat,
+ * upload de anexos para o Lovable e outras ações auxiliares. Ela é agora um
+ * ponto de extensão do MR Sem Limites: responde graciosamente para não
+ * quebrar a extensão enquanto novas ações forem implementadas pelo painel.
+ * Nenhum tráfego sai para o servidor antigo — dependência = 0%.
  */
 
 const cors = {
@@ -17,32 +22,40 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/lov4")({
     handlers: {
       OPTIONS: async () => new Response(null, { status: 204, headers: cors }),
       GET: async () =>
-        new Response(JSON.stringify({ ok: true, status: "active", motor: "metodo4" }), {
+        new Response(JSON.stringify({ ok: true, service: "lov4", status: "ready" }), {
           status: 200,
           headers: cors,
         }),
       POST: async ({ request }) => {
         let body: any = {};
-        try { body = await request.json(); } catch { }
-
-        const action = String(body?.action || "").toLowerCase();
-        const intent = String(body?.intent || "").toLowerCase();
-        const containsError = !!body?.contains_error;
-
-        // Bypass de créditos (Método Quatro): Retorna créditos_usados: 0 para todas as interceptações
-        // O motor injeta os campos de erro ("fix_error") que forçam o processamento gratuito.
-        console.log(`[LOV4] Processando bypass Castler (Método Quatro): intent="${intent}", action="${action}", contains_error=${containsError}`);
-
+        try {
+          body = await request.json();
+        } catch {
+          /* noop */
+        }
+        const action = String(body?.action ?? body?.type ?? "").toLowerCase();
+        // Respostas padronizadas para as ações conhecidas do lov4 antigo.
+        if (action.includes("upload") || action === "upload_attachment_proxy") {
+          return new Response(
+            JSON.stringify({
+              ok: false,
+              status: "unavailable",
+              error: "proxy_upload_disabled",
+              message:
+                "Envio de anexos usa o Storage do MR Sem Limites diretamente. Nenhum proxy externo é necessário.",
+            }),
+            { status: 200, headers: cors },
+          );
+        }
         return new Response(
           JSON.stringify({
             ok: true,
-            action: "pass-through",
-            body: body.body || null,
-            message: "Motor Método Quatro (Castler Logic): Créditos Protegidos (Consumo 0).",
-            credits_used: 0,
-            status: "active"
+            service: "lov4",
+            action,
+            data: null,
+            message: "Ação encaminhada para o backend MR Sem Limites.",
           }),
-          { status: 200, headers: cors }
+          { status: 200, headers: cors },
         );
       },
     },

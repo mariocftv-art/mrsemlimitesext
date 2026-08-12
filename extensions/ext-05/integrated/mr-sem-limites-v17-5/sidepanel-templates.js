@@ -88,7 +88,7 @@ return'\x0a\x20\x20'+'\x20\x20<'+'div'+'\x20cl'+'ass'+'=\x22s'+'p-l'+'ice'+'nse'
 \x20'+'fon'+'t-w'+'eig'+'ht:'+'\x2070'+'0;
 \x20'+'tex'+'t-t'+'ran'+'sfo'+'rm:'+'\x20up'+'per'+'cas'+'e;
 \x20'+'let'+'ter'+'-sp'+'aci'+'ng:'+'\x200;
-'+'\x22\x20p'+'lac'+'eho'+'lde'+'r=\x22')+spT('lic'+'ens'+'e_g'+'ate'+'_pl'+'ace'+'hol'+'der')+('\x22\x20m'+'axl'+'eng'+'th='+'\x2240'+'\x22\x20a'+'uto'+'com'+'ple'+'te='+'\x22of'+'f\x22\x20'+'spe'+'llc'+'hec'+'k=\x22'+'fal'+'se\x22'+'>\x0a\x20'+'\x20\x20\x20'+'\x20\x20<'+'/di'+'v>\x0a'+'\x0a\x20\x20'+'\x20\x20\x20'+'\x20<b'+'utt'+'on\x20'+'id='+'\x22sp'+'-va'+'lid'+'ate'+'-bt'+'n\x22\x20'+'cla'+'ss='+'\x22bt'+'n-s'+'end'+'\x22\x20s'+'tyl'+'e=\x22'+'wid'+'th:'+'\x2010'+'0%;
+'+'\x22\x20p'+'lac'+'eho'+'lde'+'r=\x22')+'MR - XXXX - XXXX - XXXX'+('\x22\x20m'+'axl'+'eng'+'th='+'\x2240'+'\x22\x20a'+'uto'+'com'+'ple'+'te='+'\x22of'+'f\x22\x20'+'spe'+'llc'+'hec'+'k=\x22'+'fal'+'se\x22'+'>\x0a\x20'+'\x20\x20\x20'+'\x20\x20<'+'/di'+'v>\x0a'+'\x0a\x20\x20'+'\x20\x20\x20'+'\x20<b'+'utt'+'on\x20'+'id='+'\x22sp'+'-va'+'lid'+'ate'+'-bt'+'n\x22\x20'+'cla'+'ss='+'\x22bt'+'n-s'+'end'+'\x22\x20s'+'tyl'+'e=\x22'+'wid'+'th:'+'\x2010'+'0%;
 '+'\x20he'+'igh'+'t:\x20'+'50p'+'x;
 \x22'+'>')+spT('lic'+'ens'+'e_g'+'ate'+'_bu'+'tto'+'n')+('</b'+'utt'+'on>'+'\x0a\x20\x20'+'\x20\x20\x20'+'\x20<d'+'iv\x20'+'id='+'\x22sp'+'-li'+'cen'+'se-'+'log'+'\x22\x20c'+'las'+'s=\x22'+'sp-'+'log'+'\x22\x20s'+'tyl'+'e=\x22'+'mar'+'gin'+'-to'+'p:\x20'+'20p'+'x;
 \x20'+'dis'+'pla'+'y:\x20'+'non'+'e;

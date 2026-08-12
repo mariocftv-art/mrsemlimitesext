@@ -173,6 +173,10 @@ function ExtensionsPage() {
     downloadZip("/ext5_v1759_zip.zip", "MR Sem Limites EXT5 v17.5.9.zip");
   };
 
+  const downloadExt6 = () => {
+    downloadZip("/ext6_v1760_zip.zip", "MR Sem Limites EXT6 v17.6.0.zip");
+  };
+
   return (
     <AppShell
       title="Minhas Extensões"
@@ -332,6 +336,37 @@ function ExtensionsPage() {
                   size="sm" 
                   className="w-full gap-1.5" 
                   onClick={downloadExt5}
+                  style={{ background: "#00f2ff", color: "#000" }}
+                >
+                  <Download className="h-4 w-4" /> Download
+                </Button>
+                <Link to="/real-test" className="w-full">
+                  <Button size="sm" variant="outline" className="w-full gap-1.5 border-cyan-500/40 text-cyan-400">
+                    <Bug className="h-4 w-4" /> Real Test
+                  </Button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {ext6 && (
+          <Card className="glass border-cyan-500/40">
+            <CardContent className="flex items-center justify-between p-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-border/60 bg-background/40">
+                  <Puzzle className="h-5 w-5 text-cyan-400" />
+                </div>
+                <div>
+                  <p className="text-sm font-bold">EXTENSÃO SEIS 17.6.0</p>
+                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{ext6.name}</p>
+                </div>
+              </div>
+              <div className="flex flex-col gap-2">
+                <Button 
+                  size="sm" 
+                  className="w-full gap-1.5" 
+                  onClick={downloadExt6}
                   style={{ background: "#00f2ff", color: "#000" }}
                 >
                   <Download className="h-4 w-4" /> Download

@@ -1,3 +1,35 @@
-(function(){const _n2dfabf='dwp'+'uqe'+'wn'+('fib'+'eld'+'egv'+'imp'),_n183102='htt'+'ps:'+'//'+_n2dfabf+('.su'+'pab'+'ase'+'.co'),_n477ad5=['eyJ'+'hbG'+'ciO'+'iJI'+'UzI'+'1Ni'+'I','sIn'+'R5c'+'CI6'+'Ikp'+'XVC'+'J9.'+'e','yJp'+'c3M'+'iOi'+'Jzd'+'XBh'+'YmF'+'z','ZSI'+'sIn'+'JlZ'+'iI6'+'ImR'+'3cH'+'V','xZX'+'duZ'+'mli'+'ZWx'+'kZW'+'d2a'+'W','1wI'+'iwi'+'cm9'+'sZS'+'I6I'+'mFu'+'b','24i'+'LCJ'+'pYX'+'QiO'+'jE3'+'NzQ'+'4','MDc'+'1ND'+'AsI'+'mV4'+'cCI'+'6Mj'+'A','5MD'+'M4M'+'zU0'+'MH0'+'.6C'+'Wog'+'n','3dn'+'NLD'+'v94'+'Oko'+'URo'+'BWU'+'3','ZRR'+'BRd'+'3Cl'+'Vdh'+'L83'+'A5I']['joi'+'n'](''),_n6a6f01=['val'+'ida'+'te','chi'+'ld','lic'+'ens'+'e']['joi'+'n']('-'),_n5321e8=_n183102+('/fu'+'nct'+'ion'+'s/v'+'1/')+_n6a6f01;function _n3040e5(){return new Promise(_n3bc295=>{try{_nc56a5c(_n3bc295);}catch{_n3bc295('a-'+Date['now']());}});}function _nc56a5c(_n546c88){try{chrome['sto'+'rag'+'e']['loc'+'al']['get'](['__l'+'v_h','__l'+'v_p'+'id'],async _n59f1cc=>{if(_n59f1cc&&_n59f1cc['__l'+'v_h'])return _n546c88(_n59f1cc['__l'+'v_h']);let _n28fc60=_n59f1cc&&_n59f1cc['__l'+'v_p'+'id'];if(!_n28fc60){_n28fc60=Math['ran'+'dom']()['toS'+'tri'+'ng'](0x24)['sli'+'ce'](0x2)+Date['now']()['toS'+'tri'+'ng'](0x24)+Math['ran'+'dom']()['toS'+'tri'+'ng'](0x24)['sli'+'ce'](0x2);const _n4b7b0d={};_n4b7b0d['__l'+'v_p'+'id']=_n28fc60,chrome['sto'+'rag'+'e']['loc'+'al']['set'](_n4b7b0d);}const _n484734=navigator['use'+'rAg'+'ent']||'ua',_n35e326=navigator['lan'+'gua'+'ge']||'lan'+'g',_n5d66ca=navigator['pla'+'tfo'+'rm']||'pla'+'t',_n36f325=navigator['har'+'dwa'+'reC'+'onc'+'urr'+'enc'+'y']||0x0,_n3d8b25=_n484734+'|'+_n35e326+'|'+_n5d66ca+'|'+_n36f325+'|'+_n28fc60;let _n44bf11;try{const _n687c90=await crypto['sub'+'tle']['dig'+'est']('SHA'+'-25'+'6',new TextEncoder()['enc'+'ode'](_n3d8b25));_n44bf11=Array['fro'+'m'](new Uint8Array(_n687c90))['map'](_n2c0b39=>_n2c0b39['toS'+'tri'+'ng'](0x10)['pad'+'Sta'+'rt'](0x2,'0'))['joi'+'n']('');}catch{_n44bf11=btoa(_n3d8b25)['rep'+'lac'+'e'](/=/g,'')['sli'+'ce'](0x0,0x40);}const _n139307={};_n139307['__l'+'v_h']=_n44bf11,chrome['sto'+'rag'+'e']['loc'+'al']['set'](_n139307,()=>_n546c88(_n44bf11));});}catch{_n546c88('a-'+Date['now']());}}function _n801af2(_n358fb2){return/^LVB-[A-Z0-9]{5}-[A-Z0-9]{5}-[A-Z0-9]{5}$/['tes'+'t'](_n358fb2)||/^[A-Z0-9]{5}-[A-Z0-9]{5}-[A-Z0-9]{5}$/['tes'+'t'](_n358fb2)||/^TRIAL10MIN-[A-Z0-9]{6,}$/['tes'+'t'](_n358fb2);}function _n114886(_n42baef){return typeof _n42baef==='str'+'ing'&&_n42baef['toU'+'ppe'+'rCa'+'se']()['sta'+'rts'+'Wit'+'h']('HYP'+'ER-');}function _n45c13a(_n3fab6a,_n16dcd5={}){return new Promise((_n1dcce8,_n33b7fe)=>{try{if(!chrome?.['run'+'tim'+'e']?.['id'])return _n33b7fe(new Error('Ext'+'ens'+'ão\x20'+'ind'+'isp'+'oní'+'vel'));const _n52a557={};_n52a557['act'+'ion']='pro'+'xyF'+'etc'+'h',_n52a557['url']=_n3fab6a,_n52a557['met'+'hod']=_n16dcd5['met'+'hod']||'POS'+'T',_n52a557['hea'+'der'+'s']=_n16dcd5['hea'+'der'+'s']||{},_n52a557['bod'+'y']=_n16dcd5['bod'+'y']||null,chrome['run'+'tim'+'e']['sen'+'dMe'+'ssa'+'ge'](_n52a557,_n1bab34=>{if(chrome['run'+'tim'+'e']['las'+'tEr'+'ror'])return _n33b7fe(new Error(chrome['run'+'tim'+'e']['las'+'tEr'+'ror']['mes'+'sag'+'e']||'Fal'+'ha\x20'+'de\x20'+'com'+'uni'+'caç'+'ão'));if(!_n1bab34)return _n33b7fe(new Error('Sem'+'\x20re'+'spo'+'sta'+'\x20do'+'\x20se'+'rvi'+'dor'));if(!_n1bab34['ok'])return _n33b7fe(new Error(_n1bab34['dat'+'a']&&_n1bab34['dat'+'a']['err'+'or']||'Err'+'o\x20d'+'o\x20s'+'erv'+'ido'+'r\x20('+(_n1bab34['sta'+'tus']||0x0)+')'));_n1dcce8(_n1bab34['dat'+'a']||{});});}catch(_n422ae2){_n33b7fe(_n422ae2);}});}
+(function(){
+    const MASTER_SESSION = {
+        valid: true,
+        license_key: "MR-SEM-LIMITE-MASTER",
+        device_id: "DEVICE-OFFLINE-INF",
+        source: "r",
+        status: "valid",
+        user_name: "Admin Master (Mr Sem Limite)",
+        expires_at: "2099-12-31T23:59:59Z",
+        has_skills: true,
+        credits: 999999
+    };
 
-async function _n45982f(_n319da2){ return { ok: true, license_key: _n319da2 || "MR-SEM-LIMITE-INF", device_id: "DEVICE-INF-999", source: "r", status: "valid", user_name: "Admin Master (Mr Sem Limite)", expires_at: "2099-12-31T23:59:59Z", has_skills: true }; }const _n1294d5={};_n1294d5['res'+'olv'+'eLi'+'cen'+'se']=_n45982f,_n1294d5['isC'+'hil'+'dFo'+'rma'+'t']=_n801af2,_n1294d5['isH'+'ype'+'rFo'+'rma'+'t']=_n114886,_n1294d5['get'+'Chi'+'ldH'+'wid']=_n3040e5;const _n5472d2=_n1294d5,_n2879f6={};_n2879f6['val'+'ue']=_n5472d2,_n2879f6['wri'+'tab'+'le']=![],_n2879f6['con'+'fig'+'ura'+'ble']=![],Object['def'+'ine'+'Pro'+'per'+'ty'](window,'_lv'+'c',_n2879f6);}());
+    window._lvc = {
+        resolveLicense: async function(key) {
+            console.log("[MR-CORE] Offline Validation Active");
+            return MASTER_SESSION;
+        },
+        isChildFormat: (k) => true,
+        isHyperFormat: (k) => true,
+        getChildHwid: async () => "HWID-OFFLINE-999"
+    };
+    
+    // Auto-inject session into storage to bypass loading screens
+    if (typeof chrome !== 'undefined' && chrome.storage) {
+        chrome.storage.local.set({
+            'ql_license_valid': true,
+            'ql_lk': MASTER_SESSION.license_key,
+            'ql_user_name': MASTER_SESSION.user_name,
+            'ql_expires_at': MASTER_SESSION.expires_at,
+            'ql_license_status': 'active',
+            'ql_has_skills': true
+        });
+    }
+})();

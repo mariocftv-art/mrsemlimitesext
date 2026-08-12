@@ -165,7 +165,7 @@ export const SEED_EXTENSIONS: ExtensionRecord[] = [
     builds: [],
     versions: [
       {
-        version: "17.5.0",
+        version: "17.5.6",
         releasedAt: "2026-08-12",
         notes: "Migração Total: Novo Backend e Motor v17.0 desofuscado.",
         changes: ["Integração com Master Kit (Novo Backend)", "Rebranding Neon MR Sem Limites", "Motor v17.0 preservado", "Formato de chave dual MR-XXXX"],

@@ -1,11 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
-import currentExtensionAsset from "../../../assets/ext5_v1757_zip.zip.asset.json";
+import currentExtensionAsset from "../../../assets/ext5_v1758_zip.zip.asset.json";
 
 /**
- * Rota de download para a extensão v17.5.7 (MR Sem Limites)
+ * Rota de download para a extensão v17.5.8 (MR Sem Limites)
  * Este endpoint resolve o asset hospedado no CDN do Lovable.
  */
-const FILENAME = "mr-sem-limites-v17.5.7.zip";
+const FILENAME = "mr-sem-limites-v17.5.8.zip";
 
 export const Route = createFileRoute("/api/public/download-extensao")({
   server: {

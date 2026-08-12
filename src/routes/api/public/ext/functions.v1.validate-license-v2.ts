@@ -62,26 +62,9 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/validate-lice
 
 
 
-        if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
-          console.error("Supabase environment variables are missing");
-          return new Response(
-            JSON.stringify({
-              status: "valid",
-              session_token: "mr_sess_bypass_" + Math.random().toString(36).slice(2),
-              days_remaining: 9999,
-              hours_remaining: 99999,
-              license_id: "bypass-id",
-              plan: "premium",
-              message: "Bypass Ativo (Backend Offline)",
-              cliente_nome: "Usuário MR (Bypass)",
-            }),
-            { status: 200, headers: cors },
-          );
-        }
-
         const sb = createClient(
-          process.env.SUPABASE_URL,
-          process.env.SUPABASE_SERVICE_ROLE_KEY,
+          process.env.SUPABASE_URL!,
+          process.env.SUPABASE_SERVICE_ROLE_KEY!,
           { auth: { persistSession: false, autoRefreshToken: false } },
         );
 

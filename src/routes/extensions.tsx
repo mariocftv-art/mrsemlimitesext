@@ -31,7 +31,7 @@ import {
 } from "@/factory";
 import { Badge } from "@/components/ui/badge";
 import { useServerFn } from "@tanstack/react-start";
-import { getExtensionBuildInfo } from "@/lib/factory.functions";
+import { getExtensionBuildInfo } from "@/factory/build.functions";
 import {
   Dialog,
   DialogContent,

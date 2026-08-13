@@ -174,7 +174,7 @@ function ExtensionsPage() {
   };
 
   const downloadExt6 = () => {
-    downloadZip("/ext6_v1760_zip.zip", "MR Sem Limites EXT6 v17.6.5.zip");
+    downloadZip("/ext6_v1765_zip.zip", "MR Sem Limites EXT6 v17.6.5.zip");
   };
 
   return (

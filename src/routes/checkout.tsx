@@ -220,7 +220,7 @@ function CheckoutPage() {
                 </div>
                 <div>
                   <p className="font-bold text-sm">MR Sem Limites EXT7</p>
-                  <p className="text-xs text-muted-foreground">Licença Premium Vitalícia (Motor v17.7.0)</p>
+                  <p className="text-xs text-muted-foreground">Licença Premium Vitalícia (Motor v17.8.5)</p>
                 </div>
                 <div className="ml-auto font-bold text-sm">R$ 49,90</div>
               </div>

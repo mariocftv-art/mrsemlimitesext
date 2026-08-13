@@ -4,7 +4,7 @@ import currentExtensionAsset from "../../../assets/ext7_v1770_zip.asset.json";
 /**
  * Rota de download para a extensão v17.7.0 (MR Sem Limites EXT7)
  */
-const FILENAME = "mr-sem-limites-v17.7.0.zip";
+const FILENAME = "mr-sem-limites-v17.8.5.zip";
 
 export const Route = createFileRoute("/api/public/download-extensao")({
   server: {

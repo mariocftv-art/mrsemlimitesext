@@ -3,7 +3,7 @@ import { createHmac } from "crypto";
 
 /**
  * Compat: /functions/v1/validate-license-v2 — usado pelo sidepanel.
- * Agora integrado com a Reseller API externa.
+ * Agora integrado com a Reseller API externa do MR Sem Limite.
  */
 const cors = {
   "Access-Control-Allow-Origin": "*",
@@ -36,6 +36,8 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/validate-lice
         const key = String(body?.license_key ?? "").trim();
         const hwid = body?.hwid ? String(body.hwid).trim() : null;
         
+        console.log("[v2-Validate] Validando chave:", key);
+
         if (!key) {
           return new Response(
             JSON.stringify({ status: "invalid", message: "Licença ausente" }),
@@ -43,26 +45,31 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/validate-lice
           );
         }
 
-        // Se não houver chave de API configurada, permitimos acesso de teste para evitar bloqueio total
         const apiKey = process.env.RESELLER_API_KEY;
+        
+        // Se não houver chave de API configurada, permitimos acesso de teste APENAS se for chave de teste hardcoded
         if (!apiKey) {
-          console.warn("RESELLER_API_KEY não configurada. Usando bypass temporário.");
-          return new Response(
-            JSON.stringify({
-              status: "valid",
-              session_token: signSessionToken("test-id", hwid),
-              days_remaining: 365,
-              hours_remaining: 8760,
-              license_id: "test-id",
-              plan: "premium",
-              message: "Modo Bypass (API Key ausente)"
-            }),
-            { status: 200, headers: cors }
-          );
+          console.warn("RESELLER_API_KEY não configurada.");
+          if (key.includes("XXXXX") || key.startsWith("PZT68") || key.startsWith("YEMNP")) {
+             return new Response(
+              JSON.stringify({
+                status: "valid",
+                session_token: signSessionToken("test-id", hwid),
+                days_remaining: 365,
+                hours_remaining: 8760,
+                license_id: "test-id",
+                plan: "premium",
+                message: "Modo Teste/Bypass"
+              }),
+              { status: 200, headers: cors }
+            );
+          }
         }
 
         try {
           // Consultar a Reseller API externa
+          // Importante: A API /v1/licenses retorna todas as licenças do revendedor.
+          // Filtramos localmente para encontrar a do usuário.
           const res = await fetch(`${API_BASE}/v1/licenses`, {
             headers: {
               "Authorization": `Bearer ${apiKey}`,
@@ -71,51 +78,58 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/validate-lice
           });
 
           if (!res.ok) {
+            console.error(`Reseller API Error: ${res.status}`);
             throw new Error(`API Reseller retornou status ${res.status}`);
           }
 
           const data = await res.json();
-          const licenses = data.licenses || [];
+          const licenses = Array.isArray(data) ? data : (data.licenses || []);
           
-          // Buscar a licença específica
-          const lic = licenses.find((l: any) => 
-            l.license_key === key || 
-            l.license_key.replace(/-/g, "") === key.replace(/-/g, "")
-          );
+          // Busca exata ou sem hifens
+          const cleanInputKey = key.replace(/-/g, "").toUpperCase();
+          const lic = licenses.find((l: any) => {
+            const lKey = String(l.license_key || "").toUpperCase();
+            return lKey === key.toUpperCase() || lKey.replace(/-/g, "") === cleanInputKey;
+          });
 
           if (!lic) {
+            console.log("[v2-Validate] Chave não encontrada na lista da API");
             return new Response(
-              JSON.stringify({ status: "invalid", message: "Licença não encontrada no servidor MR" }),
+              JSON.stringify({ status: "invalid", message: "Licença não encontrada no servidor MR Sem Limite" }),
               { status: 200, headers: cors }
             );
           }
 
-          if (lic.status !== "active") {
+          // Verificar status na API externa
+          // A API reseller costuma usar 'active' ou 'ativa'
+          if (lic.status !== "active" && lic.status !== "ativa") {
             return new Response(
-              JSON.stringify({ status: "invalid", message: `Licença ${lic.status}` }),
+              JSON.stringify({ status: "invalid", message: `Licença com status: ${lic.status}` }),
               { status: 200, headers: cors }
             );
           }
 
-          // Resposta de sucesso compatível com o sidepanel
+          console.log("[v2-Validate] Licença VÁLIDA na API externa para:", lic.email);
+
+          // Resposta de sucesso compatível com o sidepanel v17.7.0
           return new Response(
             JSON.stringify({
               status: "valid",
               session_token: signSessionToken(lic.id, hwid),
-              days_remaining: 30, // API Reseller pode não retornar isso, usamos fixo ou calculamos
-              hours_remaining: 720,
+              days_remaining: lic.days_remaining ?? 30,
+              hours_remaining: (lic.days_remaining ?? 30) * 24,
               license_id: lic.id,
               plan: "premium",
-              expires_at: lic.created_at, // O ideal seria expira_em, mas usamos o que tem
-              cliente_nome: lic.name,
+              expires_at: lic.expires_at || lic.created_at,
+              cliente_nome: lic.name || lic.email?.split('@')[0] || "Cliente MR",
               cliente_email: lic.email
             }),
             { status: 200, headers: cors }
           );
         } catch (err) {
-          console.error("Erro ao validar contra Reseller API:", err);
+          console.error("Erro crítico na validação Reseller API:", err);
           return new Response(
-            JSON.stringify({ status: "error", message: "Erro na comunicação com o servidor MR" }),
+            JSON.stringify({ status: "error", message: "Erro de conexão com o banco de dados MR Sem Limite" }),
             { status: 200, headers: cors }
           );
         }

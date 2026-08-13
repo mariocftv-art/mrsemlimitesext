@@ -18,7 +18,7 @@ export const Route = createFileRoute("/api/public/ext/license-activation")({
         try { body = await request.json(); } catch { }
         
         const key = (body.license_key || body.code || body.license || "").trim();
-        console.log("[Activation] Sincronizando com Reseller API:", key);
+        console.log("[Activation] Ativando chave no MR Sem Limite:", key);
 
         if (!key) {
           return new Response(JSON.stringify({ valid: false, message: "Chave ausente" }), {
@@ -29,17 +29,17 @@ export const Route = createFileRoute("/api/public/ext/license-activation")({
 
         const apiKey = process.env.RESELLER_API_KEY;
         if (!apiKey) {
-          return new Response(JSON.stringify({
-            valid: true,
-            status: "valid",
-            session_id: "mr_bypass_" + Math.random().toString(36).slice(2),
-            user_name: "Usuário MR (Bypass)",
-            activated_at: new Date().toISOString(),
-            message: "Ativado via Bypass (API Key ausente)"
-          }), {
-            status: 200,
-            headers: cors,
-          });
+          // Fallback para chaves de teste
+          if (key.includes("XXXXX") || key.startsWith("PZT68") || key.startsWith("YEMNP")) {
+            return new Response(JSON.stringify({
+              valid: true,
+              status: "valid",
+              session_id: "mr_test_" + Math.random().toString(36).slice(2),
+              user_name: "Usuário Teste",
+              activated_at: new Date().toISOString(),
+              message: "Ativado (Modo Teste)"
+            }), { status: 200, headers: cors });
+          }
         }
 
         try {
@@ -50,17 +50,18 @@ export const Route = createFileRoute("/api/public/ext/license-activation")({
             }
           });
 
-          if (!res.ok) throw new Error("API Reseller Offline");
+          if (!res.ok) throw new Error("Servidor de Licenças Offline");
           const data = await res.json();
-          const licenses = data.licenses || [];
+          const licenses = Array.isArray(data) ? data : (data.licenses || []);
           
-          const lic = licenses.find((l: any) => 
-            l.license_key === key || 
-            l.license_key.replace(/-/g, "") === key.replace(/-/g, "")
-          );
+          const cleanInputKey = key.replace(/-/g, "").toUpperCase();
+          const lic = licenses.find((l: any) => {
+            const lKey = String(l.license_key || "").toUpperCase();
+            return lKey === key.toUpperCase() || lKey.replace(/-/g, "") === cleanInputKey;
+          });
 
           if (!lic) {
-            return new Response(JSON.stringify({ valid: false, message: "Licença não encontrada no servidor MR" }), {
+            return new Response(JSON.stringify({ valid: false, message: "Chave não encontrada no banco MR Sem Limite" }), {
               status: 200,
               headers: cors,
             });
@@ -71,9 +72,9 @@ export const Route = createFileRoute("/api/public/ext/license-activation")({
               valid: true, 
               status: "valid", 
               session_id: "mr_" + Math.random().toString(36).slice(2),
-              user_name: lic.name || "Usuário MR",
+              user_name: lic.name || lic.email?.split('@')[0] || "Cliente MR",
               activated_at: new Date().toISOString(),
-              message: "Ativado com sucesso via servidor MR Sem Limite"
+              message: "Licença ativada com sucesso no banco MR Sem Limite"
             }),
             { status: 200, headers: cors }
           );
@@ -82,7 +83,7 @@ export const Route = createFileRoute("/api/public/ext/license-activation")({
           return new Response(JSON.stringify({ 
             valid: false,
             status: "error", 
-            message: "Servidor MR temporariamente indisponível"
+            message: "Erro ao conectar com o servidor do MR Sem Limite"
           }), {
             status: 200,
             headers: cors,

@@ -50,6 +50,7 @@ import { Route as ApiPublicExtSendCommandRouteImport } from './routes/api/public
 import { Route as ApiPublicExtLicenseHeartbeatRouteImport } from './routes/api/public/ext/license-heartbeat'
 import { Route as ApiPublicExtLicenseDeactivateRouteImport } from './routes/api/public/ext/license-deactivate'
 import { Route as ApiPublicExtLicenseActivationRouteImport } from './routes/api/public/ext/license-activation'
+import { Route as ApiPublicExtProxyResellerApiSplatRouteImport } from './routes/api/public/ext/proxy.reseller-api.$'
 import { Route as ApiPublicExtFunctionsV1ValidateLicenseV2RouteImport } from './routes/api/public/ext/functions.v1.validate-license-v2'
 import { Route as ApiPublicExtFunctionsV1ValidateLicenseRouteImport } from './routes/api/public/ext/functions.v1.validate-license'
 import { Route as ApiPublicExtFunctionsV1ValidateChildLicenseRouteImport } from './routes/api/public/ext/functions.v1.validate-child-license'
@@ -274,6 +275,12 @@ const ApiPublicExtLicenseActivationRoute =
     path: '/api/public/ext/license-activation',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicExtProxyResellerApiSplatRoute =
+  ApiPublicExtProxyResellerApiSplatRouteImport.update({
+    id: '/api/public/ext/proxy/reseller-api/$',
+    path: '/api/public/ext/proxy/reseller-api/$',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicExtFunctionsV1ValidateLicenseV2Route =
   ApiPublicExtFunctionsV1ValidateLicenseV2RouteImport.update({
     id: '/api/public/ext/functions/v1/validate-license-v2',
@@ -400,6 +407,7 @@ export interface FileRoutesByFullPath {
   '/api/public/ext/functions/v1/validate-child-license': typeof ApiPublicExtFunctionsV1ValidateChildLicenseRoute
   '/api/public/ext/functions/v1/validate-license': typeof ApiPublicExtFunctionsV1ValidateLicenseRoute
   '/api/public/ext/functions/v1/validate-license-v2': typeof ApiPublicExtFunctionsV1ValidateLicenseV2Route
+  '/api/public/ext/proxy/reseller-api/$': typeof ApiPublicExtProxyResellerApiSplatRoute
   '/api/public/ext/storage/v1/object/$': typeof ApiPublicExtStorageV1ObjectSplatRoute
 }
 export interface FileRoutesByTo {
@@ -455,6 +463,7 @@ export interface FileRoutesByTo {
   '/api/public/ext/functions/v1/validate-child-license': typeof ApiPublicExtFunctionsV1ValidateChildLicenseRoute
   '/api/public/ext/functions/v1/validate-license': typeof ApiPublicExtFunctionsV1ValidateLicenseRoute
   '/api/public/ext/functions/v1/validate-license-v2': typeof ApiPublicExtFunctionsV1ValidateLicenseV2Route
+  '/api/public/ext/proxy/reseller-api/$': typeof ApiPublicExtProxyResellerApiSplatRoute
   '/api/public/ext/storage/v1/object/$': typeof ApiPublicExtStorageV1ObjectSplatRoute
 }
 export interface FileRoutesById {
@@ -511,6 +520,7 @@ export interface FileRoutesById {
   '/api/public/ext/functions/v1/validate-child-license': typeof ApiPublicExtFunctionsV1ValidateChildLicenseRoute
   '/api/public/ext/functions/v1/validate-license': typeof ApiPublicExtFunctionsV1ValidateLicenseRoute
   '/api/public/ext/functions/v1/validate-license-v2': typeof ApiPublicExtFunctionsV1ValidateLicenseV2Route
+  '/api/public/ext/proxy/reseller-api/$': typeof ApiPublicExtProxyResellerApiSplatRoute
   '/api/public/ext/storage/v1/object/$': typeof ApiPublicExtStorageV1ObjectSplatRoute
 }
 export interface FileRouteTypes {
@@ -568,6 +578,7 @@ export interface FileRouteTypes {
     | '/api/public/ext/functions/v1/validate-child-license'
     | '/api/public/ext/functions/v1/validate-license'
     | '/api/public/ext/functions/v1/validate-license-v2'
+    | '/api/public/ext/proxy/reseller-api/$'
     | '/api/public/ext/storage/v1/object/$'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -623,6 +634,7 @@ export interface FileRouteTypes {
     | '/api/public/ext/functions/v1/validate-child-license'
     | '/api/public/ext/functions/v1/validate-license'
     | '/api/public/ext/functions/v1/validate-license-v2'
+    | '/api/public/ext/proxy/reseller-api/$'
     | '/api/public/ext/storage/v1/object/$'
   id:
     | '__root__'
@@ -678,6 +690,7 @@ export interface FileRouteTypes {
     | '/api/public/ext/functions/v1/validate-child-license'
     | '/api/public/ext/functions/v1/validate-license'
     | '/api/public/ext/functions/v1/validate-license-v2'
+    | '/api/public/ext/proxy/reseller-api/$'
     | '/api/public/ext/storage/v1/object/$'
   fileRoutesById: FileRoutesById
 }
@@ -734,6 +747,7 @@ export interface RootRouteChildren {
   ApiPublicExtFunctionsV1ValidateChildLicenseRoute: typeof ApiPublicExtFunctionsV1ValidateChildLicenseRoute
   ApiPublicExtFunctionsV1ValidateLicenseRoute: typeof ApiPublicExtFunctionsV1ValidateLicenseRoute
   ApiPublicExtFunctionsV1ValidateLicenseV2Route: typeof ApiPublicExtFunctionsV1ValidateLicenseV2Route
+  ApiPublicExtProxyResellerApiSplatRoute: typeof ApiPublicExtProxyResellerApiSplatRoute
   ApiPublicExtStorageV1ObjectSplatRoute: typeof ApiPublicExtStorageV1ObjectSplatRoute
 }
 
@@ -1026,6 +1040,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicExtLicenseActivationRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/ext/proxy/reseller-api/$': {
+      id: '/api/public/ext/proxy/reseller-api/$'
+      path: '/api/public/ext/proxy/reseller-api/$'
+      fullPath: '/api/public/ext/proxy/reseller-api/$'
+      preLoaderRoute: typeof ApiPublicExtProxyResellerApiSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/ext/functions/v1/validate-license-v2': {
       id: '/api/public/ext/functions/v1/validate-license-v2'
       path: '/api/public/ext/functions/v1/validate-license-v2'
@@ -1176,6 +1197,8 @@ const rootRouteChildren: RootRouteChildren = {
     ApiPublicExtFunctionsV1ValidateLicenseRoute,
   ApiPublicExtFunctionsV1ValidateLicenseV2Route:
     ApiPublicExtFunctionsV1ValidateLicenseV2Route,
+  ApiPublicExtProxyResellerApiSplatRoute:
+    ApiPublicExtProxyResellerApiSplatRoute,
   ApiPublicExtStorageV1ObjectSplatRoute: ApiPublicExtStorageV1ObjectSplatRoute,
 }
 export const routeTree = rootRouteImport

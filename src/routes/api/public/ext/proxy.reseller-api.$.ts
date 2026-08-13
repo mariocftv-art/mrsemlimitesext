@@ -10,7 +10,7 @@ export const Route = createFileRoute("/api/public/ext/proxy/reseller-api/$")({
   server: {
     handlers: {
       GET: async ({ request, params }) => {
-        const path = params["_"];
+        const path = (params as any)["_"];
         const url = new URL(request.url);
         const targetUrl = `${EXTERNAL_API}/${path}${url.search}`;
         
@@ -28,7 +28,7 @@ export const Route = createFileRoute("/api/public/ext/proxy/reseller-api/$")({
         });
       },
       POST: async ({ request, params }) => {
-        const path = params["_"];
+        const path = (params as any)["_"];
         const url = new URL(request.url);
         const targetUrl = `${EXTERNAL_API}/${path}${url.search}`;
         

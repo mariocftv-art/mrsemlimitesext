@@ -26,6 +26,7 @@ import { Route as DevicesRouteImport } from './routes/devices'
 import { Route as CustomersRouteImport } from './routes/customers'
 import { Route as ComponentsRouteImport } from './routes/components'
 import { Route as CompatibilityRouteImport } from './routes/compatibility'
+import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as BuildCenterRouteImport } from './routes/build-center'
 import { Route as BlocksRouteImport } from './routes/blocks'
 import { Route as BlacklistRouteImport } from './routes/blacklist'
@@ -38,6 +39,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as RuntimeIdRouteImport } from './routes/runtime.$id'
 import { Route as PreviewIdRouteImport } from './routes/preview.$id'
 import { Route as LiveIdRouteImport } from './routes/live.$id'
+import { Route as AdminDashboardRouteImport } from './routes/admin/dashboard'
 import { Route as ApiPublicDownloadExtensaoRouteImport } from './routes/api/public/download-extensao'
 import { Route as ApiPublicWebhooksMercadopagoRouteImport } from './routes/api/public/webhooks/mercadopago'
 import { Route as ApiPublicWebhooksKiwifyRouteImport } from './routes/api/public/webhooks/kiwify'
@@ -142,6 +144,11 @@ const CompatibilityRoute = CompatibilityRouteImport.update({
   path: '/compatibility',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CheckoutRoute = CheckoutRouteImport.update({
+  id: '/checkout',
+  path: '/checkout',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BuildCenterRoute = BuildCenterRouteImport.update({
   id: '/build-center',
   path: '/build-center',
@@ -200,6 +207,11 @@ const PreviewIdRoute = PreviewIdRouteImport.update({
 const LiveIdRoute = LiveIdRouteImport.update({
   id: '/live/$id',
   path: '/live/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminDashboardRoute = AdminDashboardRouteImport.update({
+  id: '/admin/dashboard',
+  path: '/admin/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicDownloadExtensaoRoute =
@@ -318,6 +330,7 @@ export interface FileRoutesByFullPath {
   '/blacklist': typeof BlacklistRoute
   '/blocks': typeof BlocksRoute
   '/build-center': typeof BuildCenterRoute
+  '/checkout': typeof CheckoutRoute
   '/compatibility': typeof CompatibilityRoute
   '/components': typeof ComponentsRoute
   '/customers': typeof CustomersRoute
@@ -335,6 +348,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof SettingsRoute
   '/tools': typeof ToolsRoute
   '/versions': typeof VersionsRoute
+  '/admin/dashboard': typeof AdminDashboardRoute
   '/live/$id': typeof LiveIdRoute
   '/preview/$id': typeof PreviewIdRoute
   '/runtime/$id': typeof RuntimeIdRoute
@@ -367,6 +381,7 @@ export interface FileRoutesByTo {
   '/blacklist': typeof BlacklistRoute
   '/blocks': typeof BlocksRoute
   '/build-center': typeof BuildCenterRoute
+  '/checkout': typeof CheckoutRoute
   '/compatibility': typeof CompatibilityRoute
   '/components': typeof ComponentsRoute
   '/customers': typeof CustomersRoute
@@ -384,6 +399,7 @@ export interface FileRoutesByTo {
   '/settings': typeof SettingsRoute
   '/tools': typeof ToolsRoute
   '/versions': typeof VersionsRoute
+  '/admin/dashboard': typeof AdminDashboardRoute
   '/live/$id': typeof LiveIdRoute
   '/preview/$id': typeof PreviewIdRoute
   '/runtime/$id': typeof RuntimeIdRoute
@@ -417,6 +433,7 @@ export interface FileRoutesById {
   '/blacklist': typeof BlacklistRoute
   '/blocks': typeof BlocksRoute
   '/build-center': typeof BuildCenterRoute
+  '/checkout': typeof CheckoutRoute
   '/compatibility': typeof CompatibilityRoute
   '/components': typeof ComponentsRoute
   '/customers': typeof CustomersRoute
@@ -434,6 +451,7 @@ export interface FileRoutesById {
   '/settings': typeof SettingsRoute
   '/tools': typeof ToolsRoute
   '/versions': typeof VersionsRoute
+  '/admin/dashboard': typeof AdminDashboardRoute
   '/live/$id': typeof LiveIdRoute
   '/preview/$id': typeof PreviewIdRoute
   '/runtime/$id': typeof RuntimeIdRoute
@@ -468,6 +486,7 @@ export interface FileRouteTypes {
     | '/blacklist'
     | '/blocks'
     | '/build-center'
+    | '/checkout'
     | '/compatibility'
     | '/components'
     | '/customers'
@@ -485,6 +504,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/tools'
     | '/versions'
+    | '/admin/dashboard'
     | '/live/$id'
     | '/preview/$id'
     | '/runtime/$id'
@@ -517,6 +537,7 @@ export interface FileRouteTypes {
     | '/blacklist'
     | '/blocks'
     | '/build-center'
+    | '/checkout'
     | '/compatibility'
     | '/components'
     | '/customers'
@@ -534,6 +555,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/tools'
     | '/versions'
+    | '/admin/dashboard'
     | '/live/$id'
     | '/preview/$id'
     | '/runtime/$id'
@@ -566,6 +588,7 @@ export interface FileRouteTypes {
     | '/blacklist'
     | '/blocks'
     | '/build-center'
+    | '/checkout'
     | '/compatibility'
     | '/components'
     | '/customers'
@@ -583,6 +606,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/tools'
     | '/versions'
+    | '/admin/dashboard'
     | '/live/$id'
     | '/preview/$id'
     | '/runtime/$id'
@@ -616,6 +640,7 @@ export interface RootRouteChildren {
   BlacklistRoute: typeof BlacklistRoute
   BlocksRoute: typeof BlocksRoute
   BuildCenterRoute: typeof BuildCenterRoute
+  CheckoutRoute: typeof CheckoutRoute
   CompatibilityRoute: typeof CompatibilityRoute
   ComponentsRoute: typeof ComponentsRoute
   CustomersRoute: typeof CustomersRoute
@@ -633,6 +658,7 @@ export interface RootRouteChildren {
   SettingsRoute: typeof SettingsRoute
   ToolsRoute: typeof ToolsRoute
   VersionsRoute: typeof VersionsRoute
+  AdminDashboardRoute: typeof AdminDashboardRoute
   LiveIdRoute: typeof LiveIdRoute
   PreviewIdRoute: typeof PreviewIdRoute
   RuntimeIdRoute: typeof RuntimeIdRoute
@@ -777,6 +803,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CompatibilityRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/checkout': {
+      id: '/checkout'
+      path: '/checkout'
+      fullPath: '/checkout'
+      preLoaderRoute: typeof CheckoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/build-center': {
       id: '/build-center'
       path: '/build-center'
@@ -859,6 +892,13 @@ declare module '@tanstack/react-router' {
       path: '/live/$id'
       fullPath: '/live/$id'
       preLoaderRoute: typeof LiveIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/dashboard': {
+      id: '/admin/dashboard'
+      path: '/admin/dashboard'
+      fullPath: '/admin/dashboard'
+      preLoaderRoute: typeof AdminDashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/download-extensao': {
@@ -1000,6 +1040,7 @@ const rootRouteChildren: RootRouteChildren = {
   BlacklistRoute: BlacklistRoute,
   BlocksRoute: BlocksRoute,
   BuildCenterRoute: BuildCenterRoute,
+  CheckoutRoute: CheckoutRoute,
   CompatibilityRoute: CompatibilityRoute,
   ComponentsRoute: ComponentsRoute,
   CustomersRoute: CustomersRoute,
@@ -1017,6 +1058,7 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsRoute: SettingsRoute,
   ToolsRoute: ToolsRoute,
   VersionsRoute: VersionsRoute,
+  AdminDashboardRoute: AdminDashboardRoute,
   LiveIdRoute: LiveIdRoute,
   PreviewIdRoute: PreviewIdRoute,
   RuntimeIdRoute: RuntimeIdRoute,

@@ -16,7 +16,8 @@ import {
   ArrowLeft, 
   ShoppingBag,
   ShieldCheck,
-  Zap
+  Zap,
+  Package
 } from "lucide-react";
 
 export const Route = createFileRoute("/checkout")({

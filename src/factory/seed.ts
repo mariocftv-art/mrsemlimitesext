@@ -179,13 +179,13 @@ export const SEED_EXTENSIONS: ExtensionRecord[] = [
     id: "ext-06",
     slug: "mr-sem-limites-v17-6",
     code: "EXT6",
-    name: "MR Sem Limites v17.6.0",
+    name: "MR Sem Limites v17.6.5",
     description: "Master Kit v3: Motor v17.6.0 com Novo Backend Sincronizado e Proteção Avançada.",
-    version: "17.6.0",
+    version: "17.6.5",
     status: "production",
     tone: "cyan",
     sourceDir: "extensions/ext-06/integrated/mr-sem-limites-v17-6",
-    packagedZip: "ext6_v1760_zip",
+    packagedZip: "ext6_v1765_zip",
     assets: {},
     manifest: {
       manifestVersion: 3,
@@ -198,7 +198,7 @@ export const SEED_EXTENSIONS: ExtensionRecord[] = [
     builds: [],
     versions: [
       {
-        version: "17.6.0",
+        version: "17.6.5",
         releasedAt: "2026-08-12",
         notes: "Lançamento Extensão 6: Master Kit v3 com backend sincronizado.",
         changes: ["Novo backend sincronizado", "Motor v17.6.0", "Branding MR Sem Limites consolidado"],

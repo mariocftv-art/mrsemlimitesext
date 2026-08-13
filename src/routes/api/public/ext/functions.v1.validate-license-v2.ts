@@ -49,7 +49,7 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/validate-lice
         }
 
         // Validação de formato flexível: aceita qualquer formato para não bloquear o usuário
-        const keyPattern = /^([A-Z0-9]{5}-[A-Z0-9]{5}-[A-Z0-9]{5}-[A-Z0-9]{5}|MR-[A-Z0-9]{5}-[A-Z0-9]{5}-[A-Z0-9]{5}|[A-Z0-9]{5}-[A-Z0-9]{5}-[A-Z0-9]{5}|[A-Z0-9-]+)$/;
+        const keyPattern = /^([A-Z0-9]{5}-[A-Z0-9]{5}-[A-Z0-9]{5}-[A-Z0-9]{5}|[A-Z0-9]{5}-[A-Z0-9]{5}-[A-Z0-9]{5}-[A-Z0-9]{5}-[A-Z0-9]{5}|MR-[A-Z0-9]{5}-[A-Z0-9]{5}-[A-Z0-9]{5}|[A-Z0-9]{5}-[A-Z0-9]{5}-[A-Z0-9]{5}|[A-Z0-9-]+)$/;
         if (!keyPattern.test(key)) {
           return new Response(
             JSON.stringify({ 

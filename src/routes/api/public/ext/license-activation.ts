@@ -7,7 +7,7 @@ const cors = {
   "content-type": "application/json",
 };
 
-const API_BASE = "https://dwpuqewnfibeldegvimp.supabase.co/functions/v1/reseller-api";
+const API_BASE = "https://id-preview--44455b56-b609-45e7-8e53-9fd580b3ca9f.lovable.app/api/public/ext/proxy/reseller-api";
 
 export const Route = createFileRoute("/api/public/ext/license-activation")({
   server: {

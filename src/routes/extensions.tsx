@@ -5,13 +5,109 @@ import ext3ZipAsset from "@/assets/ext3_v29_zip.asset.json";
 import ext4ZipAsset from "@/assets/ext4_v412.zip.asset.json";
 import ext5ZipAsset from "@/assets/ext5_v1701.zip.asset.json";
 import ext7ZipAsset from "@/assets/ext7_v1770_zip.asset.json";
-import { useMemo, useState, useSyncExternalStore, useEffect } from "react";
-...
+import { useMemo, useState, useEffect } from "react";
+import {
+  Activity,
+  Bug,
+  Download,
+  Plus,
+  Puzzle,
+  Pencil,
+} from "lucide-react";
+
+import { AppShell } from "@/components/layout/app-shell";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { toast } from "sonner";
+import {
+  getAllExtensions,
+  subscribe,
+  createExtension,
+  updateExtension,
+  scanExtension,
+  type ExtensionRecord,
+  type ExtensionStatus,
+  type NeonTone,
+} from "@/factory";
+import { Badge } from "@/components/ui/badge";
+import { useServerFn } from "@tanstack/react-start";
+import { getExtensionBuildInfo } from "@/lib/factory.functions";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Progress } from "@/components/ui/progress";
+
+export const Route = createFileRoute("/extensions")({
+  component: ExtensionsPage,
+});
+
+const glow: Record<NeonTone, string> = {
+  cyan: "var(--neon-cyan)",
+  violet: "var(--neon-violet)",
+  magenta: "var(--neon-magenta)",
+  lime: "var(--neon-lime)",
+  orange: "#ff7e00",
+};
+
+type Filter = "all" | ExtensionStatus;
+
+function useExtensions() {
+  const [extensions, setExtensions] = useState(() => getAllExtensions());
+  useEffect(() => subscribe(() => setExtensions(getAllExtensions())), []);
+  return extensions;
+}
+
+function ExtensionsPage() {
+  const extensions = useExtensions();
+  const [wizardOpen, setWizardOpen] = useState(false);
+  const [importOpen, setImportOpen] = useState(false);
+  const [editing, setEditing] = useState<ExtensionRecord | null>(null);
+
+  const ext1 = extensions.find((e) => e.code === "EXT1");
+  const ext2 = extensions.find((e) => e.code === "EXT2");
+  const ext3 = extensions.find((e) => e.code === "EXT3");
+  const ext4 = extensions.find((e) => e.code === "EXT4");
   const ext5 = extensions.find((e) => e.code === "EXT5");
   const ext6 = extensions.find((e) => e.code === "EXT6");
   const ext7 = extensions.find((e) => e.code === "EXT7");
+
   const [filter, setFilter] = useState<Filter>("all");
-...
+
+  const downloadExt1 = () => {
+    downloadZip(ext1ZipAsset.url, "MR Sem Limites EXT1 v3.7.0.zip");
+  };
+
+  const downloadExt2 = () => {
+    downloadZip(ext2ZipAsset.url, "MR Sem Limites EXT2 v4.1.5.zip");
+  };
+
+  const downloadExt3 = () => {
+    downloadZip(ext3ZipAsset.url, "MR Sem Limites EXT3 v2.9.zip");
+  };
+
+  const downloadExt4 = () => {
+    downloadZip(ext4ZipAsset.url, "MR Sem Limites EXT4 v4.1.2.zip");
+  };
+
+  const downloadExt5 = () => {
+    downloadZip(ext5ZipAsset.url, "MR Sem Limites EXT5 v17.5.9.zip");
+  };
+
   const downloadExt6 = () => {
     downloadZip("/ext6_v1765_zip.zip", "MR Sem Limites EXT6 v17.6.5.zip");
   };
@@ -256,10 +352,7 @@ import { useMemo, useState, useSyncExternalStore, useEffect } from "react";
         )}
       </div>
 
-      {/* Seção removida conforme pedido: quadrados inferiores com cards detalhados foram removidos */}
-
       <NewExtensionWizard open={wizardOpen} onOpenChange={setWizardOpen} />
-      <ImportExtensionDialog open={importOpen} onOpenChange={setImportOpen} />
 
       {editing && (
         <EditExtensionDialog
@@ -280,113 +373,6 @@ function downloadZip(url: string, filename: string) {
   document.body.removeChild(a);
   toast.success("Download iniciado.");
 }
-
-function ExtensionCard({ ext }: { ext: ExtensionRecord; onEdit: () => void }) {
-  const [manifestVersion, setManifestVersion] = useState<string | null>(null);
-  const getBuildInfo = useServerFn(getExtensionBuildInfo);
-
-  useEffect(() => {
-    getBuildInfo({ data: { id: ext.id } }).then(info => {
-      if (info && !("error" in info)) {
-        setManifestVersion(info.manifestVersion);
-      }
-    });
-  }, [ext.id]);
-
-  const scan = useMemo(() => scanExtension(ext.sourceDir), [ext.sourceDir]);
-  const logo = ext.assets.logo ?? scan.assets.logo ?? scan.assets.icon128 ?? scan.assets.icon48;
-  const banner = ext.assets.banner ?? scan.assets.banner ?? scan.assets.chatBg;
-
-  return (
-    <Card
-      className="glass relative overflow-hidden border-border/60"
-      style={{ boxShadow: `0 0 40px -28px ${glow[ext.tone]}` }}
-    >
-      {banner && (
-        <div
-          className="h-20 w-full bg-cover bg-center opacity-70"
-          style={{ backgroundImage: `url(${banner})` }}
-        />
-      )}
-      <CardContent className="relative space-y-4 p-5">
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div
-              className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-border/60"
-              style={{ background: "var(--gradient-surface)" }}
-            >
-              {logo ? (
-                <img src={logo} alt="" className="h-full w-full object-cover" />
-              ) : (
-                <Puzzle className="h-5 w-5" style={{ color: glow[ext.tone] }} />
-              )}
-            </div>
-            <div className="min-w-0">
-              <p className="truncate text-base font-semibold">{ext.name}</p>
-              <p className="text-[11px] uppercase tracking-widest text-muted-foreground">
-                {ext.code} · v{manifestVersion || ext.version}
-              </p>
-              {manifestVersion && manifestVersion !== ext.version && (
-                <Badge variant="destructive" className="mt-1 h-4 text-[8px] uppercase">Divergência de Versão</Badge>
-              )}
-            </div>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 gap-1.5">
-          <ActionBtn icon={Download} label="Download" onClick={() => downloadZip(ext.packagedZip || "#", `${ext.name}.zip`)}>
-            Download
-          </ActionBtn>
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
-
-function InfoRow({ k, v, mono }: { k: string; v: string; mono?: boolean }) {
-  return (
-    <div className="rounded border border-border/40 bg-background/40 px-2 py-1.5">
-      <p className="text-[9px] uppercase tracking-widest text-muted-foreground">{k}</p>
-      <p className={`mt-0.5 truncate ${mono ? "font-mono" : ""}`}>{v}</p>
-    </div>
-  );
-}
-
-function ActionBtn({
-  icon: Icon,
-  label,
-  asChild,
-  children,
-}: {
-  icon: typeof Pencil;
-  label: string;
-  onClick?: () => void;
-  asChild?: boolean;
-  children?: React.ReactNode;
-  destructive?: boolean;
-}) {
-  return (
-    <Button
-      asChild={asChild}
-      variant="outline"
-      size="sm"
-      className="h-8 gap-1 text-[11px]"
-      title={label}
-    >
-      {asChild ? (
-        (children as React.ReactElement)
-      ) : (
-        <span className="flex items-center gap-1">
-          <Icon className="h-3.5 w-3.5" /> {label}
-        </span>
-      )}
-    </Button>
-  );
-}
-
-// ============================================================
-// Wizard
-// ============================================================
 
 const TONES: { value: NeonTone; label: string; color: string }[] = [
   { value: "cyan", label: "Ciano", color: "var(--neon-cyan)" },
@@ -613,10 +599,6 @@ function NewExtensionWizard({
     </Dialog>
   );
 }
-
-// ============================================================
-// Edit Dialog (minimal)
-// ============================================================
 
 function EditExtensionDialog({
   ext,

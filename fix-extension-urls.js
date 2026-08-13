@@ -27,17 +27,20 @@ walk('extensions', (filepath) => {
   // 1. Replace manifest host permissions
   content = content.replace(/dwpuqewnfibeldegvimp\.supabase\.co/g, SITE_URL);
 
-  // 2. Replace obfuscated host variables in JS (more flexible regex)
-  // Pattern: _n17ce4c='dwp'+'uqe'+'wn'+('fib'+'eld'+'egv'+'imp')
-  content = content.replace(/_n17ce4c=['"]dwp['"]\+['"]uqe['"]\+['"]wn['"]\+\(['"]fib['"]\+['"]eld['"]\+['"]egv['"]\+['"]imp['"]\)/g, `_n17ce4c='${FULL_PROXY_URL}'`);
-  content = content.replace(/_n17ce4c=['"]dwp['"]\+['"]uqe['"]\+['"]wn['"]\+(['"]fib['"]\+['"]eld['"]\+['"]egv['"]\+['"]imp['"]\)/g, `_n17ce4c='${FULL_PROXY_URL}'`);
+  // 2. Replace obfuscated host variables in JS (using string replacement for safety)
+  const pattern1 = "_n17ce4c='dwp'+'uqe'+'wn'+('fib'+'eld'+'egv'+'imp')";
+  const pattern2 = "_n17ce4c='dwp'+'uqe'+'wn'+'fib'+'eld'+'egv'+'imp'";
+  const pattern3 = "_n2dfabf='dwp'+'uqe'+'wn'+('fib'+'eld'+'egv'+'imp')";
   
-  content = content.replace(/_n2dfabf=['"]dwp['"]\+['"]uqe['"]\+['"]wn['"]\+\(['"]fib['"]\+['"]eld['"]\+['"]egv['"]\+['"]imp['"]\)/g, `_n2dfabf='${FULL_PROXY_URL}'`);
-  content = content.replace(/_n2dfabf=['"]dwp['"]\+['"]uqe['"]\+['"]wn['"]\+(['"]fib['"]\+['"]eld['"]\+['"]egv['"]\+['"]imp['"]\)/g, `_n2dfabf='${FULL_PROXY_URL}'`);
+  content = content.split(pattern1).join(`_n17ce4c='${FULL_PROXY_URL}'`);
+  content = content.split(pattern2).join(`_n17ce4c='${FULL_PROXY_URL}'`);
+  content = content.split(pattern3).join(`_n2dfabf='${FULL_PROXY_URL}'`);
 
   // 3. Suffixes
-  content = content.replace(/\+\(['"]\.su['"]\+['"]pab['"]\+['"]ase['"]\+['"]\.co['"]\)/g, '');
-  content = content.replace(/\+['"]\.su['"]\+['"]pab['"]\+['"]ase['"]\+['"]\.co['"]/g, '');
+  const suffix1 = "+('.su'+'pab'+'ase'+'.co')";
+  const suffix2 = "+'.su'+'pab'+'ase'+'.co'";
+  content = content.split(suffix1).join("");
+  content = content.split(suffix2).join("");
 
   // 4. Full URL strings
   content = content.replace(/dwpuqewnfibeldegvimp\.supabase\.co\/functions\/v1/g, FULL_PROXY_URL + '/functions/v1');

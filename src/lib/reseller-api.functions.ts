@@ -43,10 +43,19 @@ export const createLicense = createServerFn({ method: "POST" })
     return res.json();
   });
 
-export const resetLicenseHardware = createServerFn({ method: "POST" })
-  .inputValidator((d) => z.object({ license_id: z.string() }).parse(d))
+export const listLicenses = createServerFn({ method: "GET" })
+  .handler(async () => {
+    const res = await fetch(`${API_BASE}/v1/licenses`, {
+      headers: getHeaders(),
+    });
+    if (!res.ok) throw new Error(`Failed to fetch licenses: ${res.status}`);
+    return res.json();
+  });
+
+export const resetHwid = createServerFn({ method: "POST" })
+  .inputValidator((d) => z.object({ id: z.string() }).parse(d))
   .handler(async ({ data }) => {
-    const res = await fetch(`${API_BASE}/v1/licenses/${data.license_id}/reset-hwid`, {
+    const res = await fetch(`${API_BASE}/v1/licenses/${data.id}/reset-hwid`, {
       method: "POST",
       headers: getHeaders(),
     });

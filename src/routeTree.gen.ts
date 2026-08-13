@@ -50,6 +50,7 @@ import { Route as ApiPublicExtSendCommandRouteImport } from './routes/api/public
 import { Route as ApiPublicExtLicenseHeartbeatRouteImport } from './routes/api/public/ext/license-heartbeat'
 import { Route as ApiPublicExtLicenseDeactivateRouteImport } from './routes/api/public/ext/license-deactivate'
 import { Route as ApiPublicExtLicenseActivationRouteImport } from './routes/api/public/ext/license-activation'
+import { Route as ApiPublicExtDownloadSplatRouteImport } from './routes/api/public/ext/download.$'
 import { Route as ApiPublicExtProxyResellerApiSplatRouteImport } from './routes/api/public/ext/proxy.reseller-api.$'
 import { Route as ApiPublicExtFunctionsV1ValidateLicenseV2RouteImport } from './routes/api/public/ext/functions.v1.validate-license-v2'
 import { Route as ApiPublicExtFunctionsV1ValidateLicenseRouteImport } from './routes/api/public/ext/functions.v1.validate-license'
@@ -275,6 +276,12 @@ const ApiPublicExtLicenseActivationRoute =
     path: '/api/public/ext/license-activation',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicExtDownloadSplatRoute =
+  ApiPublicExtDownloadSplatRouteImport.update({
+    id: '/api/public/ext/download/$',
+    path: '/api/public/ext/download/$',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicExtProxyResellerApiSplatRoute =
   ApiPublicExtProxyResellerApiSplatRouteImport.update({
     id: '/api/public/ext/proxy/reseller-api/$',
@@ -396,6 +403,7 @@ export interface FileRoutesByFullPath {
   '/api/public/webhooks/cakto': typeof ApiPublicWebhooksCaktoRoute
   '/api/public/webhooks/kiwify': typeof ApiPublicWebhooksKiwifyRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
+  '/api/public/ext/download/$': typeof ApiPublicExtDownloadSplatRoute
   '/api/public/ext/functions/v1/download-zip': typeof ApiPublicExtFunctionsV1DownloadZipRoute
   '/api/public/ext/functions/v1/get-support-info': typeof ApiPublicExtFunctionsV1GetSupportInfoRoute
   '/api/public/ext/functions/v1/get-templates': typeof ApiPublicExtFunctionsV1GetTemplatesRoute
@@ -452,6 +460,7 @@ export interface FileRoutesByTo {
   '/api/public/webhooks/cakto': typeof ApiPublicWebhooksCaktoRoute
   '/api/public/webhooks/kiwify': typeof ApiPublicWebhooksKiwifyRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
+  '/api/public/ext/download/$': typeof ApiPublicExtDownloadSplatRoute
   '/api/public/ext/functions/v1/download-zip': typeof ApiPublicExtFunctionsV1DownloadZipRoute
   '/api/public/ext/functions/v1/get-support-info': typeof ApiPublicExtFunctionsV1GetSupportInfoRoute
   '/api/public/ext/functions/v1/get-templates': typeof ApiPublicExtFunctionsV1GetTemplatesRoute
@@ -509,6 +518,7 @@ export interface FileRoutesById {
   '/api/public/webhooks/cakto': typeof ApiPublicWebhooksCaktoRoute
   '/api/public/webhooks/kiwify': typeof ApiPublicWebhooksKiwifyRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
+  '/api/public/ext/download/$': typeof ApiPublicExtDownloadSplatRoute
   '/api/public/ext/functions/v1/download-zip': typeof ApiPublicExtFunctionsV1DownloadZipRoute
   '/api/public/ext/functions/v1/get-support-info': typeof ApiPublicExtFunctionsV1GetSupportInfoRoute
   '/api/public/ext/functions/v1/get-templates': typeof ApiPublicExtFunctionsV1GetTemplatesRoute
@@ -567,6 +577,7 @@ export interface FileRouteTypes {
     | '/api/public/webhooks/cakto'
     | '/api/public/webhooks/kiwify'
     | '/api/public/webhooks/mercadopago'
+    | '/api/public/ext/download/$'
     | '/api/public/ext/functions/v1/download-zip'
     | '/api/public/ext/functions/v1/get-support-info'
     | '/api/public/ext/functions/v1/get-templates'
@@ -623,6 +634,7 @@ export interface FileRouteTypes {
     | '/api/public/webhooks/cakto'
     | '/api/public/webhooks/kiwify'
     | '/api/public/webhooks/mercadopago'
+    | '/api/public/ext/download/$'
     | '/api/public/ext/functions/v1/download-zip'
     | '/api/public/ext/functions/v1/get-support-info'
     | '/api/public/ext/functions/v1/get-templates'
@@ -679,6 +691,7 @@ export interface FileRouteTypes {
     | '/api/public/webhooks/cakto'
     | '/api/public/webhooks/kiwify'
     | '/api/public/webhooks/mercadopago'
+    | '/api/public/ext/download/$'
     | '/api/public/ext/functions/v1/download-zip'
     | '/api/public/ext/functions/v1/get-support-info'
     | '/api/public/ext/functions/v1/get-templates'
@@ -736,6 +749,7 @@ export interface RootRouteChildren {
   ApiPublicWebhooksCaktoRoute: typeof ApiPublicWebhooksCaktoRoute
   ApiPublicWebhooksKiwifyRoute: typeof ApiPublicWebhooksKiwifyRoute
   ApiPublicWebhooksMercadopagoRoute: typeof ApiPublicWebhooksMercadopagoRoute
+  ApiPublicExtDownloadSplatRoute: typeof ApiPublicExtDownloadSplatRoute
   ApiPublicExtFunctionsV1DownloadZipRoute: typeof ApiPublicExtFunctionsV1DownloadZipRoute
   ApiPublicExtFunctionsV1GetSupportInfoRoute: typeof ApiPublicExtFunctionsV1GetSupportInfoRoute
   ApiPublicExtFunctionsV1GetTemplatesRoute: typeof ApiPublicExtFunctionsV1GetTemplatesRoute
@@ -1040,6 +1054,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicExtLicenseActivationRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/ext/download/$': {
+      id: '/api/public/ext/download/$'
+      path: '/api/public/ext/download/$'
+      fullPath: '/api/public/ext/download/$'
+      preLoaderRoute: typeof ApiPublicExtDownloadSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/ext/proxy/reseller-api/$': {
       id: '/api/public/ext/proxy/reseller-api/$'
       path: '/api/public/ext/proxy/reseller-api/$'
@@ -1176,6 +1197,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicWebhooksCaktoRoute: ApiPublicWebhooksCaktoRoute,
   ApiPublicWebhooksKiwifyRoute: ApiPublicWebhooksKiwifyRoute,
   ApiPublicWebhooksMercadopagoRoute: ApiPublicWebhooksMercadopagoRoute,
+  ApiPublicExtDownloadSplatRoute: ApiPublicExtDownloadSplatRoute,
   ApiPublicExtFunctionsV1DownloadZipRoute:
     ApiPublicExtFunctionsV1DownloadZipRoute,
   ApiPublicExtFunctionsV1GetSupportInfoRoute:

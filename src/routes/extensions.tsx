@@ -4,7 +4,7 @@ import ext2ZipAsset from "@/assets/ext2_v29_zip.asset.json";
 import ext3ZipAsset from "@/assets/ext3_v29_zip.asset.json";
 import ext4ZipAsset from "@/assets/ext4_v412.zip.asset.json";
 import ext5ZipAsset from "@/assets/ext5_v1701.zip.asset.json";
-import ext7ZipAsset from "@/assets/ext7_v1785_zip.asset.json";
+import ext7ZipAsset from "@/assets/ext7_v1786_zip.asset.json";
 import { useMemo, useState, useEffect } from "react";
 import {
   Activity,
@@ -113,7 +113,7 @@ function ExtensionsPage() {
   };
 
   const downloadExt7 = () => {
-    downloadZip("/api/public/ext/download/ext-07/integrated/ext7_v1785_zip.zip", "MR Sem Limites EXT7 v17.8.5.zip");
+    downloadZip("/api/public/ext/download/ext-07/integrated/ext7_v1786_zip.zip", "MR Sem Limites EXT7 v17.8.6.zip");
   };
 
   return (
@@ -328,7 +328,7 @@ function ExtensionsPage() {
                   <Puzzle className="h-5 w-5 text-cyan-400" />
                 </div>
                 <div>
-                  <p className="text-sm font-bold">EXTENSÃO SETE 17.8.5</p>
+                  <p className="text-sm font-bold">EXTENSÃO SETE 17.8.6</p>
                   <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{ext7.name}</p>
                 </div>
               </div>

@@ -3,7 +3,7 @@ import { createHmac } from "crypto";
 
 /**
  * Compat: /functions/v1/validate-license-v2 — usado pelo sidepanel.
- * Agora integrado com a Reseller API externa do MR Sem Limite.
+ * Integrado com a Reseller API externa do MR Sem Limite.
  */
 const cors = {
   "Access-Control-Allow-Origin": "*",
@@ -68,8 +68,6 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/validate-lice
 
         try {
           // Consultar a Reseller API externa
-          // Importante: A API /v1/licenses retorna todas as licenças do revendedor.
-          // Filtramos localmente para encontrar a do usuário.
           const res = await fetch(`${API_BASE}/v1/licenses`, {
             headers: {
               "Authorization": `Bearer ${apiKey}`,
@@ -101,7 +99,6 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/validate-lice
           }
 
           // Verificar status na API externa
-          // A API reseller costuma usar 'active' ou 'ativa'
           if (lic.status !== "active" && lic.status !== "ativa") {
             return new Response(
               JSON.stringify({ status: "invalid", message: `Licença com status: ${lic.status}` }),
@@ -111,7 +108,7 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/validate-lice
 
           console.log("[v2-Validate] Licença VÁLIDA na API externa para:", lic.email);
 
-          // Resposta de sucesso compatível com o sidepanel v17.7.0
+          // Resposta de sucesso compatível com o sidepanel v17.8.6
           return new Response(
             JSON.stringify({
               status: "valid",
@@ -121,7 +118,7 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/validate-lice
               license_id: lic.id,
               plan: "premium",
               expires_at: lic.expires_at || lic.created_at,
-              cliente_nome: lic.name || lic.email?.split('@')[0] || "Cliente MR",
+              cliente_nome: lic.name || (lic.email ? lic.email.split('@')[0] : "Cliente MR"),
               cliente_email: lic.email
             }),
             { status: 200, headers: cors }

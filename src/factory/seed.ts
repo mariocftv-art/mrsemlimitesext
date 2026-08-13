@@ -212,13 +212,13 @@ export const SEED_EXTENSIONS: ExtensionRecord[] = [
     id: "ext-07",
     slug: "mr-sem-limites-v17-7",
     code: "EXT7",
-    name: "MR Sem Limites v17.8.5",
-    description: "Master Kit v3.5: Motor v17.8.5 com Novo Backend Sincronizado e Proteção Avançada.",
-    version: "17.8.5",
+    name: "MR Sem Limites v17.8.6",
+    description: "Master Kit v3.5: Motor v17.8.6 com Novo Backend Sincronizado e Proteção Avançada.",
+    version: "17.8.6",
     status: "production",
     tone: "cyan",
     sourceDir: "extensions/ext-07/integrated/mr-sem-limites-v17-7",
-    packagedZip: "ext7_v1785_zip",
+    packagedZip: "ext7_v1786_zip",
     assets: {},
     manifest: {
       manifestVersion: 3,
@@ -231,10 +231,10 @@ export const SEED_EXTENSIONS: ExtensionRecord[] = [
     builds: [],
     versions: [
       {
-        version: "17.8.5",
+        version: "17.8.6",
         releasedAt: "2026-08-13",
-        notes: "Atualização de Versão: Motor v17.8.5 e melhorias na sincronização do painel.",
-        changes: ["Versão 17.8.5 ativada", "Sincronização de metadados", "Backend Master Kit v3.5"],
+        notes: "Atualização de Versão: Motor v17.8.6 e melhorias na sincronização do painel.",
+        changes: ["Versão 17.8.6 ativada", "Sincronização de metadados", "Backend Master Kit v3.5"],
       },
       {
         version: "17.7.0",
@@ -243,8 +243,8 @@ export const SEED_EXTENSIONS: ExtensionRecord[] = [
         changes: ["Novo backend sincronizado", "Motor v17.7.0", "Branding MR Sem Limites consolidado", "Formato de chave XXXXX-XXXXX-XXXXX-XXXXX"],
       },
     ],
-    notes: "Base v17.7 (motor v17.8.5) com Novo Backend Master Kit.",
+    notes: "Base v17.7 (motor v17.8.6) com Novo Backend Master Kit.",
     createdAt: "2026-08-13",
-    updatedAt: "2026-08-13 22:15",
+    updatedAt: "2026-08-13 23:45",
   },
 ];

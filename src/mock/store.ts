@@ -99,12 +99,11 @@ function addLog(entry: LogEntry) {
 // ---------- LICENSES ----------
 export const licenseActions = {
   generateKey(): string {
-    // Formato oficial da extensão (sidepanel): XXXXX-XXXXX-XXXXX-XXXXX
-    // 4 blocos de 5 caracteres alfanuméricos maiúsculos (23 chars total).
-    const ALPH = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // sem 0/O/1/I
+    // Formato Reseller API: XXXXX-XXXXX-XXXXX-XXXXX-XXXXX (5 blocos)
+    const ALPH = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
     const seg = () =>
       Array.from({ length: 5 }, () => ALPH[Math.floor(Math.random() * ALPH.length)]).join("");
-    return `${seg()}-${seg()}-${seg()}-${seg()}`;
+    return `${seg()}-${seg()}-${seg()}-${seg()}-${seg()}`;
   },
 
   create(input: Partial<License>): License {

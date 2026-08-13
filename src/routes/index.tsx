@@ -159,6 +159,8 @@ function FactoryDashboard() {
               ["Assets & Icons", "/assets"],
               ["Animações", "/animations"],
               ["Componentes", "/components"],
+              ["Checkout Premium", "/checkout"],
+              ["Painel Revendedor", "/admin/dashboard"],
               ["Prompts Premium", "/prompts"],
               ["Ferramentas", "/tools"],
               ["Segurança & Checksum", "/security"],

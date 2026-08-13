@@ -231,10 +231,10 @@ export const SEED_EXTENSIONS: ExtensionRecord[] = [
     builds: [],
     versions: [
       {
-        version: "17.8.5",
+        version: "17.8.6",
         releasedAt: "2026-08-13",
-        notes: "Atualização de Versão: Motor v17.8.5 e melhorias na sincronização do painel.",
-        changes: ["Versão 17.8.5 ativada", "Sincronização de metadados", "Backend Master Kit v3.5"],
+        notes: "Atualização de Versão: Motor v17.8.6 e melhorias na sincronização do painel.",
+        changes: ["Versão 17.8.6 ativada", "Sincronização de metadados", "Backend Master Kit v3.5"],
       },
       {
         version: "17.7.0",

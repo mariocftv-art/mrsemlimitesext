@@ -40,6 +40,7 @@ import { Route as RuntimeIdRouteImport } from './routes/runtime.$id'
 import { Route as PreviewIdRouteImport } from './routes/preview.$id'
 import { Route as LiveIdRouteImport } from './routes/live.$id'
 import { Route as AdminDashboardRouteImport } from './routes/admin/dashboard'
+import { Route as ApiPublicWebhookRouteImport } from './routes/api/public/webhook'
 import { Route as ApiPublicDownloadExtensaoRouteImport } from './routes/api/public/download-extensao'
 import { Route as ApiPublicWebhooksMercadopagoRouteImport } from './routes/api/public/webhooks/mercadopago'
 import { Route as ApiPublicWebhooksKiwifyRouteImport } from './routes/api/public/webhooks/kiwify'
@@ -214,6 +215,11 @@ const AdminDashboardRoute = AdminDashboardRouteImport.update({
   path: '/admin/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicWebhookRoute = ApiPublicWebhookRouteImport.update({
+  id: '/api/public/webhook',
+  path: '/api/public/webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicDownloadExtensaoRoute =
   ApiPublicDownloadExtensaoRouteImport.update({
     id: '/api/public/download-extensao',
@@ -353,6 +359,7 @@ export interface FileRoutesByFullPath {
   '/preview/$id': typeof PreviewIdRoute
   '/runtime/$id': typeof RuntimeIdRoute
   '/api/public/download-extensao': typeof ApiPublicDownloadExtensaoRoute
+  '/api/public/webhook': typeof ApiPublicWebhookRoute
   '/api/public/ext/license-activation': typeof ApiPublicExtLicenseActivationRoute
   '/api/public/ext/license-deactivate': typeof ApiPublicExtLicenseDeactivateRoute
   '/api/public/ext/license-heartbeat': typeof ApiPublicExtLicenseHeartbeatRoute
@@ -404,6 +411,7 @@ export interface FileRoutesByTo {
   '/preview/$id': typeof PreviewIdRoute
   '/runtime/$id': typeof RuntimeIdRoute
   '/api/public/download-extensao': typeof ApiPublicDownloadExtensaoRoute
+  '/api/public/webhook': typeof ApiPublicWebhookRoute
   '/api/public/ext/license-activation': typeof ApiPublicExtLicenseActivationRoute
   '/api/public/ext/license-deactivate': typeof ApiPublicExtLicenseDeactivateRoute
   '/api/public/ext/license-heartbeat': typeof ApiPublicExtLicenseHeartbeatRoute
@@ -456,6 +464,7 @@ export interface FileRoutesById {
   '/preview/$id': typeof PreviewIdRoute
   '/runtime/$id': typeof RuntimeIdRoute
   '/api/public/download-extensao': typeof ApiPublicDownloadExtensaoRoute
+  '/api/public/webhook': typeof ApiPublicWebhookRoute
   '/api/public/ext/license-activation': typeof ApiPublicExtLicenseActivationRoute
   '/api/public/ext/license-deactivate': typeof ApiPublicExtLicenseDeactivateRoute
   '/api/public/ext/license-heartbeat': typeof ApiPublicExtLicenseHeartbeatRoute
@@ -509,6 +518,7 @@ export interface FileRouteTypes {
     | '/preview/$id'
     | '/runtime/$id'
     | '/api/public/download-extensao'
+    | '/api/public/webhook'
     | '/api/public/ext/license-activation'
     | '/api/public/ext/license-deactivate'
     | '/api/public/ext/license-heartbeat'
@@ -560,6 +570,7 @@ export interface FileRouteTypes {
     | '/preview/$id'
     | '/runtime/$id'
     | '/api/public/download-extensao'
+    | '/api/public/webhook'
     | '/api/public/ext/license-activation'
     | '/api/public/ext/license-deactivate'
     | '/api/public/ext/license-heartbeat'
@@ -611,6 +622,7 @@ export interface FileRouteTypes {
     | '/preview/$id'
     | '/runtime/$id'
     | '/api/public/download-extensao'
+    | '/api/public/webhook'
     | '/api/public/ext/license-activation'
     | '/api/public/ext/license-deactivate'
     | '/api/public/ext/license-heartbeat'
@@ -663,6 +675,7 @@ export interface RootRouteChildren {
   PreviewIdRoute: typeof PreviewIdRoute
   RuntimeIdRoute: typeof RuntimeIdRoute
   ApiPublicDownloadExtensaoRoute: typeof ApiPublicDownloadExtensaoRoute
+  ApiPublicWebhookRoute: typeof ApiPublicWebhookRoute
   ApiPublicExtLicenseActivationRoute: typeof ApiPublicExtLicenseActivationRoute
   ApiPublicExtLicenseDeactivateRoute: typeof ApiPublicExtLicenseDeactivateRoute
   ApiPublicExtLicenseHeartbeatRoute: typeof ApiPublicExtLicenseHeartbeatRoute
@@ -901,6 +914,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminDashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/webhook': {
+      id: '/api/public/webhook'
+      path: '/api/public/webhook'
+      fullPath: '/api/public/webhook'
+      preLoaderRoute: typeof ApiPublicWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/download-extensao': {
       id: '/api/public/download-extensao'
       path: '/api/public/download-extensao'
@@ -1063,6 +1083,7 @@ const rootRouteChildren: RootRouteChildren = {
   PreviewIdRoute: PreviewIdRoute,
   RuntimeIdRoute: RuntimeIdRoute,
   ApiPublicDownloadExtensaoRoute: ApiPublicDownloadExtensaoRoute,
+  ApiPublicWebhookRoute: ApiPublicWebhookRoute,
   ApiPublicExtLicenseActivationRoute: ApiPublicExtLicenseActivationRoute,
   ApiPublicExtLicenseDeactivateRoute: ApiPublicExtLicenseDeactivateRoute,
   ApiPublicExtLicenseHeartbeatRoute: ApiPublicExtLicenseHeartbeatRoute,

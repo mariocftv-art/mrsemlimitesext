@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import currentExtensionAsset from "../../../assets/ext7_v1775_zip.asset.json";
+import currentExtensionAsset from "../../../assets/ext7_v1785_zip.asset.json";
 
 /**
  * Rota de download para a extensão v17.7.0 (MR Sem Limites EXT7)

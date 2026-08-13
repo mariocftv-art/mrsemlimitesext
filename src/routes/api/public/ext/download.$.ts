@@ -12,7 +12,7 @@ export const Route = createFileRoute("/api/public/ext/download/$")({
       GET: async ({ request }) => {
         const url = new URL(request.url);
         // Em TanStack Start, podemos pegar o caminho diretamente da URL se o params falhar
-        const pathname = url.pathname;
+        const pathname = decodeURIComponent(url.pathname);
         const prefix = "/api/public/ext/download/";
         const filePath = pathname.startsWith(prefix) ? pathname.slice(prefix.length) : "";
         

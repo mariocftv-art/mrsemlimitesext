@@ -51,7 +51,9 @@ import { Route as ApiPublicExtLicenseHeartbeatRouteImport } from './routes/api/p
 import { Route as ApiPublicExtLicenseDeactivateRouteImport } from './routes/api/public/ext/license-deactivate'
 import { Route as ApiPublicExtLicenseActivationRouteImport } from './routes/api/public/ext/license-activation'
 import { Route as ApiPublicExtFunctionsV1ValidateLicenseV2RouteImport } from './routes/api/public/ext/functions.v1.validate-license-v2'
+import { Route as ApiPublicExtFunctionsV1ValidateChildLicenseRouteImport } from './routes/api/public/ext/functions.v1.validate-child-license'
 import { Route as ApiPublicExtFunctionsV1ServeExtensionUiRouteImport } from './routes/api/public/ext/functions.v1.serve-extension-ui'
+import { Route as ApiPublicExtFunctionsV1ResetLicenseHwidRouteImport } from './routes/api/public/ext/functions.v1.reset-license-hwid'
 import { Route as ApiPublicExtFunctionsV1ReportTamperRouteImport } from './routes/api/public/ext/functions.v1.report-tamper'
 import { Route as ApiPublicExtFunctionsV1Lov4RouteImport } from './routes/api/public/ext/functions.v1.lov4'
 import { Route as ApiPublicExtFunctionsV1InjectConfigRouteImport } from './routes/api/public/ext/functions.v1.inject-config'
@@ -277,10 +279,22 @@ const ApiPublicExtFunctionsV1ValidateLicenseV2Route =
     path: '/api/public/ext/functions/v1/validate-license-v2',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicExtFunctionsV1ValidateChildLicenseRoute =
+  ApiPublicExtFunctionsV1ValidateChildLicenseRouteImport.update({
+    id: '/api/public/ext/functions/v1/validate-child-license',
+    path: '/api/public/ext/functions/v1/validate-child-license',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicExtFunctionsV1ServeExtensionUiRoute =
   ApiPublicExtFunctionsV1ServeExtensionUiRouteImport.update({
     id: '/api/public/ext/functions/v1/serve-extension-ui',
     path: '/api/public/ext/functions/v1/serve-extension-ui',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicExtFunctionsV1ResetLicenseHwidRoute =
+  ApiPublicExtFunctionsV1ResetLicenseHwidRouteImport.update({
+    id: '/api/public/ext/functions/v1/reset-license-hwid',
+    path: '/api/public/ext/functions/v1/reset-license-hwid',
     getParentRoute: () => rootRouteImport,
   } as any)
 const ApiPublicExtFunctionsV1ReportTamperRoute =
@@ -374,7 +388,9 @@ export interface FileRoutesByFullPath {
   '/api/public/ext/functions/v1/inject-config': typeof ApiPublicExtFunctionsV1InjectConfigRoute
   '/api/public/ext/functions/v1/lov4': typeof ApiPublicExtFunctionsV1Lov4Route
   '/api/public/ext/functions/v1/report-tamper': typeof ApiPublicExtFunctionsV1ReportTamperRoute
+  '/api/public/ext/functions/v1/reset-license-hwid': typeof ApiPublicExtFunctionsV1ResetLicenseHwidRoute
   '/api/public/ext/functions/v1/serve-extension-ui': typeof ApiPublicExtFunctionsV1ServeExtensionUiRoute
+  '/api/public/ext/functions/v1/validate-child-license': typeof ApiPublicExtFunctionsV1ValidateChildLicenseRoute
   '/api/public/ext/functions/v1/validate-license-v2': typeof ApiPublicExtFunctionsV1ValidateLicenseV2Route
   '/api/public/ext/storage/v1/object/$': typeof ApiPublicExtStorageV1ObjectSplatRoute
 }
@@ -426,7 +442,9 @@ export interface FileRoutesByTo {
   '/api/public/ext/functions/v1/inject-config': typeof ApiPublicExtFunctionsV1InjectConfigRoute
   '/api/public/ext/functions/v1/lov4': typeof ApiPublicExtFunctionsV1Lov4Route
   '/api/public/ext/functions/v1/report-tamper': typeof ApiPublicExtFunctionsV1ReportTamperRoute
+  '/api/public/ext/functions/v1/reset-license-hwid': typeof ApiPublicExtFunctionsV1ResetLicenseHwidRoute
   '/api/public/ext/functions/v1/serve-extension-ui': typeof ApiPublicExtFunctionsV1ServeExtensionUiRoute
+  '/api/public/ext/functions/v1/validate-child-license': typeof ApiPublicExtFunctionsV1ValidateChildLicenseRoute
   '/api/public/ext/functions/v1/validate-license-v2': typeof ApiPublicExtFunctionsV1ValidateLicenseV2Route
   '/api/public/ext/storage/v1/object/$': typeof ApiPublicExtStorageV1ObjectSplatRoute
 }
@@ -479,7 +497,9 @@ export interface FileRoutesById {
   '/api/public/ext/functions/v1/inject-config': typeof ApiPublicExtFunctionsV1InjectConfigRoute
   '/api/public/ext/functions/v1/lov4': typeof ApiPublicExtFunctionsV1Lov4Route
   '/api/public/ext/functions/v1/report-tamper': typeof ApiPublicExtFunctionsV1ReportTamperRoute
+  '/api/public/ext/functions/v1/reset-license-hwid': typeof ApiPublicExtFunctionsV1ResetLicenseHwidRoute
   '/api/public/ext/functions/v1/serve-extension-ui': typeof ApiPublicExtFunctionsV1ServeExtensionUiRoute
+  '/api/public/ext/functions/v1/validate-child-license': typeof ApiPublicExtFunctionsV1ValidateChildLicenseRoute
   '/api/public/ext/functions/v1/validate-license-v2': typeof ApiPublicExtFunctionsV1ValidateLicenseV2Route
   '/api/public/ext/storage/v1/object/$': typeof ApiPublicExtStorageV1ObjectSplatRoute
 }
@@ -533,7 +553,9 @@ export interface FileRouteTypes {
     | '/api/public/ext/functions/v1/inject-config'
     | '/api/public/ext/functions/v1/lov4'
     | '/api/public/ext/functions/v1/report-tamper'
+    | '/api/public/ext/functions/v1/reset-license-hwid'
     | '/api/public/ext/functions/v1/serve-extension-ui'
+    | '/api/public/ext/functions/v1/validate-child-license'
     | '/api/public/ext/functions/v1/validate-license-v2'
     | '/api/public/ext/storage/v1/object/$'
   fileRoutesByTo: FileRoutesByTo
@@ -585,7 +607,9 @@ export interface FileRouteTypes {
     | '/api/public/ext/functions/v1/inject-config'
     | '/api/public/ext/functions/v1/lov4'
     | '/api/public/ext/functions/v1/report-tamper'
+    | '/api/public/ext/functions/v1/reset-license-hwid'
     | '/api/public/ext/functions/v1/serve-extension-ui'
+    | '/api/public/ext/functions/v1/validate-child-license'
     | '/api/public/ext/functions/v1/validate-license-v2'
     | '/api/public/ext/storage/v1/object/$'
   id:
@@ -637,7 +661,9 @@ export interface FileRouteTypes {
     | '/api/public/ext/functions/v1/inject-config'
     | '/api/public/ext/functions/v1/lov4'
     | '/api/public/ext/functions/v1/report-tamper'
+    | '/api/public/ext/functions/v1/reset-license-hwid'
     | '/api/public/ext/functions/v1/serve-extension-ui'
+    | '/api/public/ext/functions/v1/validate-child-license'
     | '/api/public/ext/functions/v1/validate-license-v2'
     | '/api/public/ext/storage/v1/object/$'
   fileRoutesById: FileRoutesById
@@ -690,7 +716,9 @@ export interface RootRouteChildren {
   ApiPublicExtFunctionsV1InjectConfigRoute: typeof ApiPublicExtFunctionsV1InjectConfigRoute
   ApiPublicExtFunctionsV1Lov4Route: typeof ApiPublicExtFunctionsV1Lov4Route
   ApiPublicExtFunctionsV1ReportTamperRoute: typeof ApiPublicExtFunctionsV1ReportTamperRoute
+  ApiPublicExtFunctionsV1ResetLicenseHwidRoute: typeof ApiPublicExtFunctionsV1ResetLicenseHwidRoute
   ApiPublicExtFunctionsV1ServeExtensionUiRoute: typeof ApiPublicExtFunctionsV1ServeExtensionUiRoute
+  ApiPublicExtFunctionsV1ValidateChildLicenseRoute: typeof ApiPublicExtFunctionsV1ValidateChildLicenseRoute
   ApiPublicExtFunctionsV1ValidateLicenseV2Route: typeof ApiPublicExtFunctionsV1ValidateLicenseV2Route
   ApiPublicExtStorageV1ObjectSplatRoute: typeof ApiPublicExtStorageV1ObjectSplatRoute
 }
@@ -991,11 +1019,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicExtFunctionsV1ValidateLicenseV2RouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/ext/functions/v1/validate-child-license': {
+      id: '/api/public/ext/functions/v1/validate-child-license'
+      path: '/api/public/ext/functions/v1/validate-child-license'
+      fullPath: '/api/public/ext/functions/v1/validate-child-license'
+      preLoaderRoute: typeof ApiPublicExtFunctionsV1ValidateChildLicenseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/ext/functions/v1/serve-extension-ui': {
       id: '/api/public/ext/functions/v1/serve-extension-ui'
       path: '/api/public/ext/functions/v1/serve-extension-ui'
       fullPath: '/api/public/ext/functions/v1/serve-extension-ui'
       preLoaderRoute: typeof ApiPublicExtFunctionsV1ServeExtensionUiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/ext/functions/v1/reset-license-hwid': {
+      id: '/api/public/ext/functions/v1/reset-license-hwid'
+      path: '/api/public/ext/functions/v1/reset-license-hwid'
+      fullPath: '/api/public/ext/functions/v1/reset-license-hwid'
+      preLoaderRoute: typeof ApiPublicExtFunctionsV1ResetLicenseHwidRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/ext/functions/v1/report-tamper': {
@@ -1103,8 +1145,12 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicExtFunctionsV1Lov4Route: ApiPublicExtFunctionsV1Lov4Route,
   ApiPublicExtFunctionsV1ReportTamperRoute:
     ApiPublicExtFunctionsV1ReportTamperRoute,
+  ApiPublicExtFunctionsV1ResetLicenseHwidRoute:
+    ApiPublicExtFunctionsV1ResetLicenseHwidRoute,
   ApiPublicExtFunctionsV1ServeExtensionUiRoute:
     ApiPublicExtFunctionsV1ServeExtensionUiRoute,
+  ApiPublicExtFunctionsV1ValidateChildLicenseRoute:
+    ApiPublicExtFunctionsV1ValidateChildLicenseRoute,
   ApiPublicExtFunctionsV1ValidateLicenseV2Route:
     ApiPublicExtFunctionsV1ValidateLicenseV2Route,
   ApiPublicExtStorageV1ObjectSplatRoute: ApiPublicExtStorageV1ObjectSplatRoute,

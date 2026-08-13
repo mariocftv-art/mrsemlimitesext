@@ -4,177 +4,20 @@ import ext2ZipAsset from "@/assets/ext2_v29_zip.asset.json";
 import ext3ZipAsset from "@/assets/ext3_v29_zip.asset.json";
 import ext4ZipAsset from "@/assets/ext4_v412.zip.asset.json";
 import ext5ZipAsset from "@/assets/ext5_v1701.zip.asset.json";
+import ext7ZipAsset from "@/assets/ext7_v1770_zip.asset.json";
 import { useMemo, useState, useSyncExternalStore, useEffect } from "react";
-import {
-  Archive,
-  ArchiveRestore,
-  Bug,
-  Copy,
-  Download,
-  Eye,
-  FolderOpen,
-  GitBranch,
-  Hammer,
-  ImageIcon,
-  Pencil,
-  Plus,
-  Puzzle,
-  Search,
-  Trash2,
-  Upload,
-  Activity,
-} from "lucide-react";
-import { ImportExtensionDialog } from "@/factory/importer-dialog";
-import { useServerFn } from "@tanstack/react-start";
-import { getExtensionBuildInfo } from "@/factory/build.functions";
-
-import { toast } from "sonner";
-
-import { AppShell } from "@/components/layout/app-shell";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Progress } from "@/components/ui/progress";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  archiveExtension,
-  createExtension,
-  deleteCustomExtension,
-  duplicateExtension,
-  getAllExtensions,
-  restoreExtension,
-  scanExtension,
-  subscribe,
-  updateExtension,
-  type ExtensionRecord,
-  type ExtensionStatus,
-  type NeonTone,
-} from "@/factory";
-
-export const Route = createFileRoute("/extensions")({
-  component: ExtensionsPage,
-});
-
-const glow: Record<NeonTone, string> = {
-  cyan: "var(--neon-cyan)",
-  violet: "var(--neon-violet)",
-  magenta: "var(--neon-magenta)",
-  lime: "var(--neon-lime)",
-  orange: "#ff7e00",
-};
-
-const statusMeta: Record<ExtensionStatus, { label: string; dot: string; color: string }> = {
-  production: { label: "Produção", dot: "🟢", color: "var(--neon-lime)" },
-  development: { label: "Desenvolvimento", dot: "🟡", color: "#facc15" },
-  testing: { label: "Testes", dot: "🔵", color: "var(--neon-cyan)" },
-  archived: { label: "Arquivada", dot: "⚪", color: "#94a3b8" },
-};
-
-type Filter = "all" | ExtensionStatus;
-type Sort = "name" | "version" | "updated" | "status";
-
-function useFactoryExtensions() {
-  return useSyncExternalStore(
-    subscribe,
-    () => getAllExtensions(),
-    () => getAllExtensions(),
-  );
-}
-
-function ExtensionsPage() {
-  const extensions = useFactoryExtensions();
-  const ext1 = extensions.find((e) => e.code === "EXT1");
-  const ext2 = extensions.find((e) => e.code === "EXT2");
-  const ext3 = extensions.find((e) => e.code === "EXT3");
-  const ext4 = extensions.find((e) => e.code === "EXT4");
+...
   const ext5 = extensions.find((e) => e.code === "EXT5");
   const ext6 = extensions.find((e) => e.code === "EXT6");
+  const ext7 = extensions.find((e) => e.code === "EXT7");
   const [filter, setFilter] = useState<Filter>("all");
-  const [query, setQuery] = useState("");
-  const [sort, setSort] = useState<Sort>("updated");
-  const [wizardOpen, setWizardOpen] = useState(false);
-  const [importOpen, setImportOpen] = useState(false);
-  const [editing, setEditing] = useState<ExtensionRecord | null>(null);
-
-
-  const filtered = useMemo(() => {
-    let list = extensions.slice();
-    if (filter !== "all") list = list.filter((e) => e.status === filter);
-    if (query.trim()) {
-      const q = query.toLowerCase();
-      list = list.filter(
-        (e) =>
-          e.name.toLowerCase().includes(q) ||
-          e.code.toLowerCase().includes(q) ||
-          e.slug.toLowerCase().includes(q),
-      );
-    }
-    list.sort((a, b) => {
-      switch (sort) {
-        case "name":
-          return a.name.localeCompare(b.name);
-        case "version":
-          return b.version.localeCompare(a.version);
-        case "status":
-          return a.status.localeCompare(b.status);
-        default:
-          return b.updatedAt.localeCompare(a.updatedAt);
-      }
-    });
-    return list;
-  }, [extensions, filter, query, sort]);
-
-  const counts = useMemo(() => {
-    const c: Record<Filter, number> = {
-      all: extensions.length,
-      production: 0,
-      development: 0,
-      testing: 0,
-      archived: 0,
-    };
-    for (const e of extensions) c[e.status]++;
-    return c;
-  }, [extensions]);
-
-  const downloadExt1 = () => {
-    downloadZip("/ext1_v37.zip", "MR Sem Limites EXT1.zip");
-  };
-
-  const downloadExt2 = () => {
-    downloadZip("/ext2_v4_zip.zip", "MR Sem Limite Ext 2 v4.1.5.zip");
-  };
-
-  const downloadExt3 = () => {
-    downloadZip(ext3ZipAsset.url, "MR Sem Limites EXT3.zip");
-  };
-
-  const downloadExt4 = () => {
-    downloadZip(ext4ZipAsset.url, "MR Sem Limites EXT4.zip");
-  };
-
-  const downloadExt5 = () => {
-    downloadZip("/ext5_v1759_zip.zip", "MR Sem Limites EXT5 v17.5.9.zip");
-  };
-
+...
   const downloadExt6 = () => {
     downloadZip("/ext6_v1765_zip.zip", "MR Sem Limites EXT6 v17.6.5.zip");
+  };
+
+  const downloadExt7 = () => {
+    downloadZip(ext7ZipAsset.url, "MR Sem Limites EXT7 v17.7.0.zip");
   };
 
   return (
@@ -367,6 +210,37 @@ function ExtensionsPage() {
                   size="sm" 
                   className="w-full gap-1.5" 
                   onClick={downloadExt6}
+                  style={{ background: "#00f2ff", color: "#000" }}
+                >
+                  <Download className="h-4 w-4" /> Download
+                </Button>
+                <Link to="/real-test" className="w-full">
+                  <Button size="sm" variant="outline" className="w-full gap-1.5 border-cyan-500/40 text-cyan-400">
+                    <Bug className="h-4 w-4" /> Real Test
+                  </Button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {ext7 && (
+          <Card className="glass border-cyan-500/40">
+            <CardContent className="flex items-center justify-between p-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-border/60 bg-background/40">
+                  <Puzzle className="h-5 w-5 text-cyan-400" />
+                </div>
+                <div>
+                  <p className="text-sm font-bold">EXTENSÃO SETE 17.7.0</p>
+                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{ext7.name}</p>
+                </div>
+              </div>
+              <div className="flex flex-col gap-2">
+                <Button 
+                  size="sm" 
+                  className="w-full gap-1.5" 
+                  onClick={downloadExt7}
                   style={{ background: "#00f2ff", color: "#000" }}
                 >
                   <Download className="h-4 w-4" /> Download

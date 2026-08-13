@@ -39,6 +39,9 @@ import { Route as RuntimeIdRouteImport } from './routes/runtime.$id'
 import { Route as PreviewIdRouteImport } from './routes/preview.$id'
 import { Route as LiveIdRouteImport } from './routes/live.$id'
 import { Route as ApiPublicDownloadExtensaoRouteImport } from './routes/api/public/download-extensao'
+import { Route as ApiPublicWebhooksMercadopagoRouteImport } from './routes/api/public/webhooks/mercadopago'
+import { Route as ApiPublicWebhooksKiwifyRouteImport } from './routes/api/public/webhooks/kiwify'
+import { Route as ApiPublicWebhooksCaktoRouteImport } from './routes/api/public/webhooks/cakto'
 import { Route as ApiPublicExtValidateLicenseRouteImport } from './routes/api/public/ext/validate-license'
 import { Route as ApiPublicExtSendCommandRouteImport } from './routes/api/public/ext/send-command'
 import { Route as ApiPublicExtLicenseHeartbeatRouteImport } from './routes/api/public/ext/license-heartbeat'
@@ -205,6 +208,22 @@ const ApiPublicDownloadExtensaoRoute =
     path: '/api/public/download-extensao',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicWebhooksMercadopagoRoute =
+  ApiPublicWebhooksMercadopagoRouteImport.update({
+    id: '/api/public/webhooks/mercadopago',
+    path: '/api/public/webhooks/mercadopago',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicWebhooksKiwifyRoute = ApiPublicWebhooksKiwifyRouteImport.update({
+  id: '/api/public/webhooks/kiwify',
+  path: '/api/public/webhooks/kiwify',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicWebhooksCaktoRoute = ApiPublicWebhooksCaktoRouteImport.update({
+  id: '/api/public/webhooks/cakto',
+  path: '/api/public/webhooks/cakto',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicExtValidateLicenseRoute =
   ApiPublicExtValidateLicenseRouteImport.update({
     id: '/api/public/ext/validate-license',
@@ -325,6 +344,9 @@ export interface FileRoutesByFullPath {
   '/api/public/ext/license-heartbeat': typeof ApiPublicExtLicenseHeartbeatRoute
   '/api/public/ext/send-command': typeof ApiPublicExtSendCommandRoute
   '/api/public/ext/validate-license': typeof ApiPublicExtValidateLicenseRoute
+  '/api/public/webhooks/cakto': typeof ApiPublicWebhooksCaktoRoute
+  '/api/public/webhooks/kiwify': typeof ApiPublicWebhooksKiwifyRoute
+  '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
   '/api/public/ext/functions/v1/download-zip': typeof ApiPublicExtFunctionsV1DownloadZipRoute
   '/api/public/ext/functions/v1/get-support-info': typeof ApiPublicExtFunctionsV1GetSupportInfoRoute
   '/api/public/ext/functions/v1/get-templates': typeof ApiPublicExtFunctionsV1GetTemplatesRoute
@@ -371,6 +393,9 @@ export interface FileRoutesByTo {
   '/api/public/ext/license-heartbeat': typeof ApiPublicExtLicenseHeartbeatRoute
   '/api/public/ext/send-command': typeof ApiPublicExtSendCommandRoute
   '/api/public/ext/validate-license': typeof ApiPublicExtValidateLicenseRoute
+  '/api/public/webhooks/cakto': typeof ApiPublicWebhooksCaktoRoute
+  '/api/public/webhooks/kiwify': typeof ApiPublicWebhooksKiwifyRoute
+  '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
   '/api/public/ext/functions/v1/download-zip': typeof ApiPublicExtFunctionsV1DownloadZipRoute
   '/api/public/ext/functions/v1/get-support-info': typeof ApiPublicExtFunctionsV1GetSupportInfoRoute
   '/api/public/ext/functions/v1/get-templates': typeof ApiPublicExtFunctionsV1GetTemplatesRoute
@@ -418,6 +443,9 @@ export interface FileRoutesById {
   '/api/public/ext/license-heartbeat': typeof ApiPublicExtLicenseHeartbeatRoute
   '/api/public/ext/send-command': typeof ApiPublicExtSendCommandRoute
   '/api/public/ext/validate-license': typeof ApiPublicExtValidateLicenseRoute
+  '/api/public/webhooks/cakto': typeof ApiPublicWebhooksCaktoRoute
+  '/api/public/webhooks/kiwify': typeof ApiPublicWebhooksKiwifyRoute
+  '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
   '/api/public/ext/functions/v1/download-zip': typeof ApiPublicExtFunctionsV1DownloadZipRoute
   '/api/public/ext/functions/v1/get-support-info': typeof ApiPublicExtFunctionsV1GetSupportInfoRoute
   '/api/public/ext/functions/v1/get-templates': typeof ApiPublicExtFunctionsV1GetTemplatesRoute
@@ -466,6 +494,9 @@ export interface FileRouteTypes {
     | '/api/public/ext/license-heartbeat'
     | '/api/public/ext/send-command'
     | '/api/public/ext/validate-license'
+    | '/api/public/webhooks/cakto'
+    | '/api/public/webhooks/kiwify'
+    | '/api/public/webhooks/mercadopago'
     | '/api/public/ext/functions/v1/download-zip'
     | '/api/public/ext/functions/v1/get-support-info'
     | '/api/public/ext/functions/v1/get-templates'
@@ -512,6 +543,9 @@ export interface FileRouteTypes {
     | '/api/public/ext/license-heartbeat'
     | '/api/public/ext/send-command'
     | '/api/public/ext/validate-license'
+    | '/api/public/webhooks/cakto'
+    | '/api/public/webhooks/kiwify'
+    | '/api/public/webhooks/mercadopago'
     | '/api/public/ext/functions/v1/download-zip'
     | '/api/public/ext/functions/v1/get-support-info'
     | '/api/public/ext/functions/v1/get-templates'
@@ -558,6 +592,9 @@ export interface FileRouteTypes {
     | '/api/public/ext/license-heartbeat'
     | '/api/public/ext/send-command'
     | '/api/public/ext/validate-license'
+    | '/api/public/webhooks/cakto'
+    | '/api/public/webhooks/kiwify'
+    | '/api/public/webhooks/mercadopago'
     | '/api/public/ext/functions/v1/download-zip'
     | '/api/public/ext/functions/v1/get-support-info'
     | '/api/public/ext/functions/v1/get-templates'
@@ -605,6 +642,9 @@ export interface RootRouteChildren {
   ApiPublicExtLicenseHeartbeatRoute: typeof ApiPublicExtLicenseHeartbeatRoute
   ApiPublicExtSendCommandRoute: typeof ApiPublicExtSendCommandRoute
   ApiPublicExtValidateLicenseRoute: typeof ApiPublicExtValidateLicenseRoute
+  ApiPublicWebhooksCaktoRoute: typeof ApiPublicWebhooksCaktoRoute
+  ApiPublicWebhooksKiwifyRoute: typeof ApiPublicWebhooksKiwifyRoute
+  ApiPublicWebhooksMercadopagoRoute: typeof ApiPublicWebhooksMercadopagoRoute
   ApiPublicExtFunctionsV1DownloadZipRoute: typeof ApiPublicExtFunctionsV1DownloadZipRoute
   ApiPublicExtFunctionsV1GetSupportInfoRoute: typeof ApiPublicExtFunctionsV1GetSupportInfoRoute
   ApiPublicExtFunctionsV1GetTemplatesRoute: typeof ApiPublicExtFunctionsV1GetTemplatesRoute
@@ -828,6 +868,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicDownloadExtensaoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/webhooks/mercadopago': {
+      id: '/api/public/webhooks/mercadopago'
+      path: '/api/public/webhooks/mercadopago'
+      fullPath: '/api/public/webhooks/mercadopago'
+      preLoaderRoute: typeof ApiPublicWebhooksMercadopagoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/webhooks/kiwify': {
+      id: '/api/public/webhooks/kiwify'
+      path: '/api/public/webhooks/kiwify'
+      fullPath: '/api/public/webhooks/kiwify'
+      preLoaderRoute: typeof ApiPublicWebhooksKiwifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/webhooks/cakto': {
+      id: '/api/public/webhooks/cakto'
+      path: '/api/public/webhooks/cakto'
+      fullPath: '/api/public/webhooks/cakto'
+      preLoaderRoute: typeof ApiPublicWebhooksCaktoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/ext/validate-license': {
       id: '/api/public/ext/validate-license'
       path: '/api/public/ext/validate-license'
@@ -965,6 +1026,9 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicExtLicenseHeartbeatRoute: ApiPublicExtLicenseHeartbeatRoute,
   ApiPublicExtSendCommandRoute: ApiPublicExtSendCommandRoute,
   ApiPublicExtValidateLicenseRoute: ApiPublicExtValidateLicenseRoute,
+  ApiPublicWebhooksCaktoRoute: ApiPublicWebhooksCaktoRoute,
+  ApiPublicWebhooksKiwifyRoute: ApiPublicWebhooksKiwifyRoute,
+  ApiPublicWebhooksMercadopagoRoute: ApiPublicWebhooksMercadopagoRoute,
   ApiPublicExtFunctionsV1DownloadZipRoute:
     ApiPublicExtFunctionsV1DownloadZipRoute,
   ApiPublicExtFunctionsV1GetSupportInfoRoute:

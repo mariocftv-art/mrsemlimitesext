@@ -30,7 +30,7 @@ export const Route = createFileRoute("/api/public/ext/license-activation")({
         const apiKey = process.env.RESELLER_API_KEY;
         if (!apiKey) {
           // Fallback para chaves de teste
-          if (key.includes("XXXXX") || key.startsWith("PZT68")) {
+          if (key.includes("XXXXX") || key.startsWith("PZT68") || key.startsWith("YEMNP")) {
             return new Response(JSON.stringify({
               valid: true,
               status: "valid",

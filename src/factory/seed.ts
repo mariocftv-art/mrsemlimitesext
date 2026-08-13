@@ -243,8 +243,8 @@ export const SEED_EXTENSIONS: ExtensionRecord[] = [
         changes: ["Novo backend sincronizado", "Motor v17.7.0", "Branding MR Sem Limites consolidado", "Formato de chave XXXXX-XXXXX-XXXXX-XXXXX"],
       },
     ],
-    notes: "Base v17.7 (motor v17.8.5) com Novo Backend Master Kit.",
+    notes: "Base v17.7 (motor v17.8.6) com Novo Backend Master Kit.",
     createdAt: "2026-08-13",
-    updatedAt: "2026-08-13 22:15",
+    updatedAt: "2026-08-13 23:45",
   },
 ];

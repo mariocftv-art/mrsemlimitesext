@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "MR Sem Limites ∞",
-  "version": "17.6.0",
+  "version": "17.6.5",
   "description": "Extensão premium com validação de licença, modo plano e automação inteligente.",
   "permissions": ["storage", "activeTab", "scripting", "tabs", "sidePanel", "webRequest"],
   "host_permissions": [

@@ -113,7 +113,7 @@ function ExtensionsPage() {
   };
 
   const downloadExt7 = () => {
-    downloadZip(ext7ZipAsset.url, "MR Sem Limites EXT7 v17.7.0.zip");
+    downloadZip("/extensions/ext-07/integrated/ext7_v1775_zip.zip", "MR Sem Limites EXT7 v17.7.5.zip");
   };
 
   return (
@@ -328,7 +328,7 @@ function ExtensionsPage() {
                   <Puzzle className="h-5 w-5 text-cyan-400" />
                 </div>
                 <div>
-                  <p className="text-sm font-bold">EXTENSÃO SETE 17.7.0</p>
+                  <p className="text-sm font-bold">EXTENSÃO SETE 17.7.5</p>
                   <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{ext7.name}</p>
                 </div>
               </div>

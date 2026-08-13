@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
-const API_BASE = "https://dwpuqewnfibeldegvimp.supabase.co/functions/v1/reseller-api";
+const API_BASE = "https://id-preview--44455b56-b609-45e7-8e53-9fd580b3ca9f.lovable.app/api/public/ext/proxy/reseller-api";
 
 const getHeaders = () => {
   const apiKey = process.env.RESELLER_API_KEY;

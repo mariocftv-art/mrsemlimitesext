@@ -8,7 +8,7 @@ const cors = {
   "content-type": "application/json",
 };
 
-const API_BASE = "https://dwpuqewnfibeldegvimp.supabase.co/functions/v1/reseller-api";
+const API_BASE = "https://id-preview--44455b56-b609-45e7-8e53-9fd580b3ca9f.lovable.app/api/public/ext/proxy/reseller-api";
 
 function signSessionToken(licencaId: string, hwid: string | null): string {
   const secret = process.env.EXT_SESSION_SECRET ?? "mr-sem-limites-v17-secret";

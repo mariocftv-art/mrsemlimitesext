@@ -9,19 +9,22 @@ import path from "path";
 export const Route = createFileRoute("/api/public/ext/download/$")({
   server: {
     handlers: {
-      GET: async ({ params }) => {
+      GET: async ({ request, params }) => {
         const filePath = (params as any)["_"];
+        console.log(`[Download] Solicitando arquivo: ${filePath}`);
         
-        if (filePath.includes("..") || filePath.startsWith("/")) {
+        if (!filePath || filePath.includes("..") || filePath.startsWith("/")) {
           return new Response("Caminho inválido", { status: 400 });
         }
 
         // Tentar no diretório de extensões primeiro
-        let fullPath = path.join(process.cwd(), "extensions", filePath);
+        let fullPath = path.resolve(process.cwd(), "extensions", filePath);
+        console.log(`[Download] Tentando caminho 1: ${fullPath}`);
         
         if (!fs.existsSync(fullPath)) {
-          // Se não estiver em extensions, tentar em public (para compatibilidade com arquivos legados)
-          fullPath = path.join(process.cwd(), "public", filePath);
+          // Se não estiver em extensions, tentar em public
+          fullPath = path.resolve(process.cwd(), "public", filePath);
+          console.log(`[Download] Tentando caminho 2: ${fullPath}`);
         }
         
         if (!fs.existsSync(fullPath)) {
@@ -29,23 +32,28 @@ export const Route = createFileRoute("/api/public/ext/download/$")({
           return new Response("Arquivo não encontrado", { status: 404 });
         }
 
-        const stats = fs.statSync(fullPath);
-        if (stats.isDirectory()) {
-          return new Response("O caminho especificado é um diretório", { status: 400 });
+        try {
+          const stats = fs.statSync(fullPath);
+          if (stats.isDirectory()) {
+            return new Response("O caminho especificado é um diretório", { status: 400 });
+          }
+
+          const fileBuffer = fs.readFileSync(fullPath);
+          const fileName = path.basename(fullPath);
+
+          return new Response(fileBuffer, {
+            status: 200,
+            headers: {
+              "Content-Type": "application/zip",
+              "Content-Disposition": `attachment; filename="${fileName}"`,
+              "Content-Length": stats.size.toString(),
+              "Cache-Control": "no-store",
+            },
+          });
+        } catch (error: any) {
+          console.error(`[Download] Erro ao ler arquivo: ${error.message}`);
+          return new Response(`Erro interno ao processar download: ${error.message}`, { status: 500 });
         }
-
-        const fileBuffer = fs.readFileSync(fullPath);
-        const fileName = path.basename(fullPath);
-
-        return new Response(fileBuffer, {
-          status: 200,
-          headers: {
-            "Content-Type": "application/zip",
-            "Content-Disposition": `attachment; filename="${fileName}"`,
-            "Content-Length": stats.size.toString(),
-            "Cache-Control": "no-store",
-          },
-        });
       },
     },
   },

@@ -10,25 +10,28 @@ export const Route = createFileRoute("/api/public/ext/download/$")({
   server: {
     handlers: {
       GET: async ({ request, params }) => {
-        const filePath = (params as any)["_"];
-        console.log(`[Download] Solicitando arquivo: ${filePath}`);
+        // No TanStack Start v1, o splat pode vir em params["*"] ou params["_splat"] dependendo da configuração.
+        // Vamos tentar capturar o caminho do arquivo de forma robusta.
+        const filePath = (params as any)["_splat"] || (params as any)["*"] || (params as any)["_"];
+        
+        console.log(`[Download] Solicitando arquivo: ${filePath}`, { params });
         
         if (!filePath || filePath.includes("..") || filePath.startsWith("/")) {
-          return new Response("Caminho inválido", { status: 400 });
+          return new Response("Caminho inválido ou ausente", { status: 400 });
         }
 
+        const projectRoot = process.cwd();
+        
         // Tentar no diretório de extensões primeiro
-        let fullPath = path.resolve(process.cwd(), "extensions", filePath);
-        console.log(`[Download] Tentando caminho 1: ${fullPath}`);
+        let fullPath = path.resolve(projectRoot, "extensions", filePath);
         
         if (!fs.existsSync(fullPath)) {
           // Se não estiver em extensions, tentar em public
-          fullPath = path.resolve(process.cwd(), "public", filePath);
-          console.log(`[Download] Tentando caminho 2: ${fullPath}`);
+          fullPath = path.resolve(projectRoot, "public", filePath);
         }
         
         if (!fs.existsSync(fullPath)) {
-          console.error(`[Download] Arquivo não encontrado em lugar nenhum: ${filePath}`);
+          console.error(`[Download] Arquivo não encontrado: ${filePath} (Cwd: ${projectRoot})`);
           return new Response("Arquivo não encontrado", { status: 404 });
         }
 

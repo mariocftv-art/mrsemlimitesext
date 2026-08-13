@@ -93,7 +93,7 @@ function ExtensionsPage() {
   };
 
   const downloadExt2 = () => {
-    downloadZip("/api/public/ext/download/ext2_v29_zip.zip", "MR Sem Limites EXT2 v4.1.5.zip");
+    downloadZip("/api/public/ext/download/ext2_v415_zip.zip", "MR Sem Limites EXT2 v4.1.5.zip");
   };
 
   const downloadExt3 = () => {

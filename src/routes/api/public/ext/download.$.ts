@@ -9,12 +9,14 @@ import path from "path";
 export const Route = createFileRoute("/api/public/ext/download/$")({
   server: {
     handlers: {
-      GET: async ({ request, params }) => {
-        // No TanStack Start v1, o splat pode vir em params["*"] ou params["_splat"] dependendo da configuração.
-        // Vamos tentar capturar o caminho do arquivo de forma robusta.
-        const filePath = (params as any)["_splat"] || (params as any)["*"] || (params as any)["_"];
+      GET: async ({ request }) => {
+        const url = new URL(request.url);
+        // Em TanStack Start, podemos pegar o caminho diretamente da URL se o params falhar
+        const pathname = url.pathname;
+        const prefix = "/api/public/ext/download/";
+        const filePath = pathname.startsWith(prefix) ? pathname.slice(prefix.length) : "";
         
-        console.log(`[Download] Solicitando arquivo: ${filePath}`, { params });
+        console.log(`[Download] Extraído via URL: ${filePath}`);
         
         if (!filePath || filePath.includes("..") || filePath.startsWith("/")) {
           return new Response("Caminho inválido ou ausente", { status: 400 });

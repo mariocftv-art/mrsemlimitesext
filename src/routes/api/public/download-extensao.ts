@@ -25,9 +25,9 @@ export const Route = createFileRoute("/api/public/download-extensao")({
         return new Response(buf, {
           status: 200,
           headers: {
-            \"Content-Type\": \"application/zip\",
-            \"Content-Disposition\": `attachment; filename=\"${FILENAME}\"`,
-            \"Cache-Control\": \"no-store\",
+            "Content-Type": "application/zip",
+            "Content-Disposition": `attachment; filename="${FILENAME}"`,
+            "Cache-Control": "no-store",
           },
         });
       },

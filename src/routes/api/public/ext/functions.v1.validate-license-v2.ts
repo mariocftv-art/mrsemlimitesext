@@ -1,12 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { createClient } from "@supabase/supabase-js";
 import { createHmac } from "crypto";
 
 /**
  * Compat: /functions/v1/validate-license-v2 — usado pelo sidepanel.
- * body: {license_key, hwid, device_info}
- * ok  : {status:'valid', session_token, days_remaining, hours_remaining, license_id}
- * err : {status:'invalid'|'expired'|'device_mismatch'|'error', message}
+ * Integrado com a Reseller API externa do MR Sem Limite.
  */
 const cors = {
   "Access-Control-Allow-Origin": "*",
@@ -15,8 +12,10 @@ const cors = {
   "content-type": "application/json",
 };
 
+const API_BASE = "https://dwpuqewnfibeldegvimp.supabase.co/functions/v1/reseller-api";
+
 function signSessionToken(licencaId: string, hwid: string | null): string {
-  const secret = process.env.EXT_SESSION_SECRET ?? "dev-secret";
+  const secret = process.env.EXT_SESSION_SECRET ?? "mr-sem-limites-v17-secret";
   const payload = `${licencaId}.${hwid ?? ""}.${Date.now()}`;
   const sig = createHmac("sha256", secret).update(payload).digest("hex").slice(0, 32);
   return Buffer.from(payload).toString("base64url") + "." + sig;
@@ -28,6 +27,11 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/validate-lice
       OPTIONS: async () => new Response(null, { status: 204, headers: cors }),
       POST: async ({ request }) => {
         let body: any = {};
+        try {
+          body = await request.json();
+        } catch {
+          /* noop */
+        }
         try {
           body = await request.json();
         } catch {

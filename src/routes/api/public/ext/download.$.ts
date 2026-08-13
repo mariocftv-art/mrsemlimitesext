@@ -3,22 +3,29 @@ import fs from "fs";
 import path from "path";
 
 /**
- * Rota unificada para download de extensões direto do sistema de arquivos do servidor.
+ * Rota unificada para download de extensões.
+ * Tenta buscar primeiro em /extensions/ e depois em /public/
  */
 export const Route = createFileRoute("/api/public/ext/download/$")({
   server: {
     handlers: {
       GET: async ({ params }) => {
         const filePath = (params as any)["_"];
-        // Sanitização básica para evitar path traversal
+        
         if (filePath.includes("..") || filePath.startsWith("/")) {
           return new Response("Caminho inválido", { status: 400 });
         }
 
-        const fullPath = path.join(process.cwd(), "extensions", filePath);
+        // Tentar no diretório de extensões primeiro
+        let fullPath = path.join(process.cwd(), "extensions", filePath);
         
         if (!fs.existsSync(fullPath)) {
-          console.error(`[Download] Arquivo não encontrado: ${fullPath}`);
+          // Se não estiver em extensions, tentar em public (para compatibilidade com arquivos legados)
+          fullPath = path.join(process.cwd(), "public", filePath);
+        }
+        
+        if (!fs.existsSync(fullPath)) {
+          console.error(`[Download] Arquivo não encontrado em lugar nenhum: ${filePath}`);
           return new Response("Arquivo não encontrado", { status: 404 });
         }
 

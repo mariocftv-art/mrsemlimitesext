@@ -27,22 +27,17 @@ walk('extensions', (filepath) => {
   // 1. Replace manifest host permissions
   content = content.replace(/dwpuqewnfibeldegvimp\.supabase\.co/g, SITE_URL);
 
-  // 2. Replace obfuscated host variables in JS (using string replacement for safety)
-  const pattern1 = "_n17ce4c='dwp'+'uqe'+'wn'+('fib'+'eld'+'egv'+'imp')";
-  const pattern2 = "_n17ce4c='dwp'+'uqe'+'wn'+'fib'+'eld'+'egv'+'imp'";
-  const pattern3 = "_n2dfabf='dwp'+'uqe'+'wn'+('fib'+'eld'+'egv'+'imp')";
+  // 2. String replacements (safe from regex syntax errors)
+  content = content.split("'dwp'+'uqe'+'wn'+('fib'+'eld'+'egv'+'imp')").join(`'${FULL_PROXY_URL}'`);
+  content = content.split("'dwp'+'uqe'+'wn'+'fib'+'eld'+'egv'+'imp'").join(`'${FULL_PROXY_URL}'`);
+  content = content.split('"dwp"+"uqe"+"wn"+("fib"+"eld"+"egv"+"imp")').join(`"${FULL_PROXY_URL}"`);
   
-  content = content.split(pattern1).join(`_n17ce4c='${FULL_PROXY_URL}'`);
-  content = content.split(pattern2).join(`_n17ce4c='${FULL_PROXY_URL}'`);
-  content = content.split(pattern3).join(`_n2dfabf='${FULL_PROXY_URL}'`);
-
   // 3. Suffixes
-  const suffix1 = "+('.su'+'pab'+'ase'+'.co')";
-  const suffix2 = "+'.su'+'pab'+'ase'+'.co'";
-  content = content.split(suffix1).join("");
-  content = content.split(suffix2).join("");
+  content = content.split("+('.su'+'pab'+'ase'+'.co')").join("");
+  content = content.split("+'.su'+'pab'+'ase'+'.co'").join("");
+  content = content.split('+(".su"+"pab"+"ase"+".co")').join("");
 
-  // 4. Full URL strings
+  // 4. Full strings
   content = content.replace(/dwpuqewnfibeldegvimp\.supabase\.co\/functions\/v1/g, FULL_PROXY_URL + '/functions/v1');
 
   if (content !== original) {
@@ -50,4 +45,3 @@ walk('extensions', (filepath) => {
     console.log(`Updated: ${filepath}`);
   }
 });
-

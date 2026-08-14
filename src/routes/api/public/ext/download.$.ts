@@ -26,7 +26,9 @@ export const Route = createFileRoute("/api/public/ext/download/$")({
         }
 
         const projectRoot = process.cwd();
+        // Aumentamos a lista de diretórios de busca e garantimos que a raiz do projeto e public sejam verificadas
         const searchDirs = [
+          path.resolve(projectRoot),
           path.resolve(projectRoot, "public"),
           path.resolve(projectRoot, "public/extensions"),
           path.resolve(projectRoot, "public/extensions/ext-08/integrated"),
@@ -35,6 +37,7 @@ export const Route = createFileRoute("/api/public/ext/download/$")({
 
         let foundPath = "";
         for (const dir of searchDirs) {
+          if (!fs.existsSync(dir)) continue;
           const tryPath = path.resolve(dir, fileName);
           if (fs.existsSync(tryPath) && !fs.statSync(tryPath).isDirectory()) {
             foundPath = tryPath;
@@ -49,8 +52,11 @@ export const Route = createFileRoute("/api/public/ext/download/$")({
             const files = fs.readdirSync(dir);
             const match = files.find(f => f.toLowerCase() === fileName.toLowerCase());
             if (match) {
-              foundPath = path.resolve(dir, match);
-              break;
+              const tryMatchPath = path.resolve(dir, match);
+              if (!fs.statSync(tryMatchPath).isDirectory()) {
+                foundPath = tryMatchPath;
+                break;
+              }
             }
           }
         }
@@ -62,12 +68,7 @@ export const Route = createFileRoute("/api/public/ext/download/$")({
 
         try {
           const stats = fs.statSync(foundPath);
-          if (stats.isDirectory()) {
-            return new Response("O caminho especificado é um diretório", { status: 400 });
-          }
-
           const fileBuffer = fs.readFileSync(foundPath);
-          const baseName = path.basename(foundPath);
 
           return new Response(fileBuffer, {
             status: 200,

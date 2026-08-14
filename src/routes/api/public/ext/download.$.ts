@@ -9,55 +9,54 @@ import path from "path";
 export const Route = createFileRoute("/api/public/ext/download/$")({
   server: {
     handlers: {
-      GET: async ({ request }) => {
+      GET: async ({ request, params }) => {
         const url = new URL(request.url);
-        // Em TanStack Start, podemos pegar o caminho diretamente da URL se o params falhar
-        const pathname = decodeURIComponent(url.pathname);
-        const prefix = "/api/public/ext/download/";
-        const filePath = pathname.startsWith(prefix) ? pathname.slice(prefix.length) : "";
+        // Tenta pegar do params (TanStack Router) ou extrair do final do path
+        let fileName = params._ || "";
         
-        console.log(`[Download] Extraído via URL: ${filePath}`);
+        if (!fileName) {
+          const parts = url.pathname.split("/");
+          fileName = parts[parts.length - 1];
+        }
+
+        console.log(`[Download] Arquivo solicitado: ${fileName}`);
         
-        if (!filePath || filePath.includes("..") || filePath.startsWith("/")) {
-          return new Response("Caminho inválido ou ausente", { status: 400 });
+        if (!fileName || fileName.includes("..")) {
+          return new Response("Nome de arquivo inválido", { status: 400 });
         }
 
         const projectRoot = process.cwd();
-        const searchPaths = [
+        const searchDirs = [
           path.resolve(projectRoot, "public"),
-          path.resolve(projectRoot, "public/extensions/ext-07/integrated"),
+          path.resolve(projectRoot, "public/extensions"),
           path.resolve(projectRoot, "public/extensions/ext-08/integrated"),
-          path.resolve(projectRoot, "extensions")
+          path.resolve(projectRoot, "public/extensions/ext-07/integrated"),
         ];
 
-        let fullPath = "";
-        const targetFileName = filePath.includes("/") ? path.basename(filePath) : filePath;
-
-        for (const dir of searchPaths) {
-          const tryPath = path.resolve(dir, targetFileName);
+        let foundPath = "";
+        for (const dir of searchDirs) {
+          const tryPath = path.resolve(dir, fileName);
           if (fs.existsSync(tryPath) && !fs.statSync(tryPath).isDirectory()) {
-            fullPath = tryPath;
+            foundPath = tryPath;
             break;
           }
         }
 
-        if (!fullPath) {
-          const directPath = path.resolve(projectRoot, "public", filePath);
-          if (fs.existsSync(directPath) && !fs.statSync(directPath).isDirectory()) {
-            fullPath = directPath;
-          }
-        }
-        
-        if (!fullPath) {
-          const allFiles = fs.readdirSync(path.resolve(projectRoot, "public"));
-          const matched = allFiles.find(f => f.toLowerCase() === targetFileName.toLowerCase());
-          if (matched) {
-            fullPath = path.resolve(projectRoot, "public", matched);
+        // Busca insensível a maiúsculas se não encontrou exato
+        if (!foundPath) {
+          for (const dir of searchDirs) {
+            if (!fs.existsSync(dir)) continue;
+            const files = fs.readdirSync(dir);
+            const match = files.find(f => f.toLowerCase() === fileName.toLowerCase());
+            if (match) {
+              foundPath = path.resolve(dir, match);
+              break;
+            }
           }
         }
 
-        if (!fullPath) {
-          console.error(`[Download] Arquivo não encontrado: ${filePath} (Base: ${targetFileName})`);
+        if (!foundPath) {
+          console.error(`[Download] Não encontrado em nenhum diretório: ${fileName}`);
           return new Response("Arquivo não encontrado", { status: 404 });
         }
 

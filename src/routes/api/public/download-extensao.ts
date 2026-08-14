@@ -1,11 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
-import currentExtensionAsset from "../../../assets/ext7_v1786_zip.asset.json";
+import currentExtensionAsset from "../../../assets/ext8_v1788_zip.asset.json";
 
 /**
  * Rota de download para a extensão v17.8.6 (MR Sem Limites EXT7)
  */
-const FILENAME = "mr-sem-limites-v17.8.6.zip";
+const FILENAME = "mr-sem-limites-v17.8.8-ultra.zip";
 
+/**
+ * Rota de download para a extensão v17.8.8 (MR Sem Limites EXT8 Ultra)
+ */
 export const Route = createFileRoute("/api/public/download-extensao")({
   server: {
     handlers: {

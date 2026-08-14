@@ -113,7 +113,7 @@ function ExtensionsPage() {
   };
 
   const downloadExt7 = () => {
-    downloadZip("/api/public/download-extensao", "MR Sem Limites EXT7 v17.8.6.zip");
+    downloadZip("/api/public/ext/download/ext-07/integrated/ext7_v1786_zip.zip", "MR Sem Limites EXT7 v17.8.6.zip");
   };
 
   return (

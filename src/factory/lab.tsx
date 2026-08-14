@@ -68,7 +68,7 @@ const initialSim = (ext: ExtensionRecord): SimState => ({
     },
   ],
   chromeStorage: {
-    "license.key": "YEMNP-YQY3Y-PDE4U-LQ2NA",
+    "license.key": "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX",
     "user.plan": "premium",
     "settings.theme": "dark",
   },
@@ -334,7 +334,7 @@ function SimulatedStage({ ext, sim }: { ext: ExtensionRecord; sim: SimState }) {
             )}
             {sim.license === "pending" && (
               <div className="rounded-md border border-sky-500/40 bg-sky-500/10 p-2 text-sky-200">
-                🔵 Insira sua chave de acesso para começar.
+                🔵 Insira sua chave de acesso (XXXXX-XXXXX-...) para começar.
               </div>
             )}
             {sim.license === "trial" && (

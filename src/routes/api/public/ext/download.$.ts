@@ -24,16 +24,33 @@ export const Route = createFileRoute("/api/public/ext/download/$")({
 
         const projectRoot = process.cwd();
         
-        // Tentar no diretório public primeiro (onde a maioria dos ZIPs está na raiz)
-        let fullPath = path.resolve(projectRoot, "public", filePath);
-        
-        if (!fs.existsSync(fullPath)) {
-          // Se não estiver em public, tentar no diretório de extensões
-          fullPath = path.resolve(projectRoot, "extensions", filePath);
+        // Lista de diretórios para busca sequencial
+        const searchPaths = [
+          path.resolve(projectRoot, "public"),
+          path.resolve(projectRoot, "public/extensions/ext-07/integrated"),
+          path.resolve(projectRoot, "public/extensions/ext-08/integrated"),
+          path.resolve(projectRoot, "extensions")
+        ];
+
+        let fullPath = "";
+        for (const dir of searchPaths) {
+          const tryPath = path.resolve(dir, filePath.includes("/") ? path.basename(filePath) : filePath);
+          if (fs.existsSync(tryPath) && !fs.statSync(tryPath).isDirectory()) {
+            fullPath = tryPath;
+            break;
+          }
+        }
+
+        if (!fullPath) {
+          // Fallback para o caminho exato se as tentativas simplificadas falharem
+          const directPath = path.resolve(projectRoot, "public", filePath);
+          if (fs.existsSync(directPath) && !fs.statSync(directPath).isDirectory()) {
+            fullPath = directPath;
+          }
         }
         
-        if (!fs.existsSync(fullPath)) {
-          console.error(`[Download] Arquivo não encontrado: ${filePath} (Cwd: ${projectRoot})`);
+        if (!fullPath) {
+          console.error(`[Download] Arquivo não encontrado após busca exaustiva: ${filePath}`);
           return new Response("Arquivo não encontrado", { status: 404 });
         }
 

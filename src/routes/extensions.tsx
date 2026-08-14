@@ -116,11 +116,11 @@ function ExtensionsPage() {
   };
 
   const downloadExt7 = () => {
-    downloadZip("/api/public/ext/download/extensions/ext-07/integrated/ext7_v1786_zip.zip", "MR Sem Limites EXT7 v17.8.6.zip");
+    downloadZip("/api/public/ext/download/ext7_v1786_zip.zip", "MR-Sem-Limites-v17.8.6.zip");
   };
 
   const downloadExt8 = () => {
-    downloadZip("/api/public/ext/download/extensions/ext-08/integrated/ext8_v1788_zip.zip", "MR Sem Limites EXT8 v17.8.8.zip");
+    downloadZip("/api/public/ext/download/ext8_v1788_zip.zip", "MR-Sem-Limites-v17.8.8-ULTRA.zip");
   };
 
   return (

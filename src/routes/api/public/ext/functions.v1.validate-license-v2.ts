@@ -124,7 +124,9 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/validate-lice
           return new Response(
             JSON.stringify({
               status: "valid",
+              valid: true, // Adicionado valid: true para compatibilidade redundante
               session_token: signSessionToken(lic.id, hwid),
+              session_id: lic.id, // Adicionado session_id para v1 fallback
               days_remaining: lic.days_remaining ?? 30,
               hours_remaining: (lic.days_remaining ?? 30) * 24,
               license_id: lic.id,

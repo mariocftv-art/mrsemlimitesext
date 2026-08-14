@@ -247,4 +247,37 @@ export const SEED_EXTENSIONS: ExtensionRecord[] = [
     createdAt: "2026-08-13",
     updatedAt: "2026-08-13 23:45",
   },
+  {
+    id: "ext-08",
+    slug: "lovable-oito-ultra",
+    code: "EXT8",
+    name: "Lovable Oito Ultra v17.8.8",
+    description: "Master Kit v3.5: Extensão Lovable Oito Ultra com Motor Infinito e Backend Sincronizado.",
+    version: "17.8.8",
+    status: "production",
+    tone: "cyan",
+    sourceDir: "extensions/ext-08/integrated/",
+    packagedZip: "ext8_v1788_zip",
+    assets: {},
+    manifest: {
+      manifestVersion: 3,
+      permissions: ["storage", "scripting", "activeTab", "cookies", "webRequest", "alarms", "sidePanel"],
+      hasPopup: true,
+      hasSidepanel: true,
+      hasBackground: true,
+      hasContentScripts: true,
+    },
+    builds: [],
+    versions: [
+      {
+        version: "17.8.8",
+        releasedAt: "2026-08-14",
+        notes: "Lançamento da Extensão 8: Lovable Oito Ultra com correção de banco de dados e nova logo.",
+        changes: ["Versão 17.8.8 ativada", "Nova logo integrada", "Backend Master Kit v3.5 com URL fixa"],
+      }
+    ],
+    notes: "Lançamento da Extensão 8 por solicitação do usuário.",
+    createdAt: "2026-08-14",
+    updatedAt: "2026-08-14",
+  },
 ];

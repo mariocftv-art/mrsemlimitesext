@@ -13,6 +13,7 @@ const cors = {
 };
 
 const API_BASE = "https://dwpuqewnfibeldegvimp.supabase.co/functions/v1/reseller-api";
+const OLD_API_BASE = "https://cvbgrjauqjawrsyknhyj.supabase.co/functions/v1/reseller-api";
 
 function signSessionToken(licencaId: string, hwid: string | null): string {
   const secret = process.env.EXT_SESSION_SECRET ?? "mr-sem-limites-v17-secret";
@@ -67,13 +68,24 @@ export const Route = createFileRoute("/api/public/ext/functions/v1/validate-lice
         }
 
         try {
-          // Consultar a Reseller API externa
-          const res = await fetch(`${API_BASE}/v1/licenses`, {
+          // Tentar primeiro na API Nova
+          let res = await fetch(`${API_BASE}/v1/licenses`, {
             headers: {
               "Authorization": `Bearer ${apiKey}`,
               "Content-Type": "application/json"
             }
           });
+
+          // Se falhar ou não encontrar, tentar na API antiga como fallback
+          if (!res.ok) {
+            console.log("[v2-Validate] API Nova falhou, tentando Fallback API Antiga...");
+            res = await fetch(`${OLD_API_BASE}/v1/licenses`, {
+              headers: {
+                "Authorization": `Bearer ${apiKey}`,
+                "Content-Type": "application/json"
+              }
+            });
+          }
 
           if (!res.ok) {
             console.error(`Reseller API Error: ${res.status}`);

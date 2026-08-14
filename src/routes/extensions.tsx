@@ -99,12 +99,11 @@ function ExtensionsPage() {
   };
 
   const downloadExt3 = () => {
-    downloadZip("/api/public/ext/download/ext6_v1765_zip.zip", "MR Sem Limites EXT3 v2.9.zip");
+    downloadZip("/api/public/ext/download/ext3_v29_zip.zip", "MR Sem Limites EXT3 v2.9.zip");
   };
 
   const downloadExt4 = () => {
-    // Redireciona para o arquivo na raiz public que existe
-    downloadZip("/api/public/ext/download/ext2_v415_zip.zip", "MR Sem Limites EXT4 v4.1.2.zip");
+    downloadZip("/api/public/ext/download/ext4_v412_zip.zip", "MR Sem Limites EXT4 v4.1.2.zip");
   };
 
   const downloadExt5 = () => {

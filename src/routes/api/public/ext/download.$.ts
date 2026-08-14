@@ -12,7 +12,7 @@ export const Route = createFileRoute("/api/public/ext/download/$")({
       GET: async ({ request, params }) => {
         const url = new URL(request.url);
         // Tenta pegar do params (TanStack Router) ou extrair do final do path
-        let fileName = params._ || "";
+        let fileName = (params as any)._splat || "";
         
         if (!fileName) {
           const parts = url.pathname.split("/");
@@ -61,13 +61,13 @@ export const Route = createFileRoute("/api/public/ext/download/$")({
         }
 
         try {
-          const stats = fs.statSync(fullPath);
+          const stats = fs.statSync(foundPath);
           if (stats.isDirectory()) {
             return new Response("O caminho especificado é um diretório", { status: 400 });
           }
 
-          const fileBuffer = fs.readFileSync(fullPath);
-          const fileName = path.basename(fullPath);
+          const fileBuffer = fs.readFileSync(foundPath);
+          const baseName = path.basename(foundPath);
 
           return new Response(fileBuffer, {
             status: 200,

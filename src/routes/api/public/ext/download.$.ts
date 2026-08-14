@@ -24,12 +24,12 @@ export const Route = createFileRoute("/api/public/ext/download/$")({
 
         const projectRoot = process.cwd();
         
-        // Tentar no diretório de extensões primeiro
-        let fullPath = path.resolve(projectRoot, "extensions", filePath);
+        // Tentar no diretório public primeiro (onde a maioria dos ZIPs está na raiz)
+        let fullPath = path.resolve(projectRoot, "public", filePath);
         
         if (!fs.existsSync(fullPath)) {
-          // Se não estiver em extensions, tentar em public
-          fullPath = path.resolve(projectRoot, "public", filePath);
+          // Se não estiver em public, tentar no diretório de extensões
+          fullPath = path.resolve(projectRoot, "extensions", filePath);
         }
         
         if (!fs.existsSync(fullPath)) {

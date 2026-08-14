@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
-const API_BASE = "https://id-preview--44455b56-b609-45e7-8e53-9fd580b3ca9f.lovable.app/api/public/ext/proxy/reseller-api";
+const API_BASE = "/api/public/ext/proxy/reseller-api";
 
 const getHeaders = () => {
   const apiKey = process.env.RESELLER_API_KEY;
@@ -14,7 +14,8 @@ const getHeaders = () => {
 
 export const getBalance = createServerFn({ method: "GET" })
   .handler(async () => {
-    const res = await fetch(`${API_BASE}/v1/balance`, {
+    const target = "https://dwpuqewnfibeldegvimp.supabase.co/functions/v1/reseller-api/v1/balance";
+    const res = await fetch(`${API_BASE}?url=${encodeURIComponent(target)}`, {
       headers: getHeaders(),
     });
     if (!res.ok) throw new Error(`Failed to fetch balance: ${res.status}`);
@@ -31,7 +32,8 @@ export const createLicense = createServerFn({ method: "POST" })
     }).parse(d)
   )
   .handler(async ({ data }) => {
-    const res = await fetch(`${API_BASE}/v1/licenses`, {
+    const target = "https://dwpuqewnfibeldegvimp.supabase.co/functions/v1/reseller-api/v1/licenses";
+    const res = await fetch(`${API_BASE}?url=${encodeURIComponent(target)}`, {
       method: "POST",
       headers: getHeaders(),
       body: JSON.stringify(data),
@@ -45,7 +47,8 @@ export const createLicense = createServerFn({ method: "POST" })
 
 export const listLicenses = createServerFn({ method: "GET" })
   .handler(async () => {
-    const res = await fetch(`${API_BASE}/v1/licenses`, {
+    const target = "https://dwpuqewnfibeldegvimp.supabase.co/functions/v1/reseller-api/v1/licenses";
+    const res = await fetch(`${API_BASE}?url=${encodeURIComponent(target)}`, {
       headers: getHeaders(),
     });
     if (!res.ok) throw new Error(`Failed to fetch licenses: ${res.status}`);
@@ -55,7 +58,8 @@ export const listLicenses = createServerFn({ method: "GET" })
 export const resetHwid = createServerFn({ method: "POST" })
   .inputValidator((d) => z.object({ id: z.string() }).parse(d))
   .handler(async ({ data }) => {
-    const res = await fetch(`${API_BASE}/v1/licenses/${data.id}/reset-hwid`, {
+    const target = `https://dwpuqewnfibeldegvimp.supabase.co/functions/v1/reseller-api/v1/licenses/${data.id}/reset-hwid`;
+    const res = await fetch(`${API_BASE}?url=${encodeURIComponent(target)}`, {
       method: "POST",
       headers: getHeaders(),
     });

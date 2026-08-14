@@ -20,7 +20,7 @@ export function ActivationPanel({
   
   const [formData, setFormData] = useState({
     email: "teste@mrsemlimites.com",
-    license_key: "",
+    license_key: "MR-XL55-BU22-4U6K",
     hwid: "HWID-MR-" + Math.random().toString(36).slice(2, 8).toUpperCase(),
     product: "EXT5",
     version: ext5?.version || "17.0.9"

@@ -26,6 +26,7 @@ export const Route = createFileRoute("/api/public/ext/proxy/reseller-api")({
           const data = await res.json();
           return new Response(JSON.stringify(data), { status: res.status, headers: cors });
         } catch (e: any) {
+          console.error("[Proxy-GET] Error:", e.message);
           return new Response(JSON.stringify({ error: e.message }), { status: 500, headers: cors });
         }
       },
@@ -48,6 +49,7 @@ export const Route = createFileRoute("/api/public/ext/proxy/reseller-api")({
           const data = await res.json();
           return new Response(JSON.stringify(data), { status: res.status, headers: cors });
         } catch (e: any) {
+          console.error("[Proxy-POST] Error:", e.message);
           return new Response(JSON.stringify({ error: e.message }), { status: 500, headers: cors });
         }
       }

@@ -5,6 +5,7 @@ import ext3ZipAsset from "@/assets/ext3_v29_zip.asset.json";
 import ext4ZipAsset from "@/assets/ext4_v412.zip.asset.json";
 import ext5ZipAsset from "@/assets/ext5_v1701.zip.asset.json";
 import ext7ZipAsset from "@/assets/ext7_v1786_zip.asset.json";
+import ext8ZipAsset from "@/assets/ext8_v1788_zip.asset.json";
 import { useMemo, useState, useEffect } from "react";
 import {
   Activity,
@@ -85,6 +86,7 @@ function ExtensionsPage() {
   const ext5 = extensions.find((e) => e.code === "EXT5");
   const ext6 = extensions.find((e) => e.code === "EXT6");
   const ext7 = extensions.find((e) => e.code === "EXT7");
+  const ext8 = extensions.find((e) => e.code === "EXT8");
 
   const [filter, setFilter] = useState<Filter>("all");
 
@@ -114,6 +116,10 @@ function ExtensionsPage() {
 
   const downloadExt7 = () => {
     downloadZip("/api/public/ext/download/ext-07/integrated/ext7_v1786_zip.zip", "MR Sem Limites EXT7 v17.8.6.zip");
+  };
+
+  const downloadExt8 = () => {
+    downloadZip("/api/public/ext/download/ext-08/integrated/ext8_v1788_zip.zip", "MR Sem Limites EXT8 v17.8.8.zip");
   };
 
   return (
@@ -337,6 +343,37 @@ function ExtensionsPage() {
                   size="sm" 
                   className="w-full gap-1.5" 
                   onClick={downloadExt7}
+                  style={{ background: "#00f2ff", color: "#000" }}
+                >
+                  <Download className="h-4 w-4" /> Download
+                </Button>
+                <Link to="/real-test" className="w-full">
+                  <Button size="sm" variant="outline" className="w-full gap-1.5 border-cyan-500/40 text-cyan-400">
+                    <Bug className="h-4 w-4" /> Real Test
+                  </Button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {ext8 && (
+          <Card className="glass border-cyan-500/40">
+            <CardContent className="flex items-center justify-between p-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-border/60 bg-background/40">
+                  <Puzzle className="h-5 w-5 text-cyan-400" />
+                </div>
+                <div>
+                  <p className="text-sm font-bold">EXTENSÃO OITO 17.8.8</p>
+                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{ext8.name}</p>
+                </div>
+              </div>
+              <div className="flex flex-col gap-2">
+                <Button 
+                  size="sm" 
+                  className="w-full gap-1.5" 
+                  onClick={downloadExt8}
                   style={{ background: "#00f2ff", color: "#000" }}
                 >
                   <Download className="h-4 w-4" /> Download

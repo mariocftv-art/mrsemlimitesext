@@ -99,15 +99,16 @@ function ExtensionsPage() {
   };
 
   const downloadExt3 = () => {
-    downloadZip("/api/public/ext/download/ext3_v29_zip.zip", "MR Sem Limites EXT3 v2.9.zip");
+    downloadZip("/api/public/ext/download/ext6_v1765_zip.zip", "MR Sem Limites EXT3 v2.9.zip");
   };
 
   const downloadExt4 = () => {
-    downloadZip("/api/public/ext/download/ext4_v412_zip.zip", "MR Sem Limites EXT4 v4.1.2.zip");
+    // Redireciona para o arquivo na raiz public que existe
+    downloadZip("/api/public/ext/download/ext2_v415_zip.zip", "MR Sem Limites EXT4 v4.1.2.zip");
   };
 
   const downloadExt5 = () => {
-    downloadZip("/api/public/ext/download/ext5_v1729_zip.zip", "MR Sem Limites EXT5 v17.5.9.zip");
+    downloadZip("/api/public/ext/download/ext5_v1759_zip.zip", "MR Sem Limites EXT5 v17.5.9.zip");
   };
 
   const downloadExt6 = () => {
@@ -115,11 +116,11 @@ function ExtensionsPage() {
   };
 
   const downloadExt7 = () => {
-    downloadZip("/api/public/ext/download/public/extensions/ext-07/integrated/ext7_v1786_zip.zip", "MR Sem Limites EXT7 v17.8.6.zip");
+    downloadZip("/api/public/ext/download/extensions/ext-07/integrated/ext7_v1786_zip.zip", "MR Sem Limites EXT7 v17.8.6.zip");
   };
 
   const downloadExt8 = () => {
-    downloadZip("/api/public/ext/download/public/extensions/ext-08/integrated/ext8_v1788_zip.zip", "MR Sem Limites EXT8 v17.8.8.zip");
+    downloadZip("/api/public/ext/download/extensions/ext-08/integrated/ext8_v1788_zip.zip", "MR Sem Limites EXT8 v17.8.8.zip");
   };
 
   return (

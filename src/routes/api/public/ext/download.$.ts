@@ -23,8 +23,6 @@ export const Route = createFileRoute("/api/public/ext/download/$")({
         }
 
         const projectRoot = process.cwd();
-        
-        // Lista de diretórios para busca sequencial
         const searchPaths = [
           path.resolve(projectRoot, "public"),
           path.resolve(projectRoot, "public/extensions/ext-07/integrated"),
@@ -33,8 +31,10 @@ export const Route = createFileRoute("/api/public/ext/download/$")({
         ];
 
         let fullPath = "";
+        const targetFileName = filePath.includes("/") ? path.basename(filePath) : filePath;
+
         for (const dir of searchPaths) {
-          const tryPath = path.resolve(dir, filePath.includes("/") ? path.basename(filePath) : filePath);
+          const tryPath = path.resolve(dir, targetFileName);
           if (fs.existsSync(tryPath) && !fs.statSync(tryPath).isDirectory()) {
             fullPath = tryPath;
             break;
@@ -42,7 +42,6 @@ export const Route = createFileRoute("/api/public/ext/download/$")({
         }
 
         if (!fullPath) {
-          // Fallback para o caminho exato se as tentativas simplificadas falharem
           const directPath = path.resolve(projectRoot, "public", filePath);
           if (fs.existsSync(directPath) && !fs.statSync(directPath).isDirectory()) {
             fullPath = directPath;
@@ -50,7 +49,15 @@ export const Route = createFileRoute("/api/public/ext/download/$")({
         }
         
         if (!fullPath) {
-          console.error(`[Download] Arquivo não encontrado após busca exaustiva: ${filePath}`);
+          const allFiles = fs.readdirSync(path.resolve(projectRoot, "public"));
+          const matched = allFiles.find(f => f.toLowerCase() === targetFileName.toLowerCase());
+          if (matched) {
+            fullPath = path.resolve(projectRoot, "public", matched);
+          }
+        }
+
+        if (!fullPath) {
+          console.error(`[Download] Arquivo não encontrado: ${filePath} (Base: ${targetFileName})`);
           return new Response("Arquivo não encontrado", { status: 404 });
         }
 

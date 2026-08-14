@@ -50,6 +50,7 @@ import { Route as ApiPublicExtSendCommandRouteImport } from './routes/api/public
 import { Route as ApiPublicExtLicenseHeartbeatRouteImport } from './routes/api/public/ext/license-heartbeat'
 import { Route as ApiPublicExtLicenseDeactivateRouteImport } from './routes/api/public/ext/license-deactivate'
 import { Route as ApiPublicExtLicenseActivationRouteImport } from './routes/api/public/ext/license-activation'
+import { Route as ApiPublicExtProxyResellerApiRouteImport } from './routes/api/public/ext/proxy/reseller-api'
 import { Route as ApiPublicExtDownloadSplatRouteImport } from './routes/api/public/ext/download.$'
 import { Route as ApiPublicExtProxyResellerApiSplatRouteImport } from './routes/api/public/ext/proxy.reseller-api.$'
 import { Route as ApiPublicExtFunctionsV1ValidateLicenseV2RouteImport } from './routes/api/public/ext/functions.v1.validate-license-v2'
@@ -276,6 +277,12 @@ const ApiPublicExtLicenseActivationRoute =
     path: '/api/public/ext/license-activation',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicExtProxyResellerApiRoute =
+  ApiPublicExtProxyResellerApiRouteImport.update({
+    id: '/api/public/ext/proxy/reseller-api',
+    path: '/api/public/ext/proxy/reseller-api',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicExtDownloadSplatRoute =
   ApiPublicExtDownloadSplatRouteImport.update({
     id: '/api/public/ext/download/$',
@@ -284,9 +291,9 @@ const ApiPublicExtDownloadSplatRoute =
   } as any)
 const ApiPublicExtProxyResellerApiSplatRoute =
   ApiPublicExtProxyResellerApiSplatRouteImport.update({
-    id: '/api/public/ext/proxy/reseller-api/$',
-    path: '/api/public/ext/proxy/reseller-api/$',
-    getParentRoute: () => rootRouteImport,
+    id: '/$',
+    path: '/$',
+    getParentRoute: () => ApiPublicExtProxyResellerApiRoute,
   } as any)
 const ApiPublicExtFunctionsV1ValidateLicenseV2Route =
   ApiPublicExtFunctionsV1ValidateLicenseV2RouteImport.update({
@@ -404,6 +411,7 @@ export interface FileRoutesByFullPath {
   '/api/public/webhooks/kiwify': typeof ApiPublicWebhooksKiwifyRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
   '/api/public/ext/download/$': typeof ApiPublicExtDownloadSplatRoute
+  '/api/public/ext/proxy/reseller-api': typeof ApiPublicExtProxyResellerApiRouteWithChildren
   '/api/public/ext/functions/v1/download-zip': typeof ApiPublicExtFunctionsV1DownloadZipRoute
   '/api/public/ext/functions/v1/get-support-info': typeof ApiPublicExtFunctionsV1GetSupportInfoRoute
   '/api/public/ext/functions/v1/get-templates': typeof ApiPublicExtFunctionsV1GetTemplatesRoute
@@ -461,6 +469,7 @@ export interface FileRoutesByTo {
   '/api/public/webhooks/kiwify': typeof ApiPublicWebhooksKiwifyRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
   '/api/public/ext/download/$': typeof ApiPublicExtDownloadSplatRoute
+  '/api/public/ext/proxy/reseller-api': typeof ApiPublicExtProxyResellerApiRouteWithChildren
   '/api/public/ext/functions/v1/download-zip': typeof ApiPublicExtFunctionsV1DownloadZipRoute
   '/api/public/ext/functions/v1/get-support-info': typeof ApiPublicExtFunctionsV1GetSupportInfoRoute
   '/api/public/ext/functions/v1/get-templates': typeof ApiPublicExtFunctionsV1GetTemplatesRoute
@@ -519,6 +528,7 @@ export interface FileRoutesById {
   '/api/public/webhooks/kiwify': typeof ApiPublicWebhooksKiwifyRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
   '/api/public/ext/download/$': typeof ApiPublicExtDownloadSplatRoute
+  '/api/public/ext/proxy/reseller-api': typeof ApiPublicExtProxyResellerApiRouteWithChildren
   '/api/public/ext/functions/v1/download-zip': typeof ApiPublicExtFunctionsV1DownloadZipRoute
   '/api/public/ext/functions/v1/get-support-info': typeof ApiPublicExtFunctionsV1GetSupportInfoRoute
   '/api/public/ext/functions/v1/get-templates': typeof ApiPublicExtFunctionsV1GetTemplatesRoute
@@ -578,6 +588,7 @@ export interface FileRouteTypes {
     | '/api/public/webhooks/kiwify'
     | '/api/public/webhooks/mercadopago'
     | '/api/public/ext/download/$'
+    | '/api/public/ext/proxy/reseller-api'
     | '/api/public/ext/functions/v1/download-zip'
     | '/api/public/ext/functions/v1/get-support-info'
     | '/api/public/ext/functions/v1/get-templates'
@@ -635,6 +646,7 @@ export interface FileRouteTypes {
     | '/api/public/webhooks/kiwify'
     | '/api/public/webhooks/mercadopago'
     | '/api/public/ext/download/$'
+    | '/api/public/ext/proxy/reseller-api'
     | '/api/public/ext/functions/v1/download-zip'
     | '/api/public/ext/functions/v1/get-support-info'
     | '/api/public/ext/functions/v1/get-templates'
@@ -692,6 +704,7 @@ export interface FileRouteTypes {
     | '/api/public/webhooks/kiwify'
     | '/api/public/webhooks/mercadopago'
     | '/api/public/ext/download/$'
+    | '/api/public/ext/proxy/reseller-api'
     | '/api/public/ext/functions/v1/download-zip'
     | '/api/public/ext/functions/v1/get-support-info'
     | '/api/public/ext/functions/v1/get-templates'
@@ -750,6 +763,7 @@ export interface RootRouteChildren {
   ApiPublicWebhooksKiwifyRoute: typeof ApiPublicWebhooksKiwifyRoute
   ApiPublicWebhooksMercadopagoRoute: typeof ApiPublicWebhooksMercadopagoRoute
   ApiPublicExtDownloadSplatRoute: typeof ApiPublicExtDownloadSplatRoute
+  ApiPublicExtProxyResellerApiRoute: typeof ApiPublicExtProxyResellerApiRouteWithChildren
   ApiPublicExtFunctionsV1DownloadZipRoute: typeof ApiPublicExtFunctionsV1DownloadZipRoute
   ApiPublicExtFunctionsV1GetSupportInfoRoute: typeof ApiPublicExtFunctionsV1GetSupportInfoRoute
   ApiPublicExtFunctionsV1GetTemplatesRoute: typeof ApiPublicExtFunctionsV1GetTemplatesRoute
@@ -761,7 +775,6 @@ export interface RootRouteChildren {
   ApiPublicExtFunctionsV1ValidateChildLicenseRoute: typeof ApiPublicExtFunctionsV1ValidateChildLicenseRoute
   ApiPublicExtFunctionsV1ValidateLicenseRoute: typeof ApiPublicExtFunctionsV1ValidateLicenseRoute
   ApiPublicExtFunctionsV1ValidateLicenseV2Route: typeof ApiPublicExtFunctionsV1ValidateLicenseV2Route
-  ApiPublicExtProxyResellerApiSplatRoute: typeof ApiPublicExtProxyResellerApiSplatRoute
   ApiPublicExtStorageV1ObjectSplatRoute: typeof ApiPublicExtStorageV1ObjectSplatRoute
 }
 
@@ -1054,6 +1067,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicExtLicenseActivationRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/ext/proxy/reseller-api': {
+      id: '/api/public/ext/proxy/reseller-api'
+      path: '/api/public/ext/proxy/reseller-api'
+      fullPath: '/api/public/ext/proxy/reseller-api'
+      preLoaderRoute: typeof ApiPublicExtProxyResellerApiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/ext/download/$': {
       id: '/api/public/ext/download/$'
       path: '/api/public/ext/download/$'
@@ -1063,10 +1083,10 @@ declare module '@tanstack/react-router' {
     }
     '/api/public/ext/proxy/reseller-api/$': {
       id: '/api/public/ext/proxy/reseller-api/$'
-      path: '/api/public/ext/proxy/reseller-api/$'
+      path: '/$'
       fullPath: '/api/public/ext/proxy/reseller-api/$'
       preLoaderRoute: typeof ApiPublicExtProxyResellerApiSplatRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof ApiPublicExtProxyResellerApiRoute
     }
     '/api/public/ext/functions/v1/validate-license-v2': {
       id: '/api/public/ext/functions/v1/validate-license-v2'
@@ -1155,6 +1175,21 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface ApiPublicExtProxyResellerApiRouteChildren {
+  ApiPublicExtProxyResellerApiSplatRoute: typeof ApiPublicExtProxyResellerApiSplatRoute
+}
+
+const ApiPublicExtProxyResellerApiRouteChildren: ApiPublicExtProxyResellerApiRouteChildren =
+  {
+    ApiPublicExtProxyResellerApiSplatRoute:
+      ApiPublicExtProxyResellerApiSplatRoute,
+  }
+
+const ApiPublicExtProxyResellerApiRouteWithChildren =
+  ApiPublicExtProxyResellerApiRoute._addFileChildren(
+    ApiPublicExtProxyResellerApiRouteChildren,
+  )
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ActivationsRoute: ActivationsRoute,
@@ -1198,6 +1233,8 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicWebhooksKiwifyRoute: ApiPublicWebhooksKiwifyRoute,
   ApiPublicWebhooksMercadopagoRoute: ApiPublicWebhooksMercadopagoRoute,
   ApiPublicExtDownloadSplatRoute: ApiPublicExtDownloadSplatRoute,
+  ApiPublicExtProxyResellerApiRoute:
+    ApiPublicExtProxyResellerApiRouteWithChildren,
   ApiPublicExtFunctionsV1DownloadZipRoute:
     ApiPublicExtFunctionsV1DownloadZipRoute,
   ApiPublicExtFunctionsV1GetSupportInfoRoute:
@@ -1219,8 +1256,6 @@ const rootRouteChildren: RootRouteChildren = {
     ApiPublicExtFunctionsV1ValidateLicenseRoute,
   ApiPublicExtFunctionsV1ValidateLicenseV2Route:
     ApiPublicExtFunctionsV1ValidateLicenseV2Route,
-  ApiPublicExtProxyResellerApiSplatRoute:
-    ApiPublicExtProxyResellerApiSplatRoute,
   ApiPublicExtStorageV1ObjectSplatRoute: ApiPublicExtStorageV1ObjectSplatRoute,
 }
 export const routeTree = rootRouteImport

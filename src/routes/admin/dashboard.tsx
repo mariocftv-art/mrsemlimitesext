@@ -20,7 +20,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { getBalance, listLicenses, resetHwid } from "@/lib/reseller-api.functions";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export const Route = createFileRoute("/admin/dashboard")({
   component: AdminDashboard,
@@ -28,6 +28,12 @@ export const Route = createFileRoute("/admin/dashboard")({
 
 function AdminDashboard() {
   const [isResetting, setIsResetting] = useState<string | null>(null);
+  const [currentTime, setCurrentTime] = useState(new Date());
+  
+  useEffect(() => {
+    const interval = setInterval(() => setCurrentTime(new Date()), 1000);
+    return () => clearInterval(interval);
+  }, []);
   
   const getBal = useServerFn(getBalance);
   const getLics = useServerFn(listLicenses);
@@ -102,6 +108,20 @@ function AdminDashboard() {
               <Activity className="h-5 w-5" /> ONLINE
             </div>
             <p className="text-[10px] text-muted-foreground mt-1">Endpoint Reseller v1 ativo</p>
+          </CardContent>
+        </Card>
+
+        <Card className="glass border-primary/20 bg-primary/5">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-xs font-medium text-primary uppercase tracking-widest">Data e Hora</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-primary">
+              {currentTime.toLocaleTimeString("pt-BR")}
+            </div>
+            <p className="text-[10px] text-muted-foreground mt-1">
+              {currentTime.toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "long", year: "numeric" })}
+            </p>
           </CardContent>
         </Card>
 

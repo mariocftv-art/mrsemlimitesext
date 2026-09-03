@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "MR Social Growth - Ultra Elite Edition",
-  "version": "17.0.0",
-  "description": "CRM lateral focado em WhatsApp para captura autorizada, organização de listas, envio de mídia e ações manuais. Módulos Telegram, Instagram e YouTube preservados para ativação futura.",
+  "name": "MR Social Growth - EXT Growth",
+  "version": "7.19.0",
+  "description": "CRM lateral multi-plataforma (WhatsApp, Facebook, Telegram, Instagram, YouTube) para captura autorizada de leads, listas e envio de mídia (imagens e vídeos até 60 MB, com fallback automático para documento).",
   "background": {
     "service_worker": "scripts/background.js"
   },
@@ -23,6 +23,8 @@
     "alarms"
   ],
   "host_permissions": [
+    "https://*.facebook.com/*",
+    "https://*.messenger.com/*",
     "https://*.whatsapp.com/*",
     "https://*.telegram.org/*",
     "https://*.instagram.com/*",
@@ -32,6 +34,8 @@
   "content_scripts": [
     {
       "matches": [
+        "https://*.facebook.com/*",
+        "https://*.messenger.com/*",
         "https://*.whatsapp.com/*",
         "https://*.telegram.org/*",
         "https://*.instagram.com/*",
@@ -43,6 +47,8 @@
     }
   ],
   "icons": {
-    "16": "icons/icon16.png", "48": "icons/icon48.png", "128": "icons/icon128.png"
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
   }
 }

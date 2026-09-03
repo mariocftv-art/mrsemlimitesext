@@ -41,6 +41,7 @@ const groups = [
     label: "Fábrica",
     items: [
       { title: "Minhas Extensões", url: "/extensions", icon: Puzzle },
+      { title: "EXT Growth", url: "/ext-growth", icon: Puzzle },
       { title: "Teste Real", url: "/real-test", icon: MonitorPlay },
       { title: "Compatibilidade", url: "/compatibility", icon: ShieldQuestion },
       { title: "Editor", url: "/editor", icon: Pencil },

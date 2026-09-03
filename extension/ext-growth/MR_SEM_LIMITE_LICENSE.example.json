@@ -1,0 +1,9 @@
+{
+  "provider": "MR Sem Limite",
+  "mode": "development-placeholder",
+  "licenseApiBaseUrl": "https://SEU-BACKEND-LOVABLE.example/api/license",
+  "publicKey": "SUBSTITUIR_PELA_CHAVE_PUBLICA_DO_BACKEND",
+  "licenseKey": "MRSL-DEV-REPLACE-IN-LOVABLE",
+  "product": "MR Social Growth WhatsApp",
+  "note": "Este arquivo é somente um modelo. Nunca coloque aqui a chave secreta do banco, token administrativo ou segredo de assinatura."
+}

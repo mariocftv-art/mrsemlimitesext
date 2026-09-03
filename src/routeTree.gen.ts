@@ -20,6 +20,7 @@ import { Route as ProductsRouteImport } from './routes/products'
 import { Route as LogsRouteImport } from './routes/logs'
 import { Route as LicensesRouteImport } from './routes/licenses'
 import { Route as ExtensionsRouteImport } from './routes/extensions'
+import { Route as ExtGrowthRouteImport } from './routes/ext-growth'
 import { Route as EditorRouteImport } from './routes/editor'
 import { Route as DownloadsRouteImport } from './routes/downloads'
 import { Route as DevicesRouteImport } from './routes/devices'
@@ -119,6 +120,11 @@ const LicensesRoute = LicensesRouteImport.update({
 const ExtensionsRoute = ExtensionsRouteImport.update({
   id: '/extensions',
   path: '/extensions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExtGrowthRoute = ExtGrowthRouteImport.update({
+  id: '/ext-growth',
+  path: '/ext-growth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EditorRoute = EditorRouteImport.update({
@@ -385,6 +391,7 @@ export interface FileRoutesByFullPath {
   '/devices': typeof DevicesRoute
   '/downloads': typeof DownloadsRoute
   '/editor': typeof EditorRoute
+  '/ext-growth': typeof ExtGrowthRoute
   '/extensions': typeof ExtensionsRoute
   '/licenses': typeof LicensesRoute
   '/logs': typeof LogsRoute
@@ -443,6 +450,7 @@ export interface FileRoutesByTo {
   '/devices': typeof DevicesRoute
   '/downloads': typeof DownloadsRoute
   '/editor': typeof EditorRoute
+  '/ext-growth': typeof ExtGrowthRoute
   '/extensions': typeof ExtensionsRoute
   '/licenses': typeof LicensesRoute
   '/logs': typeof LogsRoute
@@ -502,6 +510,7 @@ export interface FileRoutesById {
   '/devices': typeof DevicesRoute
   '/downloads': typeof DownloadsRoute
   '/editor': typeof EditorRoute
+  '/ext-growth': typeof ExtGrowthRoute
   '/extensions': typeof ExtensionsRoute
   '/licenses': typeof LicensesRoute
   '/logs': typeof LogsRoute
@@ -562,6 +571,7 @@ export interface FileRouteTypes {
     | '/devices'
     | '/downloads'
     | '/editor'
+    | '/ext-growth'
     | '/extensions'
     | '/licenses'
     | '/logs'
@@ -620,6 +630,7 @@ export interface FileRouteTypes {
     | '/devices'
     | '/downloads'
     | '/editor'
+    | '/ext-growth'
     | '/extensions'
     | '/licenses'
     | '/logs'
@@ -678,6 +689,7 @@ export interface FileRouteTypes {
     | '/devices'
     | '/downloads'
     | '/editor'
+    | '/ext-growth'
     | '/extensions'
     | '/licenses'
     | '/logs'
@@ -737,6 +749,7 @@ export interface RootRouteChildren {
   DevicesRoute: typeof DevicesRoute
   DownloadsRoute: typeof DownloadsRoute
   EditorRoute: typeof EditorRoute
+  ExtGrowthRoute: typeof ExtGrowthRoute
   ExtensionsRoute: typeof ExtensionsRoute
   LicensesRoute: typeof LicensesRoute
   LogsRoute: typeof LogsRoute
@@ -855,6 +868,13 @@ declare module '@tanstack/react-router' {
       path: '/extensions'
       fullPath: '/extensions'
       preLoaderRoute: typeof ExtensionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ext-growth': {
+      id: '/ext-growth'
+      path: '/ext-growth'
+      fullPath: '/ext-growth'
+      preLoaderRoute: typeof ExtGrowthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/editor': {
@@ -1207,6 +1227,7 @@ const rootRouteChildren: RootRouteChildren = {
   DevicesRoute: DevicesRoute,
   DownloadsRoute: DownloadsRoute,
   EditorRoute: EditorRoute,
+  ExtGrowthRoute: ExtGrowthRoute,
   ExtensionsRoute: ExtensionsRoute,
   LicensesRoute: LicensesRoute,
   LogsRoute: LogsRoute,

@@ -829,8 +829,55 @@ const automation = {
     return false;
   },
 
+  // Clica no item "Documento" do menu de anexo — usado quando o formato do vídeo
+  // não é suportado pelo player do WhatsApp Web (MOV/AVI/MKV/WMV/3GP etc.).
+  // Assim o arquivo é entregue integralmente como documento em vez de falhar.
+  async _clickWaDocumentMenuItem() {
+    const started = Date.now();
+    while (Date.now() - started < 2500) {
+      const items = Array.from(document.querySelectorAll('li, div[role="button"], button'));
+      const match = items.find((el) => /Documento|Document/i.test(el.innerText || el.getAttribute('aria-label') || ''));
+      if (match) { this._fireClick(match); await sleep(400); return true; }
+      await sleep(200);
+    }
+    return false;
+  },
+
+  async _attachAsDocument(file, dt, tag) {
+    console.log(tag, 'tentando anexar como DOCUMENTO');
+    const before = new Set(Array.from(document.querySelectorAll('input[type="file"]')));
+    if (!(await this._openWaAttachPicker())) return false;
+    await this._clickWaDocumentMenuItem();
+    const all = Array.from(document.querySelectorAll('input[type="file"]'));
+    const fresh = all.filter((i) => !before.has(i));
+    const generic = all.filter((i) => {
+      const acc = (i.getAttribute('accept') || '').toLowerCase();
+      return !acc || acc.includes('*');
+    });
+    for (const input of [...fresh, ...generic]) {
+      try {
+        input.files = dt.files;
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+        const ok = await this._waitDocumentPreview(15000);
+        console.log(tag, 'via DOCUMENTO ->', ok ? 'prévia/dialog apareceu' : 'sem prévia');
+        if (ok) return true;
+      } catch (e) { console.warn(tag, 'erro tentando input de documento', e); }
+    }
+    return false;
+  },
+
+  async _waitDocumentPreview(timeoutMs = 12000) {
+    const started = Date.now();
+    const sel = 'div[role="dialog"], div[data-animate-modal-body], div[data-testid="media-caption"], div[data-testid="document-thumb"]';
+    while (Date.now() - started < timeoutMs) {
+      if (document.querySelector(sel)) return true;
+      await sleep(200);
+    }
+    return false;
+  },
+
   async attachMedia(box, media) {
-    const raw = Array.isArray(media) ? media.find((entry) => this._normalizeMediaItem(entry)) : media;
+    const raw = Array.isArray(media) ? media.find((entry) => !!this._normalizeMediaItem(entry)) : media;
     const item = this._normalizeMediaItem(raw);
     if (!item?.dataUrl) throw new Error("Nenhum arquivo de mídia foi selecionado.");
     const file = await this._dataUrlToFile(item);
@@ -852,6 +899,16 @@ const automation = {
     // decorrido, e falhava sozinho/como 1º item).
     const previewTimeout = file.type.startsWith('video') ? 20000 : 6000;
     let attached = false;
+    // Formato marcado como incompatível pelo painel: vai direto pelo caminho de
+    // Documento (não perde tempo tentando gerar prévia que nunca vai aparecer).
+    if (item.asDocument) {
+      attached = await this._attachAsDocument(file, dt, tag);
+      if (attached) {
+        console.log(tag, 'anexado como documento (formato sem prévia no WhatsApp Web)');
+        await sleep(rand(1500, 2500));
+        return true;
+      }
+    }
     for (const input of inputs) {
       try {
         input.files = dt.files;
@@ -899,6 +956,18 @@ const automation = {
       box.dispatchEvent(paste);
       attached = await this._waitMediaPreview(6000);
       console.log(tag, 'via paste ->', attached ? 'prévia apareceu' : 'sem prévia');
+    }
+
+    // 4ª tentativa: qualquer arquivo que não gerou prévia (vídeo em codec/container
+    // que o WhatsApp Web não decodifica, ou imagem exótica) ainda pode ser entregue
+    // como DOCUMENTO — melhor enviar íntegro como documento do que falhar o item.
+    if (!attached) {
+      attached = await this._attachAsDocument(file, dt, tag);
+      if (attached) {
+        console.log(tag, 'anexado como documento (fallback)');
+        await sleep(rand(1500, 2500));
+        return true;
+      }
     }
 
     if (!attached) {

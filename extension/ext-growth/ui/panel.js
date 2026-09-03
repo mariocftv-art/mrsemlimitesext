@@ -1100,6 +1100,29 @@ function renderWaImageList() {
   }));
 }
 
+// Detecta se o container/codec do vídeo é reproduzível pelo WhatsApp Web.
+// MP4/WebM passam normalmente; MOV/AVI/MKV/WMV/3GP/FLV/MPEG e afins são
+// marcados para envio como DOCUMENTO (chegam íntegros, sem "incompatível").
+function detectMediaCompat(file) {
+  const type = String(file.type || "").toLowerCase();
+  const name = String(file.name || "").toLowerCase();
+  const ext = name.includes(".") ? name.split(".").pop() : "";
+  if (!type.startsWith("video/") && !/^(mov|avi|mkv|wmv|3gp|flv|mpg|mpeg|m4v|ts|ogv)$/.test(ext)) {
+    return { asDocument: false, note: "" };
+  }
+  const nativeOk = /^(mp4|webm|m4v)$/.test(ext) || /video\/(mp4|webm)/.test(type);
+  let playable = false;
+  try {
+    const probe = document.createElement("video");
+    playable = !!type && probe.canPlayType(type) !== "";
+  } catch (_) { playable = false; }
+  if (nativeOk && (playable || !type)) return { asDocument: false, note: "" };
+  return {
+    asDocument: true,
+    note: `${file.name}: formato ${ext ? ext.toUpperCase() : type || "desconhecido"} sem prévia no WhatsApp Web — será enviado como documento (arquivo completo).`,
+  };
+}
+
 async function rebuildWaMediaPayload() {
   const files = [...waMediaSourceFiles.images, waMediaSourceFiles.video].filter(Boolean);
   const info = $("waFileInfo");
@@ -1130,12 +1153,14 @@ async function rebuildWaMediaPayload() {
       const dataUrl = await readFileAsDataUrl(file, (percent) => {
         setWaMediaProgress(((loadedBytes + file.size * percent / 100) / totalBytes) * 100, `Carregando ${file.name}...`, label);
       });
-      waMediaFiles.push({ dataUrl, name: file.name, type: file.type, size: file.size });
+      const compat = detectMediaCompat(file);
+      waMediaFiles.push({ dataUrl, name: file.name, type: file.type, size: file.size, asDocument: compat.asDocument, compatNote: compat.note });
       loadedBytes += file.size;
     }
     waMediaFile = waMediaFiles[0] || null; waMediaLoading = false;
+    const notes = waMediaFiles.map((m) => m.compatNote).filter(Boolean);
     finishWaMediaProgress(`${files.length} mídia(s) pronta(s) para enviar`, true);
-    if (info) info.textContent = `📎 ${label} · pronto para enviar`;
+    if (info) info.textContent = `📎 ${label} · pronto para enviar` + (notes.length ? ` — ⚠️ ${notes.join(" · ")}` : "");
   } catch (err) {
     waMediaFile = null; waMediaFiles = []; waMediaLoading = false;
     finishWaMediaProgress("Falha ao carregar a mídia", false);
@@ -1172,10 +1197,11 @@ $("btnWaClearFile")?.addEventListener("click", () => {
 $("btnSendWaOpenChat")?.addEventListener("click", async () => {
   if (waMediaLoading) return alert("Aguarde o vídeo terminar de carregar antes de enviar.");
   const msg = composePlatformMessage("whatsapp");
-  if (!msg && !waMediaFile) return alert("Digite a mensagem ou escolha um arquivo antes de enviar.");
-  const ok = confirm(`Enviar ${waMediaFile ? "arquivo + " : ""}mensagem na conversa/grupo aberto agora?`);
+  const mediaCount = waMediaFiles.length || (waMediaFile ? 1 : 0);
+  if (!msg && !mediaCount) return alert("Digite a mensagem ou escolha um arquivo antes de enviar.");
+  const ok = confirm(`Enviar ${mediaCount ? `${mediaCount} arquivo(s) + ` : ""}mensagem na conversa/grupo aberto agora?`);
   if (!ok) return;
-  setStatus(waMediaFile ? "📎 Anexando e enviando..." : "💬 Enviando no chat aberto...");
+  setStatus(mediaCount ? `📎 Anexando e enviando ${mediaCount} mídia(s)...` : "💬 Enviando no chat aberto...");
   const mediaPayload = getWaMediaPayload();
   let res = msg ? await sendToPage("SEND_OPEN_CHAT", { message: msg, media: null }) : { ok: true };
   if (res?.ok && mediaPayload) res = await sendToPage("SEND_OPEN_CHAT", { message: "", media: mediaPayload });

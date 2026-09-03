@@ -1,0 +1,48 @@
+{
+  "manifest_version": 3,
+  "name": "MR Social Growth - Ultra Elite Edition",
+  "version": "17.0.0",
+  "description": "CRM lateral focado em WhatsApp para captura autorizada, organização de listas, envio de mídia e ações manuais. Módulos Telegram, Instagram e YouTube preservados para ativação futura.",
+  "background": {
+    "service_worker": "scripts/background.js"
+  },
+  "action": {
+    "default_title": "Abrir MR Social Growth",
+    "default_icon": "icons/icon48.png"
+  },
+  "side_panel": {
+    "default_path": "ui/panel.html"
+  },
+  "permissions": [
+    "sidePanel",
+    "storage",
+    "activeTab",
+    "scripting",
+    "tabs",
+    "clipboardWrite",
+    "alarms"
+  ],
+  "host_permissions": [
+    "https://*.whatsapp.com/*",
+    "https://*.telegram.org/*",
+    "https://*.instagram.com/*",
+    "https://*.youtube.com/*",
+    "https://mrsemlimites.lovable.app/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.whatsapp.com/*",
+        "https://*.telegram.org/*",
+        "https://*.instagram.com/*",
+        "https://*.youtube.com/*"
+      ],
+      "js": [
+        "scripts/automation.js"
+      ]
+    }
+  ],
+  "icons": {
+    "16": "icons/icon16.png", "48": "icons/icon48.png", "128": "icons/icon128.png"
+  }
+}

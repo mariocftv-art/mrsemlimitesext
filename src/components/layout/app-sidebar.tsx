@@ -1,6 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard,
+  Wand2,
   Puzzle,
   Pencil,
   Hammer,
@@ -40,6 +41,7 @@ const groups = [
   {
     label: "Fábrica",
     items: [
+      { title: "Fusão de Extensões", url: "/fusao", icon: Wand2 },
       { title: "Minhas Extensões", url: "/extensions", icon: Puzzle },
       { title: "EXT Growth", url: "/ext-growth", icon: Puzzle },
       { title: "Teste Real", url: "/real-test", icon: MonitorPlay },

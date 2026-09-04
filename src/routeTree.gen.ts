@@ -19,6 +19,7 @@ import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ProductsRouteImport } from './routes/products'
 import { Route as LogsRouteImport } from './routes/logs'
 import { Route as LicensesRouteImport } from './routes/licenses'
+import { Route as FusaoRouteImport } from './routes/fusao'
 import { Route as ExtensionsRouteImport } from './routes/extensions'
 import { Route as ExtGrowthRouteImport } from './routes/ext-growth'
 import { Route as EditorRouteImport } from './routes/editor'
@@ -115,6 +116,11 @@ const LogsRoute = LogsRouteImport.update({
 const LicensesRoute = LicensesRouteImport.update({
   id: '/licenses',
   path: '/licenses',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FusaoRoute = FusaoRouteImport.update({
+  id: '/fusao',
+  path: '/fusao',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ExtensionsRoute = ExtensionsRouteImport.update({
@@ -393,6 +399,7 @@ export interface FileRoutesByFullPath {
   '/editor': typeof EditorRoute
   '/ext-growth': typeof ExtGrowthRoute
   '/extensions': typeof ExtensionsRoute
+  '/fusao': typeof FusaoRoute
   '/licenses': typeof LicensesRoute
   '/logs': typeof LogsRoute
   '/products': typeof ProductsRoute
@@ -452,6 +459,7 @@ export interface FileRoutesByTo {
   '/editor': typeof EditorRoute
   '/ext-growth': typeof ExtGrowthRoute
   '/extensions': typeof ExtensionsRoute
+  '/fusao': typeof FusaoRoute
   '/licenses': typeof LicensesRoute
   '/logs': typeof LogsRoute
   '/products': typeof ProductsRoute
@@ -512,6 +520,7 @@ export interface FileRoutesById {
   '/editor': typeof EditorRoute
   '/ext-growth': typeof ExtGrowthRoute
   '/extensions': typeof ExtensionsRoute
+  '/fusao': typeof FusaoRoute
   '/licenses': typeof LicensesRoute
   '/logs': typeof LogsRoute
   '/products': typeof ProductsRoute
@@ -573,6 +582,7 @@ export interface FileRouteTypes {
     | '/editor'
     | '/ext-growth'
     | '/extensions'
+    | '/fusao'
     | '/licenses'
     | '/logs'
     | '/products'
@@ -632,6 +642,7 @@ export interface FileRouteTypes {
     | '/editor'
     | '/ext-growth'
     | '/extensions'
+    | '/fusao'
     | '/licenses'
     | '/logs'
     | '/products'
@@ -691,6 +702,7 @@ export interface FileRouteTypes {
     | '/editor'
     | '/ext-growth'
     | '/extensions'
+    | '/fusao'
     | '/licenses'
     | '/logs'
     | '/products'
@@ -751,6 +763,7 @@ export interface RootRouteChildren {
   EditorRoute: typeof EditorRoute
   ExtGrowthRoute: typeof ExtGrowthRoute
   ExtensionsRoute: typeof ExtensionsRoute
+  FusaoRoute: typeof FusaoRoute
   LicensesRoute: typeof LicensesRoute
   LogsRoute: typeof LogsRoute
   ProductsRoute: typeof ProductsRoute
@@ -861,6 +874,13 @@ declare module '@tanstack/react-router' {
       path: '/licenses'
       fullPath: '/licenses'
       preLoaderRoute: typeof LicensesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fusao': {
+      id: '/fusao'
+      path: '/fusao'
+      fullPath: '/fusao'
+      preLoaderRoute: typeof FusaoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/extensions': {
@@ -1229,6 +1249,7 @@ const rootRouteChildren: RootRouteChildren = {
   EditorRoute: EditorRoute,
   ExtGrowthRoute: ExtGrowthRoute,
   ExtensionsRoute: ExtensionsRoute,
+  FusaoRoute: FusaoRoute,
   LicensesRoute: LicensesRoute,
   LogsRoute: LogsRoute,
   ProductsRoute: ProductsRoute,

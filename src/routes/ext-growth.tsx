@@ -51,7 +51,8 @@ const fixes = [
 
 function ExtGrowth() {
   const handleDownload = () => {
-    window.location.href = `/api/public/ext/download/${FILE}`;
+    // cache-bust para garantir sempre o pacote mais recente
+    window.location.href = `/api/public/ext/download/${FILE}?t=${Date.now()}`;
   };
 
   return (

@@ -75,8 +75,8 @@ async function mrLicenseHeartbeat(session) {
   if (!session?.key) return false;
   try {
     const device_id = await mrLicenseDeviceId();
-    const result = await mrLicenseRequest("/api/public/licenca/heartbeat", {
-      chave: session.key, device_id, extension_id: MR_LICENSE_EXTENSION_ID
+    const result = await mrLicenseRequest("/api/public/ext/license-heartbeat", {
+      chave: session.key, license_key: session.key, device_id, hwid: device_id, extension_id: MR_LICENSE_EXTENSION_ID
     });
     if (result?.ok === false || /expirad|bloquead|inexistent/i.test(String(result?.estado || ""))) {
       document.body.classList.add("license-locked");

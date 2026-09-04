@@ -37,10 +37,11 @@ function mrNormalizeLicenseKey(value) {
 
 function mrLicenseLooksLikeKey(value) {
   const key = mrNormalizeLicenseKey(value);
-  // Aceita MR-XXXX-XXXX-XXXX, 4 blocos de 5 e o padrão oficial de 5 blocos de 5.
-  return /^MR-[A-Z0-9]{4}(?:-[A-Z0-9]{4}){2,4}$/.test(key)
-    || /^[A-Z0-9]{4,6}(?:-[A-Z0-9]{4,6}){3,4}$/.test(key);
+  // Formatos aceitos: CWA2E-J554Z-UH58Y-DRERU (4/5 blocos de 5) ou MR-5U8N-2JD9-AMFB
+  return /^MR-[A-Z0-9]{4}(?:-[A-Z0-9]{4}){2,3}$/.test(key)
+    || /^[A-Z0-9]{5}(?:-[A-Z0-9]{5}){3,4}$/.test(key);
 }
+
 
 async function mrLicenseRequest(path, body) {
   const response = await fetch(`${MR_LICENSE_API}${path}`, {
@@ -50,33 +51,28 @@ async function mrLicenseRequest(path, body) {
     cache: "no-store"
   });
   const data = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(data?.error || data?.message || "Não foi possível validar a licença.");
+  if (!response.ok) throw new Error(data?.error || "Não foi possível validar a licença.");
   return data;
 }
 
 async function mrValidateLicense(key, email = "") {
   const device_id = await mrLicenseDeviceId();
-  const chave = String(key || "").trim().toUpperCase();
-  return mrLicenseRequest("/api/public/ext/validate-license", {
-    license_key: chave,
-    chave,
-    code: chave,
+  return mrLicenseRequest("/api/public/validar-licenca", {
+    chave: String(key || "").trim().toUpperCase(),
     email: String(email || "").trim(),
     device_id,
-    hwid: device_id,
     device_nome: "MR Social Growth",
     versao: MR_LICENSE_VERSION,
     extension_id: MR_LICENSE_EXTENSION_ID
   });
 }
 
-
 async function mrLicenseHeartbeat(session) {
   if (!session?.key) return false;
   try {
     const device_id = await mrLicenseDeviceId();
-    const result = await mrLicenseRequest("/api/public/ext/license-heartbeat", {
-      chave: session.key, license_key: session.key, device_id, hwid: device_id, extension_id: MR_LICENSE_EXTENSION_ID
+    const result = await mrLicenseRequest("/api/public/licenca/heartbeat", {
+      chave: session.key, device_id, extension_id: MR_LICENSE_EXTENSION_ID
     });
     if (result?.ok === false || /expirad|bloquead|inexistent/i.test(String(result?.estado || ""))) {
       document.body.classList.add("license-locked");
@@ -131,7 +127,7 @@ async function mrUnlockWithLicense(key, email = "", silent = false) {
   const submit = $("mr-license-submit");
   const normalized = mrNormalizeLicenseKey(key);
   if (!mrLicenseLooksLikeKey(normalized)) {
-    if (!silent && status) { status.className = "error"; status.textContent = "Formato de chave inválido. Use MR-XXXX-XXXX-XXXX ou XXXXX-XXXXX-XXXXX-XXXXX-XXXXX."; }
+    if (!silent && status) { status.className = "error"; status.textContent = "Formato de chave inválido. Use CWA2E-J554Z-UH58Y-DRERU ou MR-5U8N-2JD9-AMFB."; }
     return false;
   }
   if (!silent && submit) { submit.disabled = true; submit.textContent = "⏳ A VALIDAR..."; }

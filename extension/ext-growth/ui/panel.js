@@ -37,8 +37,11 @@ function mrNormalizeLicenseKey(value) {
 
 function mrLicenseLooksLikeKey(value) {
   const key = mrNormalizeLicenseKey(value);
-  return /^MR-[A-Z0-9]{4}(?:-[A-Z0-9]{4}){2}$/.test(key) || /^(?:[A-Z0-9]{5})(?:-[A-Z0-9]{5}){3}$/.test(key);
+  // Formatos aceitos: CWA2E-J554Z-UH58Y-DRERU (4/5 blocos de 5) ou MR-5U8N-2JD9-AMFB
+  return /^MR-[A-Z0-9]{4}(?:-[A-Z0-9]{4}){2,3}$/.test(key)
+    || /^[A-Z0-9]{5}(?:-[A-Z0-9]{5}){3,4}$/.test(key);
 }
+
 
 async function mrLicenseRequest(path, body) {
   const response = await fetch(`${MR_LICENSE_API}${path}`, {

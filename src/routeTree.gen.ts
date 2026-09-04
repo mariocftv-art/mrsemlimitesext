@@ -19,6 +19,7 @@ import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ProductsRouteImport } from './routes/products'
 import { Route as LogsRouteImport } from './routes/logs'
 import { Route as LicensesRouteImport } from './routes/licenses'
+import { Route as FusaoRouteImport } from './routes/fusao'
 import { Route as ExtensionsRouteImport } from './routes/extensions'
 import { Route as ExtGrowthRouteImport } from './routes/ext-growth'
 import { Route as EditorRouteImport } from './routes/editor'
@@ -42,10 +43,12 @@ import { Route as PreviewIdRouteImport } from './routes/preview.$id'
 import { Route as LiveIdRouteImport } from './routes/live.$id'
 import { Route as AdminDashboardRouteImport } from './routes/admin/dashboard'
 import { Route as ApiPublicWebhookRouteImport } from './routes/api/public/webhook'
+import { Route as ApiPublicValidarLicencaRouteImport } from './routes/api/public/validar-licenca'
 import { Route as ApiPublicDownloadExtensaoRouteImport } from './routes/api/public/download-extensao'
 import { Route as ApiPublicWebhooksMercadopagoRouteImport } from './routes/api/public/webhooks/mercadopago'
 import { Route as ApiPublicWebhooksKiwifyRouteImport } from './routes/api/public/webhooks/kiwify'
 import { Route as ApiPublicWebhooksCaktoRouteImport } from './routes/api/public/webhooks/cakto'
+import { Route as ApiPublicLicencaHeartbeatRouteImport } from './routes/api/public/licenca.heartbeat'
 import { Route as ApiPublicExtValidateLicenseRouteImport } from './routes/api/public/ext/validate-license'
 import { Route as ApiPublicExtSendCommandRouteImport } from './routes/api/public/ext/send-command'
 import { Route as ApiPublicExtLicenseHeartbeatRouteImport } from './routes/api/public/ext/license-heartbeat'
@@ -115,6 +118,11 @@ const LogsRoute = LogsRouteImport.update({
 const LicensesRoute = LicensesRouteImport.update({
   id: '/licenses',
   path: '/licenses',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FusaoRoute = FusaoRouteImport.update({
+  id: '/fusao',
+  path: '/fusao',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ExtensionsRoute = ExtensionsRouteImport.update({
@@ -232,6 +240,11 @@ const ApiPublicWebhookRoute = ApiPublicWebhookRouteImport.update({
   path: '/api/public/webhook',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicValidarLicencaRoute = ApiPublicValidarLicencaRouteImport.update({
+  id: '/api/public/validar-licenca',
+  path: '/api/public/validar-licenca',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicDownloadExtensaoRoute =
   ApiPublicDownloadExtensaoRouteImport.update({
     id: '/api/public/download-extensao',
@@ -254,6 +267,12 @@ const ApiPublicWebhooksCaktoRoute = ApiPublicWebhooksCaktoRouteImport.update({
   path: '/api/public/webhooks/cakto',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicLicencaHeartbeatRoute =
+  ApiPublicLicencaHeartbeatRouteImport.update({
+    id: '/api/public/licenca/heartbeat',
+    path: '/api/public/licenca/heartbeat',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicExtValidateLicenseRoute =
   ApiPublicExtValidateLicenseRouteImport.update({
     id: '/api/public/ext/validate-license',
@@ -393,6 +412,7 @@ export interface FileRoutesByFullPath {
   '/editor': typeof EditorRoute
   '/ext-growth': typeof ExtGrowthRoute
   '/extensions': typeof ExtensionsRoute
+  '/fusao': typeof FusaoRoute
   '/licenses': typeof LicensesRoute
   '/logs': typeof LogsRoute
   '/products': typeof ProductsRoute
@@ -408,12 +428,14 @@ export interface FileRoutesByFullPath {
   '/preview/$id': typeof PreviewIdRoute
   '/runtime/$id': typeof RuntimeIdRoute
   '/api/public/download-extensao': typeof ApiPublicDownloadExtensaoRoute
+  '/api/public/validar-licenca': typeof ApiPublicValidarLicencaRoute
   '/api/public/webhook': typeof ApiPublicWebhookRoute
   '/api/public/ext/license-activation': typeof ApiPublicExtLicenseActivationRoute
   '/api/public/ext/license-deactivate': typeof ApiPublicExtLicenseDeactivateRoute
   '/api/public/ext/license-heartbeat': typeof ApiPublicExtLicenseHeartbeatRoute
   '/api/public/ext/send-command': typeof ApiPublicExtSendCommandRoute
   '/api/public/ext/validate-license': typeof ApiPublicExtValidateLicenseRoute
+  '/api/public/licenca/heartbeat': typeof ApiPublicLicencaHeartbeatRoute
   '/api/public/webhooks/cakto': typeof ApiPublicWebhooksCaktoRoute
   '/api/public/webhooks/kiwify': typeof ApiPublicWebhooksKiwifyRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
@@ -452,6 +474,7 @@ export interface FileRoutesByTo {
   '/editor': typeof EditorRoute
   '/ext-growth': typeof ExtGrowthRoute
   '/extensions': typeof ExtensionsRoute
+  '/fusao': typeof FusaoRoute
   '/licenses': typeof LicensesRoute
   '/logs': typeof LogsRoute
   '/products': typeof ProductsRoute
@@ -467,12 +490,14 @@ export interface FileRoutesByTo {
   '/preview/$id': typeof PreviewIdRoute
   '/runtime/$id': typeof RuntimeIdRoute
   '/api/public/download-extensao': typeof ApiPublicDownloadExtensaoRoute
+  '/api/public/validar-licenca': typeof ApiPublicValidarLicencaRoute
   '/api/public/webhook': typeof ApiPublicWebhookRoute
   '/api/public/ext/license-activation': typeof ApiPublicExtLicenseActivationRoute
   '/api/public/ext/license-deactivate': typeof ApiPublicExtLicenseDeactivateRoute
   '/api/public/ext/license-heartbeat': typeof ApiPublicExtLicenseHeartbeatRoute
   '/api/public/ext/send-command': typeof ApiPublicExtSendCommandRoute
   '/api/public/ext/validate-license': typeof ApiPublicExtValidateLicenseRoute
+  '/api/public/licenca/heartbeat': typeof ApiPublicLicencaHeartbeatRoute
   '/api/public/webhooks/cakto': typeof ApiPublicWebhooksCaktoRoute
   '/api/public/webhooks/kiwify': typeof ApiPublicWebhooksKiwifyRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
@@ -512,6 +537,7 @@ export interface FileRoutesById {
   '/editor': typeof EditorRoute
   '/ext-growth': typeof ExtGrowthRoute
   '/extensions': typeof ExtensionsRoute
+  '/fusao': typeof FusaoRoute
   '/licenses': typeof LicensesRoute
   '/logs': typeof LogsRoute
   '/products': typeof ProductsRoute
@@ -527,12 +553,14 @@ export interface FileRoutesById {
   '/preview/$id': typeof PreviewIdRoute
   '/runtime/$id': typeof RuntimeIdRoute
   '/api/public/download-extensao': typeof ApiPublicDownloadExtensaoRoute
+  '/api/public/validar-licenca': typeof ApiPublicValidarLicencaRoute
   '/api/public/webhook': typeof ApiPublicWebhookRoute
   '/api/public/ext/license-activation': typeof ApiPublicExtLicenseActivationRoute
   '/api/public/ext/license-deactivate': typeof ApiPublicExtLicenseDeactivateRoute
   '/api/public/ext/license-heartbeat': typeof ApiPublicExtLicenseHeartbeatRoute
   '/api/public/ext/send-command': typeof ApiPublicExtSendCommandRoute
   '/api/public/ext/validate-license': typeof ApiPublicExtValidateLicenseRoute
+  '/api/public/licenca/heartbeat': typeof ApiPublicLicencaHeartbeatRoute
   '/api/public/webhooks/cakto': typeof ApiPublicWebhooksCaktoRoute
   '/api/public/webhooks/kiwify': typeof ApiPublicWebhooksKiwifyRoute
   '/api/public/webhooks/mercadopago': typeof ApiPublicWebhooksMercadopagoRoute
@@ -573,6 +601,7 @@ export interface FileRouteTypes {
     | '/editor'
     | '/ext-growth'
     | '/extensions'
+    | '/fusao'
     | '/licenses'
     | '/logs'
     | '/products'
@@ -588,12 +617,14 @@ export interface FileRouteTypes {
     | '/preview/$id'
     | '/runtime/$id'
     | '/api/public/download-extensao'
+    | '/api/public/validar-licenca'
     | '/api/public/webhook'
     | '/api/public/ext/license-activation'
     | '/api/public/ext/license-deactivate'
     | '/api/public/ext/license-heartbeat'
     | '/api/public/ext/send-command'
     | '/api/public/ext/validate-license'
+    | '/api/public/licenca/heartbeat'
     | '/api/public/webhooks/cakto'
     | '/api/public/webhooks/kiwify'
     | '/api/public/webhooks/mercadopago'
@@ -632,6 +663,7 @@ export interface FileRouteTypes {
     | '/editor'
     | '/ext-growth'
     | '/extensions'
+    | '/fusao'
     | '/licenses'
     | '/logs'
     | '/products'
@@ -647,12 +679,14 @@ export interface FileRouteTypes {
     | '/preview/$id'
     | '/runtime/$id'
     | '/api/public/download-extensao'
+    | '/api/public/validar-licenca'
     | '/api/public/webhook'
     | '/api/public/ext/license-activation'
     | '/api/public/ext/license-deactivate'
     | '/api/public/ext/license-heartbeat'
     | '/api/public/ext/send-command'
     | '/api/public/ext/validate-license'
+    | '/api/public/licenca/heartbeat'
     | '/api/public/webhooks/cakto'
     | '/api/public/webhooks/kiwify'
     | '/api/public/webhooks/mercadopago'
@@ -691,6 +725,7 @@ export interface FileRouteTypes {
     | '/editor'
     | '/ext-growth'
     | '/extensions'
+    | '/fusao'
     | '/licenses'
     | '/logs'
     | '/products'
@@ -706,12 +741,14 @@ export interface FileRouteTypes {
     | '/preview/$id'
     | '/runtime/$id'
     | '/api/public/download-extensao'
+    | '/api/public/validar-licenca'
     | '/api/public/webhook'
     | '/api/public/ext/license-activation'
     | '/api/public/ext/license-deactivate'
     | '/api/public/ext/license-heartbeat'
     | '/api/public/ext/send-command'
     | '/api/public/ext/validate-license'
+    | '/api/public/licenca/heartbeat'
     | '/api/public/webhooks/cakto'
     | '/api/public/webhooks/kiwify'
     | '/api/public/webhooks/mercadopago'
@@ -751,6 +788,7 @@ export interface RootRouteChildren {
   EditorRoute: typeof EditorRoute
   ExtGrowthRoute: typeof ExtGrowthRoute
   ExtensionsRoute: typeof ExtensionsRoute
+  FusaoRoute: typeof FusaoRoute
   LicensesRoute: typeof LicensesRoute
   LogsRoute: typeof LogsRoute
   ProductsRoute: typeof ProductsRoute
@@ -766,12 +804,14 @@ export interface RootRouteChildren {
   PreviewIdRoute: typeof PreviewIdRoute
   RuntimeIdRoute: typeof RuntimeIdRoute
   ApiPublicDownloadExtensaoRoute: typeof ApiPublicDownloadExtensaoRoute
+  ApiPublicValidarLicencaRoute: typeof ApiPublicValidarLicencaRoute
   ApiPublicWebhookRoute: typeof ApiPublicWebhookRoute
   ApiPublicExtLicenseActivationRoute: typeof ApiPublicExtLicenseActivationRoute
   ApiPublicExtLicenseDeactivateRoute: typeof ApiPublicExtLicenseDeactivateRoute
   ApiPublicExtLicenseHeartbeatRoute: typeof ApiPublicExtLicenseHeartbeatRoute
   ApiPublicExtSendCommandRoute: typeof ApiPublicExtSendCommandRoute
   ApiPublicExtValidateLicenseRoute: typeof ApiPublicExtValidateLicenseRoute
+  ApiPublicLicencaHeartbeatRoute: typeof ApiPublicLicencaHeartbeatRoute
   ApiPublicWebhooksCaktoRoute: typeof ApiPublicWebhooksCaktoRoute
   ApiPublicWebhooksKiwifyRoute: typeof ApiPublicWebhooksKiwifyRoute
   ApiPublicWebhooksMercadopagoRoute: typeof ApiPublicWebhooksMercadopagoRoute
@@ -861,6 +901,13 @@ declare module '@tanstack/react-router' {
       path: '/licenses'
       fullPath: '/licenses'
       preLoaderRoute: typeof LicensesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fusao': {
+      id: '/fusao'
+      path: '/fusao'
+      fullPath: '/fusao'
+      preLoaderRoute: typeof FusaoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/extensions': {
@@ -1024,6 +1071,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/validar-licenca': {
+      id: '/api/public/validar-licenca'
+      path: '/api/public/validar-licenca'
+      fullPath: '/api/public/validar-licenca'
+      preLoaderRoute: typeof ApiPublicValidarLicencaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/download-extensao': {
       id: '/api/public/download-extensao'
       path: '/api/public/download-extensao'
@@ -1050,6 +1104,13 @@ declare module '@tanstack/react-router' {
       path: '/api/public/webhooks/cakto'
       fullPath: '/api/public/webhooks/cakto'
       preLoaderRoute: typeof ApiPublicWebhooksCaktoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/licenca/heartbeat': {
+      id: '/api/public/licenca/heartbeat'
+      path: '/api/public/licenca/heartbeat'
+      fullPath: '/api/public/licenca/heartbeat'
+      preLoaderRoute: typeof ApiPublicLicencaHeartbeatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/ext/validate-license': {
@@ -1229,6 +1290,7 @@ const rootRouteChildren: RootRouteChildren = {
   EditorRoute: EditorRoute,
   ExtGrowthRoute: ExtGrowthRoute,
   ExtensionsRoute: ExtensionsRoute,
+  FusaoRoute: FusaoRoute,
   LicensesRoute: LicensesRoute,
   LogsRoute: LogsRoute,
   ProductsRoute: ProductsRoute,
@@ -1244,12 +1306,14 @@ const rootRouteChildren: RootRouteChildren = {
   PreviewIdRoute: PreviewIdRoute,
   RuntimeIdRoute: RuntimeIdRoute,
   ApiPublicDownloadExtensaoRoute: ApiPublicDownloadExtensaoRoute,
+  ApiPublicValidarLicencaRoute: ApiPublicValidarLicencaRoute,
   ApiPublicWebhookRoute: ApiPublicWebhookRoute,
   ApiPublicExtLicenseActivationRoute: ApiPublicExtLicenseActivationRoute,
   ApiPublicExtLicenseDeactivateRoute: ApiPublicExtLicenseDeactivateRoute,
   ApiPublicExtLicenseHeartbeatRoute: ApiPublicExtLicenseHeartbeatRoute,
   ApiPublicExtSendCommandRoute: ApiPublicExtSendCommandRoute,
   ApiPublicExtValidateLicenseRoute: ApiPublicExtValidateLicenseRoute,
+  ApiPublicLicencaHeartbeatRoute: ApiPublicLicencaHeartbeatRoute,
   ApiPublicWebhooksCaktoRoute: ApiPublicWebhooksCaktoRoute,
   ApiPublicWebhooksKiwifyRoute: ApiPublicWebhooksKiwifyRoute,
   ApiPublicWebhooksMercadopagoRoute: ApiPublicWebhooksMercadopagoRoute,

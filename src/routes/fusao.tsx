@@ -35,6 +35,11 @@ function FusaoPage() {
   async function onPick(f: File | null) {
     setErr(null); setResult(null); setAnalysis(null); setFile(f);
     if (!f) return;
+    if (/\.(rar|7z|tar|gz)$/i.test(f.name)) {
+      setErr("Esse arquivo é ." + f.name.split(".").pop() + " — a fusão só lê .zip (mesmo formato que o Chrome usa). Extraia a pasta da extensão e compacte como .zip (botão direito na pasta → Enviar para → Pasta compactada).");
+      setFile(null);
+      return;
+    }
     try {
       setBusy(true);
       const ab = await f.arrayBuffer();

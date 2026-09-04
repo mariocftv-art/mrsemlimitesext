@@ -37,7 +37,9 @@ function mrNormalizeLicenseKey(value) {
 
 function mrLicenseLooksLikeKey(value) {
   const key = mrNormalizeLicenseKey(value);
-  return /^MR-[A-Z0-9]{4}(?:-[A-Z0-9]{4}){2}$/.test(key) || /^(?:[A-Z0-9]{5})(?:-[A-Z0-9]{5}){3}$/.test(key);
+  // Aceita MR-XXXX-XXXX-XXXX, 4 blocos de 5 e o padrão oficial de 5 blocos de 5.
+  return /^MR-[A-Z0-9]{4}(?:-[A-Z0-9]{4}){2,4}$/.test(key)
+    || /^[A-Z0-9]{4,6}(?:-[A-Z0-9]{4,6}){3,4}$/.test(key);
 }
 
 async function mrLicenseRequest(path, body) {
@@ -48,21 +50,26 @@ async function mrLicenseRequest(path, body) {
     cache: "no-store"
   });
   const data = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(data?.error || "Não foi possível validar a licença.");
+  if (!response.ok) throw new Error(data?.error || data?.message || "Não foi possível validar a licença.");
   return data;
 }
 
 async function mrValidateLicense(key, email = "") {
   const device_id = await mrLicenseDeviceId();
-  return mrLicenseRequest("/api/public/validar-licenca", {
-    chave: String(key || "").trim().toUpperCase(),
+  const chave = String(key || "").trim().toUpperCase();
+  return mrLicenseRequest("/api/public/ext/validate-license", {
+    license_key: chave,
+    chave,
+    code: chave,
     email: String(email || "").trim(),
     device_id,
+    hwid: device_id,
     device_nome: "MR Social Growth",
     versao: MR_LICENSE_VERSION,
     extension_id: MR_LICENSE_EXTENSION_ID
   });
 }
+
 
 async function mrLicenseHeartbeat(session) {
   if (!session?.key) return false;

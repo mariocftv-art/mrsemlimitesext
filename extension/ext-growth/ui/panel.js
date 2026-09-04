@@ -131,7 +131,7 @@ async function mrUnlockWithLicense(key, email = "", silent = false) {
   const submit = $("mr-license-submit");
   const normalized = mrNormalizeLicenseKey(key);
   if (!mrLicenseLooksLikeKey(normalized)) {
-    if (!silent && status) { status.className = "error"; status.textContent = "Formato de chave inválido. Use MR-XXXX-XXXX-XXXX ou a chave alfanumérica completa."; }
+    if (!silent && status) { status.className = "error"; status.textContent = "Formato de chave inválido. Use MR-XXXX-XXXX-XXXX ou XXXXX-XXXXX-XXXXX-XXXXX-XXXXX."; }
     return false;
   }
   if (!silent && submit) { submit.disabled = true; submit.textContent = "⏳ A VALIDAR..."; }
